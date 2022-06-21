@@ -1,12 +1,13 @@
 Package: ppl.tits
-Title: What the Package Does (One Line, Title Case)
+Title: Contains all Data Analyses for the First Part Of Ppl.tits
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person(given = "Francois-Marie",
+           family = "Martin",
+           role = c("aut", "cre"),
+           email = "francois-marie.martin@univ-fcomte.fr")
+Description: This package project is meant to clean and prepare the data as well as do all spatial and statistical analyses for the first part of the "tits" section of the PubPrivLands project.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0

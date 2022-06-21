@@ -73,7 +73,15 @@ system2("git push -u origin master") # Same problem.
 # always start with a "pull" before you push anything! If, like me, you forgot, you'll be
 # in trouble and won't be able to pull. To force Git, you may use "git push -f origin master" (the
 # -f means to "force" the push).
-system("git push")
+# IMPORTANT NOTE: because of these bugs, I can "commit" from RStudio but I cannot push, so I will always
+# be forced to do it from the Terminal!
+
+
+
+### Before we go any further, we will edit some information about our package using the DESCRIPTION file
+usethis::edit_file("DESCRIPTION")
+usethis::use_mit_license(copyright_holder = "François-Marie Martin")# Open-source license
+usethis::use_git(message = ":page_facing_up: Edit package metadata")
 
 usethis::use_git(message = ":boom: Saved updates!")
 system("git status")
