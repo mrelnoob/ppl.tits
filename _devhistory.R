@@ -64,8 +64,16 @@ usethis::use_git(message = ":tada: Initial commit") # Then restart RStudio and t
 # STEP 6: Log in your GitHub account and create a new repository.
 # STEP 7: Use the following command to associate your R project with the GitHub project:
 system2("git remote add origin git@github.com:mrelnoob/ppl.tits") # Here also, personalize with your
-# own account and project names!
-usethis::use_git(message = ":boom: Updated _devhistory")
-system2("git push -u origin main")
+# own account and project names! And here again, it does not work (so GitBash or Terminal).
+# STEP 8: Finally, you can push the changes made to your local files to GitHub:
+system2("git push -u origin master") # Same problem.
+# Even using a Terminal (e.g. GitBash), you may receive an error message saying that the remote repository
+# contains work that you do not have locally (...). It happens if you included files in your GitHub
+# projects when you created it (e.g. a README or a LICENCE file). So theoretically, you need to
+# always start with a "pull" before you push anything! If, like me, you forgot, you'll be
+# in trouble and won't be able to pull. To force Git, you may use "git push -f origin master" (the
+# -f means to "force" the push).
+usethis::use_git(message = ":boom: Saved updates")
 
-system2("git push")
+
+system("git status")
