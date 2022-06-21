@@ -83,5 +83,13 @@ usethis::edit_file("DESCRIPTION")
 usethis::use_mit_license(copyright_holder = "François-Marie Martin")# Open-source license
 usethis::use_git(message = ":page_facing_up: Edit package metadata")
 
+# To create the package's documentation:
+usethis::use_package_doc() # It creates a dummy file in the R folder that should NOT be modified!
+devtools::document() # Creates the documentation and the man folder (for "manual").
+usethis::use_git(message = ":bulb: Update documentation")
+
+
+
+
 usethis::use_git(message = ":boom: Saved updates!")
 system("git status")
