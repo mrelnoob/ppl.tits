@@ -73,7 +73,7 @@ system2("git push -u origin master") # Same problem.
 # always start with a "pull" before you push anything! If, like me, you forgot, you'll be
 # in trouble and won't be able to pull. To force Git, you may use "git push -f origin master" (the
 # -f means to "force" the push).
+system("git push")
+
 usethis::use_git(message = ":boom: Saved updates!")
-
-
 system("git status")
