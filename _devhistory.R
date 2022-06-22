@@ -101,9 +101,18 @@ usethis::use_r("01_00_import_raw_data")
 # contain R scripts for functions and NOTHING ELSE! Yet, RStudio may sometimes put other things in it,
 # so it is a good idea to go and see once in a while.
 
+# To use pipes (i.e. %>%) everywhere in the package without explicitly loading the "magrittr" package:
+usethis::use_pipe() # Automatically creates a pipe function (and associated R file in the R folder),
+# while updating the DESCRIPTION file to tell R that it should import the "magrittr" package.
+
+# Before writing my function to import my data, I need to add my data files in the project folder.
+# So I create a "mydata" folder and copy-paste my data in it (manually):
+dir.create("mydata")
+usethis::use_build_ignore("mydata") # Because it is not expected in a regular package root folder (if
+# I don't ignore it, it will cause warnings in my package checks and all kind of craps. I just spent
+# five hours to get rid of them, so trust me).
 
 
-
-usethis::use_git(message = ":bulb: Created import_raw_data.R")
+usethis::use_git(message = ":bulb: Created mydata folder")
 usethis::use_git(message = ":boom: Saved updates!")
 system("git status")
