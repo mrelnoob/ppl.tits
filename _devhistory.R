@@ -91,5 +91,19 @@ usethis::use_git(message = ":bulb: Update documentation")
 
 
 
+
+# ________________________________________________________________________
+##### How to create my first custom functions and install my package #####
+
+### To create a R file (script) for my first custom (personalized) function:
+usethis::use_r("01_00_import_raw_data")
+# NOTE: it automatically places the R file in the R folder (as it should be). The R folder should ONLY
+# contain R scripts for functions and NOTHING ELSE! Yet, RStudio may sometimes put other things in it,
+# so it is a good idea to go and see once in a while.
+
+
+
+
+usethis::use_git(message = ":bulb: Created import_raw_data.R")
 usethis::use_git(message = ":boom: Saved updates!")
 system("git status")
