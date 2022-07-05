@@ -126,5 +126,5 @@ usethis::use_build_ignore("mydata") # Because it is not expected in a regular pa
 
 usethis::use_git(message = ":bulb: Created new R files")
 usethis::use_git(message = ":boom: Saved updates!")
-system("git status")
+system("git push")
 
