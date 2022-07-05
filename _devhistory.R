@@ -92,14 +92,25 @@ usethis::use_git(message = ":bulb: Update documentation")
 
 
 
-# ________________________________________________________________________
-##### How to create my first custom functions and install my package #####
+# ___________________________________
+##### Project structure set-up #####
 
-### To create a R file (script) for my first custom (personalized) function:
+
+
+
+
+# FOLDER ARCHITECTURE FIRST??? (strucure????)§§§§§§§§§
+
+
+
+
+### To create R files (scripts) for my first custom (personalized) functions:
 usethis::use_r("01_00_import_raw_data")
 # NOTE: it automatically places the R file in the R folder (as it should be). The R folder should ONLY
 # contain R scripts for functions and NOTHING ELSE! Yet, RStudio may sometimes put other things in it,
 # so it is a good idea to go and see once in a while.
+usethis::use_r("01_01_prepare_data")
+usethis::use_r("01_02_graphab_analyses") # I STILL HAVE TO PREPARE THE STRUCTURE, import the data etc.§§§§§§§§§§§§§§§§§
 
 # To use pipes (i.e. %>%) everywhere in the package without explicitly loading the "magrittr" package:
 usethis::use_pipe() # Automatically creates a pipe function (and associated R file in the R folder),
@@ -113,7 +124,7 @@ usethis::use_build_ignore("mydata") # Because it is not expected in a regular pa
 # five hours to get rid of them, so trust me).
 
 
-usethis::use_git(message = ":bulb: Created mydata folder")
+usethis::use_git(message = ":bulb: Created new R files")
 usethis::use_git(message = ":boom: Saved updates!")
 system("git status")
 
