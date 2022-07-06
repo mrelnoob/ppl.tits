@@ -213,6 +213,8 @@ usethis::use_git(message = ":metal: Installed function: import_raw_tits_data()!"
 usethis::use_version(which = "minor") # It automatically updates our package version.
 usethis::use_news_md() # Creates a NEWS.md file, that I should maintain updated.
 usethis::use_git(message = ":package: Release v0.1.0")
+# Don't forget to push your commits, once in a while: go to the Terminal and type
+# "git push" (for Windows) or use system("git push") (for Mac).
 
 
 
