@@ -5,9 +5,11 @@
 # ---------------------------------------- #
 
 
-# ___________________________
+# ------------------------- #
 ##### 0. Project set up #####
+# ------------------------- #
 
+# ---------------------------------------------------------------------------- #
 ### * 0.1. Package project creation --------------------------------------------
 
 # First, I created a package named "ppl.tits" (.Rproj) with the following command:
@@ -27,6 +29,7 @@
 
 
 
+# ---------------------------------------------------------------------------- #
 ### * 0.2. Ignoring and keeping track of changes -------------------------------
 
 # First thing first, we will tell R to ignore our _devhistory.R file as it's only for us!
@@ -83,6 +86,7 @@ system2("git push -u origin master") # Same problem.
 
 
 
+# ---------------------------------------------------------------------------- #
 ### * 0.3. Further basic configurations ----------------------------------------
 
 # Before we go any further, we will edit some information about our package using the DESCRIPTION file
@@ -99,9 +103,11 @@ usethis::use_git(message = ":bulb: Update documentation")
 
 
 
-# _____________________________________
+# ----------------------------------- #
 ##### 1. Project structure set-up #####
+# ----------------------------------- #
 
+# ---------------------------------------------------------------------------- #
 ### * 1.1. Folders architecture ------------------------------------------------
 
 # Before writing my first functions to import and clean my data, I need to add the said data files
@@ -126,6 +132,7 @@ usethis::use_build_ignore("spatial_data/")
 
 
 
+# ---------------------------------------------------------------------------- #
 ### * 1.2. Creating scripts for custom functions -------------------------------
 
 # To use pipes (i.e. %>%) everywhere in the package without explicitly loading the "magrittr" package:
@@ -143,9 +150,11 @@ usethis::use_r("01_02_graphab_analyses")
 
 
 
-# _________________________________________
+# --------------------------------------- #
 ##### 2. Package content and creation #####
+# --------------------------------------- #
 
+# ---------------------------------------------------------------------------- #
 ### * 2.1. Writing functions for the package -----------------------------------
 
 # Now I can write my functions in the associated R files while keeping in mind that, for EACH
@@ -168,6 +177,7 @@ usethis::use_package("here")
 
 
 
+# ---------------------------------------------------------------------------- #
 ### * 2.2. Load and check the package ------------------------------------------
 
 # The following lines are run iteratively every time a new function is created within
@@ -202,6 +212,7 @@ devtools::check() # Ok!
 
 
 
+# ---------------------------------------------------------------------------- #
 ### * 2.3. To install and version the package ----------------------------------
 
 # ** 2.3.1. Installing the package ----
@@ -235,8 +246,9 @@ usethis::use_git(message = ":pencil: Edited README")
 
 
 
-# ________________________________________________
+# ---------------------------------------------- #
 ##### 3. Pipeline programming with 'targets' #####
+# ---------------------------------------------- #
 
 # To ensure maximum reproducibility, help me organize my data processing, and avoid
 # wasting too much time every time I have to go back in my code to change something,
@@ -267,10 +279,14 @@ usethis::use_git(message = ":pencil: Edited README")
 
 
 
+# ---------------------------------------------------------------------------- #
 ### * 3.1. Setting-up the 'targets' subproject ---------------------------------
 
 # To create the 'targets' master script file:
 file.create("_targets.R")
+
+
+
 
 
 # NOTE: targets may perhaps not work properly with a package project, because the target scripts need
