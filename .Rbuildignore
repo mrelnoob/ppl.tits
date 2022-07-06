@@ -3,3 +3,8 @@
 ^_devhistory\.R$
 ^LICENSE\.md$
 ^mydata$
+^spatial_data$
+^output$
+^tables$
+^texts$
+^plots$

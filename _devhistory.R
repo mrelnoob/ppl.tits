@@ -1,13 +1,16 @@
 # ---------------------------------------- #
 # ---------------------------------------- #
-##### DEVELOPMENT HISTORY FOR ppl.tits #####
+##### DEV_HISTORY FOR ppl.tits #####
 # ---------------------------------------- #
 # ---------------------------------------- #
 
-# ________________________
-##### Project set up #####
 
-### First, I created a package named "ppl.tits" (.Rproj) with the following command:
+# ___________________________
+##### 0. Project set up #####
+
+### * 0.1. Package project creation --------------------------------------------
+
+# First, I created a package named "ppl.tits" (.Rproj) with the following command:
 # usethis::create_package("d:/fmartin/Mes documents/projects/pubprivlands/analyses/ppl.tits")
 # in which I specified the ABSOLUTE path to my package's folder (alternatively, I could have clicked the
 # buttons in RStudio to create a package with devtools).
@@ -24,12 +27,14 @@
 
 
 
-### First thing first, we will tell R to ignore our _devhistory.R file as it's only for us!
+### * 0.2. Ignoring and keeping track of changes -------------------------------
+
+# First thing first, we will tell R to ignore our _devhistory.R file as it's only for us!
 # As this file is not part of a typical package structure, we need to tell R to ignore it when checking
 # and installing the package:
 usethis::use_build_ignore("_devhistory.R")
 
-### Then, to keep track of all future changes and have a backup, I need to initiate a Git version control
+# Then, to keep track of all future changes and have a backup, I need to initiate a Git version control
 # and link the 'ppl.tits' package with my GitHub account. In this precise case, I'm connecting
 # my 'ppl.tits' project AFTER its creation, so I'm following the 'GitHub-last' procedure:
 # STEP 1: Make sure Git is installed (e.g. by typing 'git status' in the R terminal), if not, install it!
@@ -78,7 +83,9 @@ system2("git push -u origin master") # Same problem.
 
 
 
-### Before we go any further, we will edit some information about our package using the DESCRIPTION file
+### * 0.3. Further basic configurations ----------------------------------------
+
+# Before we go any further, we will edit some information about our package using the DESCRIPTION file
 usethis::edit_file("DESCRIPTION")
 usethis::use_mit_license(copyright_holder = "François-Marie Martin")# Open-source license
 usethis::use_git(message = ":page_facing_up: Edit package metadata")
@@ -92,14 +99,30 @@ usethis::use_git(message = ":bulb: Update documentation")
 
 
 
-# ___________________________________
-##### Project structure set-up #####
+# _____________________________________
+##### 1. Project structure set-up #####
 
+### * 1.1. Folders architecture ------------------------------------------------
 
+# Before writing my first functions to import and clean my data, I need to add the said data files
+# in the project folder. So I create a "mydata" folder and copy-paste my data in it (manually):
+dir.create("mydata")
+usethis::use_build_ignore("mydata") # Because it is not expected in a regular package root folder (if
+# I don't ignore it, it will cause warnings in my package checks and all kind of craps. I just spent
+# five hours to get rid of them, so trust me).
 
+# I also need other folders to organize my data processing work (e.g. outputs):
+dir.create("output")
+dir.create("output/plots")
+dir.create("output/tables")
+dir.create("output/texts")
+dir.create("output/spatial_data")
 
-
-# FOLDER ARCHITECTURE FIRST??? (strucure????)§§§§§§§§§
+usethis::use_build_ignore("output/")
+usethis::use_build_ignore("tables/")
+usethis::use_build_ignore("texts/")
+usethis::use_build_ignore("plots/")
+usethis::use_build_ignore("spatial_data/")
 
 
 
@@ -116,15 +139,22 @@ usethis::use_r("01_02_graphab_analyses") # I STILL HAVE TO PREPARE THE STRUCTURE
 usethis::use_pipe() # Automatically creates a pipe function (and associated R file in the R folder),
 # while updating the DESCRIPTION file to tell R that it should import the "magrittr" package.
 
-# Before writing my function to import my data, I need to add my data files in the project folder.
-# So I create a "mydata" folder and copy-paste my data in it (manually):
-dir.create("mydata")
-usethis::use_build_ignore("mydata") # Because it is not expected in a regular package root folder (if
-# I don't ignore it, it will cause warnings in my package checks and all kind of craps. I just spent
-# five hours to get rid of them, so trust me).
 
 
-usethis::use_git(message = ":bulb: Created new R files")
-usethis::use_git(message = ":boom: Saved updates!")
+
+
+
+
+##### Prepare targets pipeline #####
+
+# NOTE: targets may perhaps not work properly with a package project, because the target scripts need
+# to SOURCE the custom functions! Or, on the contrary, perhaps that creating a package avoids sourcing
+# functions because you are simply calling (your) package functions in your target script!
+
+
+
+
+usethis::use_git(message = ":boom: Created new folders")
+usethis::use_git(message = ":zap: Saved updates!")
 system("git push")
 
