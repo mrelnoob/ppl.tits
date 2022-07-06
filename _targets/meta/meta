@@ -1,2 +1,3 @@
 name|type|data|command|depend|seed|path|time|size|bytes|format|repository|iteration|parent|children|seconds|warnings|error
-raw_data_file|stem||50e750f5831a54bc|c3b5fc02cdc369c1|2110307107|D:/fmartin/Mes documents/projects/pubprivlands/analyses/ppl.tits/data/ppl_dijon_tits_data_20192021.csv|t19179.7100603589s||0|file|local|vector|||||_paths_ missing files DfmartinMes documentsprojectspubprivlandsanalysesppl.titsdatappl_dijon_tits_data_20192021.csv
+raw_data_file|stem|69075d9351bc2e9c|0949f045ff6f7fc2|c3b5fc02cdc369c1|2110307107|D:/fmartin/Mes documents/projects/pubprivlands/analyses/ppl.tits/mydata/ppl_dijon_tits_data_20192021.csv|t19179.5912554116s|acea5b9eaeb86b8d|200274|file|local|vector|||0.03||
+raw_tits|stem|bff156f0045d357b|c1c1efedf816c262|c3b5fc02cdc369c1|848582033||t19179.7110328488s|4f439e86cdbfc4c7|29788|rds|local|vector|||0.33||

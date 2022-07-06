@@ -286,6 +286,8 @@ usethis::use_git(message = ":pencil: Edited README")
 file.create("_targets.R")
 
 
+# It works, but now i need to buildignore etc.!!!!!
+
 
 
 
