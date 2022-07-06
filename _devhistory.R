@@ -143,7 +143,7 @@ usethis::use_r("01_02_graphab_analyses")
 
 
 
-# __________________________________________
+# _________________________________________
 ##### 2. Package content and creation #####
 
 ### * 2.1. Writing functions for the package -----------------------------------
@@ -234,7 +234,44 @@ usethis::use_git(message = ":pencil: Edited README")
 
 
 
-##### Prepare targets pipeline #####
+
+# ________________________________________________
+##### 3. Pipeline programming with 'targets' #####
+
+# To ensure maximum reproducibility, help me organize my data processing, and avoid
+# wasting too much time every time I have to go back in my code to change something,
+# it may be a good idea to use a pipeline programming tool such as 'targets' (or 'Drake').
+# I won't explain here the advantages of such tools (Google is your friend), but I
+# will explain how to use it and associate it while also developing a package to
+# process my data (or I'll try).
+
+# If I understand correctly, I think that 'targets' and 'package development' can
+# be used simultaneously as long as I don't mix the two frameworks up, i.e. they both
+# live under the same roof (my project folder), but they don't directly work together:
+#   - The 'package' part of my project is here to i) be the fundamental structure of
+#     the project and ii) to create (documented) custom functions that I can use
+#     wherever I want (in this project or any others). To work fine with 'targets',
+#     the 'package' part should simply ignore what 'targets' is doing and only focus
+#     on its own job!
+#   - The 'targets' part of my project is here to i) organize my data processing
+#     workflow, ii) keep track of interconnected elements in the workflow, and iii)
+#     only in case of changes (of the data or code), automatically re-run the parts
+#     of the code/workflow that are impacted by the changes and leave the other parts
+#     as they are! Targets uses the functions made available by the 'ppl.tits' package
+#     but it should probably not consider the 'package development' as a goal (a target)
+#     in itself, or at least I will prevent it from doing so for the sake of simplicity.
+# So that means that the package building tools (e.g. R CMD Check) will have to
+# ignore what 'targets' is doing and, conversely, that the 'targets' files will have
+# to ignore what 'devtools' etc. are doing.
+# So it means that I WILL HAVE TO manage and run both sides separately and iteratively!
+
+
+
+### * 3.1. Setting-up the 'targets' subproject ---------------------------------
+
+# To create the 'targets' master script file:
+file.create("_targets.R")
+
 
 # NOTE: targets may perhaps not work properly with a package project, because the target scripts need
 # to SOURCE the custom functions! Or, on the contrary, perhaps that creating a package avoids sourcing
