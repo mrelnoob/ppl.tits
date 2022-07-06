@@ -1,7 +1,27 @@
-# Function to import raw data
 
-### Read the table:
-tits <- readr::read_csv2(here::here("mydata", "ppl_dijon_tits_data_20192021.csv"), col_names = TRUE, na = "NA",
+#' Import the raw tits dataset
+#'
+#' Import ONLY the raw dataset for the "tits" part of the PubPrivLands project. \cr To avoid errors,
+#' if new data are added using this function, they should be formatted according to the first table
+#' I tailored this function for (i.e. same columns, no special characters, no spaces, etc.; the only
+#' tolerated differences may be different rows and cell values)!
+#'
+#' @return (i.e. a kind of improved data.frame). For further information on tibbles, please refer to
+#' the `tidyverse` or \link[readr]{readr} documentation.
+#' @export
+#' @importFrom readr read_csv2
+#' @importFrom readr col_factor
+#' @importFrom readr col_integer
+#' @importFrom readr col_double
+#' @importFrom here here
+#'
+#' @examples
+#' \dontrun{
+#' mydata <- import_raw_tits_data()
+#' }
+import_raw_tits_data <- function(){
+
+  tits.raw <- readr::read_csv2(here::here("mydata", "ppl_dijon_tits_data_20192021.csv"), col_names = TRUE, na = "NA",
                          col_types = readr::cols(id_nestbox = readr::col_factor(),
                                                  site = readr::col_factor(),
                                                  year = readr::col_factor(),
@@ -29,4 +49,7 @@ tits <- readr::read_csv2(here::here("mydata", "ppl_dijon_tits_data_20192021.csv"
                                                  nestling_tarsus_l = readr::col_double(),
                                                  nestling_wing_l = readr::col_double()))
 
-summary(tits)
+  return(tits.raw)
+
+}
+
