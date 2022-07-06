@@ -204,18 +204,32 @@ devtools::check() # Ok!
 
 ### * 2.3. To install and version the package ----------------------------------
 
-# ** 2.3.1. Installing the package
+# ** 2.3.1. Installing the package ----
 devtools::install()
 usethis::use_git(message = ":metal: Installed function: import_raw_tits_data()!")
 
 
-# ** 2.3.2. Installing the package
+# ** 2.3.2. Installing the package ----
 usethis::use_version(which = "minor") # It automatically updates our package version.
 usethis::use_news_md() # Creates a NEWS.md file, that I should maintain updated.
 usethis::use_git(message = ":package: Release v0.1.0")
 # Don't forget to push your commits, once in a while: go to the Terminal and type
 # "git push" (for Windows) or use system("git push") (for Mac).
 
+
+# ** 2.3.3. Add and update a README file ----
+usethis::use_readme_rmd() # Creates a README.Rmd and adds it automatically to .Rbuildignore
+# (and opens it). After manually editing the file, we need to compile it into a .md document
+# (otherwise, GitHub and the CRAN won't be able to read it and display it on their websites):
+rmarkdown::render("README.Rmd")
+# As render() also produces a .html file that is not useful here, we will ignore it:
+usethis::use_build_ignore("README.html")
+usethis::use_git_ignore("README.html")
+
+usethis::use_git(message = ":pencil: Edited README")
+# IMPORTANT NOTE: Each time you edit the README.Rmd you will have to update the .md
+# with rmarkdown::render("README.Rmd") and, of course, you should also commit+push it
+# to update GitHub!
 
 
 

@@ -8,3 +8,5 @@
 ^tables$
 ^texts$
 ^plots$
+^README\.Rmd$
+^README\.html$
