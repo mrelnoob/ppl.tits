@@ -174,6 +174,7 @@ usethis::use_package("here")
 # the package or every time a function is modified. This is the central part that loads,
 # inspects (i.e. run the R CMD check) and test my functions and my whole package!
 
+
 # ** 2.2.1. To load and document functions ----
 devtools::load_all() # Now, all functions in the R folder are available!
 
@@ -182,24 +183,36 @@ devtools::document() # To create the functions' documentation in the "man" folde
 usethis::use_git(message = ":white_check_mark: Documented new function(s)")
 
 
-### To test our functions, we will use the "testthat" package:
+# ** 2.2.2. To test functions ----
+# To test our functions, we could use the "testthat" package:
 #usethis::use_testthat()
-#usethis::use_git(message = ":white_check_mark: Setup testthat")
 
-# Now, we could create some "unit tests" to test our 00_import_raw_data.R function, but we won't modify it.
-#usethis::use_test("import_raw_data")
-# Here, we don't want to do real tests because we know our function works as we want it to. For other
-# functions and purposes, we should look more closely into that (cf. lesson from N.Casajus FRB-Cesab on
-# package building)!
+# Here, I don't want to do real tests because I know my function works as I want it to.
+# For other functions and purposes, I should look more closely into that (cf. lesson from
+# N.Casajus FRB-Cesab on package building, or other online resources)!
 # NOTE: All tests files are stored in tests/testthat/ and their names must start with test-*
 
 
-
-### When everything is ready, it's time to check the integrity of our package:
+#  ** 2.2.3. To check the package integrity ----
 devtools::check() # Ok!
-# IMPORTANT NOTE: I had a lot of PROBLEMS in my first attempts to create the loading function because the
-# dataset contained comments in French and English, with special characters and punctuation (;,:[] etc.)
-# and R thought that my punctuation was field separators! NEVER put comments in .csv or .txt files!!!
+# IMPORTANT NOTE: I had a lot of PROBLEMS in my first attempts to create a loading function
+# because the dataset contained comments in French and English, with special characters
+# and punctuation (;,:[] etc.) and R thought that my punctuation was field separators!
+# So NEVER put comments in .csv or .txt files!
+
+
+
+### * 2.3. To install and version the package ----------------------------------
+
+# ** 2.3.1. Installing the package
+devtools::install()
+usethis::use_git(message = ":metal: Installed function: import_raw_tits_data()!")
+
+
+# ** 2.3.2. Installing the package
+usethis::use_version(which = "minor") # It automatically updates our package version.
+usethis::use_news_md() # Creates a NEWS.md file, that I should maintain updated.
+usethis::use_git(message = ":package: Release v0.1.0")
 
 
 
