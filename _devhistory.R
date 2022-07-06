@@ -126,18 +126,19 @@ usethis::use_build_ignore("spatial_data/")
 
 
 
+### * 1.2. Creating scripts for custom functions -------------------------------
 
-### To create R files (scripts) for my first custom (personalized) functions:
+# To use pipes (i.e. %>%) everywhere in the package without explicitly loading the "magrittr" package:
+usethis::use_pipe() # Automatically creates a pipe function (and associated R file in the R folder),
+# while updating the DESCRIPTION file to tell R that it should import the "magrittr" package.
+
 usethis::use_r("01_00_import_raw_data")
 # NOTE: it automatically places the R file in the R folder (as it should be). The R folder should ONLY
 # contain R scripts for functions and NOTHING ELSE! Yet, RStudio may sometimes put other things in it,
 # so it is a good idea to go and see once in a while.
 usethis::use_r("01_01_prepare_data")
-usethis::use_r("01_02_graphab_analyses") # I STILL HAVE TO PREPARE THE STRUCTURE, import the data etc.§§§§§§§§§§§§§§§§§
+usethis::use_r("01_02_graphab_analyses")
 
-# To use pipes (i.e. %>%) everywhere in the package without explicitly loading the "magrittr" package:
-usethis::use_pipe() # Automatically creates a pipe function (and associated R file in the R folder),
-# while updating the DESCRIPTION file to tell R that it should import the "magrittr" package.
 
 
 
