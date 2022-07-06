@@ -296,7 +296,7 @@ file.create("_targets.R")
 
 
 
-usethis::use_git(message = ":bulb: Wrote import raw data function!")
+usethis::use_git(message = ":boom: Setting 'targets' up!")
 usethis::use_git(message = ":zap: Saved updates!")
 system("git push")
 
