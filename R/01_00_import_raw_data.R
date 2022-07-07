@@ -54,6 +54,8 @@ import_raw_tits_data <- function(){
                                                  nestling_tarsus_l = readr::col_double(),
                                                  nestling_wing_l = readr::col_double()))
 
+  site <- success <- age <- nestling_mass_j14 <- NULL
+
   aaa %>% dplyr::select(-site, -nestling_mass_j14) %>%
     dplyr::filter(success != 'NA', age != 'NA') -> xxx
 
