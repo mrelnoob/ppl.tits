@@ -11,6 +11,7 @@
 #' @export
 #'
 #' @importFrom readr read_csv2
+#' @importFrom readr cols
 #' @importFrom readr col_factor
 #' @importFrom readr col_integer
 #' @importFrom readr col_double
