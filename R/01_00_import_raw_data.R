@@ -23,7 +23,7 @@
 #' }
 import_raw_tits_data <- function(){
 
-  aaa <- readr::read_csv2(here::here("mydata", "ppl_dijon_tits_data_20192021.csv"), col_names = TRUE, na = "NA",
+  ppl_dijon_tits_data_20192021 <- readr::read_csv2(here::here("mydata", "ppl_dijon_tits_data_20192021.csv"), col_names = TRUE, na = "NA",
                          col_types = readr::cols(id_nestbox = readr::col_factor(),
                                                  site = readr::col_factor(),
                                                  year = readr::col_factor(),
@@ -51,7 +51,7 @@ import_raw_tits_data <- function(){
                                                  nestling_tarsus_l = readr::col_double(),
                                                  nestling_wing_l = readr::col_double()))
 
-  return(aaa)
+  return(ppl_dijon_tits_data_20192021)
 
 }
 
