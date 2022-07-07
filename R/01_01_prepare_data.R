@@ -41,6 +41,10 @@ aggreg_by_nest <- function(){
                      tarsus_length = mean(nestling_tarsus_l),
                      wing_length = mean(nestling_wing_l)) -> xxx
 
+  age <- id_nestbox <- year <- laying_date <- incubation_date <- hatching_date <- clutch_size <- NULL
+  brood_size <- fledgling_nb <- father_id <- mother_id <- species <- nestling_mass_j13 <- NULL
+  nestling_tarsus_l <- nestling_wing_l <- NULL
+
   return(xxx)
 }
 
