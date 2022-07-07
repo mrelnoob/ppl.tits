@@ -1,13 +1,31 @@
-# To create functions to prepare data: e.g. aggregate observations, delete or add variables, etc. But NOT directly
-# to explore and clean data!
+# ---------------------------------------- #
+##### Functions to prepare my datasets #####
+# ---------------------------------------- #
 
+# The functions of this R file are meant to prepare datasets: e.g. aggregate observations,
+# delete or add variables, etc. But NOT to directly explore and clean data for analyses!
 
+rtits <- ppl.tits::import_raw_tits_data()
 
-# import_raw() -> mydata§§§§§§§
+summary(rtits)
+levels(rtits$id_nestbox)
 
+# A function to simplify and aggregate raw-tits data:
+
+rtits %>% dplyr::select(-site, -nestling_mass_j14) -> rtits2
 
 
 # I NEED TO DELETE obs where "age" is NA (n=55) and "success" = NA (n=6-7)
+
+
+
+
+
+
+
+
+
+
 
 # tits %>% dplyr::filter(species == "CC") -> CC
 # tits %>% dplyr::filter(species == "PM") -> PM
