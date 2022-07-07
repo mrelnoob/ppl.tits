@@ -187,6 +187,10 @@ usethis::use_package("here")
 
 # ** 2.2.1. To load and document functions ----
 devtools::load_all() # Now, all functions in the R folder are available!
+# IMPORTANT NOTE: if you try to load (or check) your package while working on a new
+# script to create new functions (i.e. having unfinished functions in a R file),
+# make sure to put your unfinished code as 'comment' (e.g. Ctrl+Shift+C) or you'll
+# get an error! Trust me, I just lost an hour trying to fix this!
 
 devtools::document() # To create the functions' documentation in the "man" folder, and to
 # update the NAMESPACE file of the package (that should NEVER be edited manually).

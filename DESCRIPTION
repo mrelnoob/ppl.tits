@@ -15,5 +15,4 @@ RoxygenNote: 7.2.0
 Imports: 
     here,
     magrittr,
-    readr,
-    targets
+    readr
