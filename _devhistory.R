@@ -157,8 +157,8 @@ usethis::use_r("01_02_graphab_analyses")
 # ---------------------------------------------------------------------------- #
 ### * 2.1. Writing functions for the package -----------------------------------
 
-# Now I can write my functions in the associated R files while keeping in mind that, for EACH
-# function I create:
+# Now I can write my functions in the associated R files (= populating my R files) while keeping
+# in mind that, for EACH function I create:
 #  --> I need to insert a roxygen skeleton to write the documentation.
 #  --> I should NOT SOURCE my functions (i.e. I should save my function's file but I should
 #      not run the code in it and create "manually" the function you just wrote) to avoid

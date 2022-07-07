@@ -6,7 +6,7 @@
 #' I tailored this function for (i.e. same columns, no special characters, no spaces, etc.; the only
 #' tolerated differences may be different rows and cell values)!
 #'
-#' @return (i.e. a kind of improved data.frame). For further information on tibbles, please refer to
+#' @return A tibble (i.e. a kind of improved data.frame). For further information on tibbles, please refer to
 #' the `tidyverse` or \link[readr]{readr} documentation.
 #' @export
 #'
