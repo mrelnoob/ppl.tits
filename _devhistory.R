@@ -284,16 +284,18 @@ usethis::use_git(message = ":pencil: Edited README")
 
 # To create the 'targets' master script file:
 file.create("_targets.R")
+# This is the "master script", where every targets (goal) of the project is defined. It
+# should thus be UPDATED every time I progress in my analysis workflow and make a new
+# achievement (e.g. producing new results, new data tables, new figures, etc.).
+
+# To tell devtools to ignore what 'targets' does:
+usethis::use_build_ignore("_targets.R")
+usethis::use_build_ignore("_targets/")
+usethis::use_git_ignore("_targets/")
 
 
-# It works, but now i need to buildignore etc.!!!!!
 
 
-
-
-# NOTE: targets may perhaps not work properly with a package project, because the target scripts need
-# to SOURCE the custom functions! Or, on the contrary, perhaps that creating a package avoids sourcing
-# functions because you are simply calling (your) package functions in your target script!
 
 
 
