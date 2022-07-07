@@ -1,7 +1,7 @@
 
 #' Import the raw tits dataset
 #'
-#' Import ONLY the raw dataset for the "tits" part of the PubPrivLands project. \cr To avoid errors,
+#' Imports ONLY the raw dataset for the "tits" part of the PubPrivLands project. \cr To avoid errors,
 #' if new data are added using this function, they should be formatted according to the first table
 #' I tailored this function for (i.e. same columns, no special characters, no spaces, etc.; the only
 #' tolerated differences may be different rows and cell values)!
@@ -9,6 +9,7 @@
 #' @return (i.e. a kind of improved data.frame). For further information on tibbles, please refer to
 #' the `tidyverse` or \link[readr]{readr} documentation.
 #' @export
+#'
 #' @importFrom readr read_csv2
 #' @importFrom readr col_factor
 #' @importFrom readr col_integer
