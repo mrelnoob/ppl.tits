@@ -7,15 +7,14 @@
 
 # rtits <- ppl.tits::import_raw_tits_data()
 #
-# summary(rtits)
-# levels(rtits$id_nestbox)
 #
 # # A function to simplify and aggregate raw-tits data:
 #
-# rtits %>% dplyr::select(-site, -nestling_mass_j14) -> rtits2
+# rtits %>% dplyr::select(-site, -nestling_mass_j14) %>%
+#   dplyr::filter(success != 'NA', age != 'NA') -> xxx
+#
+# summary(xxx)
 
-
-# I NEED TO DELETE obs where "age" is NA (n=55) and "success" = NA (n=6-7)
 
 
 

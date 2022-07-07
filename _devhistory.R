@@ -172,6 +172,7 @@ usethis::use_r("01_02_graphab_analyses")
 # also add these dependencies in the "Imports" field of the DESCRIPTION:
 usethis::use_package("readr")
 usethis::use_package("here")
+usethis::use_package("dplyr")
 # REMINDER: The NAMESPACE controls what happens when our package is loaded but not when
 # it's installed. This is the role of DESCRIPTION!
 

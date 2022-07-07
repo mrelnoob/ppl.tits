@@ -1,7 +1,8 @@
 
 #' Import the raw tits dataset
 #'
-#' Imports ONLY the raw dataset for the "tits" part of the PubPrivLands project. \cr To avoid errors,
+#' Imports ONLY the raw dataset for the "tits" part of the PubPrivLands project, and drops
+#' lines with no information on 'age' or 'success' as well as two useless columns. \cr To avoid errors,
 #' if new data are added using this function, they should be formatted according to the first table
 #' I tailored this function for (i.e. same columns, no special characters, no spaces, etc.; the only
 #' tolerated differences may be different rows and cell values)!
@@ -16,6 +17,8 @@
 #' @importFrom readr col_integer
 #' @importFrom readr col_double
 #' @importFrom here here
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
 #'
 #' @examples
 #' \dontrun{
@@ -51,7 +54,10 @@ import_raw_tits_data <- function(){
                                                  nestling_tarsus_l = readr::col_double(),
                                                  nestling_wing_l = readr::col_double()))
 
-  return(aaa)
+  aaa %>% dplyr::select(-site, -nestling_mass_j14) %>%
+    dplyr::filter(success != 'NA', age != 'NA') -> xxx
+
+  return(xxx)
 
 }
 

@@ -2,6 +2,8 @@
 
 export("%>%")
 export(import_raw_tits_data)
+importFrom(dplyr,filter)
+importFrom(dplyr,select)
 importFrom(here,here)
 importFrom(magrittr,"%>%")
 importFrom(readr,col_double)
