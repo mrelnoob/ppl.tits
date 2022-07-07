@@ -11,5 +11,5 @@ list(
   # Read the data and return a data.frame
   targets::tar_target(raw_tits, ppl.tits::import_raw_tits_data())
 )
-####### NOTE: it might not work because my function already calls here::here (i should perhaps change it first)!
-# AND IT WORKSSSSSSSS §§§§§§§§§§
+# NOTE: it might not work because my function already calls here::here (I should perhaps change it first)!
+# But it seems to work!
