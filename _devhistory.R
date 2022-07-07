@@ -287,6 +287,8 @@ file.create("_targets.R")
 # This is the "master script", where every targets (goal) of the project is defined. It
 # should thus be UPDATED every time I progress in my analysis workflow and make a new
 # achievement (e.g. producing new results, new data tables, new figures, etc.).
+# To know how to specify the workflow, please refer to this file, to section 3.2. below,
+# and to online resources!
 
 # To tell devtools to ignore what 'targets' does:
 usethis::use_build_ignore("_targets.R")
@@ -295,8 +297,21 @@ usethis::use_git_ignore("_targets/")
 
 
 
+# ---------------------------------------------------------------------------- #
+### * 3.2. Main 'targets' functions --------------------------------------------
 
-
+# To create a target:
+targets::tar_target()
+# To run the pipeline:
+targets::tar_make()
+# To load a built target into my R session:
+targets::tar_load() # e.g. tar_load(my_target)
+# To read and return a built target:
+targets::tar_read()
+# To show target inter-dependencies:
+targets::tar_glimpse()
+# To show the complete visual network representation of my workflow:
+targets::tar_visnetwork()
 
 
 
