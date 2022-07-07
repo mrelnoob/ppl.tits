@@ -4,7 +4,7 @@
 \name{ppl.tits-package}
 \alias{ppl.tits}
 \alias{ppl.tits-package}
-\title{ppl.tits: Contains all Data Analyses for the First Part Of Ppl.tits}
+\title{ppl.tits: Contains all Data Processing for the First Part Of Ppl.tits}
 \description{
 This package project is meant to clean and prepare the data as well as do all spatial and statistical analyses for the first part of the "tits" section of the PubPrivLands project.
 }
