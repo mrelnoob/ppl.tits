@@ -195,7 +195,7 @@ devtools::load_all() # Now, all functions in the R folder are available!
 
 devtools::document() # To create the functions' documentation in the "man" folder, and to
 # update the NAMESPACE file of the package (that should NEVER be edited manually).
-usethis::use_git(message = ":white_check_mark: Documented new function(s)")
+usethis::use_git(message = ":pencil: Documented new function(s)")
 usethis::use_git(message = ":white_check_mark: Updated function(s)")
 
 
