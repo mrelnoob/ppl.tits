@@ -3,7 +3,8 @@
 # -------------------------------------------------------- #
 
 # First, this will be my script for all Graphab analyses (preliminary and final). Then, if
-# my calls to the Terminal work, I'll consider create associated functions and targets.
+# I can make RStudio accept that my R script behave like a CLI (command-line interface), I'll
+# consider create associated functions and targets.
 
 
 
