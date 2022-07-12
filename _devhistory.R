@@ -43,7 +43,10 @@ usethis::use_build_ignore("_devhistory.R")
 # STEP 1: Make sure Git is installed (e.g. by typing 'git status' in the R terminal), if not, install it!
 # STEP 2: Enter your project and type 'git init' in the R Terminal, it will initiate a Git repository within
 # your project:
-system("git init")
+system("git init") # NOTE: the 'system()' function enables sending commands to the Terminal/cmd, that is
+# to work in "command-lines". It works, the problem is that RStudio seems unable to display the Terminal
+# responses like a regular CLI (command-line interface), preventing interacting with it. That is why
+# I sometimes say that I had to do stuff directly in a CLI/Terminal.
 # STEP 3: Verify your configuration:
 system("git config --global user.name 'fanf'")
 system("git config --global user.email 'francois.martin74190@gmail.com'")
@@ -55,7 +58,7 @@ system("git config --global user.email 'francois.martin74190@gmail.com'")
 # But here goes:
 system("ls -al ~/.ssh") # Check for existing SSH keys. If none is found, I must generate one.
 system("ssh-keygen -t rsa -C 'francois.martin74190@gmail.com'") # Generates a new SSH key
-# using the rsa algorithm (however, I was forced to do that directly in a Terminal (e.g. GitBash).
+# using the rsa algorithm (however, I was forced to do that directly in a Terminal/CLI (e.g. GitBash).
 system("eval '$(ssh-agent -s)'") # Checks if the ssh-agent is launched (same --> GitBash). If it works,
 # it should return something like "Agent pid 59552".
 system("ssh-add ~/.ssh/id_rsa") # Adds the new SSH private key to the ssh-agent! (GitBash)
