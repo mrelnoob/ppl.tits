@@ -1,6 +1,8 @@
-# -------------------------------------------------------- #
-##### Script (and functions?) for all Graphab analyses #####
-# -------------------------------------------------------- #
+# --------------------------------------- #
+# --------------------------------------- #
+##### Script for all Graphab analyses #####
+# --------------------------------------- #
+# --------------------------------------- #
 
 ### First, this will be my script for all Graphab analyses (preliminary and final). Then, if
 # I can make RStudio accept that my R script behave like a shell CLI (command-line interface), I'll
@@ -12,7 +14,6 @@
 # field in the package description file. Thereby you formally declare that some additional piece of software
 # is needed to make the package work (https://www.r-bloggers.com/2021/09/how-to-use-system-commands-in-your-r-script-or-package/)!
 
-
 ######################################### SUPER IMPORTANT NOTE #########################################
 ### The EASIER way to start here will be to use this script ONLY to keep track of my command lines for
 # Graphab (so I should NOT try to load or install my package in the meantime UNLESS I assign this file
@@ -21,13 +22,26 @@
 ###########################################################################################################
 
 
-out <- sys::exec_internal('whoami')
-out
+
+
+
+# ------------------------- #
+##### 0. To begin #####
+# ------------------------- #
+
+# The first thing to do is to have the Graphab software (.jar) at the root of the project. I will
+# thus paste it there manually and tell R and Git to IGNORE it (because it's heavy and not expected)
+# in a R package. If you want to reproduce my work, you will have to paste the same version
+# of Graphab at the same place (here, Graphab 2.8)!
+usethis::use_build_ignore("graphab-2.8.jar")
+usethis::use_git_ignore("graphab-2.8.jar")
+
 
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 usethis::use_git(message = ":boom: Started my Graphab script")
+usethis::use_git(message = ":zap: Ignoring Graphab software")
 usethis::use_git(message = ":white_check_mark: Edited structure")
 usethis::use_git(message = ":metal: Saved updates!")
 #system("git push")
