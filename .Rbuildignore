@@ -12,3 +12,4 @@
 ^README\.html$
 ^_targets\.R$
 ^_targets$
+^spatial_layers$
