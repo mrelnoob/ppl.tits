@@ -332,7 +332,7 @@ targets::tar_visnetwork()
 usethis::use_git(message = ":boom: Started a new script")
 usethis::use_git(message = ":metal: Created a new function")
 usethis::use_git(message = ":zap: Ignoring something")
-usethis::use_git(message = ":pencil: Edited a file")
+usethis::use_git(message = ":pencil: Documented a function or wrote something")
 usethis::use_git(message = ":white_check_mark: Saved updates!")
 #system("git push")
 # ---------------------------------------------------------------------------- #
