@@ -29,14 +29,17 @@
 ##### 0. How to start #####
 # ----------------------- #
 
-# The first thing to do is to have the Graphab software (.jar) at the root of the project. I will
-# thus paste it there manually and tell R and Git to IGNORE it (because it's heavy and not expected)
+# The first thing to do is to have the Graphab software (.jar) in the desired folder. I will thus create
+# a folder and paste it manually then tell R and Git to IGNORE it (because it's heavy and not expected)
 # in a R package. If you want to reproduce my work, you will have to paste the same version
 # of Graphab at the same place (here, Graphab 2.8)!
 dir.create("mydata/graphab")
 usethis::use_build_ignore("graphab/")
 usethis::use_build_ignore("graphab-2.8.jar")
 usethis::use_git_ignore("graphab-2.8.jar")
+# NOTE: I do not tell Git to ignore the input raster file that will be the basis of all my Graphab
+# treatments because I want others to be able to reproduce my work, but I will tell Git to ignore
+# all created files (e.g. spatial layers, vector or raster) to avoid overloading Github.
 
 
 
