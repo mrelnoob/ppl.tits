@@ -94,10 +94,10 @@ usethis::use_git_ignore("graphab-2.8.jar")
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
-usethis::use_git(message = ":boom: Started my Graphab script")
+usethis::use_git(message = ":boom: Started a new script")
 usethis::use_git(message = ":metal: Created a new function")
-usethis::use_git(message = ":zap: Ignoring Graphab software")
-usethis::use_git(message = ":pencil: Edited this file")
+usethis::use_git(message = ":zap: Ignoring something")
+usethis::use_git(message = ":pencil: Edited a file")
 usethis::use_git(message = ":white_check_mark: Saved updates!")
 #system("git push")
 # ---------------------------------------------------------------------------- #

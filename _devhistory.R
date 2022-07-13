@@ -126,14 +126,14 @@ dir.create("output/plots")
 dir.create("output/tables")
 dir.create("output/texts")
 dir.create("output/spatial_layers")
-dir.create("mydata/spatial_data")
+dir.create("mydata/graphab")
 
 usethis::use_build_ignore("output/")
 usethis::use_build_ignore("tables/")
 usethis::use_build_ignore("texts/")
 usethis::use_build_ignore("plots/")
 usethis::use_build_ignore("spatial_layers/")
-usethis::use_build_ignore("spatial_data/")
+usethis::use_build_ignore("graphab/")
 
 
 
@@ -331,8 +331,11 @@ targets::tar_visnetwork()
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
-usethis::use_git(message = ":white_check_mark: Edited structure")
-usethis::use_git(message = ":metal: Saved updates!")
+usethis::use_git(message = ":boom: Started a new script")
+usethis::use_git(message = ":metal: Created a new function")
+usethis::use_git(message = ":zap: Ignoring something")
+usethis::use_git(message = ":pencil: Edited a file")
+usethis::use_git(message = ":white_check_mark: Saved updates!")
 #system("git push")
 # ---------------------------------------------------------------------------- #
 # ------------------------------- THE END ------------------------------------ #
