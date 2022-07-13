@@ -76,7 +76,7 @@ usethis::use_git_ignore("graphab-2.8.jar")
 # # NOTE: as commands are separated by spaces, project elements cannot contain spaces!
 # --metrics # To display all available metrics.
 
-# ** 0.2.3. Starting, loading and saving projects ----
+# ** 0.2.2. Starting, loading and saving projects ----
 # --create # To create a new project (includes compulsory parameters, cf. CLI User Guide).
 # --project myproject.xml # To load an existing project.
 
@@ -95,6 +95,13 @@ usethis::use_git_ignore("graphab-2.8.jar")
 
 # ---------------------------------------------------------------------------- #
 ### * 0.3. Graphab project set-up ----------------------------------------------
+
+# SECTION 2.2 of the PDF§§§§§§§§§
+
+
+
+
+
 
 
 
