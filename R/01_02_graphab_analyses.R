@@ -33,11 +33,19 @@
 # a folder and paste it manually then tell R and Git to IGNORE it (because it's heavy and not expected)
 # in a R package. If you want to reproduce my work, you will have to paste the same version
 # of Graphab at the same place (here, Graphab 2.8)!
+# I also manually paste my input landcover raster file (lc_dijon_v8_simple.tif).
 dir.create("mydata/graphab")
 usethis::use_build_ignore("graphab/")
 usethis::use_build_ignore("graphab-2.8.jar")
+usethis::use_git_ignore("graphab/")
 usethis::use_git_ignore("graphab-2.8.jar")
-# NOTE: I do not tell Git to ignore the input raster file that will be the basis of all my Graphab
+# usethis::use_git_ignore("lc_dijon_v8_simple.tif")
+# NOTE: As my landcover file is to heavy, I cannot put it on my Github account. To be able to reproduce
+# my work, you will need this file though. You should then either contact me directly or find it in
+# the project's Zenodo archive.
+
+
+# that will be the basis of all my Graphab
 # treatments because I want others to be able to reproduce my work, but I will tell Git to ignore
 # all created files (e.g. spatial layers, vector or raster) to avoid overloading Github.
 
