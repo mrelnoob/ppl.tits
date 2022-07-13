@@ -3,7 +3,6 @@
 ^_devhistory\.R$
 ^LICENSE\.md$
 ^mydata$
-^spatial_data$
 ^output$
 ^tables$
 ^texts$
@@ -14,3 +13,4 @@
 ^_targets$
 ^spatial_layers$
 ^graphab-2\.8\.jar$
+^graphab$
