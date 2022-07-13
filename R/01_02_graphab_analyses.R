@@ -42,14 +42,39 @@ usethis::use_git_ignore("graphab-2.8.jar")
 ### * 0.1. Useful command lines (for Windows) ----------------------------------
 
 # ** 0.1.1. To know and change the current directory ----
-# cd # Or cd \ (+tab) for Windows
-# dir # For the content of the directory
+# cd \ # And write the path (with \ to separate directories) or press TAB for auto-completion
+# # (e.g. cd "\fmartin\Mes documents\projects\pubprivlands\analyses\ppl.tits"). The cmd will automatically
+# # add "" but you can just ignore them!
+# mydisk: # To change disk (e.g. D:).
+# dir # For the content of the directory.
+
+# ** 0.1.2. To comment ----
 # rem # To comment (rem = remark). NOTE: this is a command, so it needs to be put first or after an operator
 # # if you comment AFTER a command (e.g. "cd & rem blabla"; and NOT "cd rem blabla"). So it sucks, that's
 # # because it is MS.DOS.
-# java -jar graphab-2.8.jar --help
 
 
+
+# ---------------------------------------------------------------------------- #
+### * 0.2. Helpful Graphab command lines ---------------------------------------
+
+# ** 0.2.1. General rules ----
+# java -jar graphab-2.8.jar --help # For the help page
+# --mycommand # All Graphab related command start with a "--" (e.g. --linkset).
+# -myoption # All Graphab global options start with a "-" (e.g. -proc).
+# param # All tool parameters have no prefixes (e.g. maxcost).
+
+# NOTE: as commands are separated by spaces, project elements cannot contain spaces!
+
+# ** 0.2.2. Intervals and range of values ----
+# min:inc:max # To define an interval of values, you have to specify a min, an increment, and a
+# # maximum value (e.g. 0:2:10 will do 0, 2, 4, 6, 8, 10). Decimal increments are accepted (e.g. 0:0.5:3).
+# 0,1,4,8,30,200 # Will create a list of values (no spaces).
+
+
+
+# ---------------------------------------------------------------------------- #
+### * 0.3. Graphab project set-up ----------------------------------------------
 
 
 
