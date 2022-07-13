@@ -33,6 +33,8 @@
 # thus paste it there manually and tell R and Git to IGNORE it (because it's heavy and not expected)
 # in a R package. If you want to reproduce my work, you will have to paste the same version
 # of Graphab at the same place (here, Graphab 2.8)!
+dir.create("mydata/graphab")
+usethis::use_build_ignore("graphab/")
 usethis::use_build_ignore("graphab-2.8.jar")
 usethis::use_git_ignore("graphab-2.8.jar")
 

@@ -126,14 +126,12 @@ dir.create("output/plots")
 dir.create("output/tables")
 dir.create("output/texts")
 dir.create("output/spatial_layers")
-dir.create("mydata/graphab")
 
 usethis::use_build_ignore("output/")
 usethis::use_build_ignore("tables/")
 usethis::use_build_ignore("texts/")
 usethis::use_build_ignore("plots/")
 usethis::use_build_ignore("spatial_layers/")
-usethis::use_build_ignore("graphab/")
 
 
 
