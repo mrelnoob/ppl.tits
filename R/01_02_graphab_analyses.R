@@ -58,19 +58,31 @@ usethis::use_git_ignore("graphab-2.8.jar")
 # ---------------------------------------------------------------------------- #
 ### * 0.2. Helpful Graphab command lines ---------------------------------------
 
-# ** 0.2.1. General rules ----
-# java -jar graphab-2.8.jar --help # For the help page
+# ** 0.2.1. General rules and commands ----
+# java -jar graphab-2.8.jar # The "prefix command" telling the cmd to launch Graphab itself. This
+# # "prefix command" should start ANY new command line!
+# java -jar graphab-2.8.jar --help # For the help page.
 # --mycommand # All Graphab related command start with a "--" (e.g. --linkset).
 # -myoption # All Graphab global options start with a "-" (e.g. -proc).
 # param # All tool parameters have no prefixes (e.g. maxcost).
+# # NOTE: as commands are separated by spaces, project elements cannot contain spaces!
+# --metrics # To display all available metrics.
 
-# NOTE: as commands are separated by spaces, project elements cannot contain spaces!
+# ** 0.2.3. Starting, loading and saving projects ----
+# --create # To create a new project (includes compulsory parameters, cf. CLI User Guide).
+# --project myproject.xml # To load an existing project.
 
-# ** 0.2.2. Intervals and range of values ----
+# ** 0.2.3. Intervals and range of values ----
 # min:inc:max # To define an interval of values, you have to specify a min, an increment, and a
 # # maximum value (e.g. 0:2:10 will do 0, 2, 4, 6, 8, 10). Decimal increments are accepted (e.g. 0:0.5:3).
 # 0,1,4,8,30,200 # Will create a list of values (no spaces).
+# # NOTE: if a command contains several intervals/values for different parameters, the command will
+# # be executed for each possible combination!
 
+# ** 0.2.4. Commands sequencing ----
+# Graphab can be launched with several commands on the same line, except for -help and -metrics!
+# The "--create" and "--project" commands can only be used once and should be the first command, after
+# the prefix command that launches Graphab itself (e.g. java -jar graphab-2.8.jar --project...).
 
 
 # ---------------------------------------------------------------------------- #
@@ -83,9 +95,10 @@ usethis::use_git_ignore("graphab-2.8.jar")
 # ---------------------------------------------------------------------------- #
 # ---------------------------------------------------------------------------- #
 usethis::use_git(message = ":boom: Started my Graphab script")
+usethis::use_git(message = ":metal: Created a new function")
 usethis::use_git(message = ":zap: Ignoring Graphab software")
-usethis::use_git(message = ":white_check_mark: Edited structure")
-usethis::use_git(message = ":metal: Saved updates!")
+usethis::use_git(message = ":pencil: Edited this file")
+usethis::use_git(message = ":white_check_mark: Saved updates!")
 #system("git push")
 # ---------------------------------------------------------------------------- #
 # ------------------------------- THE END ------------------------------------ #
