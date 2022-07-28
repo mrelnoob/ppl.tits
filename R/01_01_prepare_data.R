@@ -37,7 +37,7 @@ aggreg_by_nest <- function(){
                      father_id = dplyr::first(father_id),
                      mother_id = dplyr::first(mother_id),
                      species = dplyr::first(species),
-                     mass = mean(nestling_mass_j13),
+                     mass = mean(nestling_mass),
                      tarsus_length = mean(nestling_tarsus_l),
                      wing_length = mean(nestling_wing_l)) -> xxx
 
