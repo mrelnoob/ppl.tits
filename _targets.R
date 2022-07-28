@@ -11,7 +11,7 @@ list(
   # Read the data and return a data.frame
   targets::tar_target(raw_tits, ppl.tits::import_raw_tits_data()),
   # Export the nestling aggregated data table
-  targets::tar_target(nnestling_data, ppl.tits::export_nestling_aggreg(), format = file)
+  targets::tar_target(nnestling_data, ppl.tits::export_nestling_aggreg(), format = "file")
   )
 # NOTE: it might not work because my function already calls here::here (I should perhaps change it first)!
 # But it seems to work!
