@@ -226,7 +226,7 @@ devtools::check() # Ok!
 
 # ** 2.3.1. Installing the package ----
 devtools::install()
-usethis::use_git(message = ":metal: Installed function: import_raw_tits_data()!")
+usethis::use_git(message = ":metal: Installed updated functions!")
 
 
 # ** 2.3.2. Set package versions ----
