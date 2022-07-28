@@ -14,7 +14,7 @@
 #' summarizing tits' breeding success for each nestbox each year where breeding occurred. As such,
 #' it only keeps information on nestlings/juveniles and disregards the lines about adult tits.
 #'
-#' @return A tibble with 15 variables.
+#' @return A tibble with 16 variables.
 #' @export
 #' @import dplyr
 #'
@@ -34,6 +34,7 @@ aggreg_by_nest <- function(){
                      clutch_size = max(clutch_size),
                      brood_size = max(brood_size),
                      fledgling_nb = max(fledgling_nb),
+                     success_manipulated = dplyr::first(success_manipulated),
                      father_id = dplyr::first(father_id),
                      mother_id = dplyr::first(mother_id),
                      species = dplyr::first(species),
@@ -42,7 +43,7 @@ aggreg_by_nest <- function(){
                      wing_length = mean(nestling_wing_l)) -> xxx
 
   age <- id_nestbox <- year <- laying_date <- incubation_date <- hatching_date <- clutch_size <- NULL
-  brood_size <- fledgling_nb <- father_id <- mother_id <- species <- nestling_mass_j13 <- NULL
+  brood_size <- fledgling_nb <- success_manipulated <- father_id <- mother_id <- species <- nestling_mass <- NULL
   nestling_tarsus_l <- nestling_wing_l <- NULL
 
   return(xxx)
