@@ -62,7 +62,7 @@ aggreg_by_nest <- function(){
 #' @export
 #' @importFrom readr write_csv2
 #' @importFrom here here
-#' #'
+#'
 #' @examples
 #' \dontrun{
 #' export_nestling_aggreg()
