@@ -26,7 +26,7 @@
 #' }
 import_raw_tits_data <- function(){
 
-  aaa <- readr::read_csv2(here::here("mydata", "ppl_dijon_tits_data_20192021.csv"), col_names = TRUE, na = "NA",
+  aaa <- readr::read_csv2(here::here("mydata", "ppl_dijon_tits_data.csv"), col_names = TRUE, na = "NA",
                          col_types = readr::cols(id_nestbox = readr::col_factor(),
                                                  site = readr::col_factor(),
                                                  year = readr::col_factor(),
@@ -38,6 +38,7 @@ import_raw_tits_data <- function(){
                                                  brood_size = readr::col_integer(),
                                                  fledgling_nb = readr::col_integer(),
                                                  success = readr::col_factor(),
+                                                 success_manipulated = readr::col_factor(),
                                                  father_id = readr::col_factor(),
                                                  mother_id = readr::col_factor(),
                                                  id_bird = readr::col_factor(),
@@ -49,15 +50,14 @@ import_raw_tits_data <- function(){
                                                  adult_tarsus_l = readr::col_double(),
                                                  adult_wing_l = readr::col_double(),
                                                  adult_aggress = readr::col_factor(),
-                                                 nestling_mass_j13 = readr::col_double(),
-                                                 nestling_mass_j14 = readr::col_double(),
+                                                 nestling_mass = readr::col_double(),
                                                  nestling_tarsus_l = readr::col_double(),
                                                  nestling_wing_l = readr::col_double()))
 
-  site <- success <- age <- nestling_mass_j14 <- NULL
+  site <- success <- NULL
 
-  aaa %>% dplyr::select(-site, -nestling_mass_j14) %>%
-    dplyr::filter(success != 'NA', age != 'NA') -> xxx
+  aaa %>% dplyr::select(-site) %>%
+    dplyr::filter(success != 'NA') -> xxx
 
   return(xxx)
 
