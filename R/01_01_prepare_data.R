@@ -58,7 +58,9 @@ aggreg_by_nest <- function(){
 #'
 #' @description The `export_nestling_aggreg` function exports the dataset (.csv) created by the
 #' `aggreg_by_nest` function, that is the tits nestling data aggregated by nestbox and year.
+#'
 #' @return A CSV table (stored in output/tables).
+#'
 #' @export
 #' @importFrom readr write_csv2
 #' @importFrom here here
