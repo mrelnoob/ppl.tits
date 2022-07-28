@@ -7,7 +7,7 @@
 aggreg_by_nest()
 }
 \value{
-A tibble with 15 variables.
+A tibble with 16 variables.
 }
 \description{
 The \code{aggreg_by_nest} function aggregates the raw tits data to create a table
