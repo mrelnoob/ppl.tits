@@ -72,5 +72,5 @@ aggreg_by_nest <- function(){
 export_nestling_aggreg <- function(){
   aabb <- ppl.tits::aggreg_by_nest()
   readr::write_csv2(x = aabb, file = here::here("output", "tables", "tits_nestling_data.csv"))
-  return(paste("Table exported to", here::here("output", "table", "tits_nestling_data.csv"), sep = " "))
+  return(here::here("output", "table", "tits_nestling_data.csv"))
 }
