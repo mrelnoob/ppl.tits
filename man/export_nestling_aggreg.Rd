@@ -7,7 +7,7 @@
 export_nestling_aggreg()
 }
 \value{
-A CSV table (stored in output/tables).
+A CSV table and its path.
 }
 \description{
 The \code{export_nestling_aggreg} function exports the dataset (.csv) created by the
