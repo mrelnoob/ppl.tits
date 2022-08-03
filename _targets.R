@@ -13,4 +13,5 @@ list(
   # Export the nestling aggregated data table
   targets::tar_target(nnestling_data, ppl.tits::export_nestling_aggreg(), format = "file")
   )
-### La dernière target ne marche pas, et je comprends pas pk!!! Voir question SO!!!
+### La dernière target "marche", mais ne génère que le path (et pas la table), et il n'y a pas de connexions
+# entre mes targets dans la visualisation. Pk???
