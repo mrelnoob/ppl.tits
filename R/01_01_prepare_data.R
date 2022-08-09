@@ -80,21 +80,21 @@ export_nestling_aggreg <- function(){
 
 
 
-###### TEMP AGREGation
-# Attribute ID to nest_years:
-loco <- readr::read_csv2(here::here("mydata", "paired_boxtemp.csv"), col_names = TRUE, na = "NA",
-                        col_types = readr::cols(id_nestbox = readr::col_factor(),
-                                                year = readr::col_factor(),
-                                                lcz1 = readr::col_factor(),
-                                                dist_lcz = readr::col_double(),
-                                                temp_id_lcz = readr::col_factor(),
-                                                dist_pp = readr::col_double(),
-                                                temp_id_pp = readr::col_factor(),
-                                                temp_id_final = readr::col_factor()))
-tits <- ppl.tits::aggreg_by_nest()
-
-tits$temp_station_id <- loco$temp_id_final
-
-# Format TEMP data:
-temp_raw <- readr::read_csv2(here::here("mydata", "temp_data_20192021.csv"), col_names = TRUE, na = "NA",
-                             col_types = readr::cols(time = readr::col_factor()))
+# ###### TEMP AGREGation (ONGOING package development)
+# # Attribute ID to nest_years:
+# loco <- readr::read_csv2(here::here("mydata", "paired_boxtemp.csv"), col_names = TRUE, na = "NA",
+#                         col_types = readr::cols(id_nestbox = readr::col_factor(),
+#                                                 year = readr::col_factor(),
+#                                                 lcz1 = readr::col_factor(),
+#                                                 dist_lcz = readr::col_double(),
+#                                                 temp_id_lcz = readr::col_factor(),
+#                                                 dist_pp = readr::col_double(),
+#                                                 temp_id_pp = readr::col_factor(),
+#                                                 temp_id_final = readr::col_factor()))
+# tits <- ppl.tits::aggreg_by_nest()
+#
+# tits$temp_station_id <- loco$temp_id_final
+#
+# # Format TEMP data:
+# temp_raw <- readr::read_csv2(here::here("mydata", "temp_data_20192021.csv"), col_names = TRUE, na = "NA",
+#                              col_types = readr::cols(time = readr::col_factor()))
