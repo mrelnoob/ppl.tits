@@ -88,10 +88,13 @@ export_nestling_aggreg <- function(){
 # readr col_double
 # here here
 # tidyr separate
+# tidyr unite
+# dplyr select
 # dplyr mutate
 # dplyr across
 #
-# # Attribute ID to nest_years:
+#
+# ##### Attribute ID to nest_years and improve formating:
 # loco <- readr::read_csv2(here::here("mydata", "paired_boxtemp.csv"), col_names = TRUE, na = "NA",
 #                         col_types = readr::cols(id_nestbox = readr::col_factor(),
 #                                                 year = readr::col_factor(),
@@ -102,16 +105,32 @@ export_nestling_aggreg <- function(){
 #                                                 temp_id_pp = readr::col_factor(),
 #                                                 temp_id_final = readr::col_factor()))
 # tits <- ppl.tits::aggreg_by_nest()
-#
 # tits$temp_station_id <- loco$temp_id_final
 #
-# # Format TEMP data:
-# temp_raw <- readr::read_csv2(here::here("mydata", "temp_data_20192021.csv"), col_names = TRUE, na = "NA",
+# tits %>%
+#   tidyr::separate(laying_date, c('day2', 'month2', 'year2'), sep = "/") %>%
+#   tidyr::unite(laying_date, c(year2, month2, day2), sep = ".", na.rm = TRUE) %>%
+#   tidyr::separate(date, c('day3', 'month3', 'year3'), sep = "/") %>%
+#   tidyr::unite(flight_date, c(year3, month3, day3), sep = ".") -> tits
+# tits %>% dplyr::mutate(dplyr::across(where(is.character), factor)) -> tits
+# summary(tits)
+#
+# tits %>% dplyr::arrange(dplyr::desc(laying_date)) -> tt ##### DOES NOT WORK (see as.Date?)§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+#
+#
+# ##### Format TEMP data:
+# temp <- readr::read_csv2(here::here("mydata", "temp_data_20192021.csv"), col_names = TRUE,
 #                              col_types = readr::cols(time = readr::col_factor()))
-# temp_raw %>%
+# temp %>%
 #   tidyr::separate(time, c('date', 'hour'), sep = " ") %>%
-#   tidyr::separate(date, c('day', 'month', 'year'), sep = "/") %>%
-#   dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
-#   dplyr::mutate(dplyr::across(where(is.logical), numeric)) -> temp
+#   tidyr::separate(date, c('year', 'month', 'day'), sep = "-") %>%
+#   dplyr::select(-s69) %>%
+#   dplyr::mutate(dplyr::across(where(is.character), factor)) -> temp
 # summary(temp)
-# # s70 a un PB!
+#
+#
+# # I'll need to reorder tits laying dates and flight dates (i.e. 'date') in another format : Y.M.D. to be re-arranged
+# # chronologically! I need to create the "fortnight" factor (random effect)! And I also need to aggregate TEMP data as
+# # a function of the tits laying dates!!! How???
+# # I'll also need to impute missing "laying date" values (deduce from other dates)!!! + search for how to handle time
+# # series (and compute day-degrees, etc. ???)!!!!!!
