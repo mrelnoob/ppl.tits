@@ -81,6 +81,16 @@ export_nestling_aggreg <- function(){
 
 
 # ###### TEMP AGREGation (ONGOING package development)
+# ### @ImportFrom to be added:
+# readr read_csv2
+# readr cols
+# readr col_factor
+# readr col_double
+# here here
+# tidyr separate
+# dplyr mutate
+# dplyr across
+#
 # # Attribute ID to nest_years:
 # loco <- readr::read_csv2(here::here("mydata", "paired_boxtemp.csv"), col_names = TRUE, na = "NA",
 #                         col_types = readr::cols(id_nestbox = readr::col_factor(),
@@ -98,3 +108,10 @@ export_nestling_aggreg <- function(){
 # # Format TEMP data:
 # temp_raw <- readr::read_csv2(here::here("mydata", "temp_data_20192021.csv"), col_names = TRUE, na = "NA",
 #                              col_types = readr::cols(time = readr::col_factor()))
+# temp_raw %>%
+#   tidyr::separate(time, c('date', 'hour'), sep = " ") %>%
+#   tidyr::separate(date, c('day', 'month', 'year'), sep = "/") %>%
+#   dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
+#   dplyr::mutate(dplyr::across(where(is.logical), numeric)) -> temp
+# summary(temp)
+# # s70 a un PB!
