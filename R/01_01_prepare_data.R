@@ -109,13 +109,39 @@ export_nestling_aggreg <- function(){
 #
 # tits %>%
 #   tidyr::separate(laying_date, c('day2', 'month2', 'year2'), sep = "/") %>%
-#   tidyr::unite(laying_date, c(year2, month2, day2), sep = ".", na.rm = TRUE) %>%
+#   tidyr::unite(laying_date, c(year2, month2, day2), sep = "/", na.rm = TRUE) %>%
 #   tidyr::separate(date, c('day3', 'month3', 'year3'), sep = "/") %>%
-#   tidyr::unite(flight_date, c(year3, month3, day3), sep = ".") -> tits
-# tits %>% dplyr::mutate(dplyr::across(where(is.character), factor)) -> tits
+#   tidyr::unite(flight_date, c(year3, month3, day3), sep = "/") -> tits
+# tits$flight_date <- as.Date(x = c(tits$flight_date), optional = TRUE)
+# tits$laying_date <- as.Date(x = c(tits$laying_date), optional = TRUE)
 # summary(tits)
 #
-# tits %>% dplyr::arrange(dplyr::desc(laying_date)) -> tt ##### DOES NOT WORK (see as.Date?)§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+# # Creation of the REPRODATE random factor
+# tits %>% dplyr::group_by(year) %>%
+#   dplyr::summarise(mid_date = stats::median(laying_date, na.rm = TRUE)) -> median_laydate
+#
+#
+# tits %>% dplyr::mutate(median_laydate = dplyr::case_when(year == "2019" ~ as.Date("2019-04-03"),
+#                                                          year == "2020" ~ as.Date("2020-04-02"),
+#                                                          year == "2021" ~ as.Date("2021-04-05"),
+#                                                          year == "2022" ~ as.Date("2022-04-02")))
+#
+# ## + simple avec emboitement de ifelse????? https://stackoverflow.com/questions/22337394/dplyr-mutate-with-conditional-values
+# tits %>% dplyr::mutate(repro_window = dplyr::case_when(laying_date > median_laydate ))
+#
+#
+# tits$flight_date[1] > tits$flight_date[3]
+# stats::median(tits$flight_date)
+# tits$flight_date[1]+1
+#
+#
+# x <- 1:50
+# dplyr::case_when(
+#   x %% 35 == 0 ~ "fizz buzz",
+#   x %% 5 == 0 ~ "fizz",
+#   x %% 7 == 0 ~ "buzz",
+#   TRUE ~ as.character(x)
+# )
 #
 #
 # ##### Format TEMP data:
@@ -129,8 +155,7 @@ export_nestling_aggreg <- function(){
 # summary(temp)
 #
 #
-# # I'll need to reorder tits laying dates and flight dates (i.e. 'date') in another format : Y.M.D. to be re-arranged
-# # chronologically! I need to create the "fortnight" factor (random effect)! And I also need to aggregate TEMP data as
+# # I need to create the "fortnight" factor (random effect)! And I also need to aggregate TEMP data as
 # # a function of the tits laying dates!!! How???
 # # I'll also need to impute missing "laying date" values (deduce from other dates)!!! + search for how to handle time
 # # series (and compute day-degrees, etc. ???)!!!!!!
