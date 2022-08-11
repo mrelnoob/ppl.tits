@@ -92,6 +92,11 @@ export_nestling_aggreg <- function(){
 # dplyr select
 # dplyr mutate
 # dplyr across
+# dplyr case_when
+# dplyr group_by
+# dplyr summarise
+# dplyr relocate
+# stats median
 #
 #
 # ##### Attribute ID to nest_years and improve formating:
@@ -116,46 +121,78 @@ export_nestling_aggreg <- function(){
 # tits$laying_date <- as.Date(x = c(tits$laying_date), optional = TRUE)
 # summary(tits)
 #
-# # Creation of the REPRODATE random factor
+# ### Creation of the "breeding_window" random factor
 # tits %>% dplyr::group_by(year) %>%
 #   dplyr::summarise(mid_date = stats::median(laying_date, na.rm = TRUE)) -> median_laydate
 #
+# # Imputation of the laying_date missing values (n=9)
+# tits %>% dplyr::group_by(year) %>%
+#   dplyr::summarise(mean_repro_duration = mean(flight_date, na.rm = TRUE) - mean(laying_date, na.rm = TRUE)) -> mrd
 #
-# tits %>% dplyr::mutate(median_laydate = dplyr::case_when(year == "2019" ~ as.Date("2019-04-03"),
-#                                                          year == "2020" ~ as.Date("2020-04-02"),
-#                                                          year == "2021" ~ as.Date("2021-04-05"),
-#                                                          year == "2022" ~ as.Date("2022-04-02")))
+# tits %>% dplyr::mutate(laying_date = dplyr::case_when(
+#   year == "2019" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[1]),
+#   year == "2019" & is.na(laying_date) == FALSE ~ laying_date,
+#   year == "2020" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[2]),
+#   year == "2020" & is.na(laying_date) == FALSE ~ laying_date,
+#   year == "2021" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[3]),
+#   year == "2021" & is.na(laying_date) == FALSE ~ laying_date,
+#   year == "2022" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[4]),
+#   year == "2022" & is.na(laying_date) == FALSE ~ laying_date)) -> tits
 #
-# ## + simple avec emboitement de ifelse????? https://stackoverflow.com/questions/22337394/dplyr-mutate-with-conditional-values
-# tits %>% dplyr::mutate(repro_window = dplyr::case_when(laying_date > median_laydate ))
+# # Random factor generation
 #
+# tits %>% dplyr::mutate(breeding_window = dplyr::case_when(
+#   year == "2019" & laying_date >= as.Date(median_laydate$mid_date[1]) ~ paste(year, "late", sep = "_"),
+#   year == "2019" & laying_date < as.Date(median_laydate$mid_date[1]) ~ paste(year, "early", sep = "_"),
+#   year == "2020" & laying_date >= as.Date(median_laydate$mid_date[2]) ~ paste(year, "late", sep = "_"),
+#   year == "2020" & laying_date < as.Date(median_laydate$mid_date[2]) ~ paste(year, "early", sep = "_"),
+#   year == "2021" & laying_date >= as.Date(median_laydate$mid_date[3]) ~ paste(year, "late", sep = "_"),
+#   year == "2021" & laying_date < as.Date(median_laydate$mid_date[3]) ~ paste(year, "early", sep = "_"),
+#   year == "2022" & laying_date >= as.Date(median_laydate$mid_date[4]) ~ paste(year, "late", sep = "_"),
+#   year == "2022" & laying_date < as.Date(median_laydate$mid_date[4]) ~ paste(year, "early", sep = "_"))) %>%
+#   dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
+#   dplyr::relocate(breeding_window, .after = year) %>%
+#   dplyr::relocate(laying_date, .after = breeding_window) %>%
+#   dplyr::relocate(flight_date, .after = hatching_date) %>%
+#   dplyr::select(-incubation_date, -hatching_date) -> tits
+# summary(tits)
+# rm(loco, mrd, median_laydate)
 #
-# tits$flight_date[1] > tits$flight_date[3]
-# stats::median(tits$flight_date)
-# tits$flight_date[1]+1
-#
-#
-# x <- 1:50
-# dplyr::case_when(
-#   x %% 35 == 0 ~ "fizz buzz",
-#   x %% 5 == 0 ~ "fizz",
-#   x %% 7 == 0 ~ "buzz",
-#   TRUE ~ as.character(x)
-# )
 #
 #
 # ##### Format TEMP data:
+# # Short tits data version to work with
+# tits %>% dplyr::select(id_nestbox, laying_date, flight_date) -> tt
+#
+#
+# # Import of temp data
 # temp <- readr::read_csv2(here::here("mydata", "temp_data_20192021.csv"), col_names = TRUE,
 #                              col_types = readr::cols(time = readr::col_factor()))
 # temp %>%
 #   tidyr::separate(time, c('date', 'hour'), sep = " ") %>%
 #   tidyr::separate(date, c('year', 'month', 'day'), sep = "-") %>%
 #   dplyr::select(-s69) %>%
-#   dplyr::mutate(dplyr::across(where(is.character), factor)) -> temp
+#   dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
+#   dplyr::filter(month == "12" | month == "01" | month == "02" | month == "03" |
+#                   month == "04" | month == "05" | month == "06") -> temp
 # summary(temp)
 #
 #
-# # I need to create the "fortnight" factor (random effect)! And I also need to aggregate TEMP data as
-# # a function of the tits laying dates!!! How???
-# # I'll also need to impute missing "laying date" values (deduce from other dates)!!! + search for how to handle time
+# temp %>% dplyr::group_by(year, month, day) %>%
+#   dplyr::summarise(dplyr::across(where(is.numeric), .fns =
+#                                    list(min_t = min,
+#                                         max_t = max))) -> daily_t_range # Globally, this code computes
+# # the daily temperature min and max. In details:
+# #     - I grouped the hourly temperature values (readings) for each day of the month and each month of the year.
+# #     - I then SUMMARISED the daily MIN and MAX temperature values ACROSS all NUMERIC columns while assigning
+# #       suffixes to each temperature station for the MIN and MAX values, respectively (doubling the number of
+# #       columns).
+# # NOTE: however, I could not figure out how to disregard missing values so there are more NAs than expected (if
+# # there was any NA hourly reading for a given day, the daily value will also be NA).
+#
+# # NOW, I need to recreate a date column and compute averages, sum DD etc.
+#
+# # I need to aggregate TEMP data as a function of the tits laying dates!!! How???
+# # + search for how to handle time
 # # series (and compute day-degrees, etc. ???)!!!!!!
+# # Voir aussi https://www.r-bloggers.com/2014/02/using-dates-and-times-in-r/
