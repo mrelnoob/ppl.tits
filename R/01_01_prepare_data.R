@@ -80,7 +80,7 @@ export_nestling_aggreg <- function(){
 
 
 
-# ###### TEMP AGREGation (ONGOING package development)
+# ############### TEMP AGREGation (ONGOING package development)
 # ### @ImportFrom to be added:
 # readr read_csv2
 # readr cols
@@ -98,6 +98,7 @@ export_nestling_aggreg <- function(){
 # dplyr relocate
 # stats median
 #
+# library(ppl.tits)
 #
 # ##### Attribute ID to nest_years and improve formating:
 # loco <- readr::read_csv2(here::here("mydata", "paired_boxtemp.csv"), col_names = TRUE, na = "NA",
@@ -114,11 +115,11 @@ export_nestling_aggreg <- function(){
 #
 # tits %>%
 #   tidyr::separate(laying_date, c('day2', 'month2', 'year2'), sep = "/") %>%
-#   tidyr::unite(laying_date, c(year2, month2, day2), sep = "/", na.rm = TRUE) %>%
+#   tidyr::unite(laying_date, c(year2, month2, day2), sep = "-", na.rm = TRUE) %>%
 #   tidyr::separate(date, c('day3', 'month3', 'year3'), sep = "/") %>%
-#   tidyr::unite(flight_date, c(year3, month3, day3), sep = "/") -> tits
-# tits$flight_date <- as.Date(x = c(tits$flight_date), optional = TRUE)
-# tits$laying_date <- as.Date(x = c(tits$laying_date), optional = TRUE)
+#   tidyr::unite(flight_date, c(year3, month3, day3), sep = "-") %>%
+#   dplyr::mutate(laying_date = as.Date(x = laying_date, optional = TRUE),
+#                 flight_date = as.Date(x = flight_date, optional = TRUE)) -> tits
 # summary(tits)
 #
 # ### Creation of the "breeding_window" random factor
@@ -162,7 +163,7 @@ export_nestling_aggreg <- function(){
 #
 # ##### Format TEMP data:
 # # Short tits data version to work with
-# tits %>% dplyr::select(id_nestbox, laying_date, flight_date) -> tt
+# tits %>% dplyr::select(id_nestbox, laying_date, flight_date, temp_station_id) -> tt
 #
 #
 # # Import of temp data
@@ -174,23 +175,76 @@ export_nestling_aggreg <- function(){
 #   dplyr::select(-s69) %>%
 #   dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
 #   dplyr::filter(month == "12" | month == "01" | month == "02" | month == "03" |
-#                   month == "04" | month == "05" | month == "06") -> temp
+#                   month == "04" | month == "05" | month == "06") %>%
+#   tidyr::unite(date, c(year, month, day), sep = "-", remove = FALSE) %>%
+#   dplyr::mutate(date = as.Date(date)) -> temp
 # summary(temp)
 #
 #
-# temp %>% dplyr::group_by(year, month, day) %>%
+# temp %>% dplyr::group_by(date) %>%
 #   dplyr::summarise(dplyr::across(where(is.numeric), .fns =
 #                                    list(min_t = min,
-#                                         max_t = max))) -> daily_t_range # Globally, this code computes
-# # the daily temperature min and max. In details:
-# #     - I grouped the hourly temperature values (readings) for each day of the month and each month of the year.
+#                                         max_t = max))) -> daily_t_range
+# # Globally, this code computes the daily temperature min and max. More precisely:
+# #     - I grouped the hourly temperature values (readings) for each day of the month and each month of the year (=date).
 # #     - I then SUMMARISED the daily MIN and MAX temperature values ACROSS all NUMERIC columns while assigning
 # #       suffixes to each temperature station for the MIN and MAX values, respectively (doubling the number of
 # #       columns).
 # # NOTE: however, I could not figure out how to disregard missing values so there are more NAs than expected (if
 # # there was any NA hourly reading for a given day, the daily value will also be NA).
+# temp %>% dplyr::group_by(date) %>%
+#   dplyr::summarise(dplyr::across(where(is.numeric), .fns =
+#                                    list(min_t = min))) -> daily_t_min
+# temp %>% dplyr::group_by(date) %>%
+#   dplyr::summarise(dplyr::across(where(is.numeric), .fns =
+#                                    list(max_t = max))) -> daily_t_max
 #
-# # NOW, I need to recreate a date column and compute averages, sum DD etc.
+#
+#
+# #### Computing averages, cumulative DD etc. (UNFINISHED)
+# head(daily_t_range)
+# degday::dd_calc(daily_min = daily_t_range$s01_min_t, daily_max = daily_t_range$s01_max_t, thresh_low = 0, thresh_up = 100,
+#                 method = "sng_sine", cumulative = TRUE, no_neg = TRUE, interpolate_na = TRUE) %>% head() # Works!
+#
+# # daily_t_range %>% # My own way...
+# #   dplyr::group_by(date) %>%
+# #   dplyr::summarise(s01 = mean(c(s01_min_t, s01_max_t))) -> ooo
+# # print(cumsum(ooo[,2]), n = 20) # Works too but it's not base 0°C!
+#
+# # Function to compute daily mean for all stations:
+# daily_t_mean <- daily_t_range[,1]
+# dname <- "date"
+#
+# for(k in 1:70){
+#   station_name <- colnames(temp[,6:ncol(temp)])
+#   k_name <- station_name[k]
+#
+#   jjj <- cbind(daily_t_range[,1], daily_t_min[,1+k], daily_t_max[,1+k])
+#   colnames(jjj) <- c("date", "min_t", "max_t")
+#
+#   jjj %>%
+#     dplyr::group_by(date) %>%
+#     dplyr::summarise(mean_t = mean(c(min_t, max_t))) -> kkk
+#   daily_t_mean[,1+k] <- kkk[,2]
+#
+#   dname[1+k] <- paste(k_name, "mean_t", sep = "_")
+#   colnames(daily_t_mean) <- dname
+#   rm(jjj, kkk, k_name, station_name)
+# }
+# rm(dname, k)
+#
+#
+#
+#
+#
+# # I should create a function with a loop!
+# #  --> Pour chaque ligne, j'extrais la date de ponte et la station d'appariement.
+# #  --> Je filtre les relevés pour ne garder que les 30 derniers jours par rapport à date_ponte
+# #  --> Puis je calcule la somme DD pour la station d'appariement via dd_calc()
+# # Puis idem pour les autres variables de température.
+# # Au cas où, je peux aussi déjà calculer les somme DD + autres variables mais pour les mois de mars de chaque année (en
+# # fonction des réponses d'Yves et Bruno).
+#
 #
 # # I need to aggregate TEMP data as a function of the tits laying dates!!! How???
 # # + search for how to handle time
