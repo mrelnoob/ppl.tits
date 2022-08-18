@@ -97,6 +97,8 @@ export_nestling_aggreg <- function(){
 # dplyr summarise
 # dplyr relocate
 # stats median
+# stringr str_detect
+# degday dd_calc
 #
 # library(ppl.tits)
 #
@@ -211,7 +213,7 @@ export_nestling_aggreg <- function(){
 # #   dplyr::summarise(s01 = mean(c(s01_min_t, s01_max_t))) -> ooo
 # # print(cumsum(ooo[,2]), n = 20) # Works too but it's not base 0°C!
 #
-# # Function to compute daily mean for all stations:
+# ### Function to compute daily mean for all stations:
 # daily_t_mean <- daily_t_range[,1]
 # dname <- "date"
 #
@@ -237,6 +239,52 @@ export_nestling_aggreg <- function(){
 #
 #
 #
+#
+#
+# ### Function to compute (UNFINISHED)§§§§§
+# cumdd_30d <- NULL
+# i <- 111 # Toy i!
+# station_name <- colnames(daily_t_mean)
+# for(i in 1:nrow(tits)){
+#
+#   date_i <- tits[i, 4]
+#   station_i <- as.character(as.matrix(tits[i, 16])) # Bloody R doesn't want to extract the factor's value directly!
+#
+#   # Daily temperature minimal values for the 30 days preceding the i-th laying date:
+#   daily_t_min %>%
+#     dplyr::filter(date < date_i) %>%
+#     dplyr::filter(date > date_i-31) -> mw30_min
+#
+#   # Daily temperature maximal values for the 30 days preceding the i-th laying date:
+#   daily_t_max %>%
+#     dplyr::filter(date < date_i) %>%
+#     dplyr::filter(date > date_i-31) -> mw30_max
+#
+#   # Extracting values from the right station:
+#   nn <- which(stringr::str_detect(string = station_name, pattern = station_i))
+#   ttt <- cbind(mw30_min[,nn], mw30_max[,nn])
+#   colnames(ttt) <- c("min_t", "max_t")
+#
+#   # Computing cumDD and handling NAs:
+#   if (all(is.na(ttt$min_t))) { ######## Il y a au moins un cas où il ya 29 NAs et 1 fucking valeur, donc ça marche pas!!!!
+#     cumdd_30d[i] <- "NA"
+#   } else if (all(is.na(ttt$max_t))) {
+#     cumdd_30d[i] <- "NA"
+#   } else {
+#     degday::dd_calc(daily_min = ttt$min_t, daily_max = ttt$max_t, thresh_low = 0, thresh_up = 100,
+#                     method = "sng_sine", cumulative = TRUE, no_neg = TRUE,
+#                     interpolate_na = TRUE) -> cumdd # Ne marche pas pour les stations/périodes où il n'y a que des NA!
+#
+#     cumdd_30d[i] <- cumdd[30]
+#   }
+# }
+# tits$cumdd_30 <- cumdd_30d
+#
+#
+# s66_2021 <- daily_t_range %>%
+#   dplyr::filter(date > "2021-02-01") %>%
+#   dplyr::select(date, s66_min_t, s66_max_t)
+#
 # # I should create a function with a loop!
 # #  --> Pour chaque ligne, j'extrais la date de ponte et la station d'appariement.
 # #  --> Je filtre les relevés pour ne garder que les 30 derniers jours par rapport à date_ponte
@@ -244,9 +292,5 @@ export_nestling_aggreg <- function(){
 # # Puis idem pour les autres variables de température.
 # # Au cas où, je peux aussi déjà calculer les somme DD + autres variables mais pour les mois de mars de chaque année (en
 # # fonction des réponses d'Yves et Bruno).
-#
-#
-# # I need to aggregate TEMP data as a function of the tits laying dates!!! How???
-# # + search for how to handle time
-# # series (and compute day-degrees, etc. ???)!!!!!!
-# # Voir aussi https://www.r-bloggers.com/2014/02/using-dates-and-times-in-r/
+# # + Calculer sum_DD mais pour le mois de mars de chaque année uniquement (puis l'associer à chaque nichoir-année évidemment)!
+# # + Quelle variable spatialement continue pour le modèle prédictif???
