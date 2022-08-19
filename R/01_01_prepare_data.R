@@ -266,20 +266,34 @@ export_nestling_aggreg <- function(){
 #   colnames(ttt) <- c("min_t", "max_t")
 #
 #   # Computing cumDD and handling NAs:
-#   if (all(is.na(ttt$min_t))) { ######## Il y a au moins un cas où il ya 29 NAs et 1 fucking valeur, donc ça marche pas!!!!
+#   if (sum(is.na(ttt$min_t)) >= 29) {
+#     cumdd_30d[i] <- "NA"
+#   } else if (sum(is.na(ttt$max_t)) >= 29) {
+#     cumdd_30d[i] <- "NA"
+#   } else if (all(is.na(ttt$min_t))) {
 #     cumdd_30d[i] <- "NA"
 #   } else if (all(is.na(ttt$max_t))) {
 #     cumdd_30d[i] <- "NA"
 #   } else {
 #     degday::dd_calc(daily_min = ttt$min_t, daily_max = ttt$max_t, thresh_low = 0, thresh_up = 100,
 #                     method = "sng_sine", cumulative = TRUE, no_neg = TRUE,
-#                     interpolate_na = TRUE) -> cumdd # Ne marche pas pour les stations/périodes où il n'y a que des NA!
+#                     interpolate_na = TRUE) -> cumdd # This function doesn't works if the temperature vectors
+#     # are all NA's or if there is only one value that is NOT NA (because it cannot interpolate missing
+#     # values in such a case).
 #
 #     cumdd_30d[i] <- cumdd[30]
 #   }
 # }
-# tits$cumdd_30 <- cumdd_30d
+# tits$cumdd_30 <- as.numeric(cumdd_30d)
+# summary(tits)
+# ### Et ça marche!!! Plus qu'à finir les autres fonctions/variables!§§§§§§§§§§
 #
+#
+#
+#
+# tits %>%
+#   dplyr::filter(year == "2021") %>%
+#   summary()
 #
 # s66_2021 <- daily_t_range %>%
 #   dplyr::filter(date > "2021-02-01") %>%
