@@ -185,10 +185,15 @@ usethis::use_r("01_02_graphab_analyses")
 # previously listed the dependencies (packages) in the Roxygen2 header of the functions thanks
 # to the tags (@import package OR @importFrom package function)! So I do this for every function
 # and add the required tags and packages in the function's Roxygen2 header, and I DO NOT FORGET
-# to also add these dependencies in the "Imports" field of the DESCRIPTION:
+# to also add these dependencies in the "Imports" field of the DESCRIPTION with the following
+# command lines:
 usethis::use_package("readr")
 usethis::use_package("here")
 usethis::use_package("dplyr")
+usethis::use_package("tidyr")
+usethis::use_package("stats")
+usethis::use_package("stringr")
+usethis::use_package("degday")
 # REMINDER: The NAMESPACE controls what happens when my package is loaded but not when it's
 # installed. This is the role of the DESCRIPTION file!
 
