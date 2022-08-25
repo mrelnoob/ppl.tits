@@ -4,7 +4,10 @@
 \alias{aggreg_by_nest}
 \title{Aggregate tits data by nestbox and year}
 \usage{
-aggreg_by_nest()
+aggreg_by_nest(myrawdata)
+}
+\arguments{
+\item{myrawdata}{The raw tits data object (tibble).}
 }
 \value{
 A tibble with 16 variables.
