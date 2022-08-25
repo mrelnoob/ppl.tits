@@ -16,6 +16,8 @@ list(
              format = "file"),
   targets::tar_target(boxtemp_file, here::here("mydata", "paired_boxtemp.csv"),
              format = "file"),
+  targets::tar_target(predictor_file, here::here("mydata", "tits_predictors.csv"),
+             format = "file"),
 
 
   ### All targets related to data-processing #
