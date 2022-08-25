@@ -17,10 +17,15 @@ list(
   targets::tar_target(boxtemp_file, here::here("mydata", "paired_boxtemp.csv"),
              format = "file"),
 
+
   ### All targets related to data-processing #
   # __________________________________________
-  # Read the data and return a data.frame:
+  # Read the raw data and return a data.frame:
   targets::tar_target(raw_tits, ppl.tits::import_raw_tits_data(mypath = raw_data_file)),
+  # Produces the first tits data update (formatting and inclusion of the breeding_window and
+  # temperature-related variables):
+  targets::tar_target(titsdata_temp, ppl.tits::tdata_update_temp(
+    myboxtemp_data = boxtemp_file, mytits_data = nnestling_data)),
 
 
   ### All targets related to output files #
