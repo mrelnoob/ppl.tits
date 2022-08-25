@@ -416,3 +416,15 @@ tdata_update_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxt
   # _______________________________
 
 }
+
+
+
+
+
+
+
+###################### Join the datasets (tits and predictors)§§§§§§§§§§§§§§§§§§§§§§§§§
+
+tits <- targets::tar_read(titsdata_temp) # Comment l'importer autrement (sans refaire tourner le script)?????????????
+
+
