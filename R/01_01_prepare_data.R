@@ -106,6 +106,7 @@ export_nestling_aggreg <- function(){
 #' @importFrom here here
 #' @importFrom tidyr separate
 #' @importFrom tidyr unite
+#' @importFrom tidyselect where
 #' @importFrom dplyr select
 #' @importFrom dplyr mutate
 #' @importFrom dplyr across
@@ -187,7 +188,7 @@ tdata_update_temp <- function(){
                                                                                 sep = "_"),
     year == "2022" & laying_date < as.Date(median_laydate$mid_date[4]) ~ paste(year, "early",
                                                                                sep = "_"))) %>%
-    dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
+    dplyr::mutate(dplyr::across(tidyselect::where(is.character), factor)) %>%
     dplyr::relocate(breeding_window, .after = year) %>%
     dplyr::relocate(laying_date, .after = breeding_window) %>%
     dplyr::relocate(flight_date, .after = hatching_date) %>%
@@ -376,6 +377,11 @@ tdata_update_temp <- function(){
   tits$mean_winter_t <- as.numeric(mean_winter_t)
   tits$sd_winter_t <- as.numeric(sd_winter_t)
 
+
+  # To dismiss notes regarding "visible binding for global variables" during the CMD Check:
+  laying_date <- year2 <- month2 <- day2 <- flight_date <- year3 <- month3 <- day3 <-
+    year <- breeding_window <- hatching_date <- incubation_date <- time <- s69 <- month <-
+    day <- min_t <- max_t <- NULL
 
 
   ##### To export the updated table
