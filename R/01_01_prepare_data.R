@@ -120,7 +120,7 @@ export_nestling_aggreg <- function(){
 #' @importFrom degday dd_calc
 #'
 #' @examples
-#' #' \dontrun{
+#' \dontrun{
 #' mydata <- tdata_update_temp()
 #' }
 tdata_update_temp <- function(){
