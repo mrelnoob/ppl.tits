@@ -425,6 +425,24 @@ tdata_update_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxt
 
 ###################### Join the datasets (tits and predictors)§§§§§§§§§§§§§§§§§§§§§§§§§
 
+library(ppl.tits)
 tits <- targets::tar_read(titsdata_temp) # Comment l'importer autrement (sans refaire tourner le script)?????????????
 
-
+tpred <- readr::read_csv2(here::here("mydata", "tits_predictors.csv"), col_names = TRUE, na = "NA",
+                         col_types = readr::cols(id_nestbox = readr::col_factor(),
+                                                 lsource_vs150_m = readr::col_integer(),
+                                                 age_class = readr::col_factor(
+                                                   ordered = TRUE,
+                                                   levels = c("0", "1", "2"),
+                                                   include_na = TRUE),
+                                                 site = readr::col_factor(),
+                                                 strata_div = readr::col_factor(
+                                                   ordered = TRUE,
+                                                   levels = c("0", "1", "2", "3", "4"),
+                                                   include_na = TRUE))) # I don't know why,
+# but I cannot make readr understand that some variables are actually numeric! So I have
+# to add new lines:
+tpred %>%
+  dplyr::mutate(dplyr::across(where(is.character), as.numeric)) -> tpred
+summary(tpred)
+# Works! UNFINISHED§§§§§§§
