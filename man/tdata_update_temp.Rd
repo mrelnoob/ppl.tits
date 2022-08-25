@@ -4,10 +4,19 @@
 \alias{tdata_update_temp}
 \title{Update and export the tits dataset with temperature related variables}
 \usage{
-tdata_update_temp()
+tdata_update_temp(
+  myboxtemp_data = here::here("mydata", "paired_boxtemp.csv"),
+  mytits_data = here::here("output", "tables", "tits_nestling_data.csv")
+)
+}
+\arguments{
+\item{myboxtemp_data}{The nestbox-temperature stations pairing dataset (.csv).}
+
+\item{mytits_data}{The tits nestling aggregated dataset (.csv). Cf.
+\code{\link[ppl.tits:export_nestling_aggreg]{boxplot}}.}
 }
 \value{
-A tibble with an updated version of the tits dataset.
+A tibble with an improved version of the tits dataset.
 }
 \description{
 The function is the first of a series of functions meant to update and complete
