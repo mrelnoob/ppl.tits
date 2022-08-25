@@ -28,7 +28,7 @@ four month of winter across 2019-2022 and its standard deviation, respectively).
 }
 }
 \examples{
-#' \dontrun{
+\dontrun{
 mydata <- tdata_update_temp()
 }
 }
