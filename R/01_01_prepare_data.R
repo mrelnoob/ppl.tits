@@ -104,7 +104,11 @@ export_nestling_aggreg <- function(myrawdata){
 #' \emph{mean_winter_t} and \emph{sd_winter_t}) (which are the mean recorded temperature during the
 #' four month of winter across 2019-2022 and its standard deviation, respectively).
 #'
-#' @return A tibble with an updated version of the tits dataset.
+#' @param myboxtemp_data The nestbox-temperature stations pairing dataset (.csv).
+#' @param mytits_data The tits nestling aggregated dataset (.csv). Cf.
+#' \code{\link[ppl.tits:export_nestling_aggreg]{boxplot}}.
+#'
+#' @return A tibble with an improved version of the tits dataset.
 #' @export
 #' @importFrom readr read_csv2
 #' @importFrom readr cols
@@ -130,12 +134,13 @@ export_nestling_aggreg <- function(myrawdata){
 #' \dontrun{
 #' mydata <- tdata_update_temp()
 #' }
-tdata_update_temp <- function(){
+tdata_update_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp.csv"),
+                              mytits_data = here::here("output", "tables", "tits_nestling_data.csv")){
   ##### Attribute ID to nest_years and improve formatting
   # _____________________________________________________
 
-  ### Assigning temp_stations to each observation and improving dates format:
-  loco <- readr::read_csv2(here::here("mydata", "paired_boxtemp.csv"), col_names = TRUE, na = "NA",
+  ### Assigning temp_stations to each observation and improving dates format____#
+  loco <- readr::read_csv2(myboxtemp_data, col_names = TRUE, na = "NA",
                            col_types = readr::cols(id_nestbox = readr::col_factor(),
                                                    year = readr::col_factor(),
                                                    lcz1 = readr::col_factor(),
@@ -144,7 +149,22 @@ tdata_update_temp <- function(){
                                                    dist_pp = readr::col_double(),
                                                    temp_id_pp = readr::col_factor(),
                                                    temp_id_final = readr::col_factor()))
-  tits <- ppl.tits::aggreg_by_nest()
+  tits <- readr::read_csv2(mytits_data, col_names = TRUE,
+                           col_types = readr::cols(id_nestbox = readr::col_factor(),
+                                                   year = readr::col_factor(),
+                                                   date = readr::col_factor(),
+                                                   laying_date = readr::col_factor(),
+                                                   incubation_date = readr::col_factor(),
+                                                   hatching_date = readr::col_factor(),
+                                                   clutch_size = readr::col_integer(),
+                                                   brood_size = readr::col_integer(),
+                                                   fledgling_nb = readr::col_integer(),
+                                                   success_manipulated = readr::col_factor(),
+                                                   father_id = readr::col_factor(),
+                                                   mother_id = readr::col_factor(),
+                                                   species = readr::col_factor())) # NOTE: I have
+  # to generate "tits" by reading the exported aggregated tits dataset in order for {targets} to be
+  # able to follow modifications. Otherwise, I could just have used ppl.tits::aggreg_by_nest().
   tits$temp_station_id <- loco$temp_id_final
 
   tits %>%
@@ -157,7 +177,7 @@ tdata_update_temp <- function(){
 
 
 
-  ### Creation of the "breeding_window" random factor_____________________________#
+  ### Creation of the "breeding_window" random factor___________________________#
   tits %>% dplyr::group_by(year) %>%
     dplyr::summarise(mid_date = stats::median(laying_date, na.rm = TRUE)) -> median_laydate
 

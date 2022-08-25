@@ -350,8 +350,8 @@ usethis::use_git(message = ":boom: Started a new script")
 usethis::use_git(message = ":metal: Created a new function")
 usethis::use_git(message = ":zap: Ignoring something")
 usethis::use_git(message = ":pencil: Documented a function or wrote something")
-usethis::use_git(message = ":hammer: Updated tdata_update_temp()")
-usethis::use_git(message = ":white_check_mark: Saved updates!")
+usethis::use_git(message = ":hammer: Ongoing programming!")
+usethis::use_git(message = ":white_check_mark: Updated functions for {targets} compatibility")
 usethis::use_git(message = ":x: Problem detected!")
 #system("git push") # Or using a CLI!
 # Don't forget to push your commits once you're sure you made no mistakes.
