@@ -27,7 +27,7 @@
 #' mydata <- import_raw_tits_data(mypath = "C:/path/to/my/data.csv") # This example cannot work,
 #' # it needs an existing path!
 #' }
-import_raw_tits_data <- function(mypath){
+import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_data.csv")){
 
   aaa <- readr::read_csv2(file = mypath, col_names = TRUE, na = "NA",
                          col_types = readr::cols(id_nestbox = readr::col_factor(),
