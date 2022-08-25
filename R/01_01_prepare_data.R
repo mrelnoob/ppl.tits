@@ -15,6 +15,7 @@ utils::globalVariables("where") # This is necessary for now as tidyselect::where
 #' @description The `aggreg_by_nest` function aggregates the raw tits data to create a table
 #' summarizing tits' breeding success for each nestbox each year where breeding occurred. As such,
 #' it only keeps information on nestlings/juveniles and disregards the lines about adult tits.
+#' @param myrawdata The raw tits data object (tibble).
 #'
 #' @return A tibble with 16 variables.
 #' @export
@@ -24,7 +25,7 @@ utils::globalVariables("where") # This is necessary for now as tidyselect::where
 #' \dontrun{
 #' nestbox_repro <- aggreg_by_nest()
 #' }
-aggreg_by_nest <- function(){
+aggreg_by_nest <- function(myrawdata){
   rtits <- ppl.tits::import_raw_tits_data()
 
   rtits %>% dplyr::filter(age == "nestling") %>%
