@@ -11,9 +11,9 @@ list(
   targets::tar_target(raw_data_file, here::here("mydata", "ppl_dijon_tits_data.csv"),
              format = "file"),
   # Read the data and return a data.frame
-  targets::tar_target(raw_tits, ppl.tits::import_raw_tits_data(raw_data_file)),
+  targets::tar_target(raw_tits, ppl.tits::import_raw_tits_data(mypath = raw_data_file)),
   # Export the nestling aggregated data table
-  targets::tar_target(nnestling_data, ppl.tits::export_nestling_aggreg(), format = "file")
+  targets::tar_target(nnestling_data, ppl.tits::export_nestling_aggreg(myrawdata = raw_tits), format = "file")
   )
 ### The last 'target' works (so to speak) but does not export the table: it only returns the path. Also, there are no
 # connections between my 'targets' in the visualisation (because I do not call previous 'targets' in my 'targets' so
