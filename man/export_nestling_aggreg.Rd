@@ -4,17 +4,22 @@
 \alias{export_nestling_aggreg}
 \title{Export tits nestling aggregated dataset}
 \usage{
-export_nestling_aggreg()
+export_nestling_aggreg(myrawdata)
+}
+\arguments{
+\item{myrawdata}{The raw tits data object (tibble).}
 }
 \value{
 A CSV table and its path.
 }
 \description{
 The \code{export_nestling_aggreg} function exports the dataset (.csv) created by the
-\code{aggreg_by_nest} function, that is the tits nestling data aggregated by nestbox and year.
+\code{aggreg_by_nest} function, that is the tits nestling data aggregated by nestbox and year. The
+input dataset should therefore be the \strong{raw dataset}, not an object created by the
+aggregating function!
 }
 \examples{
 \dontrun{
-export_nestling_aggreg()
+export_nestling_aggreg(myrawdata = raw_tits)
 }
 }

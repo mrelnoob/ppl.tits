@@ -22,6 +22,7 @@ tolerated differences may be different rows and cell values)!
 }
 \examples{
 \dontrun{
-mydata <- import_raw_tits_data()
+mydata <- import_raw_tits_data(mypath = "C:/path/to/my/data.csv") # This example cannot work,
+# it needs an existing path!
 }
 }

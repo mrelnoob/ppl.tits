@@ -19,6 +19,7 @@ it only keeps information on nestlings/juveniles and disregards the lines about 
 }
 \examples{
 \dontrun{
-nestbox_repro <- aggreg_by_nest()
+nestbox_repro <- aggreg_by_nest(myrawdata = rawtits) # This example cannot work because the
+# proposed object does not actually exist!
 }
 }

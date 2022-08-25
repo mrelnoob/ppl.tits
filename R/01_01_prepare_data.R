@@ -23,7 +23,8 @@ utils::globalVariables("where") # This is necessary for now as tidyselect::where
 #'
 #' @examples
 #' \dontrun{
-#' nestbox_repro <- aggreg_by_nest()
+#' nestbox_repro <- aggreg_by_nest(myrawdata = rawtits) # This example cannot work because the
+#' # proposed object does not actually exist!
 #' }
 aggreg_by_nest <- function(myrawdata){
   rtits <- ppl.tits::import_raw_tits_data()
@@ -60,7 +61,10 @@ aggreg_by_nest <- function(myrawdata){
 #' Export tits nestling aggregated dataset
 #'
 #' @description The `export_nestling_aggreg` function exports the dataset (.csv) created by the
-#' `aggreg_by_nest` function, that is the tits nestling data aggregated by nestbox and year.
+#' `aggreg_by_nest` function, that is the tits nestling data aggregated by nestbox and year. The
+#' input dataset should therefore be the \strong{raw dataset}, not an object created by the
+#' aggregating function!
+#' @param myrawdata The raw tits data object (tibble).
 #'
 #' @return A CSV table and its path.
 #'
@@ -70,10 +74,10 @@ aggreg_by_nest <- function(myrawdata){
 #'
 #' @examples
 #' \dontrun{
-#' export_nestling_aggreg()
+#' export_nestling_aggreg(myrawdata = raw_tits)
 #' }
-export_nestling_aggreg <- function(){
-  aabb <- ppl.tits::aggreg_by_nest()
+export_nestling_aggreg <- function(myrawdata){
+  aabb <- ppl.tits::aggreg_by_nest(myrawdata = myrawdata)
   readr::write_csv2(x = aabb, file = here::here("output", "tables", "tits_nestling_data.csv"))
   return(here::here("output", "tables", "tits_nestling_data.csv"))
 }
