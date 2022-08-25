@@ -7,6 +7,8 @@
 #' I tailored this function for (i.e. same columns, no special characters, no spaces, etc.; the only
 #' tolerated differences may be different rows and cell values)!
 #'
+#' @param mypath The absolute path to the raw .csv file.
+#'
 #' @return A tibble (i.e. a kind of improved data.frame). For further information on tibbles, please refer to
 #' the `tidyverse` or \link[readr]{readr} documentation.
 #' @export
@@ -24,9 +26,9 @@
 #' \dontrun{
 #' mydata <- import_raw_tits_data()
 #' }
-import_raw_tits_data <- function(){
+import_raw_tits_data <- function(mypath){
 
-  aaa <- readr::read_csv2(here::here("mydata", "ppl_dijon_tits_data.csv"), col_names = TRUE, na = "NA",
+  aaa <- readr::read_csv2(file = mypath, col_names = TRUE, na = "NA",
                          col_types = readr::cols(id_nestbox = readr::col_factor(),
                                                  site = readr::col_factor(),
                                                  year = readr::col_factor(),

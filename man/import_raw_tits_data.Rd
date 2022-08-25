@@ -4,7 +4,10 @@
 \alias{import_raw_tits_data}
 \title{Import the raw tits dataset}
 \usage{
-import_raw_tits_data()
+import_raw_tits_data(mypath)
+}
+\arguments{
+\item{mypath}{The absolute path to the raw .csv file.}
 }
 \value{
 A tibble (i.e. a kind of improved data.frame). For further information on tibbles, please refer to
