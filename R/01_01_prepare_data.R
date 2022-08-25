@@ -5,6 +5,8 @@
 # The functions of this R file are meant to prepare datasets: e.g. aggregate observations,
 # delete or add variables, etc. But NOT to directly explore and clean data for analyses!
 
+utils::globalVariables("where") # This is necessary for now as tidyselect::where is not
+# an exported function!
 
 
 ### ______________________________________
@@ -106,7 +108,6 @@ export_nestling_aggreg <- function(){
 #' @importFrom here here
 #' @importFrom tidyr separate
 #' @importFrom tidyr unite
-#' @importFrom tidyselect where
 #' @importFrom dplyr select
 #' @importFrom dplyr mutate
 #' @importFrom dplyr across
@@ -188,7 +189,7 @@ tdata_update_temp <- function(){
                                                                                 sep = "_"),
     year == "2022" & laying_date < as.Date(median_laydate$mid_date[4]) ~ paste(year, "early",
                                                                                sep = "_"))) %>%
-    dplyr::mutate(dplyr::across(tidyselect::where(is.character), factor)) %>%
+    dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
     dplyr::relocate(breeding_window, .after = year) %>%
     dplyr::relocate(laying_date, .after = breeding_window) %>%
     dplyr::relocate(flight_date, .after = hatching_date) %>%
