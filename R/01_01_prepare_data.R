@@ -89,9 +89,9 @@ export_nestling_aggreg <- function(myrawdata){
 ### ____________________________________________________________________
 #' Update and export the tits dataset with temperature related variables
 #'
-#' @description The function is the first of a series of functions meant to update and complete
-#' the tits dataset with new variables. The `tdata_update_temp` function modifies the "aggregated
-#' tits dataset" in several ways:
+#' @description The function is the \strong{first} of a series of functions meant to update and complete
+#' the tits dataset with its \emph{independent variables} (i.e. predictors and covariates).
+#' The `tdata_update_temp` function modifies the \emph{aggregated tits dataset} in several ways:
 #' * First, it assigns to each observation (nestbox for a given year) the temperature station it is
 #' paired with (giving the new column "\emph{temp_station_id}").
 #' * Second, it reorganizes the date columns (deleting 2 and updating the others).
@@ -106,7 +106,7 @@ export_nestling_aggreg <- function(myrawdata){
 #'
 #' @param myboxtemp_data The nestbox-temperature stations pairing dataset (.csv).
 #' @param mytits_data The tits nestling aggregated dataset (.csv). Cf.
-#' \code{\link[ppl.tits:export_nestling_aggreg]{boxplot}}.
+#' \code{\link[ppl.tits:export_nestling_aggreg]{export_nestling_aggreg}}.
 #'
 #' @return A tibble with an improved version of the tits dataset.
 #' @export
@@ -422,73 +422,97 @@ tdata_update_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxt
 
 
 
-#
-# ###################### Join the datasets (tits and predictors)§§§§§§§§§§§§§§§§§§§§§§§§§
-# targets tar_read
-# readr read.csv2
-# readr cols
-# readr col_factor
-# readr col_integer
-# here here
-# dplyr mutate
-# dplyr across
-# dplyr left_join
-# dplyr relocate
-# dplyr select
-#
-#
-# titsdata_raw_iv <- function(){
-#   # Import
-#   tits <- targets::tar_read(titsdata_temp) # Comment l'importer autrement (sans refaire tourner le script)?????????????
-#   #  En exportant la table à l'issue de la fonction précédante? Ou pas, juste préciser dans l'aide de la fonction de
-#   # ne pas utiliser les fonctions du package telles quelles, mais de faire tar_make ???
-#
-#   tpred <- readr::read_csv2(here::here("mydata", "tits_predictors.csv"), col_names = TRUE, na = "NA",
-#                             col_types = readr::cols(id_nestbox = readr::col_factor(),
-#                                                     lsource_vs150_m = readr::col_integer(),
-#                                                     age_class = readr::col_factor(
-#                                                       ordered = TRUE,
-#                                                       levels = c("0", "1", "2"),
-#                                                       include_na = TRUE),
-#                                                     site = readr::col_factor(),
-#                                                     strata_div = readr::col_factor(
-#                                                       ordered = TRUE,
-#                                                       levels = c("0", "1", "2", "3", "4"),
-#                                                       include_na = TRUE))) # I don't know why,
-#   # but I cannot make readr understand that some variables are actually numeric! So I have
-#   # to add new lines:
-#   tpred %>%
-#     dplyr::mutate(dplyr::across(where(is.character), as.numeric)) -> tpred
-#   summary(tpred)
-#
-#
-#   ntits <- dplyr::left_join(tits, tpred, by = "id_nestbox")
-#   ntits %>% dplyr::mutate(woody_area = vegetation_area - herbaceous_area,
-#                           open_area = 70353 - c(vegetation_area + built_area)) %>% # 70353 is the
-#     # total surface area of the 150m buffers computed by PostGIS!
-#     dplyr::select(-temp_station_id) %>%
-#     dplyr::relocate(site, .after = id_nestbox) %>%
-#     dplyr::relocate(lsource_vs150_m, .after = lflux_10_iq) %>%
-#     dplyr::relocate(lsource_vs150_sd, .after = lsource_vs150_m) %>%
-#     dplyr::relocate(soft_manag_area, .after = herbaceous_area) %>%
-#     dplyr::relocate(woody_area, .after = vegetation_area) %>%
-#     dplyr::relocate(open_area, .before = built_area) %>%
-#     dplyr::relocate(age_class, .after = trafic) %>%
-#     dplyr::relocate(strata_div, .after = age_class) -> ntits
-#   ntits[which(ntits$id_nestbox == "DIJ-188B" & ntits$year == "2022"), 36] <- "4" # I obviously forgot
-#   # to assign a value for this nestbox.
-#
-#   return(ntits)
-#
-# }
-#
-#
-#
-#
-#
-# # + other IV (open space, woody area) --> 2ème UPDATE function!
-# # + other IV (mothers_cond, fathers_cond) --> 3ème UPDATE function!
-# # + synthesis IV (light poll, temp etc.) --> 4ème UPDATE function? Or exploration (with imputation, etc.)???
-#
-#
+
+###################### Join the datasets (tits and predictors)§§§§§§§§§§§§§§§§§§§§§§§§§
+targets tar_read
+readr read.csv2
+readr cols
+readr col_factor
+readr col_integer
+here here
+dplyr mutate
+dplyr across
+dplyr left_join
+dplyr relocate
+dplyr select
+
+
+#' Update and export the tits dataset with all its "raw" independent variables (IVs)
+#'
+#' @description The function is the \strong{second} of a series of functions to update and complete
+#' the tits dataset with new variables. The `tdata_update_rawiv` function loads and modifies the
+#' dataset generated by the
+#'
+#' @param my_tdata
+#' @param my_iv_data
+#'
+#' @return
+#' @export
+#'
+#' @examples
+tdata_update_rawiv <- function(my_tdata = titsdata_temp,
+                               my_iv_data = here::here("mydata", "tits_predictors.csv")){
+
+  ##### Import data files
+  # _____________________
+  tits <- targets::tar_read(my_tdata) # Reads the "my_tdata" target!
+
+  tpred <- readr::read_csv2(my_iv_data, col_names = TRUE, na = "NA",
+                            col_types = readr::cols(id_nestbox = readr::col_factor(),
+                                                    lsource_vs150_m = readr::col_integer(),
+                                                    age_class = readr::col_factor(
+                                                      ordered = TRUE,
+                                                      levels = c("0", "1", "2"),
+                                                      include_na = TRUE),
+                                                    site = readr::col_factor(),
+                                                    strata_div = readr::col_factor(
+                                                      ordered = TRUE,
+                                                      levels = c("0", "1", "2", "3", "4"),
+                                                      include_na = TRUE)))
+  # I don't know why, but I cannot make readr understand that some variables are actually numeric!
+  # So I have to add new lines:
+  tpred %>%
+    dplyr::mutate(dplyr::across(where(is.character), as.numeric)) -> tpred
+
+
+
+
+
+  ##### Actual data join, new predictors computation and data reorganization
+  # ________________________________________________________________________
+  ntits <- dplyr::left_join(tits, tpred, by = "id_nestbox")
+  ntits %>% dplyr::mutate(woody_area = vegetation_area - herbaceous_area,
+                          open_area = 70353 - c(vegetation_area + built_area)) %>% # 70353 is the
+    # total surface area of the 150m buffers computed by PostGIS!
+    dplyr::select(-temp_station_id) %>%
+    dplyr::relocate(site, .after = id_nestbox) %>%
+    dplyr::relocate(lsource_vs150_m, .after = lflux_10_iq) %>%
+    dplyr::relocate(lsource_vs150_sd, .after = lsource_vs150_m) %>%
+    dplyr::relocate(soft_manag_area, .after = herbaceous_area) %>%
+    dplyr::relocate(woody_area, .after = vegetation_area) %>%
+    dplyr::relocate(open_area, .before = built_area) %>%
+    dplyr::relocate(age_class, .after = trafic) %>%
+    dplyr::relocate(strata_div, .after = age_class) -> ntits
+  ntits[which(ntits$id_nestbox == "DIJ-188B" & ntits$year == "2022"), 36] <- "4" # I obviously forgot
+  # to assign a value for this nestbox, so here it is (NOTE: as I assign it here, it means I did not
+  # update it in the GIS layers nor in the database)!
+
+
+
+  ##### To export the updated table
+  # _______________________________
+  return(ntits)
+  # _______________________________
+
+}
+
+
+
+
+
+# + other IV (open space, woody area) --> 2ème UPDATE function!
+# + other IV (mothers_cond, fathers_cond) --> 3ème UPDATE function!
+# + synthesis IV (light poll, temp etc.) --> 4ème UPDATE function? Or exploration (with imputation, etc.)???
+
+
 
