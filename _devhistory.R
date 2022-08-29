@@ -339,6 +339,9 @@ targets::tar_glimpse()
 # To show the complete visual network representation of my workflow:
 targets::tar_visnetwork()
 
+### NOTE: Don't forget to fill the README file and to create a _make.R for others to be able
+# to reproduce my work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 
 
