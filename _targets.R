@@ -27,7 +27,7 @@ list(
   # Produces the first tits data update (formatting and inclusion of the breeding_window and
   # temperature-related variables):
   targets::tar_target(tdata_temp, ppl.tits::tdata_upD_temp(
-    myboxtemp_data = boxtemp_file, mytits_data = nnestling_data)),
+    myboxtemp_data = boxtemp_file, mytits_data = nestling_agg_data)),
 
 
   ### All targets related to output files #
