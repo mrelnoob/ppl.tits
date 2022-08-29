@@ -26,13 +26,13 @@ list(
   targets::tar_target(raw_tits, ppl.tits::import_raw_tits_data(mypath = raw_data_file)),
   # Produces the first tits data update (formatting and inclusion of the breeding_window and
   # temperature-related variables):
-  targets::tar_target(titsdata_temp, ppl.tits::tdata_upD_temp(
+  targets::tar_target(tdata_temp, ppl.tits::tdata_upD_temp(
     myboxtemp_data = boxtemp_file, mytits_data = nnestling_data)),
 
 
   ### All targets related to output files #
   # _______________________________________
-  targets::tar_target(nnestling_data, ppl.tits::export_nestling_aggreg(myrawdata = raw_tits), format = "file")
+  targets::tar_target(nestling_agg_data, ppl.tits::export_nestling_aggreg(myrawdata = raw_tits), format = "file")
 
   )
 
