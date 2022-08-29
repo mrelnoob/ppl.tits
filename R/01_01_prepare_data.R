@@ -91,7 +91,7 @@ export_nestling_aggreg <- function(myrawdata){
 #'
 #' @description The function is the \strong{first} of a series of functions meant to update and complete
 #' the tits dataset with its \emph{independent variables} (i.e. predictors and covariates).
-#' The `tdata_update_temp` function modifies the \emph{aggregated tits dataset} in several ways:
+#' The `tdata_upD_temp` function modifies the \emph{aggregated tits dataset} in several ways:
 #' * First, it assigns to each observation (nestbox for a given year) the temperature station it is
 #' paired with (giving the new column "\emph{temp_station_id}").
 #' * Second, it reorganizes the date columns (deleting 2 and updating the others).
@@ -132,9 +132,9 @@ export_nestling_aggreg <- function(myrawdata){
 #'
 #' @examples
 #' \dontrun{
-#' mydata <- tdata_update_temp()
+#' mydata <- tdata_upD_temp()
 #' }
-tdata_update_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp.csv"),
+tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp.csv"),
                               mytits_data = here::here("output", "tables", "tits_nestling_data.csv")){
   ##### Attribute ID to nest_years and improve formatting
   # _____________________________________________________
