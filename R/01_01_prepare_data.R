@@ -422,7 +422,7 @@ tdata_update_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxt
 
 
 
-
+#
 # ###################### Join the datasets (tits and predictors)§§§§§§§§§§§§§§§§§§§§§§§§§
 # targets tar_read
 # readr read.csv2
@@ -436,48 +436,52 @@ tdata_update_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxt
 # dplyr relocate
 # dplyr select
 #
-# library(ppl.tits)
+#
+# titsdata_raw_iv <- function(){
+#   # Import
+#   tits <- targets::tar_read(titsdata_temp) # Comment l'importer autrement (sans refaire tourner le script)?????????????
+#   #  En exportant la table à l'issue de la fonction précédante? Ou pas, juste préciser dans l'aide de la fonction de
+#   # ne pas utiliser les fonctions du package telles quelles, mais de faire tar_make ???
+#
+#   tpred <- readr::read_csv2(here::here("mydata", "tits_predictors.csv"), col_names = TRUE, na = "NA",
+#                             col_types = readr::cols(id_nestbox = readr::col_factor(),
+#                                                     lsource_vs150_m = readr::col_integer(),
+#                                                     age_class = readr::col_factor(
+#                                                       ordered = TRUE,
+#                                                       levels = c("0", "1", "2"),
+#                                                       include_na = TRUE),
+#                                                     site = readr::col_factor(),
+#                                                     strata_div = readr::col_factor(
+#                                                       ordered = TRUE,
+#                                                       levels = c("0", "1", "2", "3", "4"),
+#                                                       include_na = TRUE))) # I don't know why,
+#   # but I cannot make readr understand that some variables are actually numeric! So I have
+#   # to add new lines:
+#   tpred %>%
+#     dplyr::mutate(dplyr::across(where(is.character), as.numeric)) -> tpred
+#   summary(tpred)
 #
 #
-# # Import
-# tits <- targets::tar_read(titsdata_temp) # Comment l'importer autrement (sans refaire tourner le script)?????????????
-# #  En exportant la table à l'issue de la fonction précédante? Ou pas, juste préciser dans l'aide de la fonction de
-# # ne pas utiliser les fonctions du package telles quelles, mais de faire tar_make ???
+#   ntits <- dplyr::left_join(tits, tpred, by = "id_nestbox")
+#   ntits %>% dplyr::mutate(woody_area = vegetation_area - herbaceous_area,
+#                           open_area = 70353 - c(vegetation_area + built_area)) %>% # 70353 is the
+#     # total surface area of the 150m buffers computed by PostGIS!
+#     dplyr::select(-temp_station_id) %>%
+#     dplyr::relocate(site, .after = id_nestbox) %>%
+#     dplyr::relocate(lsource_vs150_m, .after = lflux_10_iq) %>%
+#     dplyr::relocate(lsource_vs150_sd, .after = lsource_vs150_m) %>%
+#     dplyr::relocate(soft_manag_area, .after = herbaceous_area) %>%
+#     dplyr::relocate(woody_area, .after = vegetation_area) %>%
+#     dplyr::relocate(open_area, .before = built_area) %>%
+#     dplyr::relocate(age_class, .after = trafic) %>%
+#     dplyr::relocate(strata_div, .after = age_class) -> ntits
+#   ntits[which(ntits$id_nestbox == "DIJ-188B" & ntits$year == "2022"), 36] <- "4" # I obviously forgot
+#   # to assign a value for this nestbox.
 #
-# tpred <- readr::read_csv2(here::here("mydata", "tits_predictors.csv"), col_names = TRUE, na = "NA",
-#                          col_types = readr::cols(id_nestbox = readr::col_factor(),
-#                                                  lsource_vs150_m = readr::col_integer(),
-#                                                  age_class = readr::col_factor(
-#                                                    ordered = TRUE,
-#                                                    levels = c("0", "1", "2"),
-#                                                    include_na = TRUE),
-#                                                  site = readr::col_factor(),
-#                                                  strata_div = readr::col_factor(
-#                                                    ordered = TRUE,
-#                                                    levels = c("0", "1", "2", "3", "4"),
-#                                                    include_na = TRUE))) # I don't know why,
-# # but I cannot make readr understand that some variables are actually numeric! So I have
-# # to add new lines:
-# tpred %>%
-#   dplyr::mutate(dplyr::across(where(is.character), as.numeric)) -> tpred
-# summary(tpred)
+#   return(ntits)
 #
+# }
 #
-# ntits <- dplyr::left_join(tits, tpred, by = "id_nestbox")
-# ntits %>% dplyr::mutate(woody_area = vegetation_area - herbaceous_area,
-#                         open_area = 70353 - c(vegetation_area + built_area)) %>% # 70353 is the
-#   # total surface area of the 150m buffers computed by PostGIS!
-#   dplyr::select(-temp_station_id) %>%
-#   dplyr::relocate(site, .after = id_nestbox) %>%
-#   dplyr::relocate(lsource_vs150_m, .after = lflux_10_iq) %>%
-#   dplyr::relocate(lsource_vs150_sd, .after = lsource_vs150_m) %>%
-#   dplyr::relocate(soft_manag_area, .after = herbaceous_area) %>%
-#   dplyr::relocate(woody_area, .after = vegetation_area) %>%
-#   dplyr::relocate(open_area, .before = built_area) %>%
-#   dplyr::relocate(age_class, .after = trafic) %>%
-#   dplyr::relocate(strata_div, .after = age_class) -> ntits
-#
-# summary(ntits)
 #
 #
 #
