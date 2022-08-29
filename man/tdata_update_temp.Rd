@@ -13,15 +13,15 @@ tdata_update_temp(
 \item{myboxtemp_data}{The nestbox-temperature stations pairing dataset (.csv).}
 
 \item{mytits_data}{The tits nestling aggregated dataset (.csv). Cf.
-\code{\link[ppl.tits:export_nestling_aggreg]{boxplot}}.}
+\code{\link[ppl.tits:export_nestling_aggreg]{export_nestling_aggreg}}.}
 }
 \value{
 A tibble with an improved version of the tits dataset.
 }
 \description{
-The function is the first of a series of functions meant to update and complete
-the tits dataset with new variables. The \code{tdata_update_temp} function modifies the "aggregated
-tits dataset" in several ways:
+The function is the \strong{first} of a series of functions meant to update and complete
+the tits dataset with its \emph{independent variables} (i.e. predictors and covariates).
+The \code{tdata_update_temp} function modifies the \emph{aggregated tits dataset} in several ways:
 \itemize{
 \item First, it assigns to each observation (nestbox for a given year) the temperature station it is
 paired with (giving the new column "\emph{temp_station_id}").
