@@ -20,4 +20,5 @@ Imports:
     readr,
     stats,
     stringr,
+    targets,
     tidyr
