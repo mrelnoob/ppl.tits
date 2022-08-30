@@ -456,7 +456,7 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
 #' variables.
 #' @export
 #' @importFrom targets tar_read
-#' @importFrom readr read.csv2
+#' @importFrom readr read_csv2
 #' @importFrom readr cols
 #' @importFrom readr col_factor
 #' @importFrom readr col_integer
