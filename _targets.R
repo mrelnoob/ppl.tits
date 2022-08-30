@@ -10,7 +10,9 @@
 targets::tar_option_set(packages = "ppl.tits",
                         imports = "ppl.tits")
 ### Also note that my targets should call other targets in order for the pipeline to work
-# properly and follow changes.
+# properly and follow changes. HOWEVER, as I am importing {ppl.tits}, I should NOT call my
+# custom functions like this: ppl.tits::my_function(). I should call them directly as if I had
+# used library(ppl.tits)!
 
 list(
   ### All targets related to input files #
@@ -26,16 +28,16 @@ list(
   ### All targets related to data-processing #
   # __________________________________________
   # Read the raw data and return a data.frame:
-  targets::tar_target(raw_tits, ppl.tits::import_raw_tits_data(mypath = raw_data_file)),
+  targets::tar_target(raw_tits, import_raw_tits_data(mypath = raw_data_file)),
   # Produces the first tits data update (formatting and inclusion of the breeding_window and
   # temperature-related variables):
-  targets::tar_target(tdata_temp, ppl.tits::tdata_upD_temp(
+  targets::tar_target(tdata_temp, tdata_upD_temp(
     myboxtemp_data = boxtemp_file, mytits_data = nestling_agg_data)),
 
 
   ### All targets related to output files #
   # _______________________________________
-  targets::tar_target(nestling_agg_data, ppl.tits::export_nestling_aggreg(myrawdata = raw_tits), format = "file")
+  targets::tar_target(nestling_agg_data, export_nestling_aggreg(myrawdata = raw_tits), format = "file")
 
   )
 
