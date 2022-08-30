@@ -5,7 +5,9 @@
 #library(targets) # I don't need it if i use "::"!
 
 ### I should also source my custom functions but I don't want to, because that's one of the
-# advantages of building an R package.
+# advantages of building an R package. However, it will prevent {targets} from tracking changes
+# to my functions. To avoid that, I need to set-up a few global options with:
+
 ### Also note that my targets should call other targets in order for the pipeline to work
 # properly and follow changes.
 

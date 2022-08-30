@@ -273,25 +273,25 @@ usethis::use_git(message = ":pencil: Edited README")
 
 
 # ---------------------------------------------- #
-##### 3. Pipeline programming with 'targets' #####
+##### 3. Pipeline programming with {targets} #####
 # ---------------------------------------------- #
 
 # To ensure maximum reproducibility, help me organize my data processing, and avoid
 # wasting too much time every time I have to go back in my code to change something,
-# it may be a good idea to use a pipeline programming tool such as 'targets' (or 'Drake').
+# it may be a good idea to use a pipeline programming tool such as {targets} (or 'Drake').
 # I won't explain here the advantages of such tools (Google is your friend), but I
 # will explain how to use it and associate it while also developing a package to
 # process my data (or I'll try).
 
-# If I understand correctly, I think that 'targets' and 'package development' can
+# If I understand correctly, I think that {targets} and 'package development' can
 # be used simultaneously as long as I don't mix the two frameworks up, i.e. they both
 # live under the same roof (my project folder), but they don't directly work together:
 #   - The 'package' part of my project is here to i) be the fundamental structure of
 #     the project and ii) to create (documented) custom functions that I can use
-#     wherever I want (in this project or any others). To work fine with 'targets',
-#     the 'package' part should simply ignore what 'targets' is doing and only focus
+#     wherever I want (in this project or any others). To work fine with {targets},
+#     the 'package' part should simply ignore what {targets} is doing and only focus
 #     on its own job!
-#   - The 'targets' part of my project is here to i) organize my data processing
+#   - The {targets} part of my project is here to i) organize my data processing
 #     workflow, ii) keep track of interconnected elements in the workflow, and iii)
 #     only in case of changes (of the data or code), automatically re-run the parts
 #     of the code/workflow that are impacted by the changes and leave the other parts
@@ -299,16 +299,16 @@ usethis::use_git(message = ":pencil: Edited README")
 #     but it should probably not consider the 'package development' as a goal (a target)
 #     in itself, or at least I will prevent it from doing so for the sake of simplicity.
 # So that means that the package building tools (e.g. R CMD Check) will have to
-# ignore what 'targets' is doing and, conversely, that the 'targets' files will have
+# ignore what {targets} is doing and, conversely, that the {targets} files will have
 # to ignore what 'devtools' etc. are doing.
 # So it means that I WILL HAVE TO manage and run both sides separately and iteratively!
 
 
 
 # ---------------------------------------------------------------------------- #
-### * 3.1. Setting-up the 'targets' subproject ---------------------------------
+### * 3.1. Setting-up the {targets} subproject ---------------------------------
 
-# To create the 'targets' master script file:
+# To create the {targets} master script file:
 file.create("_targets.R")
 # This is the "master script", where every targets (goal) of the project is defined. It
 # should thus be UPDATED every time I progress in my analysis workflow and make a new
@@ -316,15 +316,21 @@ file.create("_targets.R")
 # To know how to specify the workflow, please refer to this file, to section 3.2. below,
 # and to online resources!
 
-# To tell devtools to ignore what 'targets' does:
+# To tell devtools to ignore what {targets} does:
 usethis::use_build_ignore("_targets.R")
 usethis::use_build_ignore("_targets/")
 usethis::use_git_ignore("_targets/")
 
+# IMPORTANT NOTE: as I am developing a package {ppl.tits} alongside the {targets} pipeline,
+# I will not source my functions but call them using something like ppl.tits::my_function().
+# Consequently, {targets} will not be able to track changes in my functions unless I specify
+# it in the {targets} global options (see _targets.R to know how, or refer to online resources
+# such as https://books.ropensci.org/targets/packages.html#package-based-invalidation).
+
 
 
 # ---------------------------------------------------------------------------- #
-### * 3.2. Main 'targets' functions --------------------------------------------
+### * 3.2. Main {targets} functions --------------------------------------------
 
 # To create a target:
 targets::tar_target()
@@ -337,7 +343,8 @@ targets::tar_read()
 # To show target inter-dependencies:
 targets::tar_glimpse()
 # To show the complete visual network representation of my workflow:
-targets::tar_visnetwork()
+targets::tar_visnetwork(targets_only = FALSE) # This argument enables the display of global
+# functions as well as genuine targets.
 
 ### NOTE: Don't forget to fill the README file and to create a _make.R for others to be able
 # to reproduce my work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
