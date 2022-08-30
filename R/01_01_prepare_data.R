@@ -516,6 +516,11 @@ tdata_upD_rawiv <- function(my_tdata = tdata_temp,
   # to assign a value for this nestbox, so here it is (NOTE: as I assign it here, it means I did not
   # update it in the GIS layers nor in the database)!
 
+  # To dismiss notes regarding "visible binding for global variables" during the CMD Check:
+  tdata_temp <- vegetation_area <- herbaceous_area <- built_area <- temp_station_id <- site <-
+    id_nestbox <- lsource_vs150_m <- lflux_10_iq <- lsource_vs150_sd <- soft_manag_area <- woody_area <-
+    open_area <- age_class <- trafic <- strata_div <- NULL
+
 
 
   ##### To export the updated table
