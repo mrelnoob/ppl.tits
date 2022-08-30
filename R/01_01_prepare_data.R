@@ -179,7 +179,12 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
 
   ### Creation of the "breeding_window" random factor___________________________#
   tits %>% dplyr::group_by(year) %>%
-    dplyr::summarise(mid_date = stats::median(laying_date, na.rm = TRUE)) -> median_laydate
+    dplyr::summarise(mid_date = stats::median(laying_date, na.rm = TRUE)) -> median_laydate # NOTE:
+  # This object as well as the following (mrd) are not chronological! They're based on the order of
+  # appearance of years in "tits": so the order is (currently) 2020, 2021, 2019 and 2022. If we
+  # import data from additional years (that could change the order), I will have to carefully
+  # check that my code works as expected! Because of this error, I call these objects
+  # (median_laydate and mrd) not in non-chronological order in the next code lines!
 
   # Imputation of the laying_date missing values (n=9)
   tits %>% dplyr::group_by(year) %>%
@@ -187,32 +192,32 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
       flight_date, na.rm = TRUE) - mean(laying_date, na.rm = TRUE)) -> mrd
 
   tits %>% dplyr::mutate(laying_date = dplyr::case_when(
-    year == "2019" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[1]),
+    year == "2019" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[3]),
     year == "2019" & is.na(laying_date) == FALSE ~ laying_date,
-    year == "2020" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[2]),
+    year == "2020" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[1]),
     year == "2020" & is.na(laying_date) == FALSE ~ laying_date,
-    year == "2021" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[3]),
+    year == "2021" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[2]),
     year == "2021" & is.na(laying_date) == FALSE ~ laying_date,
     year == "2022" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[4]),
     year == "2022" & is.na(laying_date) == FALSE ~ laying_date)) -> tits
 
   # Random factor generation
   tits %>% dplyr::mutate(breeding_window = dplyr::case_when(
-    year == "2019" & laying_date >= as.Date(median_laydate$mid_date[1]) ~ paste(year, "late",
+    year == "2019" & laying_date >= as.Date(median_laydate$mid_date[3]) ~ paste("late", year,
                                                                                 sep = "_"),
-    year == "2019" & laying_date < as.Date(median_laydate$mid_date[1]) ~ paste(year, "early",
+    year == "2019" & laying_date < as.Date(median_laydate$mid_date[3]) ~ paste("early", year,
                                                                                sep = "_"),
-    year == "2020" & laying_date >= as.Date(median_laydate$mid_date[2]) ~ paste(year, "late",
+    year == "2020" & laying_date >= as.Date(median_laydate$mid_date[1]) ~ paste("late", year,
                                                                                 sep = "_"),
-    year == "2020" & laying_date < as.Date(median_laydate$mid_date[2]) ~ paste(year, "early",
+    year == "2020" & laying_date < as.Date(median_laydate$mid_date[1]) ~ paste("early", year,
                                                                                sep = "_"),
-    year == "2021" & laying_date >= as.Date(median_laydate$mid_date[3]) ~ paste(year, "late",
+    year == "2021" & laying_date >= as.Date(median_laydate$mid_date[2]) ~ paste("late", year,
                                                                                 sep = "_"),
-    year == "2021" & laying_date < as.Date(median_laydate$mid_date[3]) ~ paste(year, "early",
+    year == "2021" & laying_date < as.Date(median_laydate$mid_date[2]) ~ paste("early", year,
                                                                                sep = "_"),
-    year == "2022" & laying_date >= as.Date(median_laydate$mid_date[4]) ~ paste(year, "late",
+    year == "2022" & laying_date >= as.Date(median_laydate$mid_date[4]) ~ paste("late", year,
                                                                                 sep = "_"),
-    year == "2022" & laying_date < as.Date(median_laydate$mid_date[4]) ~ paste(year, "early",
+    year == "2022" & laying_date < as.Date(median_laydate$mid_date[4]) ~ paste("early", year,
                                                                                sep = "_"))) %>%
     dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
     dplyr::relocate(breeding_window, .after = year) %>%
