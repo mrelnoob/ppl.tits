@@ -7,7 +7,8 @@
 ### I should also source my custom functions but I don't want to, because that's one of the
 # advantages of building an R package. However, it will prevent {targets} from tracking changes
 # to my functions. To avoid that, I need to set-up a few global options with:
-
+targets::tar_option_set(packages = "ppl.tits",
+                        imports = "ppl.tits")
 ### Also note that my targets should call other targets in order for the pipeline to work
 # properly and follow changes.
 
