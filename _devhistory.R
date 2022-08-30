@@ -8,6 +8,13 @@
 # for other so they can reproduce my work. That is why there are so many of them, so anyone can
 # do what I did, regardless of his/her own experience. Note also that English and R are not my
 # native tongues, so please forgive any mistakes.
+# NOTE: As you'll see, I chose to develop an R package alongside a {targets} pipeline to organise
+# my data analysis procedure. HOWEVER, it is quite time consuming and, once you've understand how
+# to use {targets} and {renv} and if you do not actually need to share your package, then using a
+# simple {targets} project (coupled with {renv}) is largely sufficient! Think about it next time
+# rather than always developing a package!
+# Note also that I briefly explain how to use {targets} at the end of this document and I will add
+# {renv} later, if I can.
 
 
 
@@ -322,7 +329,7 @@ usethis::use_build_ignore("_targets/")
 usethis::use_git_ignore("_targets/")
 
 # IMPORTANT NOTE: as I am developing a package {ppl.tits} alongside the {targets} pipeline,
-# I will not source my functions but call them using something like ppl.tits::my_function().
+# I will not source my functions but call them directly.
 # Consequently, {targets} will not be able to track changes in my functions unless I specify
 # it in the {targets} global options (see _targets.R to know how, or refer to online resources
 # such as https://books.ropensci.org/targets/packages.html#package-based-invalidation).
