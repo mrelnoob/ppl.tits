@@ -5,7 +5,7 @@
 \title{Update and export the tits dataset with all its "raw" independent variables (IVs)}
 \usage{
 tdata_upD_rawiv(
-  my_tdata = tdata_temp,
+  my_tdata = here::here("output", "tables", "ndata_temp.csv"),
   my_iv_data = here::here("mydata", "tits_predictors.csv")
 )
 }
@@ -25,8 +25,8 @@ more "advanced" IV that will be computed by the next functions to generate the "
 dataset.}
 }
 \value{
-A tibble with an improved version of the tits dataset that includes all "raw" independent
-variables.
+A .csv file of an updated version of the tits dataset that includes all "raw" independent
+variables, and its path.
 }
 \description{
 The function is the \strong{second} of a series of functions meant to update and

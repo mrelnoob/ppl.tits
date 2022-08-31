@@ -16,7 +16,7 @@ tdata_upD_temp(
 \code{\link[ppl.tits:export_nestling_aggreg]{export_nestling_aggreg}}.}
 }
 \value{
-A tibble with an improved version of the tits dataset.
+A .csv file of the updated version of the tits dataset, and its path.
 }
 \description{
 The function is the \strong{first} of a series of functions meant to update and complete
