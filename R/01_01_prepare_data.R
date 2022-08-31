@@ -108,12 +108,13 @@ export_nestling_aggreg <- function(myrawdata){
 #' @param mytits_data The tits nestling aggregated dataset (.csv). Cf.
 #' \code{\link[ppl.tits:export_nestling_aggreg]{export_nestling_aggreg}}.
 #'
-#' @return A tibble with an improved version of the tits dataset.
+#' @return A .csv file of the updated version of the tits dataset, and its path.
 #' @export
 #' @importFrom readr read_csv2
 #' @importFrom readr cols
 #' @importFrom readr col_factor
 #' @importFrom readr col_double
+#' @importFrom readr write_csv2
 #' @importFrom here here
 #' @importFrom tidyr separate
 #' @importFrom tidyr unite
@@ -417,7 +418,8 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
 
   ##### To export the updated table
   # _______________________________
-  return(tits)
+  readr::write_csv2(x = tits, file = here::here("output", "tables", "ndata_temp.csv"))
+  return(here::here("output", "tables", "ndata_temp.csv"))
   # _______________________________
 
 }
@@ -452,14 +454,14 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
 #' more "advanced" IV that will be computed by the next functions to generate the "final" tits
 #' dataset.
 #'
-#' @return A tibble with an improved version of the tits dataset that includes all "raw" independent
-#' variables.
+#' @return A .csv file of an updated version of the tits dataset that includes all "raw" independent
+#' variables, and its path.
 #' @export
-#' @importFrom targets tar_read
 #' @importFrom readr read_csv2
 #' @importFrom readr cols
 #' @importFrom readr col_factor
 #' @importFrom readr col_integer
+#' @importFrom readr write_csv2
 #' @importFrom here here
 #' @importFrom dplyr mutate
 #' @importFrom dplyr across
@@ -471,12 +473,27 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
 #' \dontrun{
 #' mydata <- tdata_upD_rawiv()
 #' }
-tdata_upD_rawiv <- function(my_tdata = tdata_temp,
+tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_temp.csv"),
                                my_iv_data = here::here("mydata", "tits_predictors.csv")){
 
   ##### Import data files
   # _____________________
-  tits <- targets::tar_read(my_tdata) # Reads the "my_tdata" target!
+  tits <- readr::read_csv2(my_tdata, col_names = TRUE,
+                           col_types = readr::cols(id_nestbox = readr::col_factor(),
+                                                   year = readr::col_factor(),
+                                                   breeding_window = readr::col_factor(),
+                                                   laying_date = readr::col_date(),
+                                                   flight_date = readr::col_date(),
+                                                   clutch_size = readr::col_integer(),
+                                                   brood_size = readr::col_integer(),
+                                                   fledgling_nb = readr::col_integer(),
+                                                   success_manipulated = readr::col_factor(),
+                                                   father_id = readr::col_factor(),
+                                                   mother_id = readr::col_factor(),
+                                                   species = readr::col_factor())) # NOTE: I have
+  # to generate "tits" by reading the exported "ndata_temp" dataset in order for {targets} to be
+  # able to follow modifications. Otherwise, I could just have used ppl.tits::tdata_upD_temp().
+
 
   tpred <- readr::read_csv2(my_iv_data, col_names = TRUE, na = "NA",
                             col_types = readr::cols(id_nestbox = readr::col_factor(),
@@ -517,15 +534,18 @@ tdata_upD_rawiv <- function(my_tdata = tdata_temp,
   # update it in the GIS layers nor in the database)!
 
   # To dismiss notes regarding "visible binding for global variables" during the CMD Check:
-  tdata_temp <- vegetation_area <- herbaceous_area <- built_area <- temp_station_id <- site <-
-    id_nestbox <- lsource_vs150_m <- lflux_10_iq <- lsource_vs150_sd <- soft_manag_area <- woody_area <-
+  id_nestbox <- year <- breeding_window <- laying_date <- flight_date <- clutch_size <- brood_size <-
+    fledgling_nb <- success_manipulated <- father_id <- mother_id <- species <-
+    vegetation_area <- herbaceous_area <- built_area <- temp_station_id <- site <-
+    lsource_vs150_m <- lflux_10_iq <- lsource_vs150_sd <- soft_manag_area <- woody_area <-
     open_area <- age_class <- trafic <- strata_div <- NULL
 
 
 
   ##### To export the updated table
   # _______________________________
-  return(ntits)
+  readr::write_csv2(x = ntits, file = here::here("output", "tables", "ndata_rawiv.csv"))
+  return(here::here("output", "tables", "ndata_rawiv.csv"))
   # _______________________________
 }
 
