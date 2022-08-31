@@ -51,6 +51,8 @@ list(
   # Je pense qu'il faut que je l'exporte (comme pour nestling_agg_data)!!!!
   # Par ailleurs, ça ne sert à rien de faire les variables MOTHER/FATHER RF etc. pour le modèle local! Mais comme je vais
   # me concentrer d'abord sur le script Graphab et les analyses générales, je vais les calculer quand même! Ca sera fait!
+  ### Par ailleurs, je pourrais modifier mes fonctions pour qu'elles retourne plusieurs choses: 1) le chemin et 2) les
+  # tables. Comme ça je n'aurais pas forcément à read_csv à chaque fois que je veux ouvrir un ostie de tdata!!! Non?
 
   )
 
