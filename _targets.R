@@ -14,8 +14,15 @@ targets::tar_option_set(packages = "ppl.tits",
 # custom functions like this: ppl.tits::my_function(). I should call them directly as if I had
 # used library(ppl.tits)!
 ### Note also that I cannot call my targets in the functions of my package (in their .R files). As
-# a consequence, when a function/target creates a new version of a dataset, I need to export
-
+# a consequence, when a function/target creates a new version of a dataset, it should be exported as
+# a .csv file: the target thus returns the path to the .csv file, which can be used in the subsequent
+# functions to import the said dataset using something like `read_csv()` instead of directly calling
+# the previous function that generated the said dataset. That way, {targets} is able to built the
+# pipeline and track changes. If you try to call a target in a function, the pipeline will not work
+# because only when you build it (using `tar_make()`) are the targets created, so you cannot call
+# in a function an object that does not yet exist!
+### To go further: "https://books.ropensci.org/targets/".
+### See also: https://stackoverflow.com/questions/68683153/preferred-approach-for-making-the-targets-r-package-detect-changes-to-functi
 list(
   ### All targets related to "external" input files #
   # ______________________________________
@@ -56,6 +63,3 @@ list(
 
   )
 
-# Il faut que je lise "https://books.ropensci.org/targets/" si je veux vraiment m'y mettre, car ça ne va pas. Quand j'aurais le
-# temps. Voir aussi : https://stackoverflow.com/questions/68683153/preferred-approach-for-making-the-targets-r-package-detect-changes-to-functi
-# qui traite du développement de fonctions/packages en utilisant TRAGETS§§§
