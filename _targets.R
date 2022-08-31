@@ -13,6 +13,8 @@ targets::tar_option_set(packages = "ppl.tits",
 # properly and follow changes. HOWEVER, as I am importing {ppl.tits}, I should NOT call my
 # custom functions like this: ppl.tits::my_function(). I should call them directly as if I had
 # used library(ppl.tits)!
+### Note also that I cannot call my targets in the functions of my package (in their .R files). As
+# a consequence, when a function/target creates a new version of a dataset, I need to export
 
 list(
   ### All targets related to "external" input files #
@@ -43,12 +45,10 @@ list(
   # Produce the first tits data update (formatting and inclusion of the breeding_window and
   # temperature-related variables):
   targets::tar_target(tdata_temp, tdata_upD_temp(
-    myboxtemp_data = boxtemp_file, mytits_data = nestling_agg_data)),
+    myboxtemp_data = boxtemp_file, mytits_data = nestling_agg_data), format = "file"),
   # Produce the second tits data update (joining of the raw independent variables):
   targets::tar_target(tdata_rawiv, tdata_upD_rawiv(
-    my_tdata = tdata_temp, my_iv_data = predictor_file)) ###### MARCHE PAS§§§§§§§§ Casse les couilles!!! -->
-  # J'ai compris, c'est parce que j'appelle tar_target dans la fonction! Il faut que je trouve un autre moyen! -->
-  # Je pense qu'il faut que je l'exporte (comme pour nestling_agg_data)!!!!
+    my_tdata = tdata_temp, my_iv_data = predictor_file)$path, format = "file")
   # Par ailleurs, ça ne sert à rien de faire les variables MOTHER/FATHER RF etc. pour le modèle local! Mais comme je vais
   # me concentrer d'abord sur le script Graphab et les analyses générales, je vais les calculer quand même! Ca sera fait!
   ### Par ailleurs, je pourrais modifier mes fonctions pour qu'elles retourne plusieurs choses: 1) le chemin et 2) les
