@@ -440,6 +440,7 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
 #' * Second, it computes two new variables: namely \emph{woody_area} and \emph{open_area} from
 #' already existing columns.
 #' * Third, it reorganises the dataset for improved clarity.
+#' When it's done processing, the function exports the updated dataset as a new .csv file.
 #'
 #' @param my_tdata The name of the \strong{target} that contains the dataset generated
 #' by \code{\link[ppl.tits:tdata_upD_temp]{tdata_upD_temp}}. Note that the function
@@ -454,8 +455,9 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
 #' more "advanced" IV that will be computed by the next functions to generate the "final" tits
 #' dataset.
 #'
-#' @return A .csv file of an updated version of the tits dataset that includes all "raw" independent
-#' variables, and its path.
+#' @return A list containing 1) the updated dataset (a tibble accessible with
+#' `tdata_upD_rawiv()$dataset`), and 2) the path to the exported .csv file of the updated
+#' dataset (accessible with `tdata_upD_rawiv()$path`).
 #' @export
 #' @importFrom readr read_csv2
 #' @importFrom readr cols
@@ -471,7 +473,8 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
 #'
 #' @examples
 #' \dontrun{
-#' mydata <- tdata_upD_rawiv()
+#' mydata <- tdata_upD_rawiv()$dataset
+#' path_to_csv <- tdata_upD_rawiv()$path
 #' }
 tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_temp.csv"),
                                my_iv_data = here::here("mydata", "tits_predictors.csv")){
@@ -545,7 +548,9 @@ tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_tem
   ##### To export the updated table
   # _______________________________
   readr::write_csv2(x = ntits, file = here::here("output", "tables", "ndata_rawiv.csv"))
-  return(here::here("output", "tables", "ndata_rawiv.csv"))
+
+  output <- list(dataset = ntits, path = here::here("output", "tables", "ndata_rawiv.csv"))
+  return(output)
   # _______________________________
 }
 
