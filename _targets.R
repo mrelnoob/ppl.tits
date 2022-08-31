@@ -33,6 +33,12 @@ list(
   # temperature-related variables):
   targets::tar_target(tdata_temp, tdata_upD_temp(
     myboxtemp_data = boxtemp_file, mytits_data = nestling_agg_data)),
+  targets::tar_target(tdata_rawiv, tdata_upD_rawiv(
+    my_tdata = tdata_temp, my_iv_data = predictor_file)), ###### MARCHE PAS§§§§§§§§ Casse les couilles!!! -->
+  # J'ai compris, c'est parce que j'appelle tar_target dans la fonction! Il faut que je trouve un autre moyen! -->
+  # Je pense qu'il faut que je l'exporte (comme pour nestling_agg_data)!!!!
+  # Par ailleurs, ça ne sert à rien de faire les variables MOTHER/FATHER RF etc. pour le modèle local! Mais comme je vais
+  # me concentrer d'abord sur le script Graphab et les analyses générales, je vais les calculer quand même! Ca sera fait!
 
 
   ### All targets related to output files #
