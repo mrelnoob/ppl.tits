@@ -25,8 +25,9 @@ more "advanced" IV that will be computed by the next functions to generate the "
 dataset.}
 }
 \value{
-A .csv file of an updated version of the tits dataset that includes all "raw" independent
-variables, and its path.
+A list containing 1) the updated dataset (a tibble accessible with
+\code{tdata_upD_rawiv()$dataset}), and 2) the path to the exported .csv file of the updated
+dataset (accessible with \code{tdata_upD_rawiv()$path}).
 }
 \description{
 The function is the \strong{second} of a series of functions meant to update and
@@ -39,10 +40,12 @@ update function (\code{\link[ppl.tits:tdata_upD_temp]{tdata_upD_temp}}) in sever
 \item Second, it computes two new variables: namely \emph{woody_area} and \emph{open_area} from
 already existing columns.
 \item Third, it reorganises the dataset for improved clarity.
+When it's done processing, the function exports the updated dataset as a new .csv file.
 }
 }
 \examples{
 \dontrun{
-mydata <- tdata_upD_rawiv()
+mydata <- tdata_upD_rawiv()$dataset
+path_to_csv <- tdata_upD_rawiv()$path
 }
 }
