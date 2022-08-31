@@ -15,7 +15,7 @@ targets::tar_option_set(packages = "ppl.tits",
 # used library(ppl.tits)!
 
 list(
-  ### All targets related to input files #
+  ### All targets related to "external" input files #
   # ______________________________________
   targets::tar_target(raw_data_file, here::here("mydata", "ppl_dijon_tits_data.csv"),
              format = "file"),
@@ -25,25 +25,32 @@ list(
              format = "file"),
 
 
+
   ### All targets related to data-processing #
   # __________________________________________
+  ### IMPORTANT NOTE: data-processing targets that produce new versions of the datasets are
+  # typically stored in the "output files" section (see below) and not here!
+
   # Read the raw data and return a data.frame:
   targets::tar_target(raw_tits, import_raw_tits_data(mypath = raw_data_file)),
-  # Produces the first tits data update (formatting and inclusion of the breeding_window and
-  # temperature-related variables):
-  targets::tar_target(tdata_temp, tdata_upD_temp(
-    myboxtemp_data = boxtemp_file, mytits_data = nestling_agg_data)),
-  targets::tar_target(tdata_rawiv, tdata_upD_rawiv(
-    my_tdata = tdata_temp, my_iv_data = predictor_file)), ###### MARCHE PAS§§§§§§§§ Casse les couilles!!! -->
-  # J'ai compris, c'est parce que j'appelle tar_target dans la fonction! Il faut que je trouve un autre moyen! -->
-  # Je pense qu'il faut que je l'exporte (comme pour nestling_agg_data)!!!!
-  # Par ailleurs, ça ne sert à rien de faire les variables MOTHER/FATHER RF etc. pour le modèle local! Mais comme je vais
-  # me concentrer d'abord sur le script Graphab et les analyses générales, je vais les calculer quand même! Ca sera fait!
+
 
 
   ### All targets related to output files #
   # _______________________________________
-  targets::tar_target(nestling_agg_data, export_nestling_aggreg(myrawdata = raw_tits), format = "file")
+  # Export the nestling aggregated dataset:
+  targets::tar_target(nestling_agg_data, export_nestling_aggreg(myrawdata = raw_tits), format = "file"),
+  # Produce the first tits data update (formatting and inclusion of the breeding_window and
+  # temperature-related variables):
+  targets::tar_target(tdata_temp, tdata_upD_temp(
+    myboxtemp_data = boxtemp_file, mytits_data = nestling_agg_data)),
+  # Produce the second tits data update (joining of the raw independent variables):
+  targets::tar_target(tdata_rawiv, tdata_upD_rawiv(
+    my_tdata = tdata_temp, my_iv_data = predictor_file)) ###### MARCHE PAS§§§§§§§§ Casse les couilles!!! -->
+  # J'ai compris, c'est parce que j'appelle tar_target dans la fonction! Il faut que je trouve un autre moyen! -->
+  # Je pense qu'il faut que je l'exporte (comme pour nestling_agg_data)!!!!
+  # Par ailleurs, ça ne sert à rien de faire les variables MOTHER/FATHER RF etc. pour le modèle local! Mais comme je vais
+  # me concentrer d'abord sur le script Graphab et les analyses générales, je vais les calculer quand même! Ca sera fait!
 
   )
 
