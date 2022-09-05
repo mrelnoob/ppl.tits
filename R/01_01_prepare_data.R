@@ -555,8 +555,84 @@ tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_tem
 }
 
 
+
+
+
+
+
 # + other IV (mothers_cond, fathers_cond) --> 3ème UPDATE function!
 # + synthesis IV (light poll, temp etc.) --> 4ème UPDATE function? Or exploration (with imputation, etc.)???
 
 
 
+
+
+
+
+
+############ Function to compute cond_parents!!!
+# Avec seulement 12 adultes CC, répartis en 2 sexes (7F, 4M, et 1 indéterminé), on ne peut pas
+# faire grand chose, d'autant qu'il y a encore beaucoup de NA pour les variables morpho des 12 CC!
+ntits <- ppl.tits::tdata_upD_rawiv()$dataset
+summary(ntits)
+rtits <- ppl.tits::import_raw_tits_data()
+summary(rtits)
+
+### STEP 0 et 1: A FAIRE§§§§§§§§§§§§§§§
+
+### STEP 2, creating a new ID for adults based on their id_ring
+rtits %>% dplyr::select(-date, -laying_date, -incubation_date, -success, -success_manipulated,
+                        -hatching_date, -clutch_size, -brood_size, -fledgling_nb,
+                        -nestling_mass, -nestling_tarsus_l, -nestling_wing_l) %>%
+  dplyr::mutate(
+    male_id = dplyr::case_when(
+      id_ring != "NA" &
+        as.character(father_id) == as.character(id_ring) ~ id_bird),
+    female_id = dplyr::case_when(
+      id_ring != "NA" &
+        as.character(mother_id) == as.character(id_ring) ~ id_bird)) %>%
+  dplyr::relocate(male_id, .after = id_ring) %>%
+  dplyr::relocate(female_id, .after = id_ring) -> sss
+summary(sss) # NOTE: some rows share the same id_ring. For some it is normal (it's adult
+# birds that reproduced several times) while it must be mistakes for others (e.g. "8877008"
+# or "V010500").
+
+sss %>% dplyr::filter(id_bird == "BRFAIPM1120") # However, there is a problem with this one!§§§§§§§§§§
+
+
+
+
+
+
+a %>% dplyr::filter(age != "nestling") -> atits # Simplified adult tits dataset!
+summary(atits)
+# atits %>% dplyr::filter(species == "CC") -> cc ### ONLY 12 CC (7 females, 4 males, 1 unknown)
+
+
+
+
+
+
+
+
+# rtits %>% dplyr::filter(id_nestbox == "DIJ-011") -> d11
+# d11 <- d11[, -(3:11)]
+
+# To recreate the nestling dataset without NAs for 'id_ring':
+rtits %>% dplyr::filter(age == "nestling") %>%
+  dplyr::filter(id_ring != "NA") %>% ### Ca ne fait plus que 320 obs (PM:233; CC:87)§§§§
+  dplyr::group_by(id_nestbox, year) %>%
+  dplyr::summarise(date = dplyr::first(date),
+                   laying_date = dplyr::first(laying_date),
+                   incubation_date = dplyr::first(incubation_date),
+                   hatching_date = dplyr::first(hatching_date),
+                   clutch_size = max(clutch_size),
+                   brood_size = max(brood_size),
+                   fledgling_nb = max(fledgling_nb),
+                   success_manipulated = dplyr::first(success_manipulated),
+                   father_id = dplyr::first(father_id),
+                   mother_id = dplyr::first(mother_id),
+                   species = dplyr::first(species),
+                   mass = mean(nestling_mass),
+                   tarsus_length = mean(nestling_tarsus_l),
+                   wing_length = mean(nestling_wing_l)) %>% summary()
