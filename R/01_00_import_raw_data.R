@@ -2,10 +2,11 @@
 #' Import the raw tits dataset
 #'
 #' Imports ONLY the raw dataset for the "tits" part of the PubPrivLands project, and drops
-#' lines with no information on 'success' as well as one useless column. \cr To avoid errors,
-#' if new data are added using this function, they should be formatted according to the first table
-#' I tailored this function for (i.e. same columns, no special characters, no spaces, etc.; the only
-#' tolerated differences may be different rows and cell values)!
+#' lines with no information on 'success' as well as one useless column. It also correct a few mistakes
+#' and deletes two late reproduction events that would otherwise bias the analyses. \cr To avoid errors,
+#' if new data are added using this function, they should be formatted
+#' according to the first table I tailored this function for (i.e. same columns, no special characters, no
+#' spaces, etc.; the only tolerated differences may be different rows and cell values)!
 #'
 #' @param mypath The absolute path to the raw .csv file.
 #'
@@ -29,6 +30,7 @@
 #' }
 import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_data.csv")){
 
+  ### Raw data import___________________________________________________________#
   aaa <- readr::read_csv2(file = mypath, col_names = TRUE, na = "NA",
                          col_types = readr::cols(id_nestbox = readr::col_factor(),
                                                  site = readr::col_factor(),
@@ -57,10 +59,36 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
                                                  nestling_tarsus_l = readr::col_double(),
                                                  nestling_wing_l = readr::col_double()))
 
-  site <- success <- NULL
 
+  ### Data corrections__________________________________________________________#
+  # To delete 'site' and only keep observations with a success evaluation:
   aaa %>% dplyr::select(-site) %>%
     dplyr::filter(success != 'NA') -> xxx
+
+  # To correct the erroneous "bird_id" (i.e. 'BRFAIPM1120'):
+  xxx$id_bird <- as.character(xxx$id_bird) # As R cannot tolerate adding new levels to a factor
+  # variable, I have to first convert the variable as a character one!
+  xxx[xxx$id_bird == "BRFAIPM1120" &
+        xxx$id_ring == "8877045", "id_bird"] <- "THPAGPM095X"
+  xxx$id_bird <- as.factor(xxx$id_bird)
+
+  # TO correct the 'laying_date' of the female tits with 'id_bird' = CLPECPM0005:
+  xxx$laying_date <- as.character(xxx$laying_date) # Idem.
+  xxx[xxx$id_bird == "CLPECPM0005", "laying_date"] <- "09/04/2019"
+  xxx$laying_date <- as.factor(xxx$laying_date)
+
+  # To delete late reproduction events (i.e. for DIJ-175 in 2019 and DIJ-044 in 2022):
+  xxx %>% dplyr::filter(date != "28/06/2022") %>%
+    dplyr::filter(laying_date != "09/05/2019") -> xxx
+  summary(xxx)
+
+
+  ### To avoid warnings during the R CMD check__________________________________#
+  site <- success <- date <- laying_date <- NULL # This is necessary for all not globally
+  # defined variables, that is variables that are called without "$" (such as calls from
+  # {dplyr}; e.g. if your function uses something like dplyr::filter(myvar == "something"),
+  # then the variable called "myvar" should either be globally defined or set to NULL, otherwise
+  # you'll get warnings when you'll build your package).
 
   return(xxx)
 
