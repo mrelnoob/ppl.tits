@@ -560,81 +560,83 @@ tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_tem
 
 
 
-# + other IV (mothers_cond, fathers_cond) --> 3ème UPDATE function!
-# + synthesis IV (light poll, temp etc.) --> 4ème UPDATE function? Or exploration (with imputation, etc.)???
-# + I need X and Y for my sites§§§§§ HARTIG
-
-
-dplyr select
-dplyr mutate
-dplyr case_when
-dplyr relocate
-dplyr filter
-dplyr across
-
-library(ppl.tits)
-##### Function to compute cond_parents!!! #####
-
-##### Data preparation
-# ____________________
-
-### Importing relevant datesets_________________________________________________#
-ntits_original <- ppl.tits::tdata_upD_rawiv()$dataset
-summary(ntits_original)
-rtits <- ppl.tits::import_raw_tits_data()
-
-# Erroneous cell value replacement:
-rtits$id_bird <- as.character(rtits$id_bird) # As R cannot tolerate adding new levels to a factor
-# variable, I have to first convert the variable as a character one!
-rtits[rtits$id_bird == "BRFAIPM1120" &
-        rtits$id_ring == "8877045", "id_bird"] <- "THPAGPM095X"
-rtits$id_bird <- as.factor(rtits$id_bird)
-summary(rtits)
-
-# Creating a new ID for adults based on their id_ring:
-rtits %>% dplyr::select(-date, -laying_date, -incubation_date, -success, -success_manipulated,
-                        -hatching_date, -clutch_size, -brood_size, -fledgling_nb,
-                        -nestling_mass, -nestling_tarsus_l, -nestling_wing_l) %>%
-  dplyr::mutate(
-    ny_id = as.factor(paste(id_nestbox, year, sep = "_")), # Nest-Year ID.
-    male_id = dplyr::case_when(
-      id_ring != "NA" &
-        as.character(father_id) == as.character(id_ring) ~ id_bird),
-    female_id = dplyr::case_when(
-      id_ring != "NA" &
-        as.character(mother_id) == as.character(id_ring) ~ id_bird)) %>%
-  dplyr::relocate(ny_id, .after = year) %>%
-  dplyr::relocate(male_id, .after = id_ring) %>%
-  dplyr::relocate(female_id, .after = male_id) -> sss
-summary(sss) # NOTE: some rows share the same id_ring. For some it is normal (it's adult
-# birds that reproduced several times) while it must be mistakes for others (e.g. "8877008"
-# or "V010500").
-
-
-
-### Creation of sub-datasets____________________________________________________#
-# Working tits nestling dataset:
-sss %>% dplyr::filter(age == "nestling") %>%
-  #dplyr::filter(id_ring != "NA") %>% # If we do that, it leaves 320 obs. (PM:233; CC:87)!
-  dplyr::group_by(id_nestbox, year) %>%
-  dplyr::summarise(ny_id = dplyr::first(ny_id), # With this aggregation, ny_id becomes a unique ID!
-                   father_id = dplyr::first(father_id),
-                   mother_id = dplyr::first(mother_id),
-                   species = dplyr::first(species)) -> ntits
-summary(ntits)
-
-# Working tits parents dataset:
-sss %>% dplyr::filter(age != "nestling") -> atits
-summary(atits) ####### ny_id pas normal PB§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
-# -> Its second repro, I should delete it? As well as the one in may (cf. bruno)!!!!!
-# atits %>% dplyr::filter(species == "CC") -> cc ### ONLY 12 CC (7 females, 4 males, 1 unknown)
-
-dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
-
-# Should I keep tits related variables?
-# Rethink your process for creating these 2 variables!
-
-# rtits %>% dplyr::filter(id_nestbox == "DIJ-011") -> d11
-# d11 <- d11[, -(3:11)]
-
-# Modelè local séparé pour CC et PM
+# # + other IV (mothers_cond, fathers_cond) --> 3ème UPDATE function!
+# # + synthesis IV (light poll, temp etc.) --> 4ème UPDATE function? Or exploration (with imputation, etc.)???
+# # + I need X and Y for my sites§§§§§ HARTIG
+#
+#
+# dplyr select
+# dplyr mutate
+# dplyr case_when
+# dplyr relocate
+# dplyr filter
+# dplyr across
+#
+# library(ppl.tits)
+# ##### Function to compute cond_parents!!! #####
+#
+# ##### Data preparation
+# # ____________________
+#
+# ### Importing relevant datesets_________________________________________________#
+# ntits_original <- ppl.tits::tdata_upD_rawiv()$dataset
+# summary(ntits_original)
+# rtits <- ppl.tits::import_raw_tits_data()
+#
+# # Erroneous cell value replacement:
+# rtits$id_bird <- as.character(rtits$id_bird) # As R cannot tolerate adding new levels to a factor
+# # variable, I have to first convert the variable as a character one!
+# rtits[rtits$id_bird == "BRFAIPM1120" &
+#         rtits$id_ring == "8877045", "id_bird"] <- "THPAGPM095X"
+# rtits$id_bird <- as.factor(rtits$id_bird)
+# summary(rtits)
+#
+# # Creating a new ID for adults based on their id_ring:
+# rtits %>% dplyr::select(-date, -laying_date, -incubation_date, -success, -success_manipulated,
+#                         -hatching_date, -clutch_size, -brood_size, -fledgling_nb,
+#                         -nestling_mass, -nestling_tarsus_l, -nestling_wing_l) %>%
+#   dplyr::mutate(
+#     ny_id = as.factor(paste(id_nestbox, year, sep = "_")), # Nest-Year ID.
+#     male_id = dplyr::case_when(
+#       id_ring != "NA" &
+#         as.character(father_id) == as.character(id_ring) ~ id_bird),
+#     female_id = dplyr::case_when(
+#       id_ring != "NA" &
+#         as.character(mother_id) == as.character(id_ring) ~ id_bird)) %>%
+#   dplyr::relocate(ny_id, .after = year) %>%
+#   dplyr::relocate(male_id, .after = id_ring) %>%
+#   dplyr::relocate(female_id, .after = male_id) -> sss
+# summary(sss) # NOTE: some rows share the same id_ring. For some it is normal (it's adult
+# # birds that reproduced several times) while it must be mistakes for others (e.g. "8877008"
+# # or "V010500").
+#
+#
+#
+# ### Creation of sub-datasets____________________________________________________#
+# # Tits nestling light working dataset:
+# sss %>% dplyr::filter(age == "nestling") %>%
+#   #dplyr::filter(id_ring != "NA") %>% # If we do that, it leaves 320 obs. (PM:233; CC:87)!
+#   dplyr::group_by(id_nestbox, year) %>%
+#   dplyr::summarise(ny_id = dplyr::first(ny_id), # With this aggregation, ny_id becomes a unique ID!
+#                    father_id = dplyr::first(father_id),
+#                    mother_id = dplyr::first(mother_id),
+#                    species = dplyr::first(species)) -> ntits
+# summary(ntits)
+#
+# # Tits parents light working dataset:
+# sss %>% dplyr::filter(age != "nestling") -> atits
+# summary(atits) ####### ny_id pas normal PB§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+# # -> Its second repro, I should delete it? As well as the one in may (cf. bruno)!!!!! KNOWING that
+# # my agreg function destroys (averages?) 2nd broods! So i have to delete them in my function!!!!
+#
+# # atits %>% dplyr::filter(species == "CC") -> cc ### ONLY 12 CC (7 females, 4 males, 1 unknown)
+#
+# dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
+#
+# # Should I keep tits related variables?
+# # Rethink your process for creating these 2 variables!
+#
+# # rtits %>% dplyr::filter(id_nestbox == "DIJ-011") -> d11
+# # d11 <- d11[, -(3:11)]
+#
+# # Modelè local séparé pour CC et PM
