@@ -586,14 +586,6 @@ tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_tem
 # summary(ntits_original)
 # rtits <- ppl.tits::import_raw_tits_data()
 #
-# # Erroneous cell value replacement:
-# rtits$id_bird <- as.character(rtits$id_bird) # As R cannot tolerate adding new levels to a factor
-# # variable, I have to first convert the variable as a character one!
-# rtits[rtits$id_bird == "BRFAIPM1120" &
-#         rtits$id_ring == "8877045", "id_bird"] <- "THPAGPM095X"
-# rtits$id_bird <- as.factor(rtits$id_bird)
-# summary(rtits)
-#
 # # Creating a new ID for adults based on their id_ring:
 # rtits %>% dplyr::select(-date, -laying_date, -incubation_date, -success, -success_manipulated,
 #                         -hatching_date, -clutch_size, -brood_size, -fledgling_nb,
