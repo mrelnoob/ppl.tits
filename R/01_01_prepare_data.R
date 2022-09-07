@@ -19,7 +19,10 @@ utils::globalVariables("where") # This is necessary for now as tidyselect::where
 #'
 #' @return A tibble with 16 variables.
 #' @export
-#' @import dplyr
+#' @importFrom dplyr filter
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarise
+#' @importFrom dplyr first
 #'
 #' @examples
 #' \dontrun{
