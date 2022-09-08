@@ -50,11 +50,19 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
                                                  id_ring = readr::col_factor(),
                                                  species = readr::col_factor(),
                                                  sex = readr::col_factor(),
-                                                 age = readr::col_factor(),
+                                                 age = readr::col_factor(
+                                                   ordered = TRUE,
+                                                   levels = c("nestling", "one", "more_than_one",
+                                                              "two", "more_than_two"),
+                                                   include_na = TRUE),
                                                  adult_mass = readr::col_double(),
                                                  adult_tarsus_l = readr::col_double(),
                                                  adult_wing_l = readr::col_double(),
-                                                 adult_aggress = readr::col_factor(),
+                                                 adult_aggress = readr::col_factor(
+                                                   ordered = TRUE,
+                                                   levels = c("0,0", "0,5", "1,0", "1,5", "2,0",
+                                                              "2,5", "3,0"),
+                                                   include_na = TRUE),
                                                  nestling_mass = readr::col_double(),
                                                  nestling_tarsus_l = readr::col_double(),
                                                  nestling_wing_l = readr::col_double()))
@@ -76,6 +84,15 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
   xxx$laying_date <- as.character(xxx$laying_date) # Idem.
   xxx[xxx$id_bird == "CLPECPM0005", "laying_date"] <- "09/04/2019"
   xxx$laying_date <- as.factor(xxx$laying_date)
+
+  # TO correct wrong father_id values for DIJ-272_2021 and DIJ-134_2022:
+  xxx$father_id <- as.character(xxx$father_id) # Idem.
+  xxx[xxx$father_id == "8876210" &
+        xxx$year == "2021", "father_id"] <- "8876510"
+
+  xxx[xxx$father_id == "8877594" &
+        xxx$year == "2022", "father_id"] <- "8876594"
+  xxx$father_id <- as.factor(xxx$father_id)
 
   # To delete late reproduction events (i.e. for DIJ-175 in 2019 and DIJ-044 in 2022):
   xxx %>% dplyr::filter(date != "28/06/2022") %>%
