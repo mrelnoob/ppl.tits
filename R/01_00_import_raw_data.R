@@ -126,7 +126,8 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
 
 
   ### To avoid warnings during the R CMD check__________________________________#
-  site <- success <- date <- laying_date <- NULL # This is necessary for all not globally
+  site <- success <- date <- laying_date <- adult_aggress <- age <- NULL
+  # This is necessary for all not globally
   # defined variables, that is variables that are called without "$" (such as calls from
   # {dplyr}; e.g. if your function uses something like dplyr::filter(myvar == "something"),
   # then the variable called "myvar" should either be globally defined or set to NULL, otherwise
