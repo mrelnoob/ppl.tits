@@ -107,13 +107,8 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
   xxx %>% dplyr::filter(date != "28/06/2022") %>%
     dplyr::filter(laying_date != "09/05/2019") -> xxx
 
-  # To convert "age" and "adult_aggress" into numeric variables:
+  # To convert "adult_aggress" into numeric variables:
   xxx %>% dplyr::mutate(
-    age = dplyr::case_when(
-      as.character(age) == "one" ~ 1,
-      as.character(age) == "more_than_one" ~ 2,
-      as.character(age) == "two" ~ 2,
-      as.character(age) == "more_than_two" ~ 3),
     adult_aggress = as.numeric(gsub(x = adult_aggress, pattern = ",", replacement = "."))) -> xxx # As
   # "adult_aggress" contained commas instead of decimal points, I had to use the 'gsub()' function to
   # convert them (it's a base function close to 'grep()').
