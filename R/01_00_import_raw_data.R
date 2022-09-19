@@ -17,7 +17,6 @@
 #' @importFrom readr read_csv2
 #' @importFrom readr cols
 #' @importFrom readr col_factor
-#' @importFrom readr col_integer
 #' @importFrom readr col_double
 #' @importFrom here here
 #' @importFrom dplyr select
@@ -39,9 +38,6 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
                                                  laying_date = readr::col_factor(),
                                                  incubation_date = readr::col_factor(),
                                                  hatching_date = readr::col_factor(),
-                                                 clutch_size = readr::col_integer(),
-                                                 brood_size = readr::col_integer(),
-                                                 fledgling_nb = readr::col_integer(),
                                                  success = readr::col_factor(),
                                                  success_manipulated = readr::col_factor(),
                                                  father_id = readr::col_factor(),
