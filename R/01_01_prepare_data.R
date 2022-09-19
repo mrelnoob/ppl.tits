@@ -563,81 +563,61 @@ tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_tem
 
 
 
-# + other IV (mothers_cond, fathers_cond) --> 3ème UPDATE function!
-# + synthesis IV (light poll, temp etc.) --> 4ème UPDATE function? Or exploration (with imputation, etc.)???
-# + I need X and Y for my sites§§§§§ HARTIG
-
-
-dplyr select
-dplyr mutate
-dplyr case_when
-dplyr relocate
-dplyr filter
-dplyr across
-dplyr summarise
-dplyr group_by
-dplyr first
-missMDA imputePCA
-FactoMineR PCA
-
-library(ppl.tits)
-##### Function to compute cond_parents!!! #####
-
-##### Data preparation
-# ____________________
-
-### Importing relevant datesets_________________________________________________#
-ntits_original <- ppl.tits::tdata_upD_rawiv()$dataset
-rtits_original <- ppl.tits::import_raw_tits_data()
-
-# Creating a new ID for adults based on their id_ring:
-rtits_original %>% dplyr::select(-date, -laying_date, -incubation_date, -success, -success_manipulated,
-                        -hatching_date, -clutch_size, -brood_size, -fledgling_nb,
-                        -nestling_mass, -nestling_tarsus_l, -nestling_wing_l) %>%
-  dplyr::mutate(
-    ny_id = as.factor(paste(id_nestbox, year, sep = "_")), # Nest-Year ID.
-    male_id = dplyr::case_when(
-      id_ring != "NA" &
-        as.character(father_id) == as.character(id_ring) ~ id_bird),
-    female_id = dplyr::case_when(
-      id_ring != "NA" &
-        as.character(mother_id) == as.character(id_ring) ~ id_bird)) %>%
-  dplyr::relocate(ny_id, .after = year) %>%
-  dplyr::relocate(male_id, .after = id_ring) %>%
-  dplyr::relocate(female_id, .after = male_id) -> rtits
-# NOTE: some rows share the same id_ring. For some it is normal (it's adult
-# birds that reproduced several times) while it must be mistakes for others (e.g. "8877008"
-# or "V010500").
-
-
-
-### Creation of sub-datasets____________________________________________________#
-# Tits parents light working datasets (and subsetting per species and sex):
-rtits %>% dplyr::filter(age != "nestling") -> atits
-
-atits %>% dplyr::filter(species == "PM") %>%
-  dplyr::group_by(id_ring) %>%
-  dplyr::summarise(sex = dplyr::first(sex),
-                   age = dplyr::first(age),
-                   adult_mass = mean(adult_mass),
-                   adult_tarsus_l = mean(adult_tarsus_l),
-                   adult_wing_l = mean(adult_wing_l)) %>%
-  dplyr::mutate(
-    age = dplyr::case_when(
-      as.character(age) == "one" ~ 1,
-      as.character(age) == "more_than_one" ~ 2,
-      as.character(age) == "two" ~ 2,
-      as.character(age) == "more_than_two" ~ 3)) -> apm
-
-apm %>% dplyr::filter(sex == "female") -> apm_f
-apm %>% dplyr::filter(sex == "male") -> apm_m
-
-
-
-# apm %>% dplyr::filter(sex == "male") %>%
+# # + other IV (mothers_cond, fathers_cond) --> 3ème UPDATE function!
+# # + synthesis IV (light poll, temp etc.) --> 4ème UPDATE function? Or exploration (with imputation, etc.)???
+# # + I need X and Y for my sites§§§§§ HARTIG
+#
+#
+# dplyr select
+# dplyr mutate
+# dplyr case_when
+# dplyr relocate
+# dplyr filter
+# dplyr across
+# dplyr summarise
+# dplyr group_by
+# dplyr first
+# missMDA imputePCA
+# FactoMineR PCA
+#
+# library(ppl.tits)
+# ##### Function to compute cond_parents!!! #####
+#
+# ##### Data preparation
+# # ____________________
+#
+# ### Importing relevant datesets_________________________________________________#
+# ntits_original <- ppl.tits::tdata_upD_rawiv()$dataset
+# rtits_original <- ppl.tits::import_raw_tits_data()
+#
+# # Creating a new ID for adults based on their id_ring:
+# rtits_original %>% dplyr::select(-date, -laying_date, -incubation_date, -success, -success_manipulated,
+#                         -hatching_date, -clutch_size, -brood_size, -fledgling_nb,
+#                         -nestling_mass, -nestling_tarsus_l, -nestling_wing_l) %>%
+#   dplyr::mutate(
+#     ny_id = as.factor(paste(id_nestbox, year, sep = "_")), # Nest-Year ID.
+#     male_id = dplyr::case_when(
+#       id_ring != "NA" &
+#         as.character(father_id) == as.character(id_ring) ~ id_bird),
+#     female_id = dplyr::case_when(
+#       id_ring != "NA" &
+#         as.character(mother_id) == as.character(id_ring) ~ id_bird)) %>%
+#   dplyr::relocate(ny_id, .after = year) %>%
+#   dplyr::relocate(male_id, .after = id_ring) %>%
+#   dplyr::relocate(female_id, .after = male_id) -> rtits
+# # NOTE: some rows share the same id_ring. For some it is normal (it's adult
+# # birds that reproduced several times) while it must be mistakes for others (e.g. "8877008"
+# # or "V010500").
+#
+#
+#
+# ### Creation of sub-datasets____________________________________________________#
+# # Tits parents light working datasets (and subsetting per species and sex):
+# rtits %>% dplyr::filter(age != "nestling") -> atits
+#
+# atits %>% dplyr::filter(species == "PM") %>%
 #   dplyr::group_by(id_ring) %>%
-#   dplyr::summarise(ny_id = dplyr::first(ny_id),
-#                    male_id = dplyr::first(male_id),
+#   dplyr::summarise(sex = dplyr::first(sex),
 #                    age = dplyr::first(age),
 #                    adult_mass = mean(adult_mass),
 #                    adult_tarsus_l = mean(adult_tarsus_l),
@@ -647,72 +627,93 @@ apm %>% dplyr::filter(sex == "male") -> apm_m
 #       as.character(age) == "one" ~ 1,
 #       as.character(age) == "more_than_one" ~ 2,
 #       as.character(age) == "two" ~ 2,
-#       as.character(age) == "more_than_two" ~ 3)) -> apm_m
-# As some adults are found twice in the date and as there is some variability among their
-# morphometric values, I average observation for each individual. Moreover, I also transformed
-# "age" and "adult_aggress" (which are ordered factors) into numeric variables. Note that it was
-# complicated because "adult_aggress" contained commas instead of decimal points, hence the use
-# of 'gsub()' (a function close to 'grep()'). In the end, I did not use this variable but I
-# keep this chunk of code for future use. #### OR NOT, import_function§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
-########## I also think ny_id + male_id etc. is useless§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
-######### -6>     adult_aggress = gsub(x = adult_aggress, pattern = ",", replacement = ".") + as.num!!
-
-# Also, I do not create a dataset for CC as there are only 12 adults (7 females, 4 males, 1 unknown),
-# too low a number for approximating the parental condition of nestlings and impute missing values.
-# Consequently, CC nestlings (blue tits) won't be modelled using this variable.
-
-
-
-
-
-##### Creating parental condition proxies for tits nestlings (only for PM)
-# ________________________________________________________________________
-
-### Synthesizing the morphometric variables of the parents______________________#
-# Normed-PCA for the males (known fathers):
-imput_apm_m <- missMDA::imputePCA(apm_m[,4:6], ncp = 2) # Missing values imputation (n = 2).
-res.pca <- FactoMineR::PCA(X = imput_apm_m$completeObs, scale.unit = TRUE, graph = FALSE)
-# factoextra::fviz_pca_var(res.pca, col.var = "contrib",
-                        # gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE) # To
-# visualise the correlation circle for this PCA, with variables coloration according to their
-# contribution to the first 2 principal components.
-# As the first axis (PC) of my PCA satisfactorily synthesizes a fair amount of variance of my 3
-# variables (54.9%), I will use my observations coordinates on this axis as a synthetic variable:
-apm_m$father_cond <- res.pca$ind$coord[,1]
-# High values indicate large tits while smaller values represent smaller tits.
-
-# Normed-PCA for the females (known mothers):
-imput_apm_f <- missMDA::imputePCA(apm_f[,4:6], ncp = 2) # Missing values imputation (n = 19).
-res.pca <- FactoMineR::PCA(X = imput_apm_f$completeObs, scale.unit = TRUE, graph = FALSE)
-# For visualisation, please reuse above code (cf. males section).
-# As the first axis (PC) of my PCA satisfactorily synthesizes a fair amount of variance of my 3
-# variables (52.6%), I will use my observations coordinates on this axis as a synthetic variable:
-apm_f$mother_cond <- res.pca$ind$coord[,1]
-
-
-
-### Joining newly created variables with the nestling_dataset___________________#
-apm_f %>% dplyr::rename(
-  mother_id = id_ring) %>%
-  dplyr::select(mother_id, mother_cond) -> apm_f
-
-test <- dplyr::left_join(ntits_original, apm_f, by = "mother_id") ###### Il manque les CC§§§§§§§ Normal.
-test %>% dplyr::select(id_nestbox, site, year, mother_id, species, mother_cond) -> test
-# Ok, il manque 8877590 (en fait == 8877950) et 8581599 (en fait == 8381599) qui sont pourtant des femelles PM. --> Ne figurent pas dans
-# A corriger dans IMPORT RAW§§§§§§ Mais sinon, ça marche!
-
-apm_m %>% dplyr::rename(
-  father_id = id_ring) %>%
-  dplyr::select(father_id, father_cond) -> apm_m
-
-test <- dplyr::left_join(ntits_original, apm_m, by = "father_id") ###### Il manque les CC§§§§§§§ Normal.
-test %>% dplyr::select(id_nestbox, site, year, father_id, species, father_cond) -> test
-# Il manque 8877107 (en fait, il a été marqué comme femelle, donc faut changer son sexe!)
-
-
-# A FINIR§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
-
-# Should I keep tits related variables?
-# Rethink your process for creating these 2 variables?
-
-
+#       as.character(age) == "more_than_two" ~ 3)) -> apm
+#
+# apm %>% dplyr::filter(sex == "female") -> apm_f
+# apm %>% dplyr::filter(sex == "male") -> apm_m
+#
+#
+#
+# # apm %>% dplyr::filter(sex == "male") %>%
+# #   dplyr::group_by(id_ring) %>%
+# #   dplyr::summarise(ny_id = dplyr::first(ny_id),
+# #                    male_id = dplyr::first(male_id),
+# #                    age = dplyr::first(age),
+# #                    adult_mass = mean(adult_mass),
+# #                    adult_tarsus_l = mean(adult_tarsus_l),
+# #                    adult_wing_l = mean(adult_wing_l)) %>%
+# #   dplyr::mutate(
+# #     age = dplyr::case_when(
+# #       as.character(age) == "one" ~ 1,
+# #       as.character(age) == "more_than_one" ~ 2,
+# #       as.character(age) == "two" ~ 2,
+# #       as.character(age) == "more_than_two" ~ 3)) -> apm_m
+# # As some adults are found twice in the date and as there is some variability among their
+# # morphometric values, I average observation for each individual. Moreover, I also transformed
+# # "age" and "adult_aggress" (which are ordered factors) into numeric variables. Note that it was
+# # complicated because "adult_aggress" contained commas instead of decimal points, hence the use
+# # of 'gsub()' (a function close to 'grep()'). In the end, I did not use this variable but I
+# # keep this chunk of code for future use. #### OR NOT, import_function§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+# ########## I also think ny_id + male_id etc. is useless§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+# ######### -6>     adult_aggress = gsub(x = adult_aggress, pattern = ",", replacement = ".") + as.num!!
+#
+# # Also, I do not create a dataset for CC as there are only 12 adults (7 females, 4 males, 1 unknown),
+# # too low a number for approximating the parental condition of nestlings and impute missing values.
+# # Consequently, CC nestlings (blue tits) won't be modelled using this variable.
+#
+#
+#
+#
+#
+# ##### Creating parental condition proxies for tits nestlings (only for PM)
+# # ________________________________________________________________________
+#
+# ### Synthesizing the morphometric variables of the parents______________________#
+# # Normed-PCA for the males (known fathers):
+# imput_apm_m <- missMDA::imputePCA(apm_m[,4:6], ncp = 2) # Missing values imputation (n = 2).
+# res.pca <- FactoMineR::PCA(X = imput_apm_m$completeObs, scale.unit = TRUE, graph = FALSE)
+# # factoextra::fviz_pca_var(res.pca, col.var = "contrib",
+#                         # gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE) # To
+# # visualise the correlation circle for this PCA, with variables coloration according to their
+# # contribution to the first 2 principal components.
+# # As the first axis (PC) of my PCA satisfactorily synthesizes a fair amount of variance of my 3
+# # variables (54.9%), I will use my observations coordinates on this axis as a synthetic variable:
+# apm_m$father_cond <- res.pca$ind$coord[,1]
+# # High values indicate large tits while smaller values represent smaller tits.
+#
+# # Normed-PCA for the females (known mothers):
+# imput_apm_f <- missMDA::imputePCA(apm_f[,4:6], ncp = 2) # Missing values imputation (n = 19).
+# res.pca <- FactoMineR::PCA(X = imput_apm_f$completeObs, scale.unit = TRUE, graph = FALSE)
+# # For visualisation, please reuse above code (cf. males section).
+# # As the first axis (PC) of my PCA satisfactorily synthesizes a fair amount of variance of my 3
+# # variables (52.6%), I will use my observations coordinates on this axis as a synthetic variable:
+# apm_f$mother_cond <- res.pca$ind$coord[,1]
+#
+#
+#
+# ### Joining newly created variables with the nestling_dataset___________________#
+# apm_f %>% dplyr::rename(
+#   mother_id = id_ring) %>%
+#   dplyr::select(mother_id, mother_cond) -> apm_f
+#
+# test <- dplyr::left_join(ntits_original, apm_f, by = "mother_id") ###### Il manque les CC§§§§§§§ Normal.
+# test %>% dplyr::select(id_nestbox, site, year, mother_id, species, mother_cond) -> test
+# # Ok, il manque 8877590 (en fait == 8877950!! --> TRUE id_ring == 8877590)
+# # et 8581599 (en fait == 8381599!! --> TRUE id_ring == 8581599)
+# # A corriger dans IMPORT RAW§§§§§§ Mais sinon, ça marche!
+#
+# apm_m %>% dplyr::rename(
+#   father_id = id_ring) %>%
+#   dplyr::select(father_id, father_cond) -> apm_m
+#
+# test <- dplyr::left_join(ntits_original, apm_m, by = "father_id") ###### Il manque les CC§§§§§§§ Normal.
+# test %>% dplyr::select(id_nestbox, site, year, father_id, species, father_cond) -> test
+# # Il manque 8877107 (en fait, il a été marqué comme femelle, donc faut changer son sexe!)
+#
+#
+# # A FINIR§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§§
+#
+# # Should I keep tits related variables?
+# # Rethink your process for creating these 2 variables?
+#
+#
