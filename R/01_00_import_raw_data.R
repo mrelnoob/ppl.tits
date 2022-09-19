@@ -94,10 +94,35 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
         xxx$year == "2022", "father_id"] <- "8876594"
   xxx$father_id <- as.factor(xxx$father_id)
 
+  # TO correct wrong id_ring values for the females of DIJ-133_2022 and DIJ-179_2020:
+  xxx$id_ring <- as.character(xxx$id_ring) # Idem.
+  xxx[xxx$id_ring == "8877950" &
+        xxx$year == "2022", "id_ring"] <- "8877590"
+
+  xxx[xxx$id_ring == "8381599" &
+        xxx$year == "2020", "id_ring"] <- "8581599"
+  xxx$id_ring <- as.factor(xxx$id_ring)
+
+  # To correct the gender/sex of the presumed father of DIJ-212_2022:
+  xxx[xxx$id_ring == "8877107", "sex"] <- "male" # Here, as i'm not trying to add a new level to
+  # the 'sex' factor, I do not need to convert 'the 'sex' into a character variable.
+
   # To delete late reproduction events (i.e. for DIJ-175 in 2019 and DIJ-044 in 2022):
   xxx %>% dplyr::filter(date != "28/06/2022") %>%
     dplyr::filter(laying_date != "09/05/2019") -> xxx
+
+  # To convert "age" and "adult_aggress" into numeric variables:
+  xxx %>% dplyr::mutate(
+    age = dplyr::case_when(
+      as.character(age) == "one" ~ 1,
+      as.character(age) == "more_than_one" ~ 2,
+      as.character(age) == "two" ~ 2,
+      as.character(age) == "more_than_two" ~ 3),
+    adult_aggress = as.numeric(gsub(x = adult_aggress, pattern = ",", replacement = "."))) -> xxx # As
+  # "adult_aggress" contained commas instead of decimal points, I had to use the 'gsub()' function to
+  # convert them (it's a base function close to 'grep()').
   summary(xxx)
+
 
 
   ### To avoid warnings during the R CMD check__________________________________#
