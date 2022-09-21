@@ -735,7 +735,12 @@ tdata_upD_parcond <- function(my_tdata = here::here("output", "tables", "ndata_r
     dplyr::relocate(father_cond, .after = father_id) %>%
     dplyr::relocate(mother_cond, .after = mother_id) -> xxx
 
-
+  # To dismiss notes regarding "visible binding for global variables" during the CMD Check:
+  adult_mass <- adult_tarsus_l <- adult_wing_l <- age <- brood_size <- clutch_size <-
+  father_cond <- father_id <- female_id <- fledgling_nb <- hatching_date <- id_ring <-
+  incubation_date <- laying_date <- male_id <- mother_cond <- mother_id <-
+  nestling_mass <- nestling_tarsus_l <- nestling_wing_l <- sex <- species <- success <-
+  success_manipulated <- NULL
 
 
 
