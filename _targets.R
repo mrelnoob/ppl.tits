@@ -55,11 +55,9 @@ list(
     myboxtemp_data = boxtemp_file, mytits_data = nestling_agg_data), format = "file"),
   # Produce the second tits data update (joining of the raw independent variables):
   targets::tar_target(tdata_rawiv, tdata_upD_rawiv(
-    my_tdata = tdata_temp, my_iv_data = predictor_file)$path, format = "file")
-  # Par ailleurs, ça ne sert à rien de faire les variables MOTHER/FATHER RF etc. pour le modèle local! Mais comme je vais
-  # me concentrer d'abord sur le script Graphab et les analyses générales, je vais les calculer quand même! Ca sera fait!
-  ### Par ailleurs, je pourrais modifier mes fonctions pour qu'elles retourne plusieurs choses: 1) le chemin et 2) les
-  # tables. Comme ça je n'aurais pas forcément à read_csv à chaque fois que je veux ouvrir un ostie de tdata!!! Non?
-
+    my_tdata = tdata_temp, my_iv_data = predictor_file)$path, format = "file"),
+  # Produce the third tits data update (computing the parental condition proxy variables):
+  targets::tar_target(tdata_parcond, tdata_upD_parcond(
+    my_tdata = tdata_rawiv)$path, format = "file")
   )
 
