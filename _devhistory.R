@@ -202,8 +202,11 @@ usethis::use_package("tidyselect")
 usethis::use_package("stats")
 usethis::use_package("stringr")
 usethis::use_package("degday")
+usethis::use_package("missMDA")
+usethis::use_package("FactoMineR")
 # REMINDER: The NAMESPACE controls what happens when my package is loaded but not when it's
 # installed. This is the role of the DESCRIPTION file!
+usethis::use_git(message = ":white_check_mark: Updated DESCRIPTION to add new packages")
 
 
 

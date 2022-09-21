@@ -15,8 +15,10 @@ RoxygenNote: 7.2.1
 Imports: 
     degday,
     dplyr,
+    FactoMineR,
     here,
     magrittr,
+    missMDA,
     readr,
     stats,
     stringr,
