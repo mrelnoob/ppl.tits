@@ -243,7 +243,7 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
                            col_types = readr::cols(time = readr::col_factor()))
   temp %>%
     tidyr::separate(time, c('date', 'hour'), sep = " ") %>%
-    tidyr::separate(date, c('year', 'month', 'day'), sep = "-") %>%
+    tidyr::separate(date, c('day', 'month', 'year'), sep = "/") %>%
     dplyr::select(-s69) %>% # Empty column
     dplyr::mutate(dplyr::across(where(is.character), factor)) %>%
     dplyr::filter(month == "12" | month == "01" | month == "02" | month == "03" |
