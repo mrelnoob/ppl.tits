@@ -30,6 +30,8 @@ list(
              format = "file"),
   targets::tar_target(boxtemp_file, here::here("mydata", "paired_boxtemp.csv"),
              format = "file"),
+  targets::tar_target(temp_file, here::here("mydata", "temp_data_20192022.csv"),
+             format = "file"),
   targets::tar_target(predictor_file, here::here("mydata", "tits_predictors.csv"),
              format = "file"),
 
@@ -52,7 +54,8 @@ list(
   # Produce the first tits data update (formatting and inclusion of the breeding_window and
   # temperature-related variables):
   targets::tar_target(tdata_temp, tdata_upD_temp(
-    myboxtemp_data = boxtemp_file, mytits_data = nestling_agg_data), format = "file"),
+    myboxtemp_data = boxtemp_file, myboxtemp_data = temp_file, mytits_data = nestling_agg_data),
+    format = "file"),
   # Produce the second tits data update (joining of the raw independent variables):
   targets::tar_target(tdata_rawiv, tdata_upD_rawiv(
     my_tdata = tdata_temp, my_iv_data = predictor_file)$path, format = "file"),
