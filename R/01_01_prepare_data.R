@@ -545,7 +545,7 @@ tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_tem
   id_nestbox <- year <- breeding_window <- laying_date <- flight_date <- clutch_size <- brood_size <-
     fledgling_nb <- success_manipulated <- father_id <- mother_id <- species <-
     vegetation_area <- herbaceous_area <- built_area <- temp_station_id <- site <-
-    lsource_vs150_m <- lflux_10_iq <- lsource_vs150_sd <- soft_manag_area <- woody_area <-
+    lsource_vs150_m <- lflux_10_iq <- lsource_vs150_iq <- soft_manag_area <- woody_area <-
     open_area <- age_class <- trafic <- strata_div <- NULL
 
 
