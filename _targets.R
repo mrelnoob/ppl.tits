@@ -54,7 +54,7 @@ list(
   # Produce the first tits data update (formatting and inclusion of the breeding_window and
   # temperature-related variables):
   targets::tar_target(tdata_temp, tdata_upD_temp(
-    myboxtemp_data = boxtemp_file, myboxtemp_data = temp_file, mytits_data = nestling_agg_data),
+    myboxtemp_data = boxtemp_file, mytemp_data = temp_file, mytits_data = nestling_agg_data),
     format = "file"),
   # Produce the second tits data update (joining of the raw independent variables):
   targets::tar_target(tdata_rawiv, tdata_upD_rawiv(
