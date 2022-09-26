@@ -6,11 +6,14 @@
 \usage{
 tdata_upD_temp(
   myboxtemp_data = here::here("mydata", "paired_boxtemp.csv"),
+  mytemp_data = here::here("mydata", "temp_data_20192022.csv"),
   mytits_data = here::here("output", "tables", "tits_nestling_data.csv")
 )
 }
 \arguments{
 \item{myboxtemp_data}{The nestbox-temperature stations pairing dataset (.csv).}
+
+\item{mytemp_data}{The temperature records dataset (.csv).}
 
 \item{mytits_data}{The tits nestling aggregated dataset (.csv). Cf.
 \code{\link[ppl.tits:export_nestling_aggreg]{export_nestling_aggreg}}.}

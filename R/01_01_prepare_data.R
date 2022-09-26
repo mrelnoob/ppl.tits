@@ -110,6 +110,7 @@ export_nestling_aggreg <- function(myrawdata){
 #' @param myboxtemp_data The nestbox-temperature stations pairing dataset (.csv).
 #' @param mytits_data The tits nestling aggregated dataset (.csv). Cf.
 #' \code{\link[ppl.tits:export_nestling_aggreg]{export_nestling_aggreg}}.
+#' @param mytemp_data The temperature records dataset (.csv).
 #'
 #' @return A .csv file of the updated version of the tits dataset, and its path.
 #' @export
@@ -139,7 +140,8 @@ export_nestling_aggreg <- function(myrawdata){
 #' mydata <- tdata_upD_temp()
 #' }
 tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp.csv"),
-                              mytits_data = here::here("output", "tables", "tits_nestling_data.csv")){
+                           mytemp_data = here::here("mydata", "temp_data_20192022.csv"),
+                           mytits_data = here::here("output", "tables", "tits_nestling_data.csv")){
   ##### Attribute ID to nest_years and improve formatting
   # _____________________________________________________
 
@@ -236,8 +238,8 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
   ##### Format TEMPERATURE data and compute daily mean temperatures and range
   # _________________________________________________________________________
 
-  ### Import of TEMP data and creation of the subtables___________________________#
-  temp <- readr::read_csv2(here::here("mydata", "temp_data_20192021.csv"), col_names = TRUE,
+  ### Import of TEMP data and creation of the subtables_________________________#
+  temp <- readr::read_csv2(mytemp_data, col_names = TRUE,
                            col_types = readr::cols(time = readr::col_factor()))
   temp %>%
     tidyr::separate(time, c('date', 'hour'), sep = " ") %>%
