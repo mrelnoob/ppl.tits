@@ -531,15 +531,15 @@ tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_tem
     dplyr::select(-temp_station_id) %>%
     dplyr::relocate(site, .after = id_nestbox) %>%
     dplyr::relocate(lsource_vs150_m, .after = lflux_10_iq) %>%
-    dplyr::relocate(lsource_vs150_sd, .after = lsource_vs150_m) %>%
+    dplyr::relocate(lsource_vs150_iq, .after = lsource_vs150_m) %>%
     dplyr::relocate(soft_manag_area, .after = herbaceous_area) %>%
     dplyr::relocate(woody_area, .after = vegetation_area) %>%
     dplyr::relocate(open_area, .before = built_area) %>%
     dplyr::relocate(age_class, .after = trafic) %>%
     dplyr::relocate(strata_div, .after = age_class) -> ntits
-  ntits[which(ntits$id_nestbox == "DIJ-188B" & ntits$year == "2022"), 36] <- "4" # I obviously forgot
-  # to assign a value for this nestbox, so here it is (NOTE: as I assign it here, it means I did not
-  # update it in the GIS layers nor in the database)!
+  ntits[which(ntits$id_nestbox == "DIJ-188B" & ntits$year == "2022"), 38] <- "4" # I obviously forgot
+  # to assign a strata_div value for this nestbox, so here it is (NOTE: as I assign it here, it
+  # means I did not update it in the GIS layers nor in the database)!
 
   # To dismiss notes regarding "visible binding for global variables" during the CMD Check:
   id_nestbox <- year <- breeding_window <- laying_date <- flight_date <- clutch_size <- brood_size <-
