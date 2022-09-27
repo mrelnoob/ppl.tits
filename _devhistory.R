@@ -174,7 +174,7 @@ usethis::use_r("01_02_graphab_analyses")
 # ---------------------------------------------------------------------------- #
 ### * 1.3. Creating reports (RMarkdown) ----------------------------------------
 
-file.create(... = "output/texts/ppl.data_preparation_report.Rmd") # Using this command,
+file.create(... = "output/texts/ppl.tits.exploration_report.Rmd") # Using this command,
 # a .Rmd file will be created but will lack the YAML header skeleton that should thus be manually
 # placed at the top of the document.
 # IMPORTANT NOTE: to ensure proper compatibility with {target}, RMarkdown reports should be
