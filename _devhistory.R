@@ -171,6 +171,21 @@ usethis::use_r("01_02_graphab_analyses")
 
 
 
+# ---------------------------------------------------------------------------- #
+### * 1.3. Creating reports (RMarkdown) ----------------------------------------
+
+file.create(... = "output/texts/ppl.data_preparation_report.Rmd") # Using this command,
+# a .Rmd file will be created but will lack the YAML header skeleton that should thus be manually
+# placed at the top of the document.
+# IMPORTANT NOTE: to ensure proper compatibility with {target}, RMarkdown reports should be
+# lightweight. That means they should mostly include text and their chunks of code should be short
+# and quickly executed. In other words, R Markdown reports are just targets that document prior
+# results. The bulk of the computation should have already happened upstream, and the most of the
+# code chunks in the report itself should be terse calls to 'tar_read()' and 'tar_load()'.
+# Otherwise, it is of course possible to create reports designed to NOT BE "targets"!
+
+
+
 
 
 # --------------------------------------- #
