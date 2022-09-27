@@ -1,0 +1,55 @@
+---
+title: "Exploratory data analyses and preparation report - Tits reproduction study, PubPrivLands project (Martin *et al.*, *in prep.*)"
+author: "François-Marie Martin"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+   html_document:
+     number_sections: yes
+     toc: yes
+     toc_depth: 5
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# - Introduction
+## - Regarding reproductibility
+
+
+In order to facilitate any attempt at reproducing this study, here is a depiction of the system information used to prepare and analyse the data from the PubPrivLands tits reproduction study (Martin *et al.* , *in prep.*).
+
+```{r session information}
+rm(list=ls())
+sessionInfo()
+```
+
+All codes used in this study can furthermore be found here: https://github.com/mrelnoob/ppl.tits
+\
+\
+
+## - What is this document about?  
+
+```{r data import and summary, include=FALSE}
+# library(jk.dusz.tarping)
+zzz_mydata_cleaned <- jk.dusz.tarping::clean_my_data()
+.pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
+```
+\
+
+This document outlines all the important data preparation and exploration steps necessary to enable the evaluation of our research hypotheses. In other words, it presents all **exploratory data analyses** and basic **assumption checks** performed on the *final* version of our dataset. For details regarding the data generation process (i.e. creation of this *final* dataset), readers are referred to the scripts and documents stored at: https://github.com/mrelnoob/ppl.tits. 
+
+
+
+Various aspects of our data (e.g. outliers, variables distribution, multicollinearity among predictors, homogeneity of variances, independence, potential interactions, multivariate relationships, linearity etc.) were explored in this document, mostly following Bolker (2007), Zuur *et al.* (2010), and Harrell (2015). However, as the response variables were of different nature (e.g. binary, continuous), they would be modelled using different types of models with varying assumptions:
+
+* The *efficiency* and *high_eff* variables shared the same sub-dataset because we decided to analyse them using the same set of candidate *a priori* models. The former variable is a sort of *satisfaction score* estimated by the managers and can modelled as a percentage using **beta regressions** while the latter, which relates to cases of knotweed (near-)eradication, is a binary variable that should be modelled using some type of **logistic regression**.
+* The other three response variables indicated the presence of knotweed regrowths at various key locations of the tarping set-ups, and should thus also be modelled using methods of the *logistic regression family*.
+
+Naturally, most actual models assumptions were checked after model building and fitting. Our intention here was simply to improve our knowledge of the data and identify potentially problematic variables upstream. As our global dataset contained many potential predictors (*p* = 85), much effort was indeed directed toward reducing their number and keeping only the most reliable and important ones relative to our hypotheses. In other words, we tried to reduce the dimensionality of the data. 
+
+For the meaning of all variables, the reader is referred to Appendix §§§ *** §§§ !!!!!!
+\
+\
+
+******
