@@ -197,7 +197,7 @@ file.create(... = "output/texts/ppl.tits.exploration_report.Rmd") # Using this c
 #     references) to add citations (e.g. "@Martin2022 said that..." or "blabla [@Martin2022;
 #     see also @Darwin1832]").
 # Thus, I pasted my BibTex file at the root of my package folder but I need to tell R to ignore it:
-usethis::use_build_ignore("ppl_biblio.bib")
+usethis::use_build_ignore("ppl.tits_biblio.bib")
 
 
 
