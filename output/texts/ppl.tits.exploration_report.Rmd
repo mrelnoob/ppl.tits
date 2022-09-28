@@ -33,8 +33,8 @@ All codes used in this study can furthermore be found here: https://github.com/m
 ## - What is this document about?  
 
 ```{r data import and summary, include=FALSE}
-# library(jk.dusz.tarping)
-zzz_mydata_cleaned <- jk.dusz.tarping::clean_my_data()
+library(magrittr) # To be able to use pipes.
+tits <- ppl.tits::tdata_upD_parcond()$dataset
 .pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
 ```
 \
@@ -47,11 +47,22 @@ For more details regarding the dataset generation process (i.e. creation of the 
 ******
 
 # - Missing data imputation
-## - For the Great tits dataset
 
+Similarly to many datasets in ecology, some of our variables contained missing values. As they were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in both our response and independent variables instead of deleting observations. However, as the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) ones and as it had a lower sample size, we chose to split our data into two subsets, one for each species, where the Blue Tits one will contain less variables as some will be discarded to prevent overoptimistic imputations. 
 
-
+## - Great Tits dataset
 ### - Dataset prior to imputation
+
+Here is a summary of the Great Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to table **XXX_A_FAIRE!_XXX**):
+
+```{r pm before imputation, message=FALSE}
+tits %>% dplyr::filter(species == "PM", success_manipulated == "0") -> pm
+summary(pm)
+```
+
+### - Dataset after imputation
+
+CHANGE csl style§§§
 
 
 
