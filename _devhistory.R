@@ -190,13 +190,16 @@ file.create(... = "output/texts/ppl.tits.exploration_report.Rmd") # Using this c
 # To manage citations and get an automatic bibliography with RMarkdown, I have to follow these
 # steps:
 #  1) Using Zotero (or something similar), I have to 'export' the references to be cited in the
-#     report in a BibTex format (.bib) and place this text file at the root of my package folder.
+#     report in a BibTex format (.bib) and place this text file in the same folder as my .Rmd file.
 #  2) Call this document in the `bibliography` field in the YAML metadata header (e.g.
 #     bibliography: my_example.bib).
 #  3) In text, I use arobases (@) and brackets ([], use semi-colons ";" for separation between
 #     references) to add citations (e.g. "@Martin2022 said that..." or "blabla [@Martin2022;
 #     see also @Darwin1832]").
-# Thus, I pasted my BibTex file at the root of my package folder but I need to tell R to ignore it:
+#  4) I can change the citation style by using the `csl` field in the YAML metadata header
+#     (e.g. csl: my_style.csl) and pasting the said style in the same folder as before.
+# Thus, I pasted my BibTex file in the same folder as my .Rdm file. But in the case were my .Rmd
+# file would be at the root of my package, I need to tell R to ignore it:
 usethis::use_build_ignore("ppl.tits_biblio.bib")
 # For practical reasons, this .bib file will certainly be updated many times during the duration
 # of the project. Also, it may be useful to manually edit the file to shorten the reference tags
