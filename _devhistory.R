@@ -193,11 +193,15 @@ file.create(... = "output/texts/ppl.tits.exploration_report.Rmd") # Using this c
 #     report in a BibTex format (.bib) and place this text file at the root of my package folder.
 #  2) Call this document in the `bibliography` field in the YAML metadata header (e.g.
 #     bibliography: my_example.bib).
-#  3) In text, I use acrobases (@) and brackets ([], use semi-colons ";" for separation between
+#  3) In text, I use arobases (@) and brackets ([], use semi-colons ";" for separation between
 #     references) to add citations (e.g. "@Martin2022 said that..." or "blabla [@Martin2022;
 #     see also @Darwin1832]").
 # Thus, I pasted my BibTex file at the root of my package folder but I need to tell R to ignore it:
 usethis::use_build_ignore("ppl.tits_biblio.bib")
+# For practical reasons, this .bib file will certainly be updated many times during the duration
+# of the project. Also, it may be useful to manually edit the file to shorten the reference tags
+# since Zotero tends to create long tag using the name of the 1st author, the 1st work of the title
+# and the year of publication.
 
 
 
