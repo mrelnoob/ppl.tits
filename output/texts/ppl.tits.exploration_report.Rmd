@@ -3,6 +3,7 @@ title: "Exploratory data analyses and preparation report - Tits reproduction stu
 author: "François-Marie Martin"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 bibliography: ppl.tits_biblio.bib
+csl: fanf_style.csl
 output:
    html_document:
      theme: darkly
