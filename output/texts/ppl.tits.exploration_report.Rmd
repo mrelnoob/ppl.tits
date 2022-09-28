@@ -2,7 +2,7 @@
 title: "Exploratory data analyses and preparation report - Tits reproduction study, PubPrivLands project (Martin *et al.*, *in prep.*)"
 author: "François-Marie Martin"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
-bibliography: ppl.biblio.bib
+bibliography: ppl.tits_biblio.bib
 output:
    html_document:
      theme: darkly
@@ -49,7 +49,7 @@ For more details regarding the dataset generation process (i.e. creation of the 
 # - Missing data imputation
 ## - For the Great tits dataset
 
-We will start.......
+
 
 ### - Dataset prior to imputation
 
