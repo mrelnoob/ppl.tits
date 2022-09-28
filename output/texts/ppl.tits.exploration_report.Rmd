@@ -63,8 +63,15 @@ summary(pm)
 
 ### - Dataset after imputation
 
-CHANGE csl style§§§
+To impute missing values, we used the `missForest()` function from the {missForest} package [@stekhoven2011]. This functions initially imputes all missing data using the mean/mode, then for each variable with missing values, it fits a *Random Forest* on the observed part and then predicts the missing part. This process of training and predicting repeats iteratively until a stopping criterion is met or a maximum number of user-specified iterations is reached. This algorithm has been shown to have higher predictive performances than other widely used imputation methods, including MICE or KNNimpute [@stekhoven2011].
+Another advantage is that this function returns an assessment of the imputation error based on the out-of-bag (OOB) samples, possibly for each variable individually. For continuous predictors, the Mean Squared Error (MSE) of imputed values is computed while the proportion of falsely classified (PFC) is used for categorical missing ones.
+To avoid overfitting, no hyperparameters tuning was performed but I applied a three-fold increase in the number of trees and maximum iterations with respect to the default values to favour predictive accuracy. Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (i.e. RMSE): 
 
+
+
+You can see that imputation errors are, in this case, fairly negligible. Values of exactly 0 means that no missing values were imputed:
+
+CHANGE DICtionary§§§§§ British english§§§§??????,
 
 
 
@@ -80,3 +87,4 @@ For the meaning of all variables, the reader is referred to Appendix §§§ *** 
 \
 
 ******
+# - References

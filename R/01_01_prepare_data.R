@@ -792,7 +792,12 @@ imput_error <- data.frame(cbind(
   row.names = colnames(pm_mis)) # To get the name of the variables
 dplyr::rename(imput_error, nb_imputed_values = 'X1', oob_RMSE = 'X2') -> imput_error_tuned
 imput_error_untuned <- imput_error
-# A FINIR§§§§§§§§§§§§§§ tune ????
+# A FINIR§§§§§§§§§§§§§§ ------> I should re-add omited variables (id_nestbox etc.)
+# Reorder variables? Convert "NA" into NA? Deleted success manipulated??? (functions updates)
+# + double histogram function????? + nice table with colour as in KAGGLE???
+# + add Ys without imputations (to test, in the end, whether it impacts inferences or not and how?)!!
+# Of course YES! Because many NA in Ys because chicks are dead! So no nestlings to measure = NA§§§ Or
+# have already took off!
 
 
 # + synthesis (PCA) sur IV (light poll, temp etc.) --> 4ème UPDATE function? Or exploration (with imputation, etc.)???
