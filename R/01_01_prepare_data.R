@@ -759,4 +759,40 @@ tdata_upD_parcond <- function(my_tdata = here::here("output", "tables", "ndata_r
 
 
 
+
+
+
+################ Missing values imputation ###############
+tits <- ppl.tits::tdata_upD_parcond()$dataset
+
+tits %>% dplyr::filter(species == "PM", success_manipulated == "0") -> pm
+tits %>% dplyr::filter(species == "CC") -> cc
+summary(pm)
+
+# For PM:
+pm %>% dplyr::mutate(dplyr::across(where(assertthat::is.date), factor)) %>%
+  dplyr::select(-id_nestbox, -site, -success_manipulated, -laying_date, -flight_date,
+                -father_id, -mother_id, -species) %>%
+  as.data.frame() -> pm_mis # missForest only accepts data.frames or matrices (not tibbles).
+# Variables must also be only numeric or factors (no character, date, etc.)!
+summary(pm_mis)
+
+set.seed(85)
+imput <- missForest::missForest(xmis = pm_mis, maxiter = 300, ntree = 300, variablewise = TRUE)
+pm_imp <- imput$ximp
+summary(pm_imp)
+
+
+# To create a small summary table for the OOB errors (for each variable, with the argument `variablewise = TRUE` in missForest):
+imput_error <- data.frame(cbind(
+  sapply(pm_mis, function(y) sum(length(which(is.na(y))))), # Number of imputed values (i.e. NAs).
+  sqrt(imput$OOBerror)), # When 'variablewise' is set to TRUE, missForest returns MSE (Mean Squared
+  # Error) values instead of NRMSE (Normalized Root Mean Square Error). Therefore, I use the square
+  # root of the out-of-bag (OOB) values to convert MSE into RMSE.
+  row.names = colnames(pm_mis)) # To get the name of the variables
+dplyr::rename(imput_error, nb_imputed_values = 'X1', oob_RMSE = 'X2') -> imput_error_tuned
+imput_error_untuned <- imput_error
+# A FINIR§§§§§§§§§§§§§§ tune ????
+
+
 # + synthesis (PCA) sur IV (light poll, temp etc.) --> 4ème UPDATE function? Or exploration (with imputation, etc.)???

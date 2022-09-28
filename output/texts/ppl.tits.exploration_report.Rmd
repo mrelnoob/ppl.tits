@@ -2,8 +2,10 @@
 title: "Exploratory data analyses and preparation report - Tits reproduction study, PubPrivLands project (Martin *et al.*, *in prep.*)"
 author: "François-Marie Martin"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
+bibliography: ppl.biblio.bib
 output:
    html_document:
+     theme: darkly
      number_sections: yes
      toc: yes
      toc_depth: 5
@@ -37,7 +39,20 @@ zzz_mydata_cleaned <- jk.dusz.tarping::clean_my_data()
 ```
 \
 
-This document outlines all the important data preparation and exploration steps necessary to enable the evaluation of our research hypotheses. In other words, it presents all **exploratory data analyses** and basic **assumption checks** performed on the *final* version of our dataset. For details regarding the data generation process (i.e. creation of this *final* dataset), readers are referred to the scripts and documents stored at: https://github.com/mrelnoob/ppl.tits. 
+This document outlines all the important data preparation and exploration steps necessary to test our research hypotheses. In other words, it presents all **exploratory data analyses** and basic **assumption checks** performed on the *final* version of our dataset. Actually, it also presents the last step of the dataset generation process, that is **missing values imputation** because it is a highly sensitive part of the process and thus deserves the utmost transparency.
+For more details regarding the dataset generation process (i.e. creation of the *final* dataset), readers are referred to the scripts and documents stored at: https://github.com/mrelnoob/ppl.tits as well as to the manuscript and other Supplementary Materials.
+\
+\
+
+******
+
+# - Missing data imputation
+## - For the Great tits dataset
+
+We will start.......
+
+### - Dataset prior to imputation
+
 
 
 
