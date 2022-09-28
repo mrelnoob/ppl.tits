@@ -185,6 +185,21 @@ file.create(... = "output/texts/ppl.tits.exploration_report.Rmd") # Using this c
 # Otherwise, it is of course possible to create reports designed to NOT BE "targets"!
 
 
+# ** 1.3.1. To manage citations and bibliography ----
+
+# To manage citations and get an automatic bibliography with RMarkdown, I have to follow these
+# steps:
+#  1) Using Zotero (or something similar), I have to 'export' the references to be cited in the
+#     report in a BibTex format (.bib) and place this text file at the root of my package folder.
+#  2) Call this document in the `bibliography` field in the YAML metadata header (e.g.
+#     bibliography: my_example.bib).
+#  3) In text, I use acrobases (@) and brackets ([], use semi-colons ";" for separation between
+#     references) to add citations (e.g. "@Martin2022 said that..." or "blabla [@Martin2022;
+#     see also @Darwin1832]").
+# Thus, I pasted my BibTex file at the root of my package folder but I need to tell R to ignore it:
+usethis::use_build_ignore("ppl_biblio.bib")
+
+
 
 
 
