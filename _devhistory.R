@@ -177,12 +177,8 @@ usethis::use_r("01_02_graphab_analyses")
 file.create(... = "output/texts/ppl.tits.exploration_report.Rmd") # Using this command,
 # a .Rmd file will be created but will lack the YAML header skeleton that should thus be manually
 # placed at the top of the document.
-# IMPORTANT NOTE: to ensure proper compatibility with {target}, RMarkdown reports should be
-# lightweight. That means they should mostly include text and their chunks of code should be short
-# and quickly executed. In other words, R Markdown reports are just targets that document prior
-# results. The bulk of the computation should have already happened upstream, and the most of the
-# code chunks in the report itself should be terse calls to 'tar_read()' and 'tar_load()'.
-# Otherwise, it is of course possible to create reports designed to NOT BE "targets"!
+# NOTE: for guidance to use .Rmd documents with {targets}, please refer to the {targets} related
+# section (chapter 3 below).
 
 
 # ** 1.3.1. To manage citations and bibliography ----
@@ -394,6 +390,21 @@ targets::tar_glimpse()
 # To show the complete visual network representation of my workflow:
 targets::tar_visnetwork(targets_only = FALSE) # This argument enables the display of global
 # functions as well as genuine targets.
+
+
+
+# ---------------------------------------------------------------------------- #
+### * 3.3. Literate programming with RMarkdown and {targets} -------------------
+
+# IMPORTANT NOTE: to ensure proper compatibility with {target}, RMarkdown reports should be
+# lightweight. That means they should mostly include text and their chunks of code should be short
+# and quickly executed. In other words, R Markdown reports are just targets that document prior
+# results. The bulk of the computation should have already happened upstream, and the most of the
+# code chunks in the report itself should be terse calls to 'tar_read()' and 'tar_load()'.
+# Otherwise, it is of course possible to create reports designed to NOT BE "targets"!
+# Also, the .Rmd document should be placed in the same folder as the "_targets" folder that
+# stores the targets, otherwise they cannot be called. It is perhaps possible to indicate the
+# path to the folder differently but I don't know how (yet).
 
 ### NOTE: Don't forget to fill the README file and to create a _make.R for others to be able
 # to reproduce my work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
