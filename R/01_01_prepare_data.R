@@ -964,7 +964,9 @@ tdata_upD_final <- function(my_tdata = here::here("output", "tables", "ndata_par
   tits_imp %>% dplyr::arrange(as.character(id_nestbox), as.character(year)) -> xxx
 
   # To dismiss notes regarding "visible binding for global variables" during the CMD Check:
-  id_nestbox <- year <- NULL
+  id_nestbox <- year <- Nb_imputed_values <- coord_x <- coord_y <- father_cond <- father_id <-
+    fledgling_nb <- flight_date <- laying_date <- mass <- mother_cond <- mother_id <- site <-
+    species <- success_manipulated <- tarsus_length <- wing_length <- NULL
 
 
 
