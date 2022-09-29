@@ -42,6 +42,13 @@ tits <- ppl.tits::tdata_upD_parcond()$dataset
 
 This document outlines all the important data preparation and exploration steps necessary to test our research hypotheses. In other words, it presents all **exploratory data analyses** and basic **assumption checks** performed on the *final* version of our dataset. Actually, it also presents the last step of the dataset generation process, that is **missing values imputation** because it is a highly sensitive part of the process and thus deserves the utmost transparency.
 For more details regarding the dataset generation process (i.e. creation of the *final* dataset), readers are referred to the scripts and documents stored at: https://github.com/mrelnoob/ppl.tits as well as to the manuscript and other Supplementary Materials.
+
+
++ Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
++ Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
++ Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
++ Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
++ Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
 \
 \
 
@@ -50,6 +57,16 @@ For more details regarding the dataset generation process (i.e. creation of the 
 # - Missing data imputation
 
 Similarly to many datasets in ecology, some of our variables contained missing values. As they were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in both our response and independent variables instead of deleting observations. However, as the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) ones and as it had a lower sample size, we chose to split our data into two subsets, one for each species, where the Blue Tits one will contain less variables as some will be discarded to prevent overoptimistic imputations. 
+
+
+SAY that for Y it's not always MAR/MCAR so we use them to imput X but we will restore them§§§§§§§§§
+SAY that for Y it's not always MAR/MCAR so we use them to imput X but we will restore them§§§§§§§§§
+SAY that for Y it's not always MAR/MCAR so we use them to imput X but we will restore them§§§§§§§§§
+SAY that for Y it's not always MAR/MCAR so we use them to imput X but we will restore them§§§§§§§§§
+SAY that for Y it's not always MAR/MCAR so we use them to imput X but we will restore them§§§§§§§§§
+But I'll perhaps impute them later (after filtering successful reproduction)
+
+
 
 ## - Great Tits dataset
 ### - Dataset prior to imputation
@@ -67,6 +84,9 @@ To impute missing values, we used the `missForest()` function from the {missFore
 Another advantage is that this function returns an assessment of the imputation error based on the out-of-bag (OOB) samples, possibly for each variable individually. For continuous predictors, the Mean Squared Error (MSE) of imputed values is computed while the proportion of falsely classified (PFC) is used for categorical missing ones.
 To avoid overfitting, no hyperparameters tuning was performed but I applied a three-fold increase in the number of trees and maximum iterations with respect to the default values to favour predictive accuracy. Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (i.e. RMSE): 
 
+# +nice table with colour as in KAGGLE???
+# +nice table with colour as in KAGGLE???
+# +nice table with colour as in KAGGLE???
 
 
 You can see that imputation errors are, in this case, fairly negligible. Values of exactly 0 means that no missing values were imputed:
