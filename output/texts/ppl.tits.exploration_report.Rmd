@@ -34,8 +34,15 @@ All codes used in this study can furthermore be found here: https://github.com/m
 ## - What is this document about?  
 
 ```{r data import and summary, include=FALSE}
-library(magrittr) # To be able to use pipes.
-tits <- ppl.tits::tdata_upD_parcond()$dataset
+library(ppl.tits) # To be able to use pipes.
+tits <- ppl.tits::tdata_upD_final()$dataset
+
+
+# + use read_csv plutot????? ou une fonction custom pour call le dataset final???
+# Or a target?????
+
+
+
 .pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
 ```
 \
@@ -54,17 +61,14 @@ For more details regarding the dataset generation process (i.e. creation of the 
 
 ******
 
-# - Missing data imputation
+# - Missing data imputation process
 
-Similarly to many datasets in ecology, some of our variables contained missing values. As they were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in both our response and independent variables instead of deleting observations. However, as the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) ones and as it had a lower sample size, we chose to split our data into two subsets, one for each species, where the Blue Tits one will contain less variables as some will be discarded to prevent overoptimistic imputations. 
+Similarly to many datasets in ecology, some of our variables contained missing values. As most of them were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in some of our response variables as well as in all independent variables containing missing values instead of deleting observations. However, as the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) ones and as it had a lower sample size, we chose to split our data into two subsets, one for each species, where the Blue Tits one will contain less variables as some will be discarded to prevent overoptimistic imputations. 
+For our morphometric response variables on the other hand, missing values were not MAR as many were due to the fact that the reproduction event failed. It was then impossible to measure morphometric variables on dead or missing bird nestlings. These variables were thus excluded from the following imputation process but will perhaps be imputed later if required.
 
-
-SAY that for Y it's not always MAR/MCAR so we use them to imput X but we will restore them§§§§§§§§§
-SAY that for Y it's not always MAR/MCAR so we use them to imput X but we will restore them§§§§§§§§§
-SAY that for Y it's not always MAR/MCAR so we use them to imput X but we will restore them§§§§§§§§§
-SAY that for Y it's not always MAR/MCAR so we use them to imput X but we will restore them§§§§§§§§§
-SAY that for Y it's not always MAR/MCAR so we use them to imput X but we will restore them§§§§§§§§§
-But I'll perhaps impute them later (after filtering successful reproduction)
+To impute missing values, we used the `missForest()` function from the {missForest} package [@stekhoven2011]. This functions initially imputes all missing data using the mean/mode, then for each variable with missing values, it fits a *Random Forest* on the observed part and then predicts the missing part. This process of training and predicting repeats iteratively until a stopping criterion is met or a maximum number of user-specified iterations is reached. This algorithm has been shown to have higher predictive performances than other widely used imputation methods, including MICE or KNNimpute [@stekhoven2011].
+Another advantage is that this function can return an assessment of the imputation error based on the out-of-bag (OOB) samples, for each variable individually. For continuous predictors, the Mean Squared Error (MSE) of imputed values is computed while the proportion of falsely classified (PFC) is used for categorical missing ones.
+To avoid overfitting, no hyperparameters tuning was performed but I applied a three-fold increase in the number of trees and maximum iterations with respect to the default values to favour predictive accuracy. 
 
 
 
@@ -74,15 +78,13 @@ But I'll perhaps impute them later (after filtering successful reproduction)
 Here is a summary of the Great Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to table **XXX_A_FAIRE!_XXX**):
 
 ```{r pm before imputation, message=FALSE}
-tits %>% dplyr::filter(species == "PM", success_manipulated == "0") -> pm
+tits %>% dplyr::filter(species == "PM") -> pm
 summary(pm)
 ```
 
 ### - Dataset after imputation
 
-To impute missing values, we used the `missForest()` function from the {missForest} package [@stekhoven2011]. This functions initially imputes all missing data using the mean/mode, then for each variable with missing values, it fits a *Random Forest* on the observed part and then predicts the missing part. This process of training and predicting repeats iteratively until a stopping criterion is met or a maximum number of user-specified iterations is reached. This algorithm has been shown to have higher predictive performances than other widely used imputation methods, including MICE or KNNimpute [@stekhoven2011].
-Another advantage is that this function returns an assessment of the imputation error based on the out-of-bag (OOB) samples, possibly for each variable individually. For continuous predictors, the Mean Squared Error (MSE) of imputed values is computed while the proportion of falsely classified (PFC) is used for categorical missing ones.
-To avoid overfitting, no hyperparameters tuning was performed but I applied a three-fold increase in the number of trees and maximum iterations with respect to the default values to favour predictive accuracy. Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (i.e. RMSE): 
+Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (i.e. RMSE): 
 
 # +nice table with colour as in KAGGLE???
 # +nice table with colour as in KAGGLE???
