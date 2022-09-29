@@ -35,9 +35,11 @@ All codes used in this study can furthermore be found here: https://github.com/m
 
 ```{r data import and summary, include=FALSE}
 library(ppl.tits) # To be able to use pipes.
+library(targets)
+tits <- targets::tar_read(final_tdata)
 tits <- ppl.tits::tdata_upD_final()$dataset
-
-
+a <- targets::tar_read(imp_ooberror_pm)
+targets::tar_config_get("store")
 # + use read_csv plutot????? ou une fonction custom pour call le dataset final???
 # Or a target?????
 
