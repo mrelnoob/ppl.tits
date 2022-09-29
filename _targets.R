@@ -44,6 +44,12 @@ list(
 
   # Read the raw data and return a data.frame:
   targets::tar_target(raw_tits, import_raw_tits_data(mypath = raw_data_file)),
+  # Creating the final nestling dataset:
+  targets::tar_target(final_tdata, tdata_upD_final(my_tdata = tdata_parcond)$dataset),
+  # Producing the OOB imputation error table for PM:
+  targets::tar_target(imp_ooberror_pm, tdata_upD_final(my_tdata = tdata_parcond)$impute_error_pm),
+  # Producing the OOB imputation error table for CC:
+  targets::tar_target(imp_ooberror_cc, tdata_upD_final(my_tdata = tdata_parcond)$impute_error_cc),
 
 
 
@@ -61,6 +67,9 @@ list(
     my_tdata = tdata_temp, my_iv_data = predictor_file)$path, format = "file"),
   # Produce the third tits data update (computing the parental condition proxy variables):
   targets::tar_target(tdata_parcond, tdata_upD_parcond(
-    my_tdata = tdata_rawiv)$path, format = "file")
+    my_tdata = tdata_rawiv)$path, format = "file"),
+  # Produce the fourth tits data update (imputing missing values):
+  targets::tar_target(tdata_final, tdata_upD_final(
+    my_tdata = tdata_parcond)$path, format = "file")
   )
 
