@@ -404,7 +404,8 @@ targets::tar_visnetwork(targets_only = FALSE) # This argument enables the displa
 # Otherwise, it is of course possible to create reports designed to NOT BE "targets"!
 # Also, the .Rmd document should be placed in the same folder as the "_targets" folder that
 # stores the targets, otherwise they cannot be called. It is perhaps possible to indicate the
-# path to the folder differently but I don't know how (yet).
+# path to the folder differently but I don't know how (yet). --> I did: I changed the global
+# Rmarkdown options to change the directory to evaluate CHUNKS§§§§§§§
 
 ### NOTE: Don't forget to fill the README file and to create a _make.R for others to be able
 # to reproduce my work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
