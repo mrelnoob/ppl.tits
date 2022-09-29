@@ -33,17 +33,13 @@ All codes used in this study can furthermore be found here: https://github.com/m
 
 ## - What is this document about?  
 
-```{r data import and summary, include=FALSE}
+```{r data import, include=FALSE}
 library(ppl.tits) # To be able to use pipes.
-library(targets)
-tits <- targets::tar_read(final_tdata)
 tits <- ppl.tits::tdata_upD_final()$dataset
-a <- targets::tar_read(imp_ooberror_pm)
-targets::tar_config_get("store")
-# + use read_csv plutot????? ou une fonction custom pour call le dataset final???
-# Or a target?????
-
-
+pm_imp_error <- ppl.tits::tdata_upD_final()$impute_error_pm
+cc_imp_error <- ppl.tits::tdata_upD_final()$impute_error_cc
+# Use read_csv() instead? Or a custom function to load this final dataset faster? Or {targets}?
+# targets::tar_read(imp_ooberror_cc)
 
 .pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
 ```
@@ -53,11 +49,10 @@ This document outlines all the important data preparation and exploration steps 
 For more details regarding the dataset generation process (i.e. creation of the *final* dataset), readers are referred to the scripts and documents stored at: https://github.com/mrelnoob/ppl.tits as well as to the manuscript and other Supplementary Materials.
 
 
-+ Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
-+ Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
-+ Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
-+ Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
-+ Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
+# + Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
+# + Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
+# + Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
+
 \
 \
 
@@ -86,16 +81,50 @@ summary(pm)
 
 ### - Dataset after imputation
 
-Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (i.e. RMSE): 
+Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (the blue variable is a future response variable while the green ones are meant to be predictors): 
 
-# +nice table with colour as in KAGGLE???
-# +nice table with colour as in KAGGLE???
-# +nice table with colour as in KAGGLE???
+```{r pm imput error, message=FALSE}
+data.frame(Variable = rownames(pm_imp_error), 
+           Nb_imputed_values = pm_imp_error$Nb_imputed_values, 
+           Oob_RMSE = pm_imp_error$Oob_RMSE) %>%
+  dplyr::mutate(Variable = kableExtra::cell_spec(
+    Variable, color = "white", background = ifelse(
+      Variable == "brood_size", "deepskyblue", "mediumseagreen"))) %>%
+  knitr::kable(escape = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+You can see that imputation errors are, in this case, fairly negligible compared to the variable ranges of variation. Consequently, we deemed these imputations acceptable and used them for the subsequent analyses.
 
 
-You can see that imputation errors are, in this case, fairly negligible. Values of exactly 0 means that no missing values were imputed:
 
-CHANGE DICtionary§§§§§ British english§§§§??????,
+## - Blue Tits dataset
+### - Dataset prior to imputation
+
+Here is a summary of the Blue Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to table **XXX_A_FAIRE!_XXX**):
+
+```{r cc before imputation, message=FALSE}
+tits %>% dplyr::filter(species == "CC") -> cc
+summary(cc)
+```
+
+### - Dataset after imputation
+
+Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (the blue variable is a future response variable while the green ones are meant to be predictors): 
+
+```{r cc imput error, message=FALSE}
+data.frame(Variable = rownames(cc_imp_error), 
+           Nb_imputed_values = cc_imp_error$Nb_imputed_values, 
+           Oob_RMSE = cc_imp_error$Oob_RMSE) %>%
+  dplyr::mutate(Variable = kableExtra::cell_spec(
+    Variable, color = "white", background = ifelse(
+      Variable == "brood_size", "deepskyblue", "mediumseagreen"))) %>%
+  knitr::kable(escape = FALSE) %>% 
+  kableExtra::kable_styling(full_width = FALSE)
+```
+
+You can see that imputation errors are, in this case, fairly negligible compared to the variable ranges of variation. Consequently, we deemed these imputations acceptable and used them for the subsequent analyses.
+
 
 
 
