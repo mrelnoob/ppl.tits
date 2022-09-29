@@ -13,11 +13,13 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Imports: 
+    assertthat,
     degday,
     dplyr,
     FactoMineR,
     here,
     magrittr,
+    missForest,
     missMDA,
     readr,
     stats,
