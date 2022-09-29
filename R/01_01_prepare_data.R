@@ -981,8 +981,3 @@ tdata_upD_final <- function(my_tdata = here::here("output", "tables", "ndata_par
   return(output)
   # _______________________________
 }
-
-
-
-
-# + synthesis (PCA) sur IV (light poll, temp etc.) --> 4ème UPDATE function? Or exploration (with imputation, etc.)???
