@@ -4,17 +4,14 @@ author: "François-Marie Martin"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 bibliography: ppl.tits_biblio.bib
 csl: fanf_style.csl
-output:
-   html_document:
-     theme: darkly
-     number_sections: yes
-     toc: yes
-     toc_depth: 5
+output: rmdformats::readthedown
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-# knitr::opts_knit$set(root.dir = '~/') # This option is ABSOLUTELY REQUIRED if I want this .Rmd report to work well with {target}! It sets the working directory to the root of the project and not to the folder where the .Rmd document is stored (by default, that is what RMarkdown does). So if I don't do that, RMarkdown and knitr won't be able to find de the 'target' objects I'm calling in my functions! Another solution would be to used 'setwd()' for each code chunk where I call for external files. 
+
+# IMPORTANT NOTE: if you read this, then know that this RMarkdown report has been written as a 'target' in a {targets} pipeline (https://books.ropensci.org/targets/). If you simply want to knit this report, you need to do it using using 'targets::tar_make()' (provided that you did not altered the structure of the "ppl.tits" folder to which this report belongs), otherwise it won't work! Alternatively, you can paste this .Rmd at the root of the "ppl.tits" folder. If you want to run the code contained within the code chunks of this document WITHOUT knitting, then you need to set the working directory of this .Rmd document at the root of the "ppl.tits" folder using the global options of RStudio, 'setwd()', or 'knitr::opts_knit$set(root.dir = '~/')'. That is because R, RStudio or {knitr} do not seem to be able to find the "_targets" folder containing the targets that are called by my code chunks otherwise... By default, RMarkdown sets the working directory where the .Rmd file is stored, not at the root of the R project the report is a part of.
+# Still, note that theoretically, you do not need to knit or modify this document as it is meant for reproducibility and you can simply read the .html file for that.
 ```
 
 # - Introduction
