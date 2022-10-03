@@ -14,6 +14,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_knit$set(root.dir = '/tmp') # This option is ABSOLUTELY REQUIRED if I want this .Rmd report to work well with {target}! It sets the working directory to the root of the project and not to the folder where the .Rmd document is stored (by default, that is what RMarkdown does). So if I don't do that, RMarkdown and knitr won't be able to find de the 'target' objects I'm calling in my functions! Another solution would be to used 'setwd()' for each code chunk where I call for external files. 
 ```
 
 # - Introduction
@@ -35,6 +36,7 @@ All codes used in this study can furthermore be found here: https://github.com/m
 
 ```{r data import, include=FALSE}
 library(ppl.tits) # To be able to use pipes.
+zozo <- targets::tar_read(imp_ooberror_pm) # Change function and upD chunks and RMD§§§
 tits <- ppl.tits::tdata_upD_final()$dataset
 pm_imp_error <- ppl.tits::tdata_upD_final()$impute_error_pm
 cc_imp_error <- ppl.tits::tdata_upD_final()$impute_error_cc
@@ -45,14 +47,8 @@ cc_imp_error <- ppl.tits::tdata_upD_final()$impute_error_cc
 ```
 \
 
-This document outlines all the important data preparation and exploration steps necessary to test our research hypotheses. In other words, it presents all **exploratory data analyses** and basic **assumption checks** performed on the *final* version of our dataset. Actually, it also presents the last step of the dataset generation process, that is **missing values imputation** because it is a highly sensitive part of the process and thus deserves the utmost transparency.
+This document outlines all the important data preparation and exploration steps undertaken to test our research hypotheses. In other words, it presents all **exploratory data analyses** and basic **assumption checks** performed on the *final* version of our dataset. Actually, it also presents the last step of the dataset generation process, that is **missing values imputation** because it is a highly sensitive part of the process and thus deserves the utmost transparency.
 For more details regarding the dataset generation process (i.e. creation of the *final* dataset), readers are referred to the scripts and documents stored at: https://github.com/mrelnoob/ppl.tits as well as to the manuscript and other Supplementary Materials.
-
-
-# + Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
-# + Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
-# + Small SUMMARY of data preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§
-
 \
 \
 
@@ -60,7 +56,7 @@ For more details regarding the dataset generation process (i.e. creation of the 
 
 # - Missing data imputation process
 
-Similarly to many datasets in ecology, some of our variables contained missing values. As most of them were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in some of our response variables as well as in all independent variables containing missing values instead of deleting observations. However, as the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) ones and as it had a lower sample size, we chose to split our data into two subsets, one for each species, where the Blue Tits one will contain less variables as some will be discarded to prevent overoptimistic imputations. 
+Similarly to many datasets in ecology, some of our variables contained missing values. As most of them were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in some of our response variables as well as in all independent variables containing missing values instead of deleting observations. However, as the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) data and as the former has a lower sample size, we chose to split our data into two subsets, one for each species, where the Blue Tits one will contain less variables as some will be discarded to prevent overoptimistic imputations. 
 For our morphometric response variables on the other hand, missing values were not MAR as many were due to the fact that the reproduction event failed. It was then impossible to measure morphometric variables on dead or missing bird nestlings. These variables were thus excluded from the following imputation process but will perhaps be imputed later if required.
 
 To impute missing values, we used the `missForest()` function from the {missForest} package [@stekhoven2011]. This functions initially imputes all missing data using the mean/mode, then for each variable with missing values, it fits a *Random Forest* on the observed part and then predicts the missing part. This process of training and predicting repeats iteratively until a stopping criterion is met or a maximum number of user-specified iterations is reached. This algorithm has been shown to have higher predictive performances than other widely used imputation methods, including MICE or KNNimpute [@stekhoven2011].
