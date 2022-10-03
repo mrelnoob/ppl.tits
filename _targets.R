@@ -45,7 +45,9 @@ list(
   # Read the raw data and return a data.frame:
   targets::tar_target(raw_tits, import_raw_tits_data(mypath = raw_data_file)),
   # Creating the final nestling dataset:
-  targets::tar_target(final_tdata, tdata_upD_final(my_tdata = tdata_parcond)$dataset),
+  targets::tar_target(final_tdata, tdata_upD_final(my_tdata = tdata_parcond)$final_dataset),
+  # Creating the prior imputation nestling dataset:
+  targets::tar_target(pimp_tdata, tdata_upD_final(my_tdata = tdata_parcond)$priorimp_dataset),
   # Producing the OOB imputation error table for PM:
   targets::tar_target(imp_ooberror_pm, tdata_upD_final(my_tdata = tdata_parcond)$impute_error_pm),
   # Producing the OOB imputation error table for CC:
