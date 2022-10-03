@@ -14,7 +14,8 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-knitr::opts_knit$set(root.dir = '/tmp') # This option is ABSOLUTELY REQUIRED if I want this .Rmd report to work well with {target}! It sets the working directory to the root of the project and not to the folder where the .Rmd document is stored (by default, that is what RMarkdown does). So if I don't do that, RMarkdown and knitr won't be able to find de the 'target' objects I'm calling in my functions! Another solution would be to used 'setwd()' for each code chunk where I call for external files. 
+knitr::opts_knit$set(root.dir = '~/') # This option is ABSOLUTELY REQUIRED if I want this .Rmd report to work well with {target}! It sets the working directory to the root of the project and not to the folder where the .Rmd document is stored (by default, that is what RMarkdown does). So if I don't do that, RMarkdown and knitr won't be able to find de the 'target' objects I'm calling in my functions! Another solution would be to used 'setwd()' for each code chunk where I call for external files. 
+getwd()
 ```
 
 # - Introduction
@@ -36,12 +37,11 @@ All codes used in this study can furthermore be found here: https://github.com/m
 
 ```{r data import, include=FALSE}
 library(ppl.tits) # To be able to use pipes.
-zozo <- targets::tar_read(imp_ooberror_pm) # Change function and upD chunks and RMD§§§
-tits <- ppl.tits::tdata_upD_final()$dataset
-pm_imp_error <- ppl.tits::tdata_upD_final()$impute_error_pm
-cc_imp_error <- ppl.tits::tdata_upD_final()$impute_error_cc
-# Use read_csv() instead? Or a custom function to load this final dataset faster? Or {targets}?
-# targets::tar_read(imp_ooberror_cc)
+tits_priorimp <- targets::tar_read(pimp_tdata)
+tits <- targets::tar_read(final_tdata)
+pm_imp_error <- targets::tar_read(imp_ooberror_pm)
+cc_imp_error <- targets::tar_read(imp_ooberror_cc)
+# As you can see, I import my data using 'targets'! If you are reading this report and don't know what it is or how I created and stored them, you should read the README or the _devhistory.R files available at https://github.com/mrelnoob/ppl.tits. 
 
 .pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
 ```
@@ -71,8 +71,8 @@ To avoid overfitting, no hyperparameters tuning was performed but I applied a th
 Here is a summary of the Great Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to table **XXX_A_FAIRE!_XXX**):
 
 ```{r pm before imputation, message=FALSE}
-tits %>% dplyr::filter(species == "PM") -> pm
-summary(pm)
+tits_priorimp %>% dplyr::filter(species == "PM") -> pm_pimp
+summary(pm_pimp)
 ```
 
 ### - Dataset after imputation
@@ -91,6 +91,11 @@ data.frame(Variable = rownames(pm_imp_error),
 ```
 
 You can see that imputation errors are, in this case, fairly negligible compared to the variable ranges of variation. Consequently, we deemed these imputations acceptable and used them for the subsequent analyses.
+Here is a summary of the same data AFTER imputation:
+```{r pm after imputation, message=FALSE}
+tits %>% dplyr::filter(species == "PM") -> pm
+summary(pm)
+```
 
 
 
@@ -100,8 +105,8 @@ You can see that imputation errors are, in this case, fairly negligible compared
 Here is a summary of the Blue Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to table **XXX_A_FAIRE!_XXX**):
 
 ```{r cc before imputation, message=FALSE}
-tits %>% dplyr::filter(species == "CC") -> cc
-summary(cc)
+tits_priorimp %>% dplyr::filter(species == "CC") -> cc_pimp
+summary(cc_pimp)
 ```
 
 ### - Dataset after imputation
@@ -119,12 +124,20 @@ data.frame(Variable = rownames(cc_imp_error),
   kableExtra::kable_styling(full_width = FALSE)
 ```
 
-You can see that imputation errors are, in this case, fairly negligible compared to the variable ranges of variation. Consequently, we deemed these imputations acceptable and used them for the subsequent analyses.
+Here again, you can see that imputation errors are, in this case, fairly negligible compared to the variable ranges of variation. Consequently, we deemed these imputations acceptable and used them for the subsequent analyses.
+Here is a summary of the same data AFTER imputation:
+```{r cc after imputation, message=FALSE}
+tits %>% dplyr::filter(species == "CC") -> cc
+summary(cc)
+```
+\
+\
 
+******
 
+# - Data exploration
 
-
-Various aspects of our data (e.g. outliers, variables distribution, multicollinearity among predictors, homogeneity of variances, independence, potential interactions, multivariate relationships, linearity etc.) were explored in this document, mostly following Bolker (2007), Zuur *et al.* (2010), and Harrell (2015). However, as the response variables were of different nature (e.g. binary, continuous), they would be modelled using different types of models with varying assumptions:
+Various aspects of our data (e.g. outliers, variables distribution, multicollinearity among predictors, homogeneity of variances, independence, potential interactions, multivariate relationships, linearity etc.) were explored and are presented in this document, mostly following Bolker (2007), Zuur *et al.* (2010), and Harrell (2015). However, as the response variables were of different nature (e.g. binary, continuous), they would be modelled using different types of models with varying assumptions:
 
 * The *efficiency* and *high_eff* variables shared the same sub-dataset because we decided to analyse them using the same set of candidate *a priori* models. The former variable is a sort of *satisfaction score* estimated by the managers and can modelled as a percentage using **beta regressions** while the latter, which relates to cases of knotweed (near-)eradication, is a binary variable that should be modelled using some type of **logistic regression**.
 * The other three response variables indicated the presence of knotweed regrowths at various key locations of the tarping set-ups, and should thus also be modelled using methods of the *logistic regression family*.

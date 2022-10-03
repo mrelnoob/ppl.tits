@@ -630,7 +630,7 @@ pre code {
 report - Tits reproduction study, PubPrivLands project (Martin <em>et
 al.</em>, <em>in prep.</em>)</h1>
 <h4 class="author">François-Marie Martin</h4>
-<h4 class="date">29 septembre, 2022</h4>
+<h4 class="date">03 octobre, 2022</h4>
 
 </div>
 
@@ -643,29 +643,25 @@ reproductibility</a></li>
 <li><a href="#what-is-this-document-about" id="toc-what-is-this-document-about"><span class="toc-section-number">1.2</span> - What is this document
 about?</a></li>
 </ul></li>
-<li><a href="#small-summary-of-data-preparations" id="toc-small-summary-of-data-preparations"><span class="toc-section-number">2</span> + Small SUMMARY of data preparations
-?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§</a></li>
-<li><a href="#small-summary-of-data-preparations-1" id="toc-small-summary-of-data-preparations-1"><span class="toc-section-number">3</span> + Small SUMMARY of data preparations
-?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§</a></li>
-<li><a href="#small-summary-of-data-preparations-2" id="toc-small-summary-of-data-preparations-2"><span class="toc-section-number">4</span> + Small SUMMARY of data preparations
-?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§</a></li>
-<li><a href="#missing-data-imputation-process" id="toc-missing-data-imputation-process"><span class="toc-section-number">5</span> - Missing data imputation
+<li><a href="#missing-data-imputation-process" id="toc-missing-data-imputation-process"><span class="toc-section-number">2</span> - Missing data imputation
 process</a>
 <ul>
-<li><a href="#great-tits-dataset" id="toc-great-tits-dataset"><span class="toc-section-number">5.1</span> - Great Tits dataset</a>
+<li><a href="#great-tits-dataset" id="toc-great-tits-dataset"><span class="toc-section-number">2.1</span> - Great Tits dataset</a>
 <ul>
-<li><a href="#dataset-prior-to-imputation" id="toc-dataset-prior-to-imputation"><span class="toc-section-number">5.1.1</span> - Dataset prior to
+<li><a href="#dataset-prior-to-imputation" id="toc-dataset-prior-to-imputation"><span class="toc-section-number">2.1.1</span> - Dataset prior to
 imputation</a></li>
-<li><a href="#dataset-after-imputation" id="toc-dataset-after-imputation"><span class="toc-section-number">5.1.2</span> - Dataset after
+<li><a href="#dataset-after-imputation" id="toc-dataset-after-imputation"><span class="toc-section-number">2.1.2</span> - Dataset after
+imputation</a></li>
+</ul></li>
+<li><a href="#blue-tits-dataset" id="toc-blue-tits-dataset"><span class="toc-section-number">2.2</span> - Blue Tits dataset</a>
+<ul>
+<li><a href="#dataset-prior-to-imputation-1" id="toc-dataset-prior-to-imputation-1"><span class="toc-section-number">2.2.1</span> - Dataset prior to
+imputation</a></li>
+<li><a href="#dataset-after-imputation-1" id="toc-dataset-after-imputation-1"><span class="toc-section-number">2.2.2</span> - Dataset after
 imputation</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#nice-table-with-colour-as-in-kaggle" id="toc-nice-table-with-colour-as-in-kaggle"><span class="toc-section-number">6</span> +nice table with colour as in
-KAGGLE???</a></li>
-<li><a href="#nice-table-with-colour-as-in-kaggle-1" id="toc-nice-table-with-colour-as-in-kaggle-1"><span class="toc-section-number">7</span> +nice table with colour as in
-KAGGLE???</a></li>
-<li><a href="#nice-table-with-colour-as-in-kaggle-2" id="toc-nice-table-with-colour-as-in-kaggle-2"><span class="toc-section-number">8</span> +nice table with colour as in
-KAGGLE???</a></li>
+<li><a href="#data-exploration" id="toc-data-exploration"><span class="toc-section-number">3</span> Data exploration</a></li>
 <li><a href="#references" id="toc-references">- References</a></li>
 </ul>
 </div>
@@ -710,7 +706,7 @@ document about?</h2>
 <p><br />
 </p>
 <p>This document outlines all the important data preparation and
-exploration steps necessary to test our research hypotheses. In other
+exploration steps undertaken to test our research hypotheses. In other
 words, it presents all <strong>exploratory data analyses</strong> and
 basic <strong>assumption checks</strong> performed on the <em>final</em>
 version of our dataset. Actually, it also presents the last step of the
@@ -720,27 +716,14 @@ and thus deserves the utmost transparency. For more details regarding
 the dataset generation process (i.e. creation of the <em>final</em>
 dataset), readers are referred to the scripts and documents stored at:
 <a href="https://github.com/mrelnoob/ppl.tits" class="uri">https://github.com/mrelnoob/ppl.tits</a> as well as to the
-manuscript and other Supplementary Materials.</p>
-</div>
-</div>
-<div id="small-summary-of-data-preparations" class="section level1" number="2">
-<h1><span class="header-section-number">2</span> + Small SUMMARY of data
-preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§</h1>
-</div>
-<div id="small-summary-of-data-preparations-1" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> + Small SUMMARY of data
-preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§</h1>
-</div>
-<div id="small-summary-of-data-preparations-2" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> + Small SUMMARY of data
-preparations ?????? §§§§§§§§§§§§§§§§§§§§§§§§§§§§</h1>
-<p><br />
+manuscript and other Supplementary Materials.<br />
 <br />
 </p>
 <hr />
 </div>
-<div id="missing-data-imputation-process" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> - Missing data
+</div>
+<div id="missing-data-imputation-process" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> - Missing data
 imputation process</h1>
 <p>Similarly to many datasets in ecology, some of our variables
 contained missing values. As most of them were MAR or MCAR (missing
@@ -750,16 +733,16 @@ missing values in some of our response variables as well as in all
 independent variables containing missing values instead of deleting
 observations. However, as the proportion of missing values is clearly
 higher for our Blue Tits (<em>Cyanistes caeruleus</em>) observations
-than for our Great Tits (<em>Parus major</em>) ones and as it had a
-lower sample size, we chose to split our data into two subsets, one for
-each species, where the Blue Tits one will contain less variables as
-some will be discarded to prevent overoptimistic imputations. For our
-morphometric response variables on the other hand, missing values were
-not MAR as many were due to the fact that the reproduction event failed.
-It was then impossible to measure morphometric variables on dead or
-missing bird nestlings. These variables were thus excluded from the
-following imputation process but will perhaps be imputed later if
-required.</p>
+than for our Great Tits (<em>Parus major</em>) data and as the former
+has a lower sample size, we chose to split our data into two subsets,
+one for each species, where the Blue Tits one will contain less
+variables as some will be discarded to prevent overoptimistic
+imputations. For our morphometric response variables on the other hand,
+missing values were not MAR as many were due to the fact that the
+reproduction event failed. It was then impossible to measure
+morphometric variables on dead or missing bird nestlings. These
+variables were thus excluded from the following imputation process but
+will perhaps be imputed later if required.</p>
 <p>To impute missing values, we used the <code>missForest()</code>
 function from the {missForest} package <span class="citation">(Stekhoven
 &amp; Bühlmann, 2011)</span>. This functions initially imputes all
@@ -778,15 +761,198 @@ classified (PFC) is used for categorical missing ones. To avoid
 overfitting, no hyperparameters tuning was performed but I applied a
 three-fold increase in the number of trees and maximum iterations with
 respect to the default values to favour predictive accuracy.</p>
-<div id="great-tits-dataset" class="section level2" number="5.1">
-<h2><span class="header-section-number">5.1</span> - Great Tits
+<div id="great-tits-dataset" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> - Great Tits
 dataset</h2>
-<div id="dataset-prior-to-imputation" class="section level3" number="5.1.1">
-<h3><span class="header-section-number">5.1.1</span> - Dataset prior to
+<div id="dataset-prior-to-imputation" class="section level3" number="2.1.1">
+<h3><span class="header-section-number">2.1.1</span> - Dataset prior to
 imputation</h3>
 <p>Here is a summary of the Great Tits dataset prior to data imputation
 (for the meaning of the variables, readers are referred to table
 **XXX_A_FAIRE!_XXX**):</p>
+<pre><code>##    id_nestbox               site        coord_x          coord_y       
+##  DIJ-139:  4   parc_colombiere: 29   Min.   :849898   Min.   :6690155  
+##  DIJ-163:  4   arquebuse      : 23   1st Qu.:853196   1st Qu.:6692273  
+##  DIJ-011:  3   port_du_canal  : 21   Median :854441   Median :6692839  
+##  DIJ-017:  3   campus_nord    : 14   Mean   :854221   Mean   :6693043  
+##  DIJ-028:  3   allee_du_parc  : 13   3rd Qu.:855166   3rd Qu.:6693667  
+##  DIJ-051:  3   ru_de_pouilly  : 12   Max.   :856770   Max.   :6696562  
+##  (Other):248   (Other)        :156                                     
+##    year    species    breeding_window  laying_date          flight_date        
+##  2020:42   CC:  0   late_2022 :55     Min.   :2019-03-17   Min.   :2019-04-22  
+##  2021:72   PM:268   early_2022:44     1st Qu.:2020-03-26   1st Qu.:2020-04-28  
+##  2019:55            late_2021 :36     Median :2021-04-05   Median :2021-05-09  
+##  2022:99            early_2021:36     Mean   :2021-01-20   Mean   :2021-02-23  
+##                     early_2019:32     3rd Qu.:2022-03-31   3rd Qu.:2022-05-04  
+##                     late_2019 :23     Max.   :2022-04-20   Max.   :2022-05-23  
+##                     (Other)   :42                                              
+##   clutch_size       brood_size      fledgling_nb         mass       
+##  Min.   : 1.000   Min.   : 0.000   Min.   : 0.000   Min.   : 9.866  
+##  1st Qu.: 7.000   1st Qu.: 6.000   1st Qu.: 4.000   1st Qu.:13.429  
+##  Median : 8.000   Median : 8.000   Median : 6.000   Median :14.851  
+##  Mean   : 8.123   Mean   : 7.345   Mean   : 5.403   Mean   :14.775  
+##  3rd Qu.: 9.000   3rd Qu.: 9.000   3rd Qu.: 8.000   3rd Qu.:16.076  
+##  Max.   :12.000   Max.   :12.000   Max.   :11.000   Max.   :18.413  
+##                   NA&#39;s   :1                         NA&#39;s   :49      
+##  tarsus_length    wing_length      father_id    father_cond         mother_id  
+##  Min.   :15.68   Min.   :27.00   8382546:  2   Min.   :-3.61459   7556111:  2  
+##  1st Qu.:18.48   1st Qu.:38.95   8791992:  2   1st Qu.:-0.80096   7636392:  2  
+##  Median :19.06   Median :42.20   8876547:  2   Median : 0.14185   8382542:  2  
+##  Mean   :18.91   Mean   :41.45   8877009:  2   Mean   : 0.01227   8791030:  2  
+##  3rd Qu.:19.50   3rd Qu.:45.06   8877040:  2   3rd Qu.: 0.86365   8791192:  2  
+##  Max.   :20.55   Max.   :50.38   (Other): 92   Max.   : 3.03075   (Other): 86  
+##  NA&#39;s   :89      NA&#39;s   :123     NA&#39;s   :166   NA&#39;s   :166        NA&#39;s   :172  
+##   mother_cond          cumdd_30      min_t_before    min_t_between    
+##  Min.   :-3.03290   Min.   :189.3   Min.   :-3.360   Min.   :-3.0600  
+##  1st Qu.:-0.76098   1st Qu.:251.5   1st Qu.:-1.900   1st Qu.:-1.5225  
+##  Median : 0.01490   Median :267.0   Median :-1.010   Median :-0.3950  
+##  Mean   : 0.00237   Mean   :263.1   Mean   :-1.154   Mean   : 0.1884  
+##  3rd Qu.: 0.61370   3rd Qu.:278.7   3rd Qu.:-0.370   3rd Qu.: 1.0170  
+##  Max.   : 3.39859   Max.   :329.7   Max.   : 0.910   Max.   : 6.5300  
+##  NA&#39;s   :172        NA&#39;s   :26      NA&#39;s   :35       NA&#39;s   :34       
+##  mean_winter_t    sd_winter_t     lsource_0_m     lsource_0_iq   
+##  Min.   :5.069   Min.   :3.642   Min.   : 0.00   Min.   : 0.000  
+##  1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.00   1st Qu.: 4.000  
+##  Median :5.745   Median :3.777   Median : 4.00   Median : 7.000  
+##  Mean   :5.716   Mean   :3.791   Mean   : 4.33   Mean   : 6.998  
+##  3rd Qu.:5.877   3rd Qu.:3.832   3rd Qu.: 6.00   3rd Qu.: 9.500  
+##  Max.   :6.466   Max.   :4.279   Max.   :14.00   Max.   :21.000  
+##                                                                  
+##   lsource_10_m   lsource_10_iq      lflux_0_m         lflux_0_iq    
+##  Min.   : 0.00   Min.   : 0.000   Min.   :  0.000   Min.   :  0.00  
+##  1st Qu.:10.00   1st Qu.: 5.500   1st Qu.:  5.217   1st Qu.: 28.28  
+##  Median :18.00   Median : 8.125   Median : 36.198   Median : 94.13  
+##  Mean   :19.29   Mean   : 9.579   Mean   : 42.160   Mean   :100.64  
+##  3rd Qu.:28.25   3rd Qu.:12.000   3rd Qu.: 64.355   3rd Qu.:162.98  
+##  Max.   :52.00   Max.   :35.000   Max.   :231.522   Max.   :303.11  
+##                                                                     
+##    lflux_10_m      lflux_10_iq     lsource_vs150_m lsource_vs150_iq
+##  Min.   :  0.00   Min.   :  0.00   Min.   : 0.00   Min.   : 0.00   
+##  1st Qu.: 17.77   1st Qu.: 34.88   1st Qu.: 6.00   1st Qu.: 7.00   
+##  Median : 48.22   Median : 64.70   Median :11.00   Median :10.00   
+##  Mean   : 55.33   Mean   : 78.33   Mean   :11.28   Mean   :11.05   
+##  3rd Qu.: 87.04   3rd Qu.:115.11   3rd Qu.:15.00   3rd Qu.:14.00   
+##  Max.   :196.61   Max.   :266.11   Max.   :33.00   Max.   :31.00   
+##                                                                    
+##     noise_m         noise_iq          trafic        age_class strata_div
+##  Min.   :23.82   Min.   : 1.043   Min.   :      0   0: 52     0: 3      
+##  1st Qu.:51.87   1st Qu.: 6.328   1st Qu.: 428822   1:100     1:20      
+##  Median :53.49   Median : 9.857   Median :2099467   2:116     2:98      
+##  Mean   :54.20   Mean   : 9.791   Mean   :2665281             3:84      
+##  3rd Qu.:57.92   3rd Qu.:12.869   3rd Qu.:4616539             4:63      
+##  Max.   :65.12   Max.   :24.177   Max.   :9819101                       
+##                                                                         
+##  woodyveg_volume    woodyveg_sd    vegetation_area   woody_area   
+##  Min.   :  19030   Min.   :1.624   Min.   : 7942   Min.   : 4205  
+##  1st Qu.:  86268   1st Qu.:4.447   1st Qu.:25132   1st Qu.:13402  
+##  Median : 169023   Median :5.462   Median :30738   Median :17774  
+##  Mean   : 288220   Mean   :5.587   Mean   :33803   Mean   :21585  
+##  3rd Qu.: 249857   3rd Qu.:6.797   3rd Qu.:38222   3rd Qu.:24723  
+##  Max.   :1531037   Max.   :9.893   Max.   :70228   Max.   :63038  
+##                                                                   
+##  herbaceous_area soft_manag_area   open_area       built_area   
+##  Min.   : 2121   Min.   :    0   Min.   :  125   Min.   :    0  
+##  1st Qu.: 8749   1st Qu.:    0   1st Qu.:21562   1st Qu.: 6695  
+##  Median :11484   Median :    0   Median :27683   Median :10750  
+##  Mean   :12218   Mean   : 1528   Mean   :25358   Mean   :11192  
+##  3rd Qu.:14458   3rd Qu.: 1212   3rd Qu.:32301   3rd Qu.:15106  
+##  Max.   :29589   Max.   :18927   Max.   :41321   Max.   :33597  
+## </code></pre>
+</div>
+<div id="dataset-after-imputation" class="section level3" number="2.1.2">
+<h3><span class="header-section-number">2.1.2</span> - Dataset after
+imputation</h3>
+<p>Below, you may find a summary table of the OOB error for all imputed
+variables, expressed in the original variable scales (the blue variable
+is a future response variable while the green ones are meant to be
+predictors):</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Variable
+</th>
+<th style="text-align:right;">
+Nb_imputed_values
+</th>
+<th style="text-align:right;">
+Oob_RMSE
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: deepskyblue !important;">brood_size</span>
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+1.8669485
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">father_cond</span>
+</td>
+<td style="text-align:right;">
+166
+</td>
+<td style="text-align:right;">
+1.2976403
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">mother_cond</span>
+</td>
+<td style="text-align:right;">
+172
+</td>
+<td style="text-align:right;">
+1.2461413
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">cumdd_30</span>
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+13.7909595
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">min_t_before</span>
+</td>
+<td style="text-align:right;">
+35
+</td>
+<td style="text-align:right;">
+0.4007693
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">min_t_between</span>
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+1.5173962
+</td>
+</tr>
+</tbody>
+</table>
+<p>You can see that imputation errors are, in this case, fairly
+negligible compared to the variable ranges of variation. Consequently,
+we deemed these imputations acceptable and used them for the subsequent
+analyses. Here is a summary of the same data AFTER imputation:</p>
 <pre><code>##    id_nestbox               site        coord_x          coord_y       
 ##  DIJ-139:  4   parc_colombiere: 29   Min.   :849898   Min.   :6690155  
 ##  DIJ-163:  4   arquebuse      : 23   1st Qu.:853196   1st Qu.:6692273  
@@ -876,28 +1042,112 @@ imputation</h3>
 ##  Max.   :29589   Max.   :18927   Max.   :41321   Max.   :33597  
 ## </code></pre>
 </div>
-<div id="dataset-after-imputation" class="section level3" number="5.1.2">
-<h3><span class="header-section-number">5.1.2</span> - Dataset after
+</div>
+<div id="blue-tits-dataset" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> - Blue Tits
+dataset</h2>
+<div id="dataset-prior-to-imputation-1" class="section level3" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> - Dataset prior to
+imputation</h3>
+<p>Here is a summary of the Blue Tits dataset prior to data imputation
+(for the meaning of the variables, readers are referred to table
+**XXX_A_FAIRE!_XXX**):</p>
+<pre><code>##    id_nestbox                site       coord_x          coord_y       
+##  DIJ-071:  4   parc_colombiere :16   Min.   :852173   Min.   :6688863  
+##  DIJ-072:  3   arquebuse       :13   1st Qu.:853716   1st Qu.:6692339  
+##  DIJ-119:  3   port_du_canal   :11   Median :854642   Median :6692900  
+##  DIJ-131:  3   allee_du_parc   :11   Mean   :854533   Mean   :6693017  
+##  DIJ-140:  3   bd_strasbourg   :10   3rd Qu.:855313   3rd Qu.:6693335  
+##  DIJ-016:  2   parc_argentieres: 9   Max.   :859333   Max.   :6696495  
+##  (Other):120   (Other)         :68                                     
+##    year    species    breeding_window  laying_date          flight_date        
+##  2020:26   CC:138   late_2022 :24     Min.   :2019-03-22   Min.   :2019-04-26  
+##  2021:45   PM:  0   late_2019 :24     1st Qu.:2020-03-23   1st Qu.:2020-04-29  
+##  2019:33            late_2021 :23     Median :2021-03-31   Median :2021-05-03  
+##  2022:34            early_2021:22     Mean   :2020-11-01   Mean   :2020-12-06  
+##                     late_2020 :13     3rd Qu.:2021-04-18   3rd Qu.:2021-05-21  
+##                     early_2020:13     Max.   :2022-04-13   Max.   :2022-05-18  
+##                     (Other)   :19                                              
+##   clutch_size      brood_size      fledgling_nb         mass       
+##  Min.   : 1.00   Min.   : 0.000   Min.   : 0.000   Min.   : 5.873  
+##  1st Qu.: 9.00   1st Qu.: 8.000   1st Qu.: 2.250   1st Qu.: 7.910  
+##  Median :11.00   Median :10.000   Median : 6.000   Median : 8.848  
+##  Mean   :10.33   Mean   : 9.102   Mean   : 5.428   Mean   : 8.935  
+##  3rd Qu.:12.00   3rd Qu.:11.000   3rd Qu.: 8.000   3rd Qu.: 9.998  
+##  Max.   :14.00   Max.   :14.000   Max.   :12.000   Max.   :12.990  
+##                  NA&#39;s   :1                         NA&#39;s   :40      
+##  tarsus_length    wing_length      father_id    father_cond    mother_id  
+##  Min.   :12.01   Min.   :17.50   8791247:  1   Min.   : NA   8790934:  1  
+##  1st Qu.:15.26   1st Qu.:30.04   8791404:  1   1st Qu.: NA   8791396:  1  
+##  Median :16.01   Median :33.27   0325BFC:  0   Median : NA   8791413:  1  
+##  Mean   :15.84   Mean   :32.84   0334BFC:  0   Mean   :NaN   8791432:  1  
+##  3rd Qu.:16.44   3rd Qu.:36.56   1299BFC:  0   3rd Qu.: NA   8791552:  1  
+##  Max.   :17.72   Max.   :40.14   (Other):  0   Max.   : NA   (Other):  3  
+##  NA&#39;s   :63      NA&#39;s   :84      NA&#39;s   :136   NA&#39;s   :138   NA&#39;s   :130  
+##   mother_cond     cumdd_30      min_t_before     min_t_between    
+##  Min.   : NA   Min.   :147.3   Min.   :-3.5400   Min.   :-3.3600  
+##  1st Qu.: NA   1st Qu.:247.9   1st Qu.:-1.7560   1st Qu.:-0.8350  
+##  Median : NA   Median :266.7   Median :-0.6760   Median : 0.0510  
+##  Mean   :NaN   Mean   :260.6   Mean   :-0.8896   Mean   : 0.3227  
+##  3rd Qu.: NA   3rd Qu.:276.2   3rd Qu.:-0.1200   3rd Qu.: 1.0170  
+##  Max.   : NA   Max.   :351.1   Max.   : 0.7970   Max.   : 5.5400  
+##  NA&#39;s   :138   NA&#39;s   :15      NA&#39;s   :25        NA&#39;s   :19       
+##  mean_winter_t    sd_winter_t     lsource_0_m      lsource_0_iq   
+##  Min.   :5.069   Min.   :3.642   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.000   1st Qu.: 4.000  
+##  Median :5.745   Median :3.776   Median : 4.000   Median : 7.000  
+##  Mean   :5.744   Mean   :3.779   Mean   : 4.453   Mean   : 7.335  
+##  3rd Qu.:5.859   3rd Qu.:3.818   3rd Qu.: 6.375   3rd Qu.:10.000  
+##  Max.   :6.415   Max.   :4.011   Max.   :14.000   Max.   :21.000  
+##                                                                   
+##   lsource_10_m   lsource_10_iq      lflux_0_m         lflux_0_iq    
+##  Min.   : 0.00   Min.   : 0.000   Min.   :  0.000   Min.   :  0.00  
+##  1st Qu.: 9.00   1st Qu.: 5.750   1st Qu.:  5.584   1st Qu.: 30.07  
+##  Median :18.00   Median : 8.125   Median : 39.868   Median :110.79  
+##  Mean   :19.03   Mean   :10.080   Mean   : 48.709   Mean   :108.36  
+##  3rd Qu.:29.75   3rd Qu.:12.125   3rd Qu.: 76.809   3rd Qu.:165.91  
+##  Max.   :52.00   Max.   :35.000   Max.   :207.137   Max.   :303.11  
+##                                                                     
+##    lflux_10_m      lflux_10_iq     lsource_vs150_m lsource_vs150_iq
+##  Min.   :  0.00   Min.   :  0.00   Min.   : 0.00   Min.   : 0.00   
+##  1st Qu.: 19.25   1st Qu.: 36.73   1st Qu.: 6.00   1st Qu.: 7.00   
+##  Median : 56.65   Median : 68.52   Median :10.50   Median :10.00   
+##  Mean   : 60.27   Mean   : 83.41   Mean   :11.03   Mean   :11.72   
+##  3rd Qu.: 95.16   3rd Qu.:128.18   3rd Qu.:14.75   3rd Qu.:16.00   
+##  Max.   :160.03   Max.   :248.53   Max.   :33.00   Max.   :31.00   
+##                                                                    
+##     noise_m         noise_iq          trafic        age_class strata_div
+##  Min.   :44.10   Min.   : 1.000   Min.   :      0   0:33      0: 1      
+##  1st Qu.:51.96   1st Qu.: 5.908   1st Qu.: 478466   1:44      1:11      
+##  Median :53.78   Median :10.719   Median :2324325   2:61      2:40      
+##  Mean   :54.38   Mean   : 9.937   Mean   :2863606             3:62      
+##  3rd Qu.:57.87   3rd Qu.:13.278   3rd Qu.:5344278             4:24      
+##  Max.   :64.44   Max.   :27.199   Max.   :8217731                       
+##                                                                         
+##  woodyveg_volume    woodyveg_sd     vegetation_area   woody_area   
+##  Min.   :  31795   Min.   : 2.890   Min.   : 7942   Min.   : 4205  
+##  1st Qu.: 111953   1st Qu.: 4.645   1st Qu.:25123   1st Qu.:15050  
+##  Median : 173402   Median : 5.360   Median :31865   Median :19808  
+##  Mean   : 323346   Mean   : 5.727   Mean   :34317   Mean   :22994  
+##  3rd Qu.: 305591   3rd Qu.: 6.826   3rd Qu.:38540   3rd Qu.:25091  
+##  Max.   :1577025   Max.   :10.021   Max.   :70237   Max.   :63749  
+##                                                                    
+##  herbaceous_area soft_manag_area     open_area       built_area   
+##  Min.   : 2121   Min.   :    0.0   Min.   :  116   Min.   :    0  
+##  1st Qu.: 8452   1st Qu.:    0.0   1st Qu.:20476   1st Qu.: 7715  
+##  Median :11016   Median :    0.0   Median :26045   Median :11505  
+##  Mean   :11322   Mean   :  625.5   Mean   :24515   Mean   :11521  
+##  3rd Qu.:13384   3rd Qu.:    0.0   3rd Qu.:31707   3rd Qu.:15176  
+##  Max.   :28970   Max.   :11594.9   Max.   :41321   Max.   :33182  
+## </code></pre>
+</div>
+<div id="dataset-after-imputation-1" class="section level3" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> - Dataset after
 imputation</h3>
 <p>Below, you may find a summary table of the OOB error for all imputed
-variables, expressed in the original variable scales (i.e. RMSE):</p>
-</div>
-</div>
-</div>
-<div id="nice-table-with-colour-as-in-kaggle" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> +nice table with colour
-as in KAGGLE???</h1>
-</div>
-<div id="nice-table-with-colour-as-in-kaggle-1" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> +nice table with colour
-as in KAGGLE???</h1>
-</div>
-<div id="nice-table-with-colour-as-in-kaggle-2" class="section level1" number="8">
-<h1><span class="header-section-number">8</span> +nice table with colour
-as in KAGGLE???</h1>
-<p>You can see that imputation errors are, in this case, fairly
-negligible. Values of exactly 0 means that no missing values were
-imputed:</p>
+variables, expressed in the original variable scales (the blue variable
+is a future response variable while the green ones are meant to be
+predictors):</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -921,29 +1171,7 @@ Oob_RMSE
 1
 </td>
 <td style="text-align:right;">
-1.8669485
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">father_cond</span>
-</td>
-<td style="text-align:right;">
-166
-</td>
-<td style="text-align:right;">
-1.2976403
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">mother_cond</span>
-</td>
-<td style="text-align:right;">
-172
-</td>
-<td style="text-align:right;">
-1.2461413
+2.7483259
 </td>
 </tr>
 <tr>
@@ -951,10 +1179,10 @@ Oob_RMSE
 <span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">cumdd_30</span>
 </td>
 <td style="text-align:right;">
-26
+15
 </td>
 <td style="text-align:right;">
-13.7909595
+17.9379686
 </td>
 </tr>
 <tr>
@@ -962,10 +1190,10 @@ Oob_RMSE
 <span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">min_t_before</span>
 </td>
 <td style="text-align:right;">
-35
+25
 </td>
 <td style="text-align:right;">
-0.4007693
+0.5411972
 </td>
 </tr>
 <tr>
@@ -973,23 +1201,124 @@ Oob_RMSE
 <span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">min_t_between</span>
 </td>
 <td style="text-align:right;">
-34
+19
 </td>
 <td style="text-align:right;">
-1.5173962
+1.2953901
 </td>
 </tr>
 </tbody>
 </table>
-<p>CHANGE DICtionary§§§§§ British english§§§§??????,</p>
+<p>Here again, you can see that imputation errors are, in this case,
+fairly negligible compared to the variable ranges of variation.
+Consequently, we deemed these imputations acceptable and used them for
+the subsequent analyses. Here is a summary of the same data AFTER
+imputation:</p>
+<pre><code>##    id_nestbox                site       coord_x          coord_y       
+##  DIJ-071:  4   parc_colombiere :16   Min.   :852173   Min.   :6688863  
+##  DIJ-072:  3   arquebuse       :13   1st Qu.:853716   1st Qu.:6692339  
+##  DIJ-119:  3   port_du_canal   :11   Median :854642   Median :6692900  
+##  DIJ-131:  3   allee_du_parc   :11   Mean   :854533   Mean   :6693017  
+##  DIJ-140:  3   bd_strasbourg   :10   3rd Qu.:855313   3rd Qu.:6693335  
+##  DIJ-016:  2   parc_argentieres: 9   Max.   :859333   Max.   :6696495  
+##  (Other):120   (Other)         :68                                     
+##    year    species    breeding_window  laying_date          flight_date        
+##  2020:26   CC:138   late_2022 :24     Min.   :2019-03-22   Min.   :2019-04-26  
+##  2021:45   PM:  0   late_2019 :24     1st Qu.:2020-03-23   1st Qu.:2020-04-29  
+##  2019:33            late_2021 :23     Median :2021-03-31   Median :2021-05-03  
+##  2022:34            early_2021:22     Mean   :2020-11-01   Mean   :2020-12-06  
+##                     late_2020 :13     3rd Qu.:2021-04-18   3rd Qu.:2021-05-21  
+##                     early_2020:13     Max.   :2022-04-13   Max.   :2022-05-18  
+##                     (Other)   :19                                              
+##   clutch_size      brood_size      fledgling_nb         mass       
+##  Min.   : 1.00   Min.   : 0.000   Min.   : 0.000   Min.   : 5.873  
+##  1st Qu.: 9.00   1st Qu.: 8.000   1st Qu.: 2.250   1st Qu.: 7.910  
+##  Median :11.00   Median :10.000   Median : 6.000   Median : 8.848  
+##  Mean   :10.33   Mean   : 9.084   Mean   : 5.428   Mean   : 8.935  
+##  3rd Qu.:12.00   3rd Qu.:11.000   3rd Qu.: 8.000   3rd Qu.: 9.998  
+##  Max.   :14.00   Max.   :14.000   Max.   :12.000   Max.   :12.990  
+##                                                    NA&#39;s   :40      
+##  tarsus_length    wing_length      father_id    father_cond    mother_id  
+##  Min.   :12.01   Min.   :17.50   8791247:  1   Min.   : NA   8790934:  1  
+##  1st Qu.:15.26   1st Qu.:30.04   8791404:  1   1st Qu.: NA   8791396:  1  
+##  Median :16.01   Median :33.27   0325BFC:  0   Median : NA   8791413:  1  
+##  Mean   :15.84   Mean   :32.84   0334BFC:  0   Mean   :NaN   8791432:  1  
+##  3rd Qu.:16.44   3rd Qu.:36.56   1299BFC:  0   3rd Qu.: NA   8791552:  1  
+##  Max.   :17.72   Max.   :40.14   (Other):  0   Max.   : NA   (Other):  3  
+##  NA&#39;s   :63      NA&#39;s   :84      NA&#39;s   :136   NA&#39;s   :138   NA&#39;s   :130  
+##   mother_cond     cumdd_30      min_t_before     min_t_between     
+##  Min.   : NA   Min.   :147.3   Min.   :-3.5400   Min.   :-3.36000  
+##  1st Qu.: NA   1st Qu.:243.1   1st Qu.:-1.7560   1st Qu.:-0.96469  
+##  Median : NA   Median :263.0   Median :-0.8730   Median :-0.02258  
+##  Mean   :NaN   Mean   :258.6   Mean   :-0.9782   Mean   : 0.21285  
+##  3rd Qu.: NA   3rd Qu.:275.3   3rd Qu.:-0.2973   3rd Qu.: 0.88000  
+##  Max.   : NA   Max.   :351.1   Max.   : 0.7970   Max.   : 5.54000  
+##  NA&#39;s   :138                                                       
+##  mean_winter_t    sd_winter_t     lsource_0_m      lsource_0_iq   
+##  Min.   :5.069   Min.   :3.642   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.000   1st Qu.: 4.000  
+##  Median :5.745   Median :3.776   Median : 4.000   Median : 7.000  
+##  Mean   :5.744   Mean   :3.779   Mean   : 4.453   Mean   : 7.335  
+##  3rd Qu.:5.859   3rd Qu.:3.818   3rd Qu.: 6.375   3rd Qu.:10.000  
+##  Max.   :6.415   Max.   :4.011   Max.   :14.000   Max.   :21.000  
+##                                                                   
+##   lsource_10_m   lsource_10_iq      lflux_0_m         lflux_0_iq    
+##  Min.   : 0.00   Min.   : 0.000   Min.   :  0.000   Min.   :  0.00  
+##  1st Qu.: 9.00   1st Qu.: 5.750   1st Qu.:  5.584   1st Qu.: 30.07  
+##  Median :18.00   Median : 8.125   Median : 39.868   Median :110.79  
+##  Mean   :19.03   Mean   :10.080   Mean   : 48.709   Mean   :108.36  
+##  3rd Qu.:29.75   3rd Qu.:12.125   3rd Qu.: 76.809   3rd Qu.:165.91  
+##  Max.   :52.00   Max.   :35.000   Max.   :207.137   Max.   :303.11  
+##                                                                     
+##    lflux_10_m      lflux_10_iq     lsource_vs150_m lsource_vs150_iq
+##  Min.   :  0.00   Min.   :  0.00   Min.   : 0.00   Min.   : 0.00   
+##  1st Qu.: 19.25   1st Qu.: 36.73   1st Qu.: 6.00   1st Qu.: 7.00   
+##  Median : 56.65   Median : 68.52   Median :10.50   Median :10.00   
+##  Mean   : 60.27   Mean   : 83.41   Mean   :11.03   Mean   :11.72   
+##  3rd Qu.: 95.16   3rd Qu.:128.18   3rd Qu.:14.75   3rd Qu.:16.00   
+##  Max.   :160.03   Max.   :248.53   Max.   :33.00   Max.   :31.00   
+##                                                                    
+##     noise_m         noise_iq          trafic        age_class strata_div
+##  Min.   :44.10   Min.   : 1.000   Min.   :      0   0:33      0: 1      
+##  1st Qu.:51.96   1st Qu.: 5.908   1st Qu.: 478466   1:44      1:11      
+##  Median :53.78   Median :10.719   Median :2324325   2:61      2:40      
+##  Mean   :54.38   Mean   : 9.937   Mean   :2863606             3:62      
+##  3rd Qu.:57.87   3rd Qu.:13.278   3rd Qu.:5344278             4:24      
+##  Max.   :64.44   Max.   :27.199   Max.   :8217731                       
+##                                                                         
+##  woodyveg_volume    woodyveg_sd     vegetation_area   woody_area   
+##  Min.   :  31795   Min.   : 2.890   Min.   : 7942   Min.   : 4205  
+##  1st Qu.: 111953   1st Qu.: 4.645   1st Qu.:25123   1st Qu.:15050  
+##  Median : 173402   Median : 5.360   Median :31865   Median :19808  
+##  Mean   : 323346   Mean   : 5.727   Mean   :34317   Mean   :22994  
+##  3rd Qu.: 305591   3rd Qu.: 6.826   3rd Qu.:38540   3rd Qu.:25091  
+##  Max.   :1577025   Max.   :10.021   Max.   :70237   Max.   :63749  
+##                                                                    
+##  herbaceous_area soft_manag_area     open_area       built_area   
+##  Min.   : 2121   Min.   :    0.0   Min.   :  116   Min.   :    0  
+##  1st Qu.: 8452   1st Qu.:    0.0   1st Qu.:20476   1st Qu.: 7715  
+##  Median :11016   Median :    0.0   Median :26045   Median :11505  
+##  Mean   :11322   Mean   :  625.5   Mean   :24515   Mean   :11521  
+##  3rd Qu.:13384   3rd Qu.:    0.0   3rd Qu.:31707   3rd Qu.:15176  
+##  Max.   :28970   Max.   :11594.9   Max.   :41321   Max.   :33182  
+## </code></pre>
+<p><br />
+<br />
+</p>
+<hr />
+</div>
+</div>
+</div>
+<div id="data-exploration" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Data exploration</h1>
 <p>Various aspects of our data (e.g. outliers, variables distribution,
 multicollinearity among predictors, homogeneity of variances,
 independence, potential interactions, multivariate relationships,
-linearity etc.) were explored in this document, mostly following Bolker
-(2007), Zuur <em>et al.</em> (2010), and Harrell (2015). However, as the
-response variables were of different nature (e.g. binary, continuous),
-they would be modelled using different types of models with varying
-assumptions:</p>
+linearity etc.) were explored and are presented in this document, mostly
+following Bolker (2007), Zuur <em>et al.</em> (2010), and Harrell
+(2015). However, as the response variables were of different nature
+(e.g. binary, continuous), they would be modelled using different types
+of models with varying assumptions:</p>
 <ul>
 <li>The <em>efficiency</em> and <em>high_eff</em> variables shared the
 same sub-dataset because we decided to analyse them using the same set
