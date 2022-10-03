@@ -401,9 +401,20 @@ targets::tar_visnetwork(targets_only = FALSE) # This argument enables the displa
 # and quickly executed. In other words, R Markdown reports are just targets that document prior
 # results. The bulk of the computation should have already happened upstream, and the most of the
 # code chunks in the report itself should be terse calls to 'tar_read()' and 'tar_load()'.
-# Otherwise, it is of course possible to create reports designed to NOT BE "targets"!
-# Also, the .Rmd document should be placed in the same folder as the "_targets" folder that
-# stores the targets, otherwise they cannot be called. It is perhaps possible to indicate the
+# Of course, it is possible to create reports designed to NOT BE "targets"!
+# The use of 'tar_read()' and 'tar_load()' allows us to run the report outside the pipeline. As
+# long as the "_targets/" folder contains data on the required targets from a previous
+# 'tar_make()', I can open the RStudio IDE, edit the report, and click the Knit button like I
+# would for any other RMarkdown report.
+
+# Note also that the .Rmd document should either be placed in the same folder as the "_targets"
+# folder that stores the targets, or the .Rmd's working directory should be changed using
+# appropriate functions within code chunks (e.g. using 'knitr::opts_knit$set(root.dir = '/tmp')'
+# or using 'setwd()'). Otherwise, RMarkdown and knitr won't be able to find the targets that
+# are called in the report and the code won't work!
+
+
+# otherwise they cannot be called. It is perhaps possible to indicate the
 # path to the folder differently but I don't know how (yet). --> I did: I changed the global
 # Rmarkdown options to change the directory to evaluate CHUNKS§§§§§§§
 
