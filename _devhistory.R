@@ -396,7 +396,7 @@ targets::tar_visnetwork(targets_only = FALSE) # This argument enables the displa
 # ---------------------------------------------------------------------------- #
 ### * 3.3. Literate programming with RMarkdown and {targets} -------------------
 
-# IMPORTANT NOTE: to ensure proper compatibility with {target}, RMarkdown reports should be
+# IMPORTANT NOTE: to ensure proper compatibility with {targets}, RMarkdown reports should be
 # lightweight. That means they should mostly include text and their chunks of code should be short
 # and quickly executed. In other words, R Markdown reports are just targets that document prior
 # results. The bulk of the computation should have already happened upstream, and the most of the
@@ -407,16 +407,15 @@ targets::tar_visnetwork(targets_only = FALSE) # This argument enables the displa
 # 'tar_make()', I can open the RStudio IDE, edit the report, and click the Knit button like I
 # would for any other RMarkdown report.
 
-# Note also that the .Rmd document should either be placed in the same folder as the "_targets"
-# folder that stores the targets, or the .Rmd's working directory should be changed using
-# appropriate functions within code chunks (e.g. using 'knitr::opts_knit$set(root.dir = '/tmp')'
-# or using 'setwd()'). Otherwise, RMarkdown and knitr won't be able to find the targets that
-# are called in the report and the code won't work!
-
-
-# otherwise they cannot be called. It is perhaps possible to indicate the
-# path to the folder differently but I don't know how (yet). --> I did: I changed the global
-# Rmarkdown options to change the directory to evaluate CHUNKS§§§§§§§
+# Note also that the report needs to be rendered by 'tar_make()'. If a report contains targets,
+# but is not itself a target (created with 'tarchetypes::tar_render()') that is rendered with
+# 'tar_make()', then I will not be able to knit it!
+# That is because apparently, {targets}, R/RStudio and {knitr} don't work well together by
+# default. For it to work, {knitr} needs to be able to locate the "_targets/" folder storing the
+# targets that are called in the .Rmd code chunks. To do that, I need to change the working
+# directory within the RStudio global options! If I change them with another method, I can run
+# the code chunks but I cannot knit the .Rmd document! For an example, see the reports in the
+# "ppl.tits" project.
 
 ### NOTE: Don't forget to fill the README file and to create a _make.R for others to be able
 # to reproduce my work!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
