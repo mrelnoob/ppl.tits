@@ -14,8 +14,7 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-knitr::opts_knit$set(root.dir = '~/') # This option is ABSOLUTELY REQUIRED if I want this .Rmd report to work well with {target}! It sets the working directory to the root of the project and not to the folder where the .Rmd document is stored (by default, that is what RMarkdown does). So if I don't do that, RMarkdown and knitr won't be able to find de the 'target' objects I'm calling in my functions! Another solution would be to used 'setwd()' for each code chunk where I call for external files. 
-getwd()
+# knitr::opts_knit$set(root.dir = '~/') # This option is ABSOLUTELY REQUIRED if I want this .Rmd report to work well with {target}! It sets the working directory to the root of the project and not to the folder where the .Rmd document is stored (by default, that is what RMarkdown does). So if I don't do that, RMarkdown and knitr won't be able to find de the 'target' objects I'm calling in my functions! Another solution would be to used 'setwd()' for each code chunk where I call for external files. 
 ```
 
 # - Introduction

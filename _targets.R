@@ -72,6 +72,9 @@ list(
     my_tdata = tdata_rawiv)$path, format = "file"),
   # Produce the fourth tits data update (imputing missing values):
   targets::tar_target(tdata_final, tdata_upD_final(
-    my_tdata = tdata_parcond)$path, format = "file")
+    my_tdata = tdata_parcond)$path, format = "file"),
+
+  # All targets related to reports (literate programming)_______________________#
+  tarchetypes::tar_render(EDA_report, path = here::here("output", "texts", "ppl.tits.exploration_report.Rmd"))
   )
 
