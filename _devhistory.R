@@ -167,7 +167,8 @@ usethis::use_r("01_00_import_raw_data")
 # should ONLY contain R scripts for functions and NOTHING ELSE! Yet, RStudio may sometimes put
 # other things in it, so it is a good idea to go and see once in a while.
 usethis::use_r("01_01_prepare_data")
-usethis::use_r("01_02_graphab_analyses")
+usethis::use_r("01_02_local_predictive_modelling")
+usethis::use_r("01_03_graphab_analyses")
 
 
 
