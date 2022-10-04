@@ -14,8 +14,8 @@ knitr::opts_chunk$set(echo = FALSE)
 # Still, note that theoretically, you do not need to knit or modify this document as it is meant for reproducibility and you can simply read the .html file for that.
 ```
 
-# - Introduction
-## - Regarding reproductibility
+# 1. Introduction
+## 1.1. Regarding reproductibility
 
 
 In order to facilitate any attempt at reproducing this study, here is a depiction of the system information used to prepare and analyse the data from the PubPrivLands tits reproduction study (Martin *et al.* , *in prep.*).
@@ -29,7 +29,7 @@ All codes used in this study can furthermore be found here: https://github.com/m
 \
 \
 
-## - What is this document about?  
+## 1.2. What is this document about?  
 
 ```{r data import, include=FALSE}
 library(ppl.tits) # To be able to use pipes.
@@ -50,7 +50,7 @@ For more details regarding the dataset generation process (i.e. creation of the 
 
 ******
 
-# - Missing data imputation process
+# 2. Missing data imputation process
 
 Similarly to many datasets in ecology, some of our variables contained missing values. As most of them were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in some of our response variables as well as in all independent variables containing missing values instead of deleting observations. However, as the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) data and as the former has a lower sample size, we chose to split our data into two subsets, one for each species, where the Blue Tits one will contain less variables as some will be discarded to prevent overoptimistic imputations. 
 For our morphometric response variables on the other hand, missing values were not MAR as many were due to the fact that the reproduction event failed. It was then impossible to measure morphometric variables on dead or missing bird nestlings. These variables were thus excluded from the following imputation process but will perhaps be imputed later if required.
@@ -61,8 +61,8 @@ To avoid overfitting, no hyperparameters tuning was performed but I applied a th
 
 
 
-## - Great Tits dataset
-### - Dataset prior to imputation
+## 2.1. Great Tits dataset
+### 2.1.1. Dataset prior to imputation
 
 Here is a summary of the Great Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to table **XXX_A_FAIRE!_XXX**):
 
@@ -71,7 +71,7 @@ tits_priorimp %>% dplyr::filter(species == "PM") -> pm_pimp
 summary(pm_pimp)
 ```
 
-### - Dataset after imputation
+### 2.1.2. Dataset after imputation
 
 Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (the blue variable is a future response variable while the green ones are meant to be predictors): 
 
@@ -95,8 +95,8 @@ summary(pm)
 
 
 
-## - Blue Tits dataset
-### - Dataset prior to imputation
+## 2.2. Blue Tits dataset
+### 2.2.1. Dataset prior to imputation
 
 Here is a summary of the Blue Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to table **XXX_A_FAIRE!_XXX**):
 
@@ -105,7 +105,7 @@ tits_priorimp %>% dplyr::filter(species == "CC") -> cc_pimp
 summary(cc_pimp)
 ```
 
-### - Dataset after imputation
+### 2.2.2. Dataset after imputation
 
 Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (the blue variable is a future response variable while the green ones are meant to be predictors): 
 
@@ -131,7 +131,7 @@ summary(cc)
 
 ******
 
-# - Data exploration
+# 3. Data exploration
 
 Various aspects of our data (e.g. outliers, variables distribution, multicollinearity among predictors, homogeneity of variances, independence, potential interactions, multivariate relationships, linearity etc.) were explored and are presented in this document, mostly following Bolker (2007), Zuur *et al.* (2010), and Harrell (2015). However, as the response variables were of different nature (e.g. binary, continuous), they would be modelled using different types of models with varying assumptions:
 
@@ -145,4 +145,4 @@ For the meaning of all variables, the reader is referred to Appendix §§§ *** 
 \
 
 ******
-# - References
+# XX. References
