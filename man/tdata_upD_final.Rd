@@ -37,7 +37,9 @@ new .csv file.
 }
 \examples{
 \dontrun{
-mydata <- tdata_upD_final()$dataset
+mydata <- tdata_upD_final()$final_dataset
+mydata <- tdata_upD_final()$priorimp_dataset # May be useful to compare the results of missing
+# data imputation.
 myerror_pm <- tdata_upD_final()$impute_error_pm
 myerror_cc <- tdata_upD_final()$impute_error_cc
 path_to_csv <- tdata_upD_parcond()$path
