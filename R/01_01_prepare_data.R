@@ -975,7 +975,8 @@ tdata_upD_final <- function(my_tdata = here::here("output", "tables", "ndata_par
   # To dismiss notes regarding "visible binding for global variables" during the CMD Check:
   id_nestbox <- year <- Nb_imputed_values <- coord_x <- coord_y <- father_cond <- father_id <-
     fledgling_nb <- flight_date <- laying_date <- mass <- mother_cond <- mother_id <- site <-
-    species <- success_manipulated <- tarsus_length <- wing_length <- NULL
+    species <- success_manipulated <- tarsus_length <- wing_length <-
+    built_area <- open_area <- trafic <- vegetation_area <- woody_area <- NULL
 
 
 
