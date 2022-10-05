@@ -888,7 +888,11 @@ tdata_upD_final <- function(my_tdata = here::here("output", "tables", "ndata_par
     dplyr::relocate(built_area, .after = trafic) %>%
     dplyr::relocate(open_area, .after = built_area) %>%
     dplyr::relocate(vegetation_area, .after = open_area) %>%
-    dplyr::relocate(woody_area, .after = vegetation_area) -> tits
+    dplyr::relocate(herbaceous_area, .after = vegetation_area) %>%
+    dplyr::relocate(soft_manag_area, .after = herbaceous_area) %>%
+    dplyr::relocate(woody_area, .after = soft_manag_area) %>%
+    dplyr::relocate(age_class, .after = woodyveg_sd) %>%
+    dplyr::relocate(strata_div, .after = age_class) -> tits
 
 
 
