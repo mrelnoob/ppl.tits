@@ -31,7 +31,7 @@
 #'
 #' @return This functions returns three things: 1) The Random Forest object built to be used for
 #' prediction using new data (e.g. using
-#' \code{\link[randomForest:predict.randomForest]{predict.randomForest}); 2) the OOB R2 stability
+#' \code{\link[randomForest:predict.randomForest]{predict.randomForest}}; 2) the OOB R2 stability
 #' plot; and 3) the variables importance stability plot.
 #' @export
 #' @importFrom here here
@@ -55,12 +55,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' patch_quality <- predict(object = ppl.tits::local_quality_model()$rf4pm,
-#' newdata = my_newdata) # Should work if "my_newdata" is a properly formatted.
-#'
-#' myrsq.plot <- ppl.tits::local_quality_model()$r_squared.stab
-#' var_imp.plot <- ppl.tits::local_quality_model()$var_importance.stab
-#' }
+#' patch_quality <- predict(ppl.tits::local_quality_model()$rf4pm)
 local_quality_model <- function(my_tdata = here::here("output", "tables", "ndata_final.csv")){
 
   ##### Data preparation
