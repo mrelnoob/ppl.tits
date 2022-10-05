@@ -884,7 +884,11 @@ tdata_upD_final <- function(my_tdata = here::here("output", "tables", "ndata_par
     dplyr::relocate(species, .after = year) %>%
     dplyr::relocate(mass, .after = fledgling_nb) %>%
     dplyr::relocate(tarsus_length, .after = mass) %>%
-    dplyr::relocate(wing_length, .after = tarsus_length) -> tits
+    dplyr::relocate(wing_length, .after = tarsus_length) %>%
+    dplyr::relocate(built_area, .after = trafic) %>%
+    dplyr::relocate(open_area, .after = built_area) %>%
+    dplyr::relocate(vegetation_area, .after = open_area) %>%
+    dplyr::relocate(woody_area, .after = vegetation_area) -> tits
 
 
 
