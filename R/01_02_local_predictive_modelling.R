@@ -29,7 +29,8 @@
 #' targets::tar_make())! If you DO NOT KNOW what I'm talking about, then you should
 #' read the README file (https://github.com/mrelnoob/ppl.tits) and probably NOT use this function!
 #'
-#' @return This functions returns three things: 1) The Random Forest object built to be used for prediction using new data (e.g. using
+#' @return This functions returns three things: 1) The Random Forest object built to be used for
+#' prediction using new data (e.g. using
 #' \code{\link[randomForest:predict.randomForest]{predict.randomForest}); 2) the OOB R2 stability
 #' plot; and 3) the variables importance stability plot.
 #' @export
