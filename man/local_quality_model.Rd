@@ -34,3 +34,8 @@ process by repeating it 100 times and reporting the associated out-of-bag R squa
 well as permutation-based variable importance metrics (computed as averaged increase in Mean
 Squared Error).
 }
+\examples{
+\dontrun{
+patch_quality <- predict(ppl.tits::local_quality_model()$rf4pm)
+}
+}
