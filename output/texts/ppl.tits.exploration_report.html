@@ -1677,21 +1677,21 @@ respect to the default values to favour predictive accuracy.</p>
 ##  3rd Qu.:57.92   3rd Qu.:12.869   3rd Qu.:4616539   3rd Qu.:15106  
 ##  Max.   :65.12   Max.   :24.177   Max.   :9819101   Max.   :33597  
 ##                                                                    
-##    open_area     vegetation_area   woody_area    age_class strata_div
-##  Min.   :  125   Min.   : 7942   Min.   : 4205   0: 52     0: 3      
-##  1st Qu.:21562   1st Qu.:25132   1st Qu.:13402   1:100     1:20      
-##  Median :27683   Median :30738   Median :17774   2:116     2:98      
-##  Mean   :25358   Mean   :33803   Mean   :21585             3:84      
-##  3rd Qu.:32301   3rd Qu.:38222   3rd Qu.:24723             4:63      
-##  Max.   :41321   Max.   :70228   Max.   :63038                       
-##                                                                      
-##  woodyveg_volume    woodyveg_sd    herbaceous_area soft_manag_area
-##  Min.   :  19030   Min.   :1.624   Min.   : 2121   Min.   :    0  
-##  1st Qu.:  86268   1st Qu.:4.447   1st Qu.: 8749   1st Qu.:    0  
-##  Median : 169023   Median :5.462   Median :11484   Median :    0  
-##  Mean   : 288220   Mean   :5.587   Mean   :12218   Mean   : 1528  
-##  3rd Qu.: 249857   3rd Qu.:6.797   3rd Qu.:14458   3rd Qu.: 1212  
-##  Max.   :1531037   Max.   :9.893   Max.   :29589   Max.   :18927  
+##    open_area     vegetation_area herbaceous_area soft_manag_area
+##  Min.   :  125   Min.   : 7942   Min.   : 2121   Min.   :    0  
+##  1st Qu.:21562   1st Qu.:25132   1st Qu.: 8749   1st Qu.:    0  
+##  Median :27683   Median :30738   Median :11484   Median :    0  
+##  Mean   :25358   Mean   :33803   Mean   :12218   Mean   : 1528  
+##  3rd Qu.:32301   3rd Qu.:38222   3rd Qu.:14458   3rd Qu.: 1212  
+##  Max.   :41321   Max.   :70228   Max.   :29589   Max.   :18927  
+##                                                                 
+##    woody_area    woodyveg_volume    woodyveg_sd    age_class strata_div
+##  Min.   : 4205   Min.   :  19030   Min.   :1.624   0: 52     0: 3      
+##  1st Qu.:13402   1st Qu.:  86268   1st Qu.:4.447   1:100     1:20      
+##  Median :17774   Median : 169023   Median :5.462   2:116     2:98      
+##  Mean   :21585   Mean   : 288220   Mean   :5.587             3:84      
+##  3rd Qu.:24723   3rd Qu.: 249857   3rd Qu.:6.797             4:63      
+##  Max.   :63038   Max.   :1531037   Max.   :9.893                       
 ## </code></pre>
 </div>
 <div id="dataset-after-imputation" class="section level3">
@@ -1723,7 +1723,7 @@ Oob_RMSE
 1
 </td>
 <td style="text-align:right;">
-1.8601109
+1.885395
 </td>
 </tr>
 <tr>
@@ -1734,7 +1734,7 @@ Oob_RMSE
 166
 </td>
 <td style="text-align:right;">
-1.3106057
+1.304306
 </td>
 </tr>
 <tr>
@@ -1745,7 +1745,7 @@ Oob_RMSE
 172
 </td>
 <td style="text-align:right;">
-1.2522425
+1.253791
 </td>
 </tr>
 <tr>
@@ -1756,7 +1756,7 @@ Oob_RMSE
 26
 </td>
 <td style="text-align:right;">
-13.8910109
+13.974780
 </td>
 </tr>
 <tr>
@@ -1767,7 +1767,7 @@ Oob_RMSE
 35
 </td>
 <td style="text-align:right;">
-0.4092628
+0.406715
 </td>
 </tr>
 <tr>
@@ -1778,7 +1778,7 @@ Oob_RMSE
 34
 </td>
 <td style="text-align:right;">
-1.5576238
+1.522152
 </td>
 </tr>
 </tbody>
@@ -1807,73 +1807,81 @@ analyses. Here is a summary of the same data AFTER imputation:</p>
 ##  Min.   : 1.000   Min.   : 0.000   Min.   : 0.000   Min.   : 9.866  
 ##  1st Qu.: 7.000   1st Qu.: 6.000   1st Qu.: 4.000   1st Qu.:13.429  
 ##  Median : 8.000   Median : 8.000   Median : 6.000   Median :14.851  
-##  Mean   : 8.123   Mean   : 7.344   Mean   : 5.403   Mean   :14.775  
+##  Mean   : 8.123   Mean   : 7.345   Mean   : 5.403   Mean   :14.775  
 ##  3rd Qu.: 9.000   3rd Qu.: 9.000   3rd Qu.: 8.000   3rd Qu.:16.076  
 ##  Max.   :12.000   Max.   :12.000   Max.   :11.000   Max.   :18.413  
 ##                                                     NA&#39;s   :49      
-##  tarsus_length    wing_length      father_id    father_cond         mother_id  
-##  Min.   :15.68   Min.   :27.00   8382546:  2   Min.   :-3.61459   7556111:  2  
-##  1st Qu.:18.48   1st Qu.:38.95   8791992:  2   1st Qu.:-0.41224   7636392:  2  
-##  Median :19.06   Median :42.20   8876547:  2   Median : 0.03505   8382542:  2  
-##  Mean   :18.91   Mean   :41.45   8877009:  2   Mean   :-0.04124   8791030:  2  
-##  3rd Qu.:19.50   3rd Qu.:45.06   8877040:  2   3rd Qu.: 0.30689   8791192:  2  
-##  Max.   :20.55   Max.   :50.38   (Other): 92   Max.   : 3.03075   (Other): 86  
-##  NA&#39;s   :89      NA&#39;s   :123     NA&#39;s   :166                      NA&#39;s   :172  
-##   mother_cond          cumdd_30      min_t_before    min_t_between     
-##  Min.   :-3.03290   Min.   :189.3   Min.   :-3.360   Min.   :-3.06000  
-##  1st Qu.:-0.31848   1st Qu.:246.8   1st Qu.:-1.855   1st Qu.:-1.50000  
-##  Median : 0.05145   Median :264.4   Median :-1.070   Median :-0.39500  
-##  Mean   : 0.03488   Mean   :261.3   Mean   :-1.151   Mean   : 0.08917  
-##  3rd Qu.: 0.38888   3rd Qu.:277.3   3rd Qu.:-0.458   3rd Qu.: 0.82500  
-##  Max.   : 3.39859   Max.   :329.7   Max.   : 0.910   Max.   : 6.53000  
-##                                                                        
-##  mean_winter_t    sd_winter_t     lsource_0_m     lsource_0_iq   
-##  Min.   :5.069   Min.   :3.642   Min.   : 0.00   Min.   : 0.000  
-##  1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.00   1st Qu.: 4.000  
-##  Median :5.745   Median :3.777   Median : 4.00   Median : 7.000  
-##  Mean   :5.716   Mean   :3.791   Mean   : 4.33   Mean   : 6.998  
-##  3rd Qu.:5.877   3rd Qu.:3.832   3rd Qu.: 6.00   3rd Qu.: 9.500  
-##  Max.   :6.466   Max.   :4.279   Max.   :14.00   Max.   :21.000  
-##                                                                  
-##   lsource_10_m   lsource_10_iq      lflux_0_m         lflux_0_iq    
-##  Min.   : 0.00   Min.   : 0.000   Min.   :  0.000   Min.   :  0.00  
-##  1st Qu.:10.00   1st Qu.: 5.500   1st Qu.:  5.217   1st Qu.: 28.28  
-##  Median :18.00   Median : 8.125   Median : 36.198   Median : 94.13  
-##  Mean   :19.29   Mean   : 9.579   Mean   : 42.160   Mean   :100.64  
-##  3rd Qu.:28.25   3rd Qu.:12.000   3rd Qu.: 64.355   3rd Qu.:162.98  
-##  Max.   :52.00   Max.   :35.000   Max.   :231.522   Max.   :303.11  
+##  tarsus_length    wing_length      father_id    father_cond       
+##  Min.   :15.68   Min.   :27.00   8382546:  2   Min.   :-3.614589  
+##  1st Qu.:18.48   1st Qu.:38.95   8791992:  2   1st Qu.:-0.389158  
+##  Median :19.06   Median :42.20   8876547:  2   Median : 0.000445  
+##  Mean   :18.91   Mean   :41.45   8877009:  2   Mean   :-0.040775  
+##  3rd Qu.:19.50   3rd Qu.:45.06   8877040:  2   3rd Qu.: 0.287654  
+##  Max.   :20.55   Max.   :50.38   (Other): 92   Max.   : 3.030748  
+##  NA&#39;s   :89      NA&#39;s   :123     NA&#39;s   :166                      
+##    mother_id    mother_cond          cumdd_30      min_t_before   
+##  7556111:  2   Min.   :-3.03290   Min.   :189.3   Min.   :-3.360  
+##  7636392:  2   1st Qu.:-0.27465   1st Qu.:246.8   1st Qu.:-1.847  
+##  8382542:  2   Median : 0.08507   Median :264.4   Median :-1.062  
+##  8791030:  2   Mean   : 0.06345   Mean   :261.3   Mean   :-1.151  
+##  8791192:  2   3rd Qu.: 0.41040   3rd Qu.:277.3   3rd Qu.:-0.458  
+##  (Other): 86   Max.   : 3.39859   Max.   :329.7   Max.   : 0.910  
+##  NA&#39;s   :172                                                      
+##  min_t_between     mean_winter_t    sd_winter_t     lsource_0_m   
+##  Min.   :-3.0600   Min.   :5.069   Min.   :3.642   Min.   : 0.00  
+##  1st Qu.:-1.5000   1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.00  
+##  Median :-0.4225   Median :5.745   Median :3.777   Median : 4.00  
+##  Mean   : 0.0959   Mean   :5.716   Mean   :3.791   Mean   : 4.33  
+##  3rd Qu.: 0.8250   3rd Qu.:5.877   3rd Qu.:3.832   3rd Qu.: 6.00  
+##  Max.   : 6.5300   Max.   :6.466   Max.   :4.279   Max.   :14.00  
+##                                                                   
+##   lsource_0_iq     lsource_10_m   lsource_10_iq      lflux_0_m      
+##  Min.   : 0.000   Min.   : 0.00   Min.   : 0.000   Min.   :  0.000  
+##  1st Qu.: 4.000   1st Qu.:10.00   1st Qu.: 5.500   1st Qu.:  5.217  
+##  Median : 7.000   Median :18.00   Median : 8.125   Median : 36.198  
+##  Mean   : 6.998   Mean   :19.29   Mean   : 9.579   Mean   : 42.160  
+##  3rd Qu.: 9.500   3rd Qu.:28.25   3rd Qu.:12.000   3rd Qu.: 64.355  
+##  Max.   :21.000   Max.   :52.00   Max.   :35.000   Max.   :231.522  
 ##                                                                     
-##    lflux_10_m      lflux_10_iq     lsource_vs150_m lsource_vs150_iq
-##  Min.   :  0.00   Min.   :  0.00   Min.   : 0.00   Min.   : 0.00   
-##  1st Qu.: 17.77   1st Qu.: 34.88   1st Qu.: 6.00   1st Qu.: 7.00   
-##  Median : 48.22   Median : 64.70   Median :11.00   Median :10.00   
-##  Mean   : 55.33   Mean   : 78.33   Mean   :11.28   Mean   :11.05   
-##  3rd Qu.: 87.04   3rd Qu.:115.11   3rd Qu.:15.00   3rd Qu.:14.00   
-##  Max.   :196.61   Max.   :266.11   Max.   :33.00   Max.   :31.00   
+##    lflux_0_iq       lflux_10_m      lflux_10_iq     lsource_vs150_m
+##  Min.   :  0.00   Min.   :  0.00   Min.   :  0.00   Min.   : 0.00  
+##  1st Qu.: 28.28   1st Qu.: 17.77   1st Qu.: 34.88   1st Qu.: 6.00  
+##  Median : 94.13   Median : 48.22   Median : 64.70   Median :11.00  
+##  Mean   :100.64   Mean   : 55.33   Mean   : 78.33   Mean   :11.28  
+##  3rd Qu.:162.98   3rd Qu.: 87.04   3rd Qu.:115.11   3rd Qu.:15.00  
+##  Max.   :303.11   Max.   :196.61   Max.   :266.11   Max.   :33.00  
 ##                                                                    
-##     noise_m         noise_iq          trafic          built_area   
-##  Min.   :23.82   Min.   : 1.043   Min.   :      0   Min.   :    0  
-##  1st Qu.:51.87   1st Qu.: 6.328   1st Qu.: 428822   1st Qu.: 6695  
-##  Median :53.49   Median : 9.857   Median :2099467   Median :10750  
-##  Mean   :54.20   Mean   : 9.791   Mean   :2665281   Mean   :11192  
-##  3rd Qu.:57.92   3rd Qu.:12.869   3rd Qu.:4616539   3rd Qu.:15106  
-##  Max.   :65.12   Max.   :24.177   Max.   :9819101   Max.   :33597  
-##                                                                    
-##    open_area     vegetation_area   woody_area    age_class strata_div
-##  Min.   :  125   Min.   : 7942   Min.   : 4205   0: 52     0: 3      
-##  1st Qu.:21562   1st Qu.:25132   1st Qu.:13402   1:100     1:20      
-##  Median :27683   Median :30738   Median :17774   2:116     2:98      
-##  Mean   :25358   Mean   :33803   Mean   :21585             3:84      
-##  3rd Qu.:32301   3rd Qu.:38222   3rd Qu.:24723             4:63      
-##  Max.   :41321   Max.   :70228   Max.   :63038                       
-##                                                                      
-##  woodyveg_volume    woodyveg_sd    herbaceous_area soft_manag_area
-##  Min.   :  19030   Min.   :1.624   Min.   : 2121   Min.   :    0  
-##  1st Qu.:  86268   1st Qu.:4.447   1st Qu.: 8749   1st Qu.:    0  
-##  Median : 169023   Median :5.462   Median :11484   Median :    0  
-##  Mean   : 288220   Mean   :5.587   Mean   :12218   Mean   : 1528  
-##  3rd Qu.: 249857   3rd Qu.:6.797   3rd Qu.:14458   3rd Qu.: 1212  
-##  Max.   :1531037   Max.   :9.893   Max.   :29589   Max.   :18927  
+##  lsource_vs150_iq    noise_m         noise_iq          trafic       
+##  Min.   : 0.00    Min.   :23.82   Min.   : 1.043   Min.   :      0  
+##  1st Qu.: 7.00    1st Qu.:51.87   1st Qu.: 6.328   1st Qu.: 428822  
+##  Median :10.00    Median :53.49   Median : 9.857   Median :2099467  
+##  Mean   :11.05    Mean   :54.20   Mean   : 9.791   Mean   :2665281  
+##  3rd Qu.:14.00    3rd Qu.:57.92   3rd Qu.:12.869   3rd Qu.:4616539  
+##  Max.   :31.00    Max.   :65.12   Max.   :24.177   Max.   :9819101  
+##                                                                     
+##    built_area      open_area     vegetation_area herbaceous_area
+##  Min.   :    0   Min.   :  125   Min.   : 7942   Min.   : 2121  
+##  1st Qu.: 6695   1st Qu.:21562   1st Qu.:25132   1st Qu.: 8749  
+##  Median :10750   Median :27683   Median :30738   Median :11484  
+##  Mean   :11192   Mean   :25358   Mean   :33803   Mean   :12218  
+##  3rd Qu.:15106   3rd Qu.:32301   3rd Qu.:38222   3rd Qu.:14458  
+##  Max.   :33597   Max.   :41321   Max.   :70228   Max.   :29589  
+##                                                                 
+##  soft_manag_area   woody_area    woodyveg_volume    woodyveg_sd    age_class
+##  Min.   :    0   Min.   : 4205   Min.   :  19030   Min.   :1.624   0: 52    
+##  1st Qu.:    0   1st Qu.:13402   1st Qu.:  86268   1st Qu.:4.447   1:100    
+##  Median :    0   Median :17774   Median : 169023   Median :5.462   2:116    
+##  Mean   : 1528   Mean   :21585   Mean   : 288220   Mean   :5.587            
+##  3rd Qu.: 1212   3rd Qu.:24723   3rd Qu.: 249857   3rd Qu.:6.797            
+##  Max.   :18927   Max.   :63038   Max.   :1531037   Max.   :9.893            
+##                                                                             
+##  strata_div
+##  0: 3      
+##  1:20      
+##  2:98      
+##  3:84      
+##  4:63      
+##            
 ## </code></pre>
 </div>
 </div>
@@ -1956,21 +1964,21 @@ analyses. Here is a summary of the same data AFTER imputation:</p>
 ##  3rd Qu.:57.87   3rd Qu.:13.278   3rd Qu.:5344278   3rd Qu.:15176  
 ##  Max.   :64.44   Max.   :27.199   Max.   :8217731   Max.   :33182  
 ##                                                                    
-##    open_area     vegetation_area   woody_area    age_class strata_div
-##  Min.   :  116   Min.   : 7942   Min.   : 4205   0:33      0: 1      
-##  1st Qu.:20476   1st Qu.:25123   1st Qu.:15050   1:44      1:11      
-##  Median :26045   Median :31865   Median :19808   2:61      2:40      
-##  Mean   :24515   Mean   :34317   Mean   :22994             3:62      
-##  3rd Qu.:31707   3rd Qu.:38540   3rd Qu.:25091             4:24      
-##  Max.   :41321   Max.   :70237   Max.   :63749                       
-##                                                                      
-##  woodyveg_volume    woodyveg_sd     herbaceous_area soft_manag_area  
-##  Min.   :  31795   Min.   : 2.890   Min.   : 2121   Min.   :    0.0  
-##  1st Qu.: 111953   1st Qu.: 4.645   1st Qu.: 8452   1st Qu.:    0.0  
-##  Median : 173402   Median : 5.360   Median :11016   Median :    0.0  
-##  Mean   : 323346   Mean   : 5.727   Mean   :11322   Mean   :  625.5  
-##  3rd Qu.: 305591   3rd Qu.: 6.826   3rd Qu.:13384   3rd Qu.:    0.0  
-##  Max.   :1577025   Max.   :10.021   Max.   :28970   Max.   :11594.9  
+##    open_area     vegetation_area herbaceous_area soft_manag_area  
+##  Min.   :  116   Min.   : 7942   Min.   : 2121   Min.   :    0.0  
+##  1st Qu.:20476   1st Qu.:25123   1st Qu.: 8452   1st Qu.:    0.0  
+##  Median :26045   Median :31865   Median :11016   Median :    0.0  
+##  Mean   :24515   Mean   :34317   Mean   :11322   Mean   :  625.5  
+##  3rd Qu.:31707   3rd Qu.:38540   3rd Qu.:13384   3rd Qu.:    0.0  
+##  Max.   :41321   Max.   :70237   Max.   :28970   Max.   :11594.9  
+##                                                                   
+##    woody_area    woodyveg_volume    woodyveg_sd     age_class strata_div
+##  Min.   : 4205   Min.   :  31795   Min.   : 2.890   0:33      0: 1      
+##  1st Qu.:15050   1st Qu.: 111953   1st Qu.: 4.645   1:44      1:11      
+##  Median :19808   Median : 173402   Median : 5.360   2:61      2:40      
+##  Mean   :22994   Mean   : 323346   Mean   : 5.727             3:62      
+##  3rd Qu.:25091   3rd Qu.: 305591   3rd Qu.: 6.826             4:24      
+##  Max.   :63749   Max.   :1577025   Max.   :10.021                       
 ## </code></pre>
 </div>
 <div id="dataset-after-imputation-1" class="section level3">
@@ -2002,7 +2010,7 @@ Oob_RMSE
 1
 </td>
 <td style="text-align:right;">
-2.6986639
+2.7309075
 </td>
 </tr>
 <tr>
@@ -2013,7 +2021,7 @@ Oob_RMSE
 15
 </td>
 <td style="text-align:right;">
-18.1584819
+18.2547974
 </td>
 </tr>
 <tr>
@@ -2024,7 +2032,7 @@ Oob_RMSE
 25
 </td>
 <td style="text-align:right;">
-0.5631151
+0.5259747
 </td>
 </tr>
 <tr>
@@ -2035,7 +2043,7 @@ Oob_RMSE
 19
 </td>
 <td style="text-align:right;">
-1.2875783
+1.2856200
 </td>
 </tr>
 </tbody>
@@ -2065,7 +2073,7 @@ imputation:</p>
 ##  Min.   : 1.00   Min.   : 0.000   Min.   : 0.000   Min.   : 5.873  
 ##  1st Qu.: 9.00   1st Qu.: 8.000   1st Qu.: 2.250   1st Qu.: 7.910  
 ##  Median :11.00   Median :10.000   Median : 6.000   Median : 8.848  
-##  Mean   :10.33   Mean   : 9.086   Mean   : 5.428   Mean   : 8.935  
+##  Mean   :10.33   Mean   : 9.085   Mean   : 5.428   Mean   : 8.935  
 ##  3rd Qu.:12.00   3rd Qu.:11.000   3rd Qu.: 8.000   3rd Qu.: 9.998  
 ##  Max.   :14.00   Max.   :14.000   Max.   :12.000   Max.   :12.990  
 ##                                                    NA&#39;s   :40      
@@ -2079,9 +2087,9 @@ imputation:</p>
 ##  NA&#39;s   :63      NA&#39;s   :84      NA&#39;s   :136   NA&#39;s   :138   NA&#39;s   :130  
 ##   mother_cond     cumdd_30      min_t_before     min_t_between    
 ##  Min.   : NA   Min.   :147.3   Min.   :-3.5400   Min.   :-3.3600  
-##  1st Qu.: NA   1st Qu.:243.5   1st Qu.:-1.7560   1st Qu.:-0.9254  
-##  Median : NA   Median :264.1   Median :-0.8730   Median :-0.0320  
-##  Mean   :NaN   Mean   :258.7   Mean   :-0.9772   Mean   : 0.2143  
+##  1st Qu.: NA   1st Qu.:243.5   1st Qu.:-1.7560   1st Qu.:-0.9471  
+##  Median : NA   Median :263.2   Median :-0.8730   Median :-0.0320  
+##  Mean   :NaN   Mean   :258.7   Mean   :-0.9682   Mean   : 0.2154  
 ##  3rd Qu.: NA   3rd Qu.:275.3   3rd Qu.:-0.2973   3rd Qu.: 0.8800  
 ##  Max.   : NA   Max.   :351.1   Max.   : 0.7970   Max.   : 5.5400  
 ##  NA&#39;s   :138                                                      
@@ -2117,21 +2125,21 @@ imputation:</p>
 ##  3rd Qu.:57.87   3rd Qu.:13.278   3rd Qu.:5344278   3rd Qu.:15176  
 ##  Max.   :64.44   Max.   :27.199   Max.   :8217731   Max.   :33182  
 ##                                                                    
-##    open_area     vegetation_area   woody_area    age_class strata_div
-##  Min.   :  116   Min.   : 7942   Min.   : 4205   0:33      0: 1      
-##  1st Qu.:20476   1st Qu.:25123   1st Qu.:15050   1:44      1:11      
-##  Median :26045   Median :31865   Median :19808   2:61      2:40      
-##  Mean   :24515   Mean   :34317   Mean   :22994             3:62      
-##  3rd Qu.:31707   3rd Qu.:38540   3rd Qu.:25091             4:24      
-##  Max.   :41321   Max.   :70237   Max.   :63749                       
-##                                                                      
-##  woodyveg_volume    woodyveg_sd     herbaceous_area soft_manag_area  
-##  Min.   :  31795   Min.   : 2.890   Min.   : 2121   Min.   :    0.0  
-##  1st Qu.: 111953   1st Qu.: 4.645   1st Qu.: 8452   1st Qu.:    0.0  
-##  Median : 173402   Median : 5.360   Median :11016   Median :    0.0  
-##  Mean   : 323346   Mean   : 5.727   Mean   :11322   Mean   :  625.5  
-##  3rd Qu.: 305591   3rd Qu.: 6.826   3rd Qu.:13384   3rd Qu.:    0.0  
-##  Max.   :1577025   Max.   :10.021   Max.   :28970   Max.   :11594.9  
+##    open_area     vegetation_area herbaceous_area soft_manag_area  
+##  Min.   :  116   Min.   : 7942   Min.   : 2121   Min.   :    0.0  
+##  1st Qu.:20476   1st Qu.:25123   1st Qu.: 8452   1st Qu.:    0.0  
+##  Median :26045   Median :31865   Median :11016   Median :    0.0  
+##  Mean   :24515   Mean   :34317   Mean   :11322   Mean   :  625.5  
+##  3rd Qu.:31707   3rd Qu.:38540   3rd Qu.:13384   3rd Qu.:    0.0  
+##  Max.   :41321   Max.   :70237   Max.   :28970   Max.   :11594.9  
+##                                                                   
+##    woody_area    woodyveg_volume    woodyveg_sd     age_class strata_div
+##  Min.   : 4205   Min.   :  31795   Min.   : 2.890   0:33      0: 1      
+##  1st Qu.:15050   1st Qu.: 111953   1st Qu.: 4.645   1:44      1:11      
+##  Median :19808   Median : 173402   Median : 5.360   2:61      2:40      
+##  Mean   :22994   Mean   : 323346   Mean   : 5.727             3:62      
+##  3rd Qu.:25091   3rd Qu.: 305591   3rd Qu.: 6.826             4:24      
+##  Max.   :63749   Max.   :1577025   Max.   :10.021                       
 ## </code></pre>
 <p><br />
 <br />
