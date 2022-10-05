@@ -135,7 +135,9 @@ local_quality_model <- function(my_tdata = here::here("output", "tables", "ndata
     ggplot2::coord_flip()
 
   # To dismiss notes regarding "visible binding for global variables" during the CMD Check:
-  clutch_size <- NULL
+  clutch_size <- Importance <- Variable <- built_area <- coord_x <- coord_y <- noise_iq <-
+    noise_m <- open_area <- r.squared <- soft_manag_area <- species <- woodyveg_sd <-
+    woodyveg_volume <- NULL
 
 
 
