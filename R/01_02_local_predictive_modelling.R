@@ -53,7 +53,7 @@
 #' @importFrom ggplot2 ylab
 #' @importFrom ggplot2 coord_flip
 #'
-#' @example
+#' @examples
 #' \dontrun{
 #' patch_quality <- predict(object = ppl.tits::local_quality_model()$rf4pm,
 #' newdata = my_newdata) # Should work if "my_newdata" is a properly formatted.

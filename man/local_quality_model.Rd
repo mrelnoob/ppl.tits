@@ -34,12 +34,3 @@ process by repeating it 100 times and reporting the associated out-of-bag R squa
 well as permutation-based variable importance metrics (computed as averaged increase in Mean
 Squared Error).
 }
-\examples{
-\dontrun{
-patch_quality <- predict(object = ppl.tits::local_quality_model()$rf4pm,
-newdata = my_newdata) # Should work if "my_newdata" is a properly formatted.
-
-myrsq.plot <- ppl.tits::local_quality_model()$r_squared.stab
-var_imp.plot <- ppl.tits::local_quality_model()$var_importance.stab
-}
-}
