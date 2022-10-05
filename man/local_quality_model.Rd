@@ -20,7 +20,7 @@ read the README file (https://github.com/mrelnoob/ppl.tits) and probably NOT use
 \value{
 This functions returns three things: 1) The Random Forest object built to be used for
 prediction using new data (e.g. using
-\code{\link[randomForest:predict.randomForest]{predict.randomForest}); 2) the OOB R2 stability
+\code{\link[randomForest:predict.randomForest]{predict.randomForest}}; 2) the OOB R2 stability
 plot; and 3) the variables importance stability plot.
 }
 \description{
@@ -33,13 +33,4 @@ Additionally, the \code{local_quality_model} function also assess the stability 
 process by repeating it 100 times and reporting the associated out-of-bag R squared values as
 well as permutation-based variable importance metrics (computed as averaged increase in Mean
 Squared Error).
-}
-\examples{
-\dontrun{
-patch_quality <- predict(object = ppl.tits::local_quality_model()$rf4pm,
-newdata = my_newdata) # Should work if "my_newdata" is a properly formatted.
-
-myrsq.plot <- ppl.tits::local_quality_model()$r_squared.stab
-var_imp.plot <- ppl.tits::local_quality_model()$var_importance.stab
-}
 }

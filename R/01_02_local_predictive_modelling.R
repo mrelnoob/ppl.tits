@@ -56,6 +56,7 @@
 #' @examples
 #' \dontrun{
 #' patch_quality <- predict(ppl.tits::local_quality_model()$rf4pm)
+#' }
 local_quality_model <- function(my_tdata = here::here("output", "tables", "ndata_final.csv")){
 
   ##### Data preparation
