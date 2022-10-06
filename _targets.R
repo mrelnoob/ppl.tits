@@ -23,9 +23,13 @@ targets::tar_option_set(packages = "ppl.tits",
 # in a function an object that does not yet exist!
 ### To go further: "https://books.ropensci.org/targets/".
 ### See also: https://stackoverflow.com/questions/68683153/preferred-approach-for-making-the-targets-r-package-detect-changes-to-functi
+
+
 list(
-  ### All targets related to "external" input files #
-  # ______________________________________
+
+  ##### All targets related to "external" input files
+  # _________________________________________________
+
   targets::tar_target(raw_data_file, here::here("mydata", "ppl_dijon_tits_data.csv"),
              format = "file"),
   targets::tar_target(boxtemp_file, here::here("mydata", "paired_boxtemp.csv"),
@@ -37,11 +41,14 @@ list(
 
 
 
-  ### All targets related to data-processing #
+
+
+  ##### All targets related to data-processing
   # __________________________________________
-  ### IMPORTANT NOTE: data-processing targets that produce new versions of the datasets are
+  # IMPORTANT NOTE: data-processing targets that produce new versions of the datasets are
   # typically stored in the "output files" section (see below) and not here!
 
+  ### Targets for the data preparation stage____________________________________#
   # Read the raw data and return a data.frame:
   targets::tar_target(raw_tits, import_raw_tits_data(mypath = raw_data_file)),
   # Creating the final nestling dataset:
@@ -55,10 +62,25 @@ list(
 
 
 
-  ### All targets related to output files #
+  ### Targets for the intermediate analyses stage (RF, Graphab, etc.)___________#
+  # Export the Random Forest from the local model for Parus major (PM):
+  targets::tar_target(local_RF, local_quality_model(my_tdata = tdata_final)$rf4pm),
+  # Export the R2 stability plot from the local RF model:
+  targets::tar_target(RF_r2plot, local_quality_model(my_tdata = tdata_final)$r_squared.stab),
+  # Export the variable importance stability plot from the local RF model:
+  targets::tar_target(RF_importanceplot, local_quality_model(my_tdata = tdata_final)$var_importance.stab),
+
+
+
+
+
+  ##### All targets related to output files
   # _______________________________________
+
+  ### All targets related to exported datasets__________________________________#
   # Export the nestling aggregated dataset:
-  targets::tar_target(nestling_agg_data, export_nestling_aggreg(myrawdata = raw_tits), format = "file"),
+  targets::tar_target(nestling_agg_data, export_nestling_aggreg(myrawdata = raw_tits),
+                      format = "file"),
   # Produce the first tits data update (formatting and inclusion of the breeding_window and
   # temperature-related variables):
   targets::tar_target(tdata_temp, tdata_upD_temp(
@@ -74,7 +96,11 @@ list(
   targets::tar_target(tdata_final, tdata_upD_final(
     my_tdata = tdata_parcond)$path, format = "file"),
 
-  # All targets related to reports (literate programming)_______________________#
-  tarchetypes::tar_render(EDA_report, path = here::here("output", "texts", "ppl.tits.exploration_report.Rmd"))
+
+
+  ### All targets related to reports (literate programming)_____________________#
+  # Create the Exploratory Data Analysis (EDA) report:
+  tarchetypes::tar_render(EDA_report,
+                          path = here::here("output", "texts", "ppl.tits.exploration_report.Rmd"))
   )
 
