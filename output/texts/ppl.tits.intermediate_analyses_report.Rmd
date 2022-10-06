@@ -70,8 +70,9 @@ Provided we could build *reliable* predictive models based on our nestbox data, 
 ## 2.2. Local habitat model for the Great tits (*Parus major*)
 ### 2.2.1. Model building
 
-We built a Random Forest (RF) regression model [@breiman2001] using the `randomForest` package [@liaw2002]. We used *clutch size* as a response variable and, as spatial interpolation was our goal, we only considered **spatially continuous variables** as predictors: i.e. *coord_x*, *coord_y*, *noise_m*, *noise_iq*, *built_area*, *open_area*, *soft_manag_area*, *woodyveg_volume*, *woodyveg_sd* (for the meaning of the variables, readers are referred to table **XXX_A_FAIRE!_XXX**).  
-As regular RF implementations are known to have reliable default hyperparameters, we performed **no hyperparameters tuning** and thus grew a forest of 500 regression trees, each one based on a random subset of $p/3$ predictors and $0.632$ bootstrapped samples. Since we performed no model optimisation, we avoided the need for repeated *k*-fold cross validation or similar resampling procedures [@hastie2009; @harrell2015]. 
+We built a Random Forest (RF) regression model [@breiman2001] using the `randomForest` package [@liaw2002]. We used *clutch size* as a response variable and, as spatial interpolation was our goal, we only considered **spatially continuous variables** as predictors: i.e. *coord_x*, *coord_y*, *noise_m*, *noise_iq*, *built_area*, *open_area*, *soft_manag_area*, *woodyveg_volume*, *woodyveg_sd* (for the meaning of the variables, readers are referred to table **S1**). 
+
+As regular RF implementations are known to have robust default hyperparameters, we did *no hyperparameters tuning* and thus grew a forest of 500 regression trees, each one based on a random subset of $p/3$ predictors and $0.632$ bootstrapped samples. Since we performed no model optimisation, we avoided the need for repeated *k*-fold cross validation or similar resampling procedures [@hastie2009; @harrell2015]. 
 The model's performances were evaluated using its *Mean Squared Error* (MSE) and the automatically computed $R^{2}_{oob}$ (i.e. based on the out-of-bag samples). Additionally, we also computed the global variable importance metrics, using the permutation-based method in order to avoid the known bias associated with the Gini-based method [e.g. @strobl2007]. 
 
 
@@ -80,7 +81,7 @@ The model's performances were evaluated using its *Mean Squared Error* (MSE) and
 Our Random Forest regression model obtained a MSE of **2.224875** and explained roughly 12.5% of *clutch size*'s variance ($R^{2}_{oob}$ = 12.43). 
 To evaluate the stability of these outputs, I reiterated this modelling process a hundred times and monitored the variance of the $R^{2}_{oob}$ and the *variable importance metrics*:
 
-```{r rf4pm r squared plot, fig.align='center', fig.cap="**Figure M1.** Cumulative density function of the Random Forest's $R^{2}_{oob}$ computed over a hundred random repetitions", fig.width=7, fig.height=5, warning=FALSE}
+```{r rf4pm r squared plot, fig.align='center', fig.cap="**Figure M1.** Cumulative density function of the Random Forest's $R^{2}_{oob}$ computed over a hundred random repetitions", fig.width=5, fig.height=3, warning=FALSE}
 stab_r2plot
 ```
 
