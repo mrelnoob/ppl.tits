@@ -102,8 +102,8 @@ Here is a summary of the same data AFTER imputation:
 tits %>% dplyr::filter(species == "PM") -> pm
 summary(pm)
 ```
-
-
+\
+\
 
 ## 2.2. Blue Tits dataset
 ### 2.2.1. Dataset prior to imputation
