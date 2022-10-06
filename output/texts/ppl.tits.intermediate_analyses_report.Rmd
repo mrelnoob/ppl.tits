@@ -80,12 +80,25 @@ The model's performances were evaluated using its *Mean Squared Error* (MSE) and
 Our Random Forest regression model obtained a MSE of **2.224875** and explained roughly 12.5% of *clutch size*'s variance ($R^{2}_{oob}$ = 12.43). 
 To evaluate the stability of these outputs, I reiterated this modelling process a hundred times and monitored the variance of the $R^{2}_{oob}$ and the *variable importance metrics*:
 
-```{r rf4pm r squared plot, fig.align='center', fig.cap="**Figure 1.** Stability of the Random Forest $R^{2}_{oob}$", warning=FALSE}
+```{r rf4pm r squared plot, fig.align='center', fig.cap="**Figure M1.** Cumulative density function of the Random Forest's $R^{2}_{oob}$ computed over a hundred random repetitions", fig.width=7, fig.height=5, warning=FALSE}
 stab_r2plot
 ```
 
+Fortunately, we can see that the $R^{2}_{oob}$ values converges towards ~12%. 
 
+```{r rf4pm var_importance plot, fig.align='center', fig.cap="**Figure M2.** Disribution of predictors importance metrics (expressed as percentage increase in MSE when permuted) computed over a hundred random repetitions", warning=FALSE}
+stab_varimplot
+```
 
+This figure shows that the variables importance is also stable across iterations. The grown forest thus seems reliable enough to be used for predictions.
+\
+\ 
+
+******
+
+# Connectivity modelling
+
+To be continued...
 
 ******
 # XX. References
