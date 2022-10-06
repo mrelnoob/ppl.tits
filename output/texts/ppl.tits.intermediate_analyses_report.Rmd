@@ -34,7 +34,7 @@ All codes used in this study can furthermore be found here: https://github.com/m
 ```{r data import, include=FALSE}
 library(ppl.tits) # To be able to use pipes.
 stab_r2plot <- targets::tar_read(RF_r2plot)
-stab_varimplot <- targets::tar_read(RF_r2plot)
+stab_varimplot <- targets::tar_read(RF_importanceplot)
 # tits <- targets::tar_read(final_tdata) # I don't need data for now!
 # As you can see, I import my data using 'targets'! If you are reading this report and don't know what it is or how I created and stored them, you should read the README or the _devhistory.R files available at https://github.com/mrelnoob/ppl.tits. 
 
@@ -42,4 +42,8 @@ stab_varimplot <- targets::tar_read(RF_r2plot)
 ```
 \
 
-This document outlines
+In the context of the *tits reproduction study* of the PubPrivLands project, we undertook a complex data processing methodology that can be divided into **four stages**:
+1. **Raw data acquisition and preparation** - This initial stage consists of all *raw* data acquisition through fieldwork, GIS or remote-sensing-based data generation, and database extractions as well as their initial *cleaning* and *formatting* to produce **raw datasets** (e.g. tits reproduction observations, environmental variables). This stage is globally described in the *Materials & Methods* section of the manuscript, and is thoroughly detailed in the **ppl_log.pdf** document (French only).
+2. **Clean dataset generation** - This stage includes all *cleaning*, *wrangling*, *computing* and *formatting* required to obtain a **clean exploitable dataset**. This stage is openly documented in the !!!!!
+
+This document presents the relevant results and features of all *intermediate analyses* performed in the context of the *tits reproduction study* of the PubPrivLands project. We refer to *intermediate analyses* for all data processing meant to use ...
