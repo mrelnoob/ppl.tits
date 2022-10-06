@@ -1463,7 +1463,7 @@ al.</em>, <em>in prep.</em>)</a></h2>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
                   <p class="author"><span class="glyphicon glyphicon-user"></span> François-Marie
 Martin</p>
-                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 05
+                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 06
 octobre, 2022</p>
           </div>
    </div>
@@ -1500,64 +1500,100 @@ al.</em> , <em>in prep.</em>).</p>
 ## [1] ppl.tits_0.1.0
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] fs_1.5.2             bit64_4.0.5          doParallel_1.0.17   
-##   [4] rprojroot_2.0.3      targets_0.13.4       tools_4.2.0         
-##   [7] backports_1.4.1      doRNG_1.8.2          bslib_0.4.0         
-##  [10] utf8_1.2.2           R6_2.5.1             DT_0.25             
-##  [13] DBI_1.1.3            colorspace_2.0-3     withr_2.5.0         
-##  [16] tidyselect_1.1.2     processx_3.7.0       emmeans_1.8.1-1     
-##  [19] bit_4.0.4            compiler_4.2.0       cli_3.3.0           
-##  [22] missMDA_1.18         flashClust_1.01-2    mice_3.14.0         
-##  [25] sandwich_3.0-2       degday_0.4.0.9000    sass_0.4.2          
-##  [28] bookdown_0.29        scales_1.2.1         mvtnorm_1.1-3       
-##  [31] readr_2.1.2          randomForest_4.7-1.1 callr_3.7.2         
-##  [34] multcompView_0.1-8   stringr_1.4.1        digest_0.6.29       
-##  [37] rmarkdown_2.16       pkgconfig_2.0.3      htmltools_0.5.3     
-##  [40] fastmap_1.1.0        itertools_0.1-3      FactoMineR_2.6      
-##  [43] htmlwidgets_1.5.4    rlang_1.0.5          rstudioapi_0.14     
-##  [46] tarchetypes_0.7.1    jquerylib_0.1.4      generics_0.1.3      
-##  [49] jsonlite_1.8.0       zoo_1.8-11           vroom_1.5.7         
-##  [52] dplyr_1.0.10         magrittr_2.0.3       leaps_3.1           
-##  [55] Matrix_1.5-1         Rcpp_1.0.9           munsell_0.5.0       
-##  [58] fansi_1.0.3          lifecycle_1.0.2      scatterplot3d_0.3-42
-##  [61] stringi_1.7.8        multcomp_1.4-20      yaml_2.3.5          
-##  [64] MASS_7.3-56          grid_4.2.0           parallel_4.2.0      
-##  [67] ggrepel_0.9.1        crayon_1.5.1         lattice_0.20-45     
-##  [70] splines_4.2.0        hms_1.1.2            knitr_1.40          
-##  [73] ps_1.7.1             pillar_1.8.1         igraph_1.3.4        
-##  [76] estimability_1.4.1   base64url_1.4        rngtools_1.5.2      
-##  [79] codetools_0.2-18     glue_1.6.2           evaluate_0.16       
-##  [82] data.table_1.14.2    vctrs_0.4.1          rmdformats_1.0.4    
-##  [85] missForest_1.5       tzdb_0.3.0           foreach_1.5.2       
-##  [88] gtable_0.3.1         purrr_0.3.4          tidyr_1.2.1         
-##  [91] assertthat_0.2.1     cachem_1.0.6         ggplot2_3.3.6       
-##  [94] xfun_0.33            xtable_1.8-4         broom_1.0.1         
-##  [97] survival_3.3-1       tibble_3.1.8         iterators_1.0.14    
-## [100] cluster_2.1.3        TH.data_1.1-1        ellipsis_0.3.2      
-## [103] here_1.0.1</code></pre>
+##   [1] fs_1.5.2             doParallel_1.0.17    rprojroot_2.0.3     
+##   [4] targets_0.13.4       tools_4.2.0          backports_1.4.1     
+##   [7] doRNG_1.8.2          bslib_0.4.0          utf8_1.2.2          
+##  [10] R6_2.5.1             DT_0.25              DBI_1.1.3           
+##  [13] colorspace_2.0-3     withr_2.5.0          tidyselect_1.1.2    
+##  [16] processx_3.7.0       emmeans_1.8.1-1      compiler_4.2.0      
+##  [19] cli_3.3.0            missMDA_1.18         flashClust_1.01-2   
+##  [22] mice_3.14.0          sandwich_3.0-2       degday_0.4.0.9000   
+##  [25] bookdown_0.29        sass_0.4.2           scales_1.2.1        
+##  [28] mvtnorm_1.1-3        readr_2.1.2          randomForest_4.7-1.1
+##  [31] callr_3.7.2          multcompView_0.1-8   stringr_1.4.1       
+##  [34] digest_0.6.29        rmarkdown_2.16       pkgconfig_2.0.3     
+##  [37] htmltools_0.5.3      fastmap_1.1.0        itertools_0.1-3     
+##  [40] FactoMineR_2.6       htmlwidgets_1.5.4    rlang_1.0.5         
+##  [43] rstudioapi_0.14      tarchetypes_0.7.1    jquerylib_0.1.4     
+##  [46] generics_0.1.3       zoo_1.8-11           jsonlite_1.8.2      
+##  [49] dplyr_1.0.10         magrittr_2.0.3       leaps_3.1           
+##  [52] Matrix_1.5-1         Rcpp_1.0.9           munsell_0.5.0       
+##  [55] fansi_1.0.3          lifecycle_1.0.2      scatterplot3d_0.3-42
+##  [58] stringi_1.7.8        multcomp_1.4-20      yaml_2.3.5          
+##  [61] MASS_7.3-56          grid_4.2.0           parallel_4.2.0      
+##  [64] ggrepel_0.9.1        crayon_1.5.2         lattice_0.20-45     
+##  [67] splines_4.2.0        hms_1.1.2            knitr_1.40          
+##  [70] ps_1.7.1             pillar_1.8.1         igraph_1.3.4        
+##  [73] estimability_1.4.1   base64url_1.4        rngtools_1.5.2      
+##  [76] codetools_0.2-18     glue_1.6.2           evaluate_0.16       
+##  [79] data.table_1.14.2    vctrs_0.4.1          rmdformats_1.0.4    
+##  [82] missForest_1.5       tzdb_0.3.0           foreach_1.5.2       
+##  [85] gtable_0.3.1         purrr_0.3.4          tidyr_1.2.1         
+##  [88] assertthat_0.2.1     cachem_1.0.6         ggplot2_3.3.6       
+##  [91] xfun_0.33            xtable_1.8-4         broom_1.0.1         
+##  [94] survival_3.3-1       tibble_3.1.8         iterators_1.0.14    
+##  [97] cluster_2.1.3        TH.data_1.1-1        ellipsis_0.3.2      
+## [100] here_1.0.1</code></pre>
 <p>All codes used in this study can furthermore be found here: <a href="https://github.com/mrelnoob/ppl.tits" class="uri">https://github.com/mrelnoob/ppl.tits</a><br />
 <br />
 </p>
 </div>
 <div id="what-is-this-document-about" class="section level2">
 <h2>1.2. What is this document about?</h2>
-<p><br />
-</p>
+<div id="presentation-of-the-data-processing-methodology" class="section level3">
+<h3>1.2.1. Presentation of the data processing methodology</h3>
+<p>In the context of the <em>tits reproduction study</em> of the
+PubPrivLands project, we undertook a complex data processing methodology
+that can be divided into <strong>five stages</strong>:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Raw data acquisition and preparation</strong> - This initial
+stage consists of all <em>raw</em> data acquisition through fieldwork,
+GIS or remote-sensing-based data generation, and database extractions as
+well as their initial <em>cleaning</em> and <em>formatting</em> to
+produce <strong>raw datasets</strong> (e.g. tits reproduction
+observations, environmental variables). This stage is globally described
+in the <em>Materials &amp; Methods</em> section of the manuscript, and
+is thoroughly detailed in the <strong>ppl_log.pdf</strong> document
+(French only, see Supplementary Materials).</li>
+<li><strong>Clean dataset generation</strong> - This stage includes all
+basic <em>cleaning</em>, <em>wrangling</em>, <em>computing</em> and
+<em>formatting</em> required to obtain a <strong>clean exploitable
+dataset</strong>. This stage is documented in the <code>R</code> files
+of the <code>ppl.tits</code> package openly accessible at: <a href="https://github.com/mrelnoob/ppl.tits" class="uri">https://github.com/mrelnoob/ppl.tits</a>.</li>
+<li><strong>Intermediate analyses</strong> - This stage encompasses all
+analyses performed to enable the landscape scale habitat connectivity
+modelling for both tits species and compute connectivity metrics using
+the <a href="https://sourcesup.renater.fr/www/graphab/fr/home.html">Graphab</a>
+software. Through this stage, the <strong>final dataset</strong> is
+generated (i.e. the <em>clean exploitable dataset</em> completed with
+<em>connectivity metrics</em>). This stage is described in the
+<em>Intermediate analyses report</em>.</li>
+<li><strong>Exploratory Data Analyses</strong> (EDA) - This stage
+describes all <em>EDA</em> and preliminary <em>assumption checks</em>
+made on the <em>final dataset</em> that are required to plan proper
+statistical analyses for hypotheses testing. This stage is described in
+the <em>Exploratory data analyses and preparation report</em> (the
+present document).</li>
+<li><strong>Statistical analyses</strong> - This last stage includes all
+statistical procedures meant to <em>test</em> our study hypotheses,
+<em>produce results</em> and <em>assess their reliability</em>. This
+stage is described in the <em>Statistical analyses report</em>.</li>
+</ol>
+</div>
+<div id="content-of-this-report" class="section level3">
+<h3>1.2.2. Content of this report</h3>
 <p>This document outlines all the important data preparation and
 exploration steps undertaken to test our research hypotheses. In other
 words, it presents all <strong>exploratory data analyses</strong> and
-basic <strong>assumption checks</strong> performed on the <em>final</em>
-version of our dataset. Actually, it also presents the last step of the
-dataset generation process, that is <strong>missing values
-imputation</strong> because it is a highly sensitive part of the process
-and thus deserves the utmost transparency. For more details regarding
-the dataset generation process (i.e. creation of the <em>final</em>
-dataset), readers are referred to the scripts and documents stored at:
-<a href="https://github.com/mrelnoob/ppl.tits" class="uri">https://github.com/mrelnoob/ppl.tits</a> as well as to the
-manuscript and other Supplementary Materials.<br />
+preliminary <strong>assumption checks</strong> performed on the
+<em>final</em> version of our dataset. Actually, it also presents the
+last step of the dataset generation process, that is <strong>missing
+values imputation</strong> because it is a highly sensitive part of the
+process and thus deserves the utmost transparency.<br />
 <br />
 </p>
 <hr />
+</div>
 </div>
 </div>
 <div id="missing-data-imputation-process" class="section level1">
