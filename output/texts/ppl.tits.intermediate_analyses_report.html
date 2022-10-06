@@ -1223,7 +1223,14 @@ prep.</em>)</a></h2>
       about?</a></li>
       </ul></li>
       <li><a href="#local-habitat-quality-modelling" id="toc-local-habitat-quality-modelling">2. Local habitat quality
-      modelling</a></li>
+      modelling</a>
+      <ul>
+      <li><a href="#rationale" id="toc-rationale">2.1.
+      Rationale</a></li>
+      <li><a href="#local-habitat-model-for-the-great-tits-parus-major" id="toc-local-habitat-model-for-the-great-tits-parus-major">2.2.
+      Local habitat model for the Great tits (<em>Parus
+      major</em>)</a></li>
+      </ul></li>
       </ul>
     </div>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
@@ -1266,42 +1273,40 @@ al.</em> , <em>in prep.</em>).</p>
 ## [1] ppl.tits_0.1.0
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] fs_1.5.2             webshot_0.5.4        httr_1.4.4          
-##   [4] doParallel_1.0.17    rprojroot_2.0.3      targets_0.13.4      
-##   [7] tools_4.2.0          backports_1.4.1      doRNG_1.8.2         
-##  [10] bslib_0.4.0          utf8_1.2.2           R6_2.5.1            
-##  [13] DT_0.25              DBI_1.1.3            colorspace_2.0-3    
-##  [16] withr_2.5.0          tidyselect_1.1.2     processx_3.7.0      
-##  [19] emmeans_1.8.1-1      compiler_4.2.0       rvest_1.0.3         
-##  [22] cli_3.3.0            missMDA_1.18         flashClust_1.01-2   
-##  [25] mice_3.14.0          xml2_1.3.3           sandwich_3.0-2      
-##  [28] degday_0.4.0.9000    bookdown_0.29        sass_0.4.2          
-##  [31] scales_1.2.1         mvtnorm_1.1-3        readr_2.1.2         
-##  [34] randomForest_4.7-1.1 callr_3.7.2          multcompView_0.1-8  
-##  [37] systemfonts_1.0.4    stringr_1.4.1        digest_0.6.29       
-##  [40] svglite_2.1.0        rmarkdown_2.16       pkgconfig_2.0.3     
-##  [43] htmltools_0.5.3      fastmap_1.1.0        itertools_0.1-3     
-##  [46] FactoMineR_2.6       htmlwidgets_1.5.4    rlang_1.0.5         
-##  [49] rstudioapi_0.14      tarchetypes_0.7.1    jquerylib_0.1.4     
-##  [52] generics_0.1.3       zoo_1.8-11           jsonlite_1.8.2      
-##  [55] dplyr_1.0.10         magrittr_2.0.3       kableExtra_1.3.4    
-##  [58] leaps_3.1            Matrix_1.5-1         Rcpp_1.0.9          
-##  [61] munsell_0.5.0        fansi_1.0.3          lifecycle_1.0.2     
-##  [64] scatterplot3d_0.3-42 stringi_1.7.8        multcomp_1.4-20     
-##  [67] yaml_2.3.5           MASS_7.3-56          grid_4.2.0          
-##  [70] parallel_4.2.0       ggrepel_0.9.1        crayon_1.5.2        
-##  [73] lattice_0.20-45      splines_4.2.0        hms_1.1.2           
-##  [76] knitr_1.40           ps_1.7.1             pillar_1.8.1        
-##  [79] igraph_1.3.4         estimability_1.4.1   base64url_1.4       
-##  [82] rngtools_1.5.2       codetools_0.2-18     glue_1.6.2          
-##  [85] evaluate_0.16        data.table_1.14.2    vctrs_0.4.1         
-##  [88] rmdformats_1.0.4     missForest_1.5       tzdb_0.3.0          
-##  [91] foreach_1.5.2        gtable_0.3.1         purrr_0.3.4         
-##  [94] tidyr_1.2.1          assertthat_0.2.1     cachem_1.0.6        
-##  [97] ggplot2_3.3.6        xfun_0.33            xtable_1.8-4        
-## [100] broom_1.0.1          viridisLite_0.4.1    survival_3.3-1      
-## [103] tibble_3.1.8         iterators_1.0.14     cluster_2.1.3       
-## [106] TH.data_1.1-1        ellipsis_0.3.2       here_1.0.1</code></pre>
+##   [1] fs_1.5.2             doParallel_1.0.17    rprojroot_2.0.3     
+##   [4] targets_0.13.4       tools_4.2.0          backports_1.4.1     
+##   [7] doRNG_1.8.2          bslib_0.4.0          utf8_1.2.2          
+##  [10] R6_2.5.1             DT_0.25              DBI_1.1.3           
+##  [13] colorspace_2.0-3     withr_2.5.0          tidyselect_1.1.2    
+##  [16] processx_3.7.0       emmeans_1.8.1-1      compiler_4.2.0      
+##  [19] cli_3.3.0            missMDA_1.18         flashClust_1.01-2   
+##  [22] mice_3.14.0          sandwich_3.0-2       degday_0.4.0.9000   
+##  [25] bookdown_0.29        sass_0.4.2           scales_1.2.1        
+##  [28] mvtnorm_1.1-3        readr_2.1.2          randomForest_4.7-1.1
+##  [31] callr_3.7.2          multcompView_0.1-8   stringr_1.4.1       
+##  [34] digest_0.6.29        rmarkdown_2.16       pkgconfig_2.0.3     
+##  [37] htmltools_0.5.3      fastmap_1.1.0        itertools_0.1-3     
+##  [40] FactoMineR_2.6       htmlwidgets_1.5.4    rlang_1.0.5         
+##  [43] rstudioapi_0.14      tarchetypes_0.7.1    jquerylib_0.1.4     
+##  [46] generics_0.1.3       zoo_1.8-11           jsonlite_1.8.2      
+##  [49] dplyr_1.0.10         magrittr_2.0.3       leaps_3.1           
+##  [52] Matrix_1.5-1         Rcpp_1.0.9           munsell_0.5.0       
+##  [55] fansi_1.0.3          lifecycle_1.0.2      scatterplot3d_0.3-42
+##  [58] stringi_1.7.8        multcomp_1.4-20      yaml_2.3.5          
+##  [61] MASS_7.3-56          grid_4.2.0           parallel_4.2.0      
+##  [64] ggrepel_0.9.1        crayon_1.5.2         lattice_0.20-45     
+##  [67] splines_4.2.0        hms_1.1.2            knitr_1.40          
+##  [70] ps_1.7.1             pillar_1.8.1         igraph_1.3.4        
+##  [73] estimability_1.4.1   base64url_1.4        rngtools_1.5.2      
+##  [76] codetools_0.2-18     glue_1.6.2           evaluate_0.16       
+##  [79] data.table_1.14.2    vctrs_0.4.1          rmdformats_1.0.4    
+##  [82] missForest_1.5       tzdb_0.3.0           foreach_1.5.2       
+##  [85] gtable_0.3.1         purrr_0.3.4          tidyr_1.2.1         
+##  [88] assertthat_0.2.1     cachem_1.0.6         ggplot2_3.3.6       
+##  [91] xfun_0.33            xtable_1.8-4         broom_1.0.1         
+##  [94] survival_3.3-1       tibble_3.1.8         iterators_1.0.14    
+##  [97] cluster_2.1.3        TH.data_1.1-1        ellipsis_0.3.2      
+## [100] here_1.0.1</code></pre>
 <p>All codes used in this study can furthermore be found here: <a href="https://github.com/mrelnoob/ppl.tits" class="uri">https://github.com/mrelnoob/ppl.tits</a><br />
 <br />
 </p>
@@ -1332,8 +1337,9 @@ of the <code>ppl.tits</code> package openly accessible at: <a href="https://gith
 analyses performed to enable the landscape scale habitat connectivity
 modelling for both tits species and compute connectivity metrics using
 the <a href="https://sourcesup.renater.fr/www/graphab/fr/home.html">Graphab</a>
-software. Through this stage, the <strong>final dataset</strong> is
-generated (i.e. the <em>clean exploitable dataset</em> completed with
+software <span class="citation">Foltête <em>et al.</em> (2021)</span>.
+Through this stage, the <strong>final dataset</strong> is generated
+(i.e. the <em>clean exploitable dataset</em> completed with
 <em>connectivity metrics</em>). This stage is described in the
 <em>Intermediate analyses report</em> (the present document).</li>
 <li><strong>Exploratory Data Analyses</strong> (EDA) - This stage
@@ -1361,7 +1367,55 @@ modelling</strong> for Great tits and Blue tits in our study area.<br />
 </div>
 <div id="local-habitat-quality-modelling" class="section level1">
 <h1>2. Local habitat quality modelling</h1>
-<p>To be continued…</p>
+<div id="rationale" class="section level2">
+<h2>2.1. Rationale</h2>
+<p>In order to model the habitat connectivity of our focal species with
+the Graphab software <span class="citation">Foltête <em>et al.</em>
+(2021)</span>, we first have to approximate the <em>quality</em> of
+every habitat patches (i.e. patch capacity), hence enabling weighting
+the nodes of the graph. Usually, this habitat quality is simply
+approximated by the patch cover area. In this study, we tried to
+obtained a more meaningful proxy of habitat quality for tits by
+developing a model predicting the birds’ <em>clutch size</em> using
+local environmental variables only, hence the denomination of “local
+habitat quality models”, one for each species.<br />
+Provided we could build <em>reliable</em> predictive models based on our
+nestbox data, the idea was to use these models to
+<strong>interpolate</strong> tits’ potential <em>clutch size</em> for
+all habitat pixels of our landcover map of the study area, and then
+evaluate the potential accuracy gained from this procedure compared to
+the simple use of habitat patches cover area for connectivity metrics
+computation.</p>
+</div>
+<div id="local-habitat-model-for-the-great-tits-parus-major" class="section level2">
+<h2>2.2. Local habitat model for the Great tits (<em>Parus
+major</em>)</h2>
+<div id="model-building" class="section level3">
+<h3>2.2.1. Model building</h3>
+<p>We built a Random Forest regression model <span class="citation">Breiman (2001)</span> using the
+<code>randomForest</code> package <span class="citation">Liaw &amp;
+Wiener (2002)</span>. We used <em>clutch size</em> as a response
+variable and, as spatial interpolation was our goal, we only considered
+<strong>spatially continuous variables</strong> as predictors: .</p>
+<div id="refs" class="references csl-bib-body">
+<div id="ref-breiman2001" class="csl-entry">
+Breiman L. (2001) <span>‘Random forests’</span>, <em>Machine
+Learning</em>, 45(1), pp. 5–32. Doi: <a href="https://doi.org/10.1023/A:1010933404324">10.1023/A:1010933404324</a>.
+</div>
+<div id="ref-graphab2021" class="csl-entry">
+Foltête J.-C., Vuidel G., Savary P., <em>et al.</em> (2021)
+<span>‘Graphab: <span>An</span> application for modeling and managing
+ecological habitat networks’</span>, <em>Software Impacts</em>, 8, p.
+100065. Doi: <a href="https://doi.org/10.1016/j.simpa.2021.100065">10.1016/j.simpa.2021.100065</a>.
+</div>
+<div id="ref-liaw2002" class="csl-entry">
+Liaw A. &amp; Wiener M. (2002) <span>‘Classification and
+<span>Regression</span> by <span class="nocase">randomForest</span>’</span>, <em>R News</em>, 2(3), pp.
+18–22. Available at: <a href="https://CRAN.R-project.org/doc/Rnews/">https://CRAN.R-project.org/doc/Rnews/</a>.
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 
