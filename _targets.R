@@ -99,8 +99,11 @@ list(
 
 
   ### All targets related to reports (literate programming)_____________________#
-  # Create the Exploratory Data Analysis (EDA) report:
+  # Render the Exploratory Data Analysis (EDA) report:
   tarchetypes::tar_render(EDA_report,
-                          path = here::here("output", "texts", "ppl.tits.exploration_report.Rmd"))
+                          path = here::here("output", "texts", "ppl.tits.exploration_report.Rmd")),
+  # Render the Intermediate Analyses report:
+  tarchetypes::tar_render(Intermed_report,
+                          path = here::here("output", "texts", "ppl.tits.intermediate_analyses_report.Rmd"))
   )
 
