@@ -69,6 +69,14 @@ Provided we could build *reliable* predictive models based on our nestbox data, 
 ## 2.2. Local habitat model for the Great tits (*Parus major*)
 ### 2.2.1. Model building
 
-We built a Random Forest regression model [@breiman2001] using the `randomForest` package [@liaw2002]. We used *clutch size* as a response variable and, as spatial interpolation was our goal, we only considered **spatially continuous variables** as predictors: *coord_x*, *coord_y*, *noise_m*, *noise_iq*, *built_area*, *open_area*, *soft_manag_area*, *woodyveg_volume*, *woodyveg_sd*.
+We built a Random Forest (RF) regression model [@breiman2001] using the `randomForest` package [@liaw2002]. We used *clutch size* as a response variable and, as spatial interpolation was our goal, we only considered **spatially continuous variables** as predictors: i.e. *coord_x*, *coord_y*, *noise_m*, *noise_iq*, *built_area*, *open_area*, *soft_manag_area*, *woodyveg_volume*, *woodyveg_sd*.  
+As regular RF implementations are known to have reliable default hyperparameters, we performed **no hyperparameters tuning** and thus grew a forest of 500 regression trees, each one based on a random subset of $p/3$ predictors and $0.632$ bootstrapped samples. Since we performed no model optimisation, we avoided the need for repeated *k*-fold cross validation or similar resampling procedures [@hastie2009; @harrell2015]. 
+The model's performances were evaluated using its *Mean Squared Error* (MSE) and the automatically computed $R^{2}_{oob}$.
+
+### 2.2.2. Predictive performance and stability evaluation
+
+Our Random Forest regression model obtained a MSE of **2.224875** and explained roughly 12.5% of *clutch size*'s variance ($R^{2}_{oob} = 12.43$).
 
 
+******
+# XX. References
