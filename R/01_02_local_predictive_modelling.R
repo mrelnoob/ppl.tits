@@ -12,7 +12,7 @@
 #' Build a predictive model of local habitat quality
 #'
 #' @description The `local_quality_model` function builds a Random Forest (RF) regression model to
-#' predict the local habitat quality for Great tits (Parus major only) approximated by the species
+#' predict the local habitat quality for Great tits (\emph{Parus major} only) approximated by the species
 #' clutch size. \cr
 #' The RF model, fitted using the \code{\link[randomForest:randomForest]{randomForest}} package, is
 #' build without hyperparameter tuning even though predictor variables importance is also computed.
@@ -20,6 +20,9 @@
 #' process by repeating it 100 times and reporting the associated out-of-bag R squared values as
 #' well as permutation-based variable importance metrics (computed as averaged increase in Mean
 #' Squared Error).
+#' @note This function only produces outputs for the Great tits (\emph{Parus major}). Computations
+#' for Blue tits (\emph{Cyanistes caeruleus}) were too unstable to be exploited due to insufficient
+#' sample size.
 #'
 #' @param my_tdata The name of the \strong{target} that contains the dataset generated
 #' by \code{\link[ppl.tits:tdata_upD_final]{tdata_upD_final}}. Note that this argument is not
@@ -31,8 +34,10 @@
 #'
 #' @return This functions returns three things: 1) The Random Forest object built to be used for
 #' prediction using new data (e.g. using
-#' \code{\link[randomForest:predict.randomForest]{predict.randomForest}}; 2) the OOB R2 stability
-#' plot; and 3) the variables importance stability plot.
+#' \code{\link[randomForest:predict.randomForest]{predict.randomForest}}; accessible through
+#' `local_quality_model()$rf4pm`); 2) the OOB R2 stability plot (accessible through
+#' `local_quality_model()$r_squared.stab`); and 3) the variables importance stability plot
+#' (accessible through `local_quality_model()$var_importance.stab`).
 #' @export
 #' @importFrom here here
 #' @importFrom readr read_csv2
@@ -55,7 +60,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' patch_quality <- predict(ppl.tits::local_quality_model()$rf4pm)
+#' # This line should work as long as "my_newdata" is an appropriately formatted dataset containing
+#' # the same variables as the input RF model:
+#' patch_quality <- predict.randomForest(
+#'   ppl.tits::local_quality_model()$rf4pm,
+#'   newdata = my_newdata)
+#'
+#' ppl.tits::local_quality_model()$r_squared.stab # To generate the R2 stability plot
+#' ppl.tits::local_quality_model()$var_importance.stab # To generate the variable importance
+#' # stability plot
 #' }
 local_quality_model <- function(my_tdata = here::here("output", "tables", "ndata_final.csv")){
 
