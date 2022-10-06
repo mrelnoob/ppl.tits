@@ -75,7 +75,7 @@ The model's performances were evaluated using its *Mean Squared Error* (MSE) and
 
 ### 2.2.2. Predictive performance and stability evaluation
 
-Our Random Forest regression model obtained a MSE of **2.224875** and explained roughly 12.5% of *clutch size*'s variance ($R^{2}_{oob} = 12.43$).
+Our Random Forest regression model obtained a MSE of **2.224875** and explained roughly 12.5% of *clutch size*'s variance ($R^{2}_{oob} = 12.43$). 
 
 
 ******
