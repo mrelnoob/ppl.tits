@@ -66,10 +66,9 @@ In order to model the habitat connectivity of our focal species with the Graphab
 Provided we could build *reliable* predictive models based on our nestbox data, the idea was to use these models to **interpolate** tits' potential *clutch size* for all habitat pixels of our landcover map of the study area, and then evaluate the potential accuracy gained from this procedure compared to the simple use of habitat patches cover area for connectivity metrics computation. 
 
 
-## 2.2. Models development for the Great tits (*Parus major*)
+## 2.2. Local habitat model for the Great tits (*Parus major*)
+### 2.2.1. Model building
 
-We built a Random Forest regression model @Breiman2001 using the `randomForest` package 
-
-As spatial interpolation was our goal, we only considered **spatially continuous predictors** in these models.
+We built a Random Forest regression model @breiman2001 using the `randomForest` package @liaw2002. We used *clutch size* as a response variable and, as spatial interpolation was our goal, we only considered **spatially continuous variables** as predictors: .
 
 
