@@ -30,3 +30,16 @@ All codes used in this study can furthermore be found here: https://github.com/m
 \
 
 ## 1.2. What is this document about?  
+
+```{r data import, include=FALSE}
+library(ppl.tits) # To be able to use pipes.
+stab_r2plot <- targets::tar_read(RF_r2plot)
+stab_varimplot <- targets::tar_read(RF_r2plot)
+# tits <- targets::tar_read(final_tdata) # I don't need data for now!
+# As you can see, I import my data using 'targets'! If you are reading this report and don't know what it is or how I created and stored them, you should read the README or the _devhistory.R files available at https://github.com/mrelnoob/ppl.tits. 
+
+.pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
+```
+\
+
+This document outlines
