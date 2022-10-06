@@ -50,6 +50,7 @@ This document presents all analyses related to the third stage of our data proce
 ******
 
 # 2. Local habitat quality modelling
+## 2.1. Rationale
 
 ```{r data import, include=FALSE}
 library(ppl.tits) # To be able to use pipes.
@@ -61,4 +62,14 @@ stab_varimplot <- targets::tar_read(RF_importanceplot)
 .pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
 ```
 
-To be continued...
+In order to model the habitat connectivity of our focal species with the Graphab software, we first have to approximate the *quality* of every habitat patches (i.e. patch capacity), hence enabling weighting the nodes of the graph. Usually, this habitat quality is simply approximated by the patch cover area. In this study, we tried to obtained a more meaningful proxy of habitat quality for tits by developing a model predicting the birds' *clutch size* using local environmental variables only, hence the denomination of "local habitat quality models", one for each species.  
+Provided we could build *reliable* predictive models based on our nestbox data, the idea was to use these models to **interpolate** tits' potential *clutch size* for all habitat pixels of our landcover map of the study area, and then evaluate the potential accuracy gained from this procedure compared to the simple use of habitat patches cover area for connectivity metrics computation. 
+
+
+## 2.2. Models development
+
+We built a Random Forest regression 
+
+As spatial interpolation was our goal, we only considered **spatially continuous predictors** in these models.
+
+
