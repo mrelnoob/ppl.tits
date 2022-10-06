@@ -10,7 +10,7 @@ output: rmdformats::readthedown
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 
-# IMPORTANT NOTE: if you read this, then know that this RMarkdown report has been written as a 'target' in a {targets} pipeline (https://books.ropensci.org/targets/). If you simply want to knit this report, you need to do it using using 'targets::tar_make()' (provided that you did not altered the structure of the "ppl.tits" folder to which this report belongs), otherwise it won't work! Alternatively, you can paste this .Rmd at the root of the "ppl.tits" folder. If you want to run the code contained within the code chunks of this document WITHOUT knitting, then you need to set the working directory of this .Rmd document at the root of the "ppl.tits" folder using the global options of RStudio, 'setwd()', or 'knitr::opts_knit$set(root.dir = '~/')'. That is because R, RStudio or {knitr} do not seem to be able to find the "_targets" folder containing the targets that are called by my code chunks otherwise... By default, RMarkdown sets the working directory where the .Rmd file is stored, not at the root of the R project the report is a part of.
+# IMPORTANT NOTE: if you read this, then you should know that this RMarkdown report has been written as a 'target' in a {targets} pipeline (https://books.ropensci.org/targets/). If you simply want to knit this report, you need to do it using using 'targets::tar_make()' (provided that you did not altered the structure of the "ppl.tits" folder to which this report belongs), otherwise it won't work! Alternatively, you can paste this .Rmd at the root of the "ppl.tits" folder. If you want to run the code contained within the code chunks of this document WITHOUT knitting, then you need to set the working directory of this .Rmd document at the root of the "ppl.tits" folder using the global options of RStudio, 'setwd()', or 'knitr::opts_knit$set(root.dir = '~/')'. That is because R, RStudio or {knitr} do not seem to be able to find the "_targets" folder containing the targets that are called by my code chunks otherwise... By default, RMarkdown sets the working directory where the .Rmd file is stored, not at the root of the R project the report is a part of.
 # Still, note that theoretically, you do not need to knit or modify this document as it is meant for reproducibility and you can simply read the .html file for that.
 ```
 
@@ -30,6 +30,26 @@ All codes used in this study can furthermore be found here: https://github.com/m
 \
 
 ## 1.2. What is this document about?  
+### 1.2.1. Presentation of the data processing methodology
+
+In the context of the *tits reproduction study* of the PubPrivLands project, we undertook a complex data processing methodology that can be divided into **five stages**:
+
+1. **Raw data acquisition and preparation** - This initial stage consists of all *raw* data acquisition through fieldwork, GIS or remote-sensing-based data generation, and database extractions as well as their initial *cleaning* and *formatting* to produce **raw datasets** (e.g. tits reproduction observations, environmental variables). This stage is globally described in the *Materials & Methods* section of the manuscript, and is thoroughly detailed in the **ppl_log.pdf** document (French only, see Supplementary Materials).
+2. **Clean dataset generation** - This stage includes all basic *cleaning*, *wrangling*, *computing* and *formatting* required to obtain a **clean exploitable dataset**. This stage is documented in the `R` files of the `ppl.tits` package openly accessible at: https://github.com/mrelnoob/ppl.tits.
+3. **Intermediate analyses** - This stage encompasses all analyses performed to enable the landscape scale habitat connectivity modelling for both tits species and compute connectivity metrics using the [Graphab](https://sourcesup.renater.fr/www/graphab/fr/home.html) software. Through this stage, the **final dataset** is generated (i.e. the *clean exploitable dataset* completed with *connectivity metrics*). This stage is described in the *Intermediate analyses report*.
+4. **Exploratory Data Analyses** (EDA) - This stage describes all *EDA* and preliminary *assumption checks* made on the *final dataset* that are required to plan proper statistical analyses for hypotheses testing. This stage is described in the *Exploratory data analyses and preparation report* (the present document).
+5. **Statistical analyses** - This last stage includes all statistical procedures meant to *test* our study hypotheses, *produce results* and *assess their reliability*. This stage is described in the *Statistical analyses report*.
+
+
+### 1.2.2. Content of this report
+
+This document outlines all the important data preparation and exploration steps undertaken to test our research hypotheses. In other words, it presents all **exploratory data analyses** and preliminary **assumption checks** performed on the *final* version of our dataset. Actually, it also presents the last step of the dataset generation process, that is **missing values imputation** because it is a highly sensitive part of the process and thus deserves the utmost transparency.
+\
+\
+
+******
+
+# 2. Missing data imputation process
 
 ```{r data import, include=FALSE}
 library(ppl.tits) # To be able to use pipes.
@@ -41,16 +61,6 @@ cc_imp_error <- targets::tar_read(imp_ooberror_cc)
 
 .pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
 ```
-\
-
-This document outlines all the important data preparation and exploration steps undertaken to test our research hypotheses. In other words, it presents all **exploratory data analyses** and basic **assumption checks** performed on the *final* version of our dataset. Actually, it also presents the last step of the dataset generation process, that is **missing values imputation** because it is a highly sensitive part of the process and thus deserves the utmost transparency.
-For more details regarding the dataset generation process (i.e. creation of the *final* dataset), readers are referred to the scripts and documents stored at: https://github.com/mrelnoob/ppl.tits as well as to the manuscript and other Supplementary Materials.
-\
-\
-
-******
-
-# 2. Missing data imputation process
 
 Similarly to many datasets in ecology, some of our variables contained missing values. As most of them were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in some of our response variables as well as in all independent variables containing missing values instead of deleting observations. However, as the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) data and as the former has a lower sample size, we chose to split our data into two subsets, one for each species, where the Blue Tits one will contain less variables as some will be discarded to prevent overoptimistic imputations. 
 For our morphometric response variables on the other hand, missing values were not MAR as many were due to the fact that the reproduction event failed. It was then impossible to measure morphometric variables on dead or missing bird nestlings. These variables were thus excluded from the following imputation process but will perhaps be imputed later if required.
