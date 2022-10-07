@@ -63,5 +63,15 @@ You can find **HTML reports** detailing most data processing and analyses perfor
 
 
 
+## Where can I find the Random Forest object from the *local habitat quality* model?
+
+This `randomForest` object is generated and exported by the `local_quality_model()` function and can be accessed as follows:
+
+```{r rf export}
+ppl.tits::local_quality_model()$rf4pm
+```
+
+
+
 ******
 TO BE CONTINUED...(ongoing development)

@@ -57,6 +57,15 @@ project’s folder by clicking the green **Code** button (and then
 **Download ZIP**) on the [{ppl.tits} project’s
 page](https://github.com/mrelnoob/ppl.tits).
 
+## Where can I find the Random Forest object from the *local habitat quality* model?
+
+This `randomForest` object is generated and exported by the
+`local_quality_model()` function and can be accessed as follows:
+
+``` r
+ppl.tits::local_quality_model()$rf4pm
+```
+
 ------------------------------------------------------------------------
 
 TO BE CONTINUED…(ongoing development)
