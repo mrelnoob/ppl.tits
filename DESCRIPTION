@@ -1,6 +1,6 @@
 Package: ppl.tits
 Title: Contains all Data Processing for the First Part Of Ppl.tits
-Version: 0.1.0
+Version: 1.0.0
 Authors@R: 
     person(given = "Francois-Marie",
            family = "Martin",
