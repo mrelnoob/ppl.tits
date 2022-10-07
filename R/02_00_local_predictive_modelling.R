@@ -30,7 +30,8 @@
 #' Therefore, if you want to reproduce this work, you should not call this function unless you
 #' have previously built the {targets} pipeline described in _targets.R (e.g. by using
 #' targets::tar_make())! If you DO NOT KNOW what I'm talking about, then you should
-#' read the README file (https://github.com/mrelnoob/ppl.tits) and probably NOT use this function!
+#' read the README file (https://github.com/mrelnoob/ppl.tits) and probably NOT modify the
+#' arguments of this function!
 #'
 #' @return This functions returns three things: 1) The Random Forest object built to be used for
 #' prediction using new data (e.g. using
