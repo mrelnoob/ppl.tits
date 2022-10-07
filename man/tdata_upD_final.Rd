@@ -11,9 +11,10 @@ tdata_upD_final(my_tdata = here::here("output", "tables", "ndata_parcond.csv"))
 by \code{\link[ppl.tits:tdata_upD_parcond]{tdata_upD_parcond}}. Note that this argument is not
 necessarily required but is strongly advised.
 Therefore, if you want to reproduce this work, you should not call this function unless you
-have previously built the {targets} pipeline described in _targets.R (e.g. by using the
-make.R file of the project)! If you DO NOT KNOW what I'm talking about, then you should
-read the README file (https://github.com/mrelnoob/ppl.tits) and probably NOT use this function!}
+have previously built the {targets} pipeline described in _targets.R (e.g. by using
+targets::tar_make())! If you DO NOT KNOW what I'm talking about, then you should
+read the README file (https://github.com/mrelnoob/ppl.tits) and PROBABLY NOT modify the
+function's arguments (see examples section).}
 }
 \value{
 A list containing five elements: 1) the updated "final" dataset (a tibble accessible with
