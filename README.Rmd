@@ -6,6 +6,9 @@ output: github_document
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
+  eval = FALSE,
+  message = FALSE,
+  warning = FALSE,
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
@@ -35,7 +38,7 @@ devtools::install_github("mrelnoob/ppl.tits") # To install the {ppl.tits} packag
 
 ## Where can I find the data?
 
-If you want to access the **raw** datasets used in this package, you have to download them from the *mydata* folder on the [{ppl.tits} project's page](https://github.com/mrelnoob/ppl.tits) of my Github account. You can also contact me directly through: francois-marie.martin@univ-fcomte.fr   
+If you want to access the **raw** datasets used in this package, you have to download them from the *mydata/* folder on the [{ppl.tits} project's page](https://github.com/mrelnoob/ppl.tits) of my Github account. You can also contact me directly through: francois-marie.martin@univ-fcomte.fr   
 
 To load the latest version of the **cleaned dataset** directly in your `R` session, you need to call the `tdata_upD_final()` function as in:
 
@@ -56,7 +59,7 @@ help(package=ppl.tits, try.all.packages = TRUE) # To go to the package's index p
 
 ## Where can I find *progress reports*?
 
-You can find **HTML *reports** detailing most data processing and analyses performed in this study in the *output/texts/* folder of the {ppl.tits} project. To access them, you need to download a copy of the project's folder by clicking the green `Code` button (and then `Download ZIP`) on the [{ppl.tits} project's page](https://github.com/mrelnoob/ppl.tits).
+You can find **HTML reports** detailing most data processing and analyses performed in this study in the *output/texts/* folder of the {ppl.tits} project. To access them, you need to download a copy of the project's folder by clicking the green **Code** button (and then **Download ZIP**) on the [{ppl.tits} project's page](https://github.com/mrelnoob/ppl.tits).
 
 
 
