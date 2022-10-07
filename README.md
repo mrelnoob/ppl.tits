@@ -66,6 +66,12 @@ This `randomForest` object is generated and exported by the
 ppl.tits::local_quality_model()$rf4pm
 ```
 
+  
+  
+
 ------------------------------------------------------------------------
 
-TO BE CONTINUED…(ongoing development)
+# Package building
+
+The {ppl.tits} has been built through a pipeline programming procedure
+using the {targets} package. TO BE CONTINUED…
