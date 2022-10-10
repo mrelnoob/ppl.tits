@@ -35,7 +35,7 @@ All codes used in this study can furthermore be found here: https://github.com/m
 In the context of the *tits reproduction study* of the PubPrivLands project, we undertook a complex data processing methodology that can be divided into **five stages**:
 
 1. **Raw data acquisition and preparation** - This initial stage consists of all *raw* data acquisition through fieldwork, GIS or remote-sensing-based data generation, and database extractions as well as their initial *cleaning* and *formatting* to produce **raw datasets** (e.g. tits reproduction observations, environmental variables). This stage is globally described in the *Materials & Methods* section of the manuscript, and is thoroughly detailed in the **ppl_log.pdf** document (French only, see Supplementary Materials).
-2. **Clean dataset generation** - This stage includes all basic *cleaning*, *wrangling*, *computing* and *formatting* required to obtain a **clean exploitable dataset**. This stage is documented in the `R` files of the `ppl.tits` package openly accessible at: https://github.com/mrelnoob/ppl.tits.
+2. **Clean dataset generation** - This stage includes all basic *cleaning*, *wrangling*, *computing* and *formatting* required to obtain a **clean exploitable dataset**. This stage is documented in the `R` files of the `{ppl.tits}` package openly accessible at: https://github.com/mrelnoob/ppl.tits.
 3. **Intermediate analyses** - This stage encompasses all analyses performed to enable the landscape scale habitat connectivity modelling for both tits species and compute connectivity metrics using the [Graphab](https://sourcesup.renater.fr/www/graphab/fr/home.html) software [@graphab2021]. Through this stage, the **final dataset** is generated (i.e. the *clean exploitable dataset* completed with *connectivity metrics*). This stage is described in the *Intermediate analyses report*.
 4. **Exploratory Data Analyses** (EDA) - This stage describes all *EDA* and preliminary *assumption checks* made on the *final dataset* that are required to plan proper statistical analyses for hypotheses testing. This stage is described in the *Exploratory data analyses and preparation report* (the present document).
 5. **Statistical analyses** - This last stage includes all statistical procedures meant to *test* our study hypotheses, *produce results* and *assess their reliability*. This stage is described in the *Statistical analyses report*.
@@ -62,11 +62,11 @@ cc_imp_error <- targets::tar_read(imp_ooberror_cc)
 .pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
 ```
 
-Similarly to many datasets in ecology, some of our variables contained missing values. As most of them were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in some of our response variables as well as in all independent variables containing missing values instead of deleting observations. However, as the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) data and as the former has a lower sample size, we chose to split our data into two subsets, one for each species, where the Blue Tits one will contain less variables as some will be discarded to prevent overoptimistic imputations. 
-For our morphometric response variables on the other hand, missing values were not MAR as many were due to the fact that the reproduction event failed. It was then impossible to measure morphometric variables on dead or missing bird nestlings. These variables were thus excluded from the following imputation process but will perhaps be imputed later if required. 
+Similarly to many datasets in ecology, some of our variables contained missing values. As most of them were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in some of our *response variables* as well as in all *independent variables* containing missing values instead of deleting observations. For our morphometric *response variables*, however, missing values were not MAR as many were due to the fact that reproduction events failed. In such a case, it was impossible to measure morphometric variables as nestlings were either dead or missing. These *response variables* were thus excluded from the following imputation process.  
+Now, since the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) data and as the former has a lower sample size, we chose to split our data into two subsets, one for each species. Consequently, the Blue Tits one contains less variables as some were discarded to prevent overoptimistic imputations.
 
-To impute missing values, we used the `missForest()` function from the {missForest} package [@stekhoven2011]. This functions initially imputes all missing data using the mean/mode, then for each variable with missing values, it fits a *Random Forest* on the observed part and then predicts the missing part. This process of training and predicting repeats iteratively until a stopping criterion is met or a maximum number of user-specified iterations is reached. This algorithm has been shown to have higher predictive performances than other widely used imputation methods, including MICE or KNNimpute [@stekhoven2011].
-Another advantage is that this function can return an assessment of the imputation error based on the out-of-bag (OOB) samples, for each variable individually. For continuous predictors, the Mean Squared Error (MSE) of imputed values is computed while the proportion of falsely classified (PFC) is used for categorical missing ones.
+To impute missing values, we used the `missForest()` function from the `{missForest}` package [@stekhoven2011]. This functions initially imputes all missing data using the mean/mode, then for each variable with missing values, it fits a *Random Forest* on the observed part to predict the missing part. This process of training and predicting repeats iteratively until a stopping criterion is met or a maximum number of user-specified iterations is reached. This algorithm has been shown to have higher predictive performances than other widely used imputation methods, including MICE or KNNimpute [@stekhoven2011].  
+Another advantage is that this function can return an assessment of the imputation error based on the out-of-bag (OOB) samples, for each variable individually. For continuous predictors, the *Mean Squared Error* (MSE) of imputed values is computed while the *proportion of falsely classified* (PFC) is returned for categorical missing ones.  
 To avoid overfitting, no hyperparameters tuning was performed but I applied a three-fold increase in the number of trees and maximum iterations with respect to the default values to favour predictive accuracy. 
 
 
@@ -74,7 +74,7 @@ To avoid overfitting, no hyperparameters tuning was performed but I applied a th
 ## 2.1. Great Tits dataset
 ### 2.1.1. Dataset prior to imputation
 
-Here is a summary of the Great Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to table **XXX_A_FAIRE!_XXX**):
+Here is a summary of the Great Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to **Table S1** - cf. Supplementary Materials):
 
 ```{r pm before imputation, message=FALSE}
 tits_priorimp %>% dplyr::filter(species == "PM") -> pm_pimp
@@ -83,7 +83,7 @@ summary(pm_pimp)
 
 ### 2.1.2. Dataset after imputation
 
-Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (the blue variable is a future response variable while the green ones are meant to be predictors): 
+Below, you may find a summary table of the OOB error for all imputed variables, expressed in variables original scales (the blue variable is a future *response variable* while the green ones are meant to be *independent variables*): 
 
 ```{r pm imput error, message=FALSE}
 data.frame(Variable = rownames(pm_imp_error), 
@@ -96,7 +96,7 @@ data.frame(Variable = rownames(pm_imp_error),
   kableExtra::kable_styling(full_width = FALSE)
 ```
 
-You can see that imputation errors are, in this case, fairly negligible compared to the variable ranges of variation. Consequently, we deemed these imputations acceptable and used them for the subsequent analyses.
+You can see that imputation errors are, in this case, fairly negligible compared to variables' ranges of variation. Consequently, we deemed these imputations acceptable and used them for the subsequent analyses.
 Here is a summary of the same data AFTER imputation:
 ```{r pm after imputation, message=FALSE}
 tits %>% dplyr::filter(species == "PM") -> pm
@@ -108,7 +108,7 @@ summary(pm)
 ## 2.2. Blue Tits dataset
 ### 2.2.1. Dataset prior to imputation
 
-Here is a summary of the Blue Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to table **XXX_A_FAIRE!_XXX**):
+Here is a summary of the Blue Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to **Table S1** - cf. Supplementary Materials):
 
 ```{r cc before imputation, message=FALSE}
 tits_priorimp %>% dplyr::filter(species == "CC") -> cc_pimp
@@ -117,7 +117,7 @@ summary(cc_pimp)
 
 ### 2.2.2. Dataset after imputation
 
-Below, you may find a summary table of the OOB error for all imputed variables, expressed in the original variable scales (the blue variable is a future response variable while the green ones are meant to be predictors): 
+Below, you may find a summary table of the OOB error for all imputed variables, expressed in variables original scales (the blue variable is a future *response variable* while the green ones are meant to be *independent variables*): 
 
 ```{r cc imput error, message=FALSE}
 data.frame(Variable = rownames(cc_imp_error), 
@@ -130,7 +130,7 @@ data.frame(Variable = rownames(cc_imp_error),
   kableExtra::kable_styling(full_width = FALSE)
 ```
 
-Here again, you can see that imputation errors are, in this case, fairly negligible compared to the variable ranges of variation. Consequently, we deemed these imputations acceptable and used them for the subsequent analyses.
+Here again, you can see that imputation errors are, in this case, fairly negligible compared to variable variances. Consequently, these imputations were used for the subsequent analyses.
 Here is a summary of the same data AFTER imputation:
 ```{r cc after imputation, message=FALSE}
 tits %>% dplyr::filter(species == "CC") -> cc
@@ -143,14 +143,10 @@ summary(cc)
 
 # 3. Data exploration
 
-Various aspects of our data (e.g. outliers, variables distribution, multicollinearity among predictors, homogeneity of variances, independence, potential interactions, multivariate relationships, linearity etc.) were explored and are presented in this document, mostly following Bolker (2007), Zuur *et al.* (2010), and Harrell (2015). However, as the response variables were of different nature (e.g. binary, continuous), they would be modelled using different types of models with varying assumptions:
+**TO BE CONTINUED...!!!!**
+Various aspects of our data (e.g. outliers, variables distribution, multicollinearity among predictors, homogeneity of variances, independence, potential interactions, multivariate relationships, linearity etc.) were explored and are presented in this document, mostly following @bolker2009, @zuur2010, and @harrell2015. However, as the response variables were of different nature (e.g. binary, continuous), they would be modelled using different types of models with varying assumptions:
 
-* The *efficiency* and *high_eff* variables shared the same sub-dataset because we decided to analyse them using the same set of candidate *a priori* models. The former variable is a sort of *satisfaction score* estimated by the managers and can modelled as a percentage using **beta regressions** while the latter, which relates to cases of knotweed (near-)eradication, is a binary variable that should be modelled using some type of **logistic regression**.
-* The other three response variables indicated the presence of knotweed regrowths at various key locations of the tarping set-ups, and should thus also be modelled using methods of the *logistic regression family*.
-
-Naturally, most actual models assumptions were checked after model building and fitting. Our intention here was simply to improve our knowledge of the data and identify potentially problematic variables upstream. As our global dataset contained many potential predictors (*p* = 85), much effort was indeed directed toward reducing their number and keeping only the most reliable and important ones relative to our hypotheses. In other words, we tried to reduce the dimensionality of the data. 
-
-For the meaning of all variables, the reader is referred to Appendix §§§ *** §§§ !!!!!!
+Naturally, most actual models assumptions were checked after model building and fitting. Our intention here was simply to improve our knowledge of the data and identify potentially problematic variables upstream. As our global dataset contained many potential predictors (*p* = XX), much effort was indeed directed toward reducing their number and keeping only the most reliable and important ones relative to our hypotheses. In other words, we tried to reduce the dimensionality of the data. 
 \
 \
 

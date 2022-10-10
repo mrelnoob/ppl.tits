@@ -1463,7 +1463,7 @@ al.</em>, <em>in prep.</em>)</a></h2>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
                   <p class="author"><span class="glyphicon glyphicon-user"></span> François-Marie
 Martin</p>
-                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 06
+                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 10
 octobre, 2022</p>
           </div>
    </div>
@@ -1559,7 +1559,7 @@ is thoroughly detailed in the <strong>ppl_log.pdf</strong> document
 basic <em>cleaning</em>, <em>wrangling</em>, <em>computing</em> and
 <em>formatting</em> required to obtain a <strong>clean exploitable
 dataset</strong>. This stage is documented in the <code>R</code> files
-of the <code>ppl.tits</code> package openly accessible at: <a href="https://github.com/mrelnoob/ppl.tits" class="uri">https://github.com/mrelnoob/ppl.tits</a>.</li>
+of the <code>{ppl.tits}</code> package openly accessible at: <a href="https://github.com/mrelnoob/ppl.tits" class="uri">https://github.com/mrelnoob/ppl.tits</a>.</li>
 <li><strong>Intermediate analyses</strong> - This stage encompasses all
 analyses performed to enable the landscape scale habitat connectivity
 modelling for both tits species and compute connectivity metrics using
@@ -1603,45 +1603,46 @@ process and thus deserves the utmost transparency.<br />
 contained missing values. As most of them were MAR or MCAR (missing
 [completely] at random) and since deleting observations containing
 missing values can lead to biased coefficient estimates <span class="citation">(Harrell, 2015)</span>, we decided to impute the
-missing values in some of our response variables as well as in all
-independent variables containing missing values instead of deleting
-observations. However, as the proportion of missing values is clearly
-higher for our Blue Tits (<em>Cyanistes caeruleus</em>) observations
-than for our Great Tits (<em>Parus major</em>) data and as the former
-has a lower sample size, we chose to split our data into two subsets,
-one for each species, where the Blue Tits one will contain less
-variables as some will be discarded to prevent overoptimistic
-imputations. For our morphometric response variables on the other hand,
-missing values were not MAR as many were due to the fact that the
-reproduction event failed. It was then impossible to measure
-morphometric variables on dead or missing bird nestlings. These
-variables were thus excluded from the following imputation process but
-will perhaps be imputed later if required.</p>
+missing values in some of our <em>response variables</em> as well as in
+all <em>independent variables</em> containing missing values instead of
+deleting observations. For our morphometric <em>response variables</em>,
+however, missing values were not MAR as many were due to the fact that
+reproduction events failed. In such a case, it was impossible to measure
+morphometric variables as nestlings were either dead or missing. These
+<em>response variables</em> were thus excluded from the following
+imputation process.<br />
+Now, since the proportion of missing values is clearly higher for our
+Blue Tits (<em>Cyanistes caeruleus</em>) observations than for our Great
+Tits (<em>Parus major</em>) data and as the former has a lower sample
+size, we chose to split our data into two subsets, one for each species.
+Consequently, the Blue Tits one contains less variables as some were
+discarded to prevent overoptimistic imputations.</p>
 <p>To impute missing values, we used the <code>missForest()</code>
-function from the {missForest} package <span class="citation">(Stekhoven
-&amp; Bühlmann, 2011)</span>. This functions initially imputes all
-missing data using the mean/mode, then for each variable with missing
-values, it fits a <em>Random Forest</em> on the observed part and then
-predicts the missing part. This process of training and predicting
-repeats iteratively until a stopping criterion is met or a maximum
-number of user-specified iterations is reached. This algorithm has been
-shown to have higher predictive performances than other widely used
-imputation methods, including MICE or KNNimpute <span class="citation">(Stekhoven &amp; Bühlmann, 2011)</span>. Another
-advantage is that this function can return an assessment of the
+function from the <code>{missForest}</code> package <span class="citation">(Stekhoven &amp; Bühlmann, 2011)</span>. This functions
+initially imputes all missing data using the mean/mode, then for each
+variable with missing values, it fits a <em>Random Forest</em> on the
+observed part to predict the missing part. This process of training and
+predicting repeats iteratively until a stopping criterion is met or a
+maximum number of user-specified iterations is reached. This algorithm
+has been shown to have higher predictive performances than other widely
+used imputation methods, including MICE or KNNimpute <span class="citation">(Stekhoven &amp; Bühlmann, 2011)</span>.<br />
+Another advantage is that this function can return an assessment of the
 imputation error based on the out-of-bag (OOB) samples, for each
-variable individually. For continuous predictors, the Mean Squared Error
-(MSE) of imputed values is computed while the proportion of falsely
-classified (PFC) is used for categorical missing ones. To avoid
-overfitting, no hyperparameters tuning was performed but I applied a
-three-fold increase in the number of trees and maximum iterations with
-respect to the default values to favour predictive accuracy.</p>
+variable individually. For continuous predictors, the <em>Mean Squared
+Error</em> (MSE) of imputed values is computed while the <em>proportion
+of falsely classified</em> (PFC) is returned for categorical missing
+ones.<br />
+To avoid overfitting, no hyperparameters tuning was performed but I
+applied a three-fold increase in the number of trees and maximum
+iterations with respect to the default values to favour predictive
+accuracy.</p>
 <div id="great-tits-dataset" class="section level2">
 <h2>2.1. Great Tits dataset</h2>
 <div id="dataset-prior-to-imputation" class="section level3">
 <h3>2.1.1. Dataset prior to imputation</h3>
 <p>Here is a summary of the Great Tits dataset prior to data imputation
-(for the meaning of the variables, readers are referred to table
-**XXX_A_FAIRE!_XXX**):</p>
+(for the meaning of the variables, readers are referred to <strong>Table
+S1</strong> - cf. Supplementary Materials):</p>
 <pre><code>##    id_nestbox               site        coord_x          coord_y       
 ##  DIJ-139:  4   parc_colombiere: 29   Min.   :849898   Min.   :6690155  
 ##  DIJ-163:  4   arquebuse      : 23   1st Qu.:853196   1st Qu.:6692273  
@@ -1734,9 +1735,9 @@ respect to the default values to favour predictive accuracy.</p>
 <div id="dataset-after-imputation" class="section level3">
 <h3>2.1.2. Dataset after imputation</h3>
 <p>Below, you may find a summary table of the OOB error for all imputed
-variables, expressed in the original variable scales (the blue variable
-is a future response variable while the green ones are meant to be
-predictors):</p>
+variables, expressed in variables original scales (the blue variable is
+a future <em>response variable</em> while the green ones are meant to be
+<em>independent variables</em>):</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1821,8 +1822,8 @@ Oob_RMSE
 </tbody>
 </table>
 <p>You can see that imputation errors are, in this case, fairly
-negligible compared to the variable ranges of variation. Consequently,
-we deemed these imputations acceptable and used them for the subsequent
+negligible compared to variables’ ranges of variation. Consequently, we
+deemed these imputations acceptable and used them for the subsequent
 analyses. Here is a summary of the same data AFTER imputation:</p>
 <pre><code>##    id_nestbox               site        coord_x          coord_y       
 ##  DIJ-139:  4   parc_colombiere: 29   Min.   :849898   Min.   :6690155  
@@ -1930,8 +1931,8 @@ analyses. Here is a summary of the same data AFTER imputation:</p>
 <div id="dataset-prior-to-imputation-1" class="section level3">
 <h3>2.2.1. Dataset prior to imputation</h3>
 <p>Here is a summary of the Blue Tits dataset prior to data imputation
-(for the meaning of the variables, readers are referred to table
-**XXX_A_FAIRE!_XXX**):</p>
+(for the meaning of the variables, readers are referred to <strong>Table
+S1</strong> - cf. Supplementary Materials):</p>
 <pre><code>##    id_nestbox                site       coord_x          coord_y       
 ##  DIJ-071:  4   parc_colombiere :16   Min.   :852173   Min.   :6688863  
 ##  DIJ-072:  3   arquebuse       :13   1st Qu.:853716   1st Qu.:6692339  
@@ -2024,9 +2025,9 @@ analyses. Here is a summary of the same data AFTER imputation:</p>
 <div id="dataset-after-imputation-1" class="section level3">
 <h3>2.2.2. Dataset after imputation</h3>
 <p>Below, you may find a summary table of the OOB error for all imputed
-variables, expressed in the original variable scales (the blue variable
-is a future response variable while the green ones are meant to be
-predictors):</p>
+variables, expressed in variables original scales (the blue variable is
+a future <em>response variable</em> while the green ones are meant to be
+<em>independent variables</em>):</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2089,10 +2090,9 @@ Oob_RMSE
 </tbody>
 </table>
 <p>Here again, you can see that imputation errors are, in this case,
-fairly negligible compared to the variable ranges of variation.
-Consequently, we deemed these imputations acceptable and used them for
-the subsequent analyses. Here is a summary of the same data AFTER
-imputation:</p>
+fairly negligible compared to variable variances. Consequently, these
+imputations were used for the subsequent analyses. Here is a summary of
+the same data AFTER imputation:</p>
 <pre><code>##    id_nestbox                site       coord_x          coord_y       
 ##  DIJ-071:  4   parc_colombiere :16   Min.   :852173   Min.   :6688863  
 ##  DIJ-072:  3   arquebuse       :13   1st Qu.:853716   1st Qu.:6692339  
@@ -2190,38 +2190,22 @@ imputation:</p>
 </div>
 <div id="data-exploration" class="section level1">
 <h1>3. Data exploration</h1>
-<p>Various aspects of our data (e.g. outliers, variables distribution,
-multicollinearity among predictors, homogeneity of variances,
-independence, potential interactions, multivariate relationships,
-linearity etc.) were explored and are presented in this document, mostly
-following Bolker (2007), Zuur <em>et al.</em> (2010), and Harrell
-(2015). However, as the response variables were of different nature
-(e.g. binary, continuous), they would be modelled using different types
-of models with varying assumptions:</p>
-<ul>
-<li>The <em>efficiency</em> and <em>high_eff</em> variables shared the
-same sub-dataset because we decided to analyse them using the same set
-of candidate <em>a priori</em> models. The former variable is a sort of
-<em>satisfaction score</em> estimated by the managers and can modelled
-as a percentage using <strong>beta regressions</strong> while the
-latter, which relates to cases of knotweed (near-)eradication, is a
-binary variable that should be modelled using some type of
-<strong>logistic regression</strong>.</li>
-<li>The other three response variables indicated the presence of
-knotweed regrowths at various key locations of the tarping set-ups, and
-should thus also be modelled using methods of the <em>logistic
-regression family</em>.</li>
-</ul>
+<p><strong>TO BE CONTINUED…!!!!</strong> Various aspects of our data
+(e.g. outliers, variables distribution, multicollinearity among
+predictors, homogeneity of variances, independence, potential
+interactions, multivariate relationships, linearity etc.) were explored
+and are presented in this document, mostly following <span class="citation">Bolker <em>et al.</em> (2009)</span>, <span class="citation">Zuur <em>et al.</em> (2010)</span>, and <span class="citation">Harrell (2015)</span>. However, as the response
+variables were of different nature (e.g. binary, continuous), they would
+be modelled using different types of models with varying
+assumptions:</p>
 <p>Naturally, most actual models assumptions were checked after model
 building and fitting. Our intention here was simply to improve our
 knowledge of the data and identify potentially problematic variables
 upstream. As our global dataset contained many potential predictors
-(<em>p</em> = 85), much effort was indeed directed toward reducing their
+(<em>p</em> = XX), much effort was indeed directed toward reducing their
 number and keeping only the most reliable and important ones relative to
 our hypotheses. In other words, we tried to reduce the dimensionality of
-the data.</p>
-<p>For the meaning of all variables, the reader is referred to Appendix
-§§§ *** §§§ !!!!!!<br />
+the data.<br />
 <br />
 </p>
 <hr />
@@ -2229,6 +2213,12 @@ the data.</p>
 <div id="xx.-references" class="section level1 unnumbered">
 <h1 class="unnumbered">XX. References</h1>
 <div id="refs" class="references csl-bib-body">
+<div id="ref-bolker2009" class="csl-entry">
+Bolker B.M., Brooks M.E., Clark C.J., <em>et al.</em> (2009)
+<span>‘Generalized linear mixed models: A practical guide for ecology
+and evolution’</span>, <em>Trends in Ecology &amp; Evolution</em>,
+24(3), pp. 127–135.
+</div>
 <div id="ref-graphab2021" class="csl-entry">
 Foltête J.-C., Vuidel G., Savary P., <em>et al.</em> (2021)
 <span>‘Graphab: <span>An</span> application for modeling and managing
@@ -2246,6 +2236,11 @@ Stekhoven D.J. &amp; Bühlmann P. (2011)
 <span>‘<span>MissForest</span>—non-parametric missing value imputation
 for mixed-type data’</span>, <em>Bioinformatics</em>, 28(1), pp.
 112–118. Doi: <a href="https://doi.org/10.1093/bioinformatics/btr597">10.1093/bioinformatics/btr597</a>.
+</div>
+<div id="ref-zuur2010" class="csl-entry">
+Zuur A.F., Ieno E.N., &amp; Elphick C.S. (2010) <span>‘A protocol for
+data exploration to avoid common statistical problems’</span>,
+<em>Methods in Ecology and Evolution</em>, 1(1), pp. 3–14. Doi: <a href="https://doi.org/10.1111/j.2041-210X.2009.00001.x">10.1111/j.2041-210X.2009.00001.x</a>.
 </div>
 </div>
 </div>
