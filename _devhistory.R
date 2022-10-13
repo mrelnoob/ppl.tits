@@ -18,12 +18,63 @@
 
 
 
+
+
+# -------------------------------- #
+##### 0. Important R reminders #####
+# -------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+### * 0.1. Managing data in a R pckage -----------------------------------------
+
+# I'm used to creating custom folders to store my input and output data in my the R packages I build
+# (e.g. mydata/; output/text/), although these folders are not expected by R. I recently discovered
+# why and how it may be problematic when I tried to share my package with someone else for the first
+# time. Therefore, from now on, I'll try to respect the way R deals with data with regard to their
+# nature: e.g. R objects, CSV files, texts, etc.
+# Cf. https://r-pkgs.org/data.html#data
+
+
+
+# ---------------------------------------------------------------------------- #
+### * 0.1. NA handling ---------------------------------------------------------
+
+# Although it may seem strange, R doesn't handles NA as we could expect it. The use of "is.na()" or
+# "!is.na()" should be preferred over the use of classical equality operators "==" or "!=".
+# Cf. https://stackoverflow.com/questions/28857653/removing-na-observations-with-dplyrfilter
+
+
+
+# ---------------------------------------------------------------------------- #
+### * 0.2. Factor and character variables --------------------------------------
+
+# R is kind of a pain in the arse when it comes to dealing with categorical variables. Theoretically,
+# these are `character` objects but most R functions expect `factor` objects. So you have to frequently
+# juggle between those two types of data format and remember that a `factor` has `levels` and thus that
+# what you see on your screen is not how R handles categorical variables internally. So to modify a
+# `factor` object, you often have to convert it first into a `character` object first.
+# Cf. many of my custom functions.
+
+
+
+# ---------------------------------------------------------------------------- #
+### * 0.3. Package building, {targets} and RMarkdown ---------------------------
+
+# Although I managed to create a full project associating Package building, {targets} and RMarkdown
+# (cf. the present document), my way of doing it was not optimal. Next time, I should certainly take
+# the time to learn to do it properly to avoid many mistakes and save time.
+# Cf. https://books.ropensci.org/targets/
+
+
+
+
+
 # ------------------------- #
-##### 0. Project set up #####
+##### 1. Project set up #####
 # ------------------------- #
 
 # ---------------------------------------------------------------------------- #
-### * 0.1. Package project creation --------------------------------------------
+### * 1.1. Package project creation --------------------------------------------
 
 # First, I created a package named "ppl.tits" (.Rproj) with the following command:
 # usethis::create_package("d:/fmartin/Mes documents/projects/pubprivlands/analyses/ppl.tits")
@@ -44,7 +95,7 @@
 
 
 # ---------------------------------------------------------------------------- #
-### * 0.2. Ignoring and keeping track of changes -------------------------------
+### * 1.2. Ignoring and keeping track of changes -------------------------------
 
 # First thing first, I will tell R to ignore my _devhistory.R file as it's only for me!
 # As this file is not part of a typical package structure, I need to tell R to ignore it
@@ -109,7 +160,7 @@ system2("git push -u origin master") # Same (CLI).
 
 
 # ---------------------------------------------------------------------------- #
-### * 0.3. Further basic configurations ----------------------------------------
+### * 1.3. Further basic configurations ----------------------------------------
 
 # Before I go any further, I will edit some information about my package using the DESCRIPTION file.
 usethis::edit_file("DESCRIPTION")
@@ -126,11 +177,11 @@ usethis::use_git(message = ":bulb: Update documentation")
 
 
 # ----------------------------------- #
-##### 1. Project structure set-up #####
+##### 2. Project structure set-up #####
 # ----------------------------------- #
 
 # ---------------------------------------------------------------------------- #
-### * 1.1. Folders architecture ------------------------------------------------
+### * 2.1. Folders architecture ------------------------------------------------
 
 # Before writing my first functions to import and clean my data, I need to add the said data files
 # in the project folder. So I create a "mydata" folder and copy-paste my data in it (manually):
@@ -155,7 +206,7 @@ usethis::use_build_ignore("spatial_layers/")
 
 
 # ---------------------------------------------------------------------------- #
-### * 1.2. Creating scripts for custom functions -------------------------------
+### * 2.2. Creating scripts for custom functions -------------------------------
 
 # To use pipes (i.e. %>%) everywhere in the package without explicitly loading the {magrittr}
 # package:
@@ -173,7 +224,7 @@ usethis::use_r("02_01_graphab_analyses")
 
 
 # ---------------------------------------------------------------------------- #
-### * 1.3. Creating reports (RMarkdown) ----------------------------------------
+### * 2.3. Creating reports (RMarkdown) ----------------------------------------
 
 file.create(... = "output/texts/ppl.tits.exploration_report.Rmd")
 file.create(... = "output/texts/ppl.tits.intermediate_analyses_report.Rmd") # Using this command,
@@ -184,7 +235,7 @@ file.create(... = "output/texts/ppl.tits.intermediate_analyses_report.Rmd") # Us
 
 
 
-# ** 1.3.1. To manage citations and bibliography ----
+# ** 2.3.1. To manage citations and bibliography ----
 
 # To manage citations and get an automatic bibliography with RMarkdown, I have to follow these
 # steps:
@@ -210,11 +261,11 @@ usethis::use_build_ignore("ppl.tits_biblio.bib")
 
 
 # --------------------------------------- #
-##### 2. Package content and creation #####
+##### 3. Package content and creation #####
 # --------------------------------------- #
 
 # ---------------------------------------------------------------------------- #
-### * 2.1. Writing functions for the package -----------------------------------
+### * 3.1. Writing functions for the package -----------------------------------
 
 # Now I can write my functions in the R files (= populating my R files) while keeping in mind
 # that, for EACH function I create:
@@ -251,14 +302,14 @@ usethis::use_git(message = ":white_check_mark: Updated DESCRIPTION to add new pa
 
 
 # ---------------------------------------------------------------------------- #
-### * 2.2. Load and check the package ------------------------------------------
+### * 3.2. Load and check the package ------------------------------------------
 
 # The following lines are run iteratively every time a new function is created within
 # the package or every time a function is modified. This is the central part that loads,
 # inspects (i.e. run the R CMD check) and test my functions and my whole package!
 
 
-# ** 2.2.1. To load and document functions ----
+# ** 3.2.1. To load and document functions ----
 devtools::load_all() # Now, all functions in the R folder are available!
 # IMPORTANT NOTE: if you try to load (or check) your package while working on a new script to
 # create new functions (i.e. having unfinished functions in a R file), make sure to put your
@@ -270,7 +321,7 @@ usethis::use_git(message = ":pencil: Documented new function(s)")
 usethis::use_git(message = ":white_check_mark: Updated function(s)")
 
 
-# ** 2.2.2. To test functions ----
+# ** 3.2.2. To test functions ----
 # To test my functions, I could use the "testthat" package:
 #usethis::use_testthat()
 
@@ -280,7 +331,7 @@ usethis::use_git(message = ":white_check_mark: Updated function(s)")
 # NOTE: All tests files are stored in tests/testthat/ and their names must start with test-*
 
 
-#  ** 2.2.3. To check the package integrity ----
+#  ** 3.2.3. To check the package integrity ----
 devtools::check() # Ok!
 # IMPORTANT NOTE: I had a lot of PROBLEMS in my first attempts to create a loading function
 # because the dataset contained comments in French and English, with special characters and
@@ -290,21 +341,21 @@ devtools::check() # Ok!
 
 
 # ---------------------------------------------------------------------------- #
-### * 2.3. To install and version the package ----------------------------------
+### * 3.3. To install and version the package ----------------------------------
 
-# ** 2.3.1. Installing the package ----
+# ** 3.3.1. Installing the package ----
 devtools::install()
 usethis::use_git(message = ":metal: Installed updated functions!")
 # My package is now installed on my R so I can use its functions whenever I want.
 
 
-# ** 2.3.2. Set package versions ----
+# ** 3.3.2. Set package versions ----
 usethis::use_version(which = "minor") # Automatically updates my package version.
 usethis::use_news_md() # Creates a NEWS.md file, that I should maintain updated.
 usethis::use_git(message = ":package: Release v0.1.0")
 
 
-# ** 2.3.3. Add and update a README file ----
+# ** 3.3.3. Add and update a README file ----
 usethis::use_readme_rmd() # Creates a README.Rmd and adds it automatically to .Rbuildignore
 # (and opens it). After manually editing the file, I need to compile it into a .md document
 # (otherwise, GitHub and the CRAN won't be able to read and display it on their websites):
@@ -323,7 +374,7 @@ usethis::use_git(message = ":pencil: Edited README")
 
 
 # ---------------------------------------------- #
-##### 3. Pipeline programming with {targets} #####
+##### 4. Pipeline programming with {targets} #####
 # ---------------------------------------------- #
 
 # To ensure maximum reproducibility, help me organize my data processing, and avoid
@@ -356,7 +407,7 @@ usethis::use_git(message = ":pencil: Edited README")
 
 
 # ---------------------------------------------------------------------------- #
-### * 3.1. Setting-up the {targets} subproject ---------------------------------
+### * 4.1. Setting-up the {targets} subproject ---------------------------------
 
 # To create the {targets} master script file:
 file.create("_targets.R")
@@ -380,7 +431,7 @@ usethis::use_git_ignore("_targets/")
 
 
 # ---------------------------------------------------------------------------- #
-### * 3.2. Main {targets} functions --------------------------------------------
+### * 4.2. Main {targets} functions --------------------------------------------
 
 # To create a target:
 targets::tar_target()
@@ -399,7 +450,7 @@ targets::tar_visnetwork(targets_only = FALSE) # This argument enables the displa
 
 
 # ---------------------------------------------------------------------------- #
-### * 3.3. Literate programming with RMarkdown and {targets} -------------------
+### * 4.3. Literate programming with RMarkdown and {targets} -------------------
 
 # IMPORTANT NOTE: to ensure proper compatibility with {targets}, RMarkdown reports should be
 # lightweight. That means they should mostly include text and their chunks of code should be short
