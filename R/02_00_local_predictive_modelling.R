@@ -156,7 +156,7 @@ local_quality_model <- function(my_tdata = here::here("output", "tables", "ndata
 
   ##### To export the outputs
   # _______________________________
-  output <- list(rf4pm = pm.rf$forest,
+  output <- list(rf4pm = pm.rf,
                  r_squared.stab = rsq.plot,
                  var_importance.stab = var_imp.plot)
   return(output)
