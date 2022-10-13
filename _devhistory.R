@@ -61,7 +61,9 @@ usethis::use_data_raw()
 # section 8.2. of https://r-pkgs.org/data.html#data for more details (e.g. how to document data properly
 # with Roxygen2, how to include non-ACSII characters, etc.).
 # EXAMPLE for the {ppl.tits} package:
-ntits_clean <- ppl.tits::tdata_upD_final()$final_dataset
+ntits_clean <- ppl.tits::tdata_upD_final()$final_dataset # My R object.
+usethis::use_data(ntits_clean) # Creates data/ntits_clean.rda and modifies DESCRIPTION.
+usethis::use_r("data") # To create R/data.R to document my dataset!
 
 
 # ** 0.1.2. To store R objects for internal use ----
