@@ -86,7 +86,7 @@ usethis::use_data(internal_this, internal_that, internal = TRUE)
 # i.e. the need to specify the "LazyData" field is strictly about the exported data below data/.
 
 
-# ** 0.1.3. To store and export data in non-R format (e.g. .csv) ----
+# ** 0.1.3. To store and export data in non-R format (e.g. HTML files, .csv) ----
 
 # If you want to store data in some raw, non-R-specific form and make it available to the user, put it
 # in inst/extdata/. See section Section 8.4. of https://r-pkgs.org/data.html#data for more details.
@@ -94,6 +94,13 @@ usethis::use_data(internal_this, internal_that, internal = TRUE)
 # top-level directory, which is why they can’t have names that conflict with standard parts of an R
 # package, like R/ or DESCRIPTION . The files below inst/extdata/ in the source package will be
 # located below extdata/ in the corresponding installed package.
+# NOTE: The path to a package file found below extdata/ clearly depends on the local environment,
+# i.e. it depends on where installed packages live on that machine. The base function `system.file()`
+# can report the full path to files distributed with an R package. It can also be useful to list the
+# files distributed with an R package; e.g.:
+system.file("extdata", package = "readxl") |> list.files()
+system.file("extdata", "clippy.xlsx", package = "readxl")
+# But don't forget `here::here()` either!
 
 
 
