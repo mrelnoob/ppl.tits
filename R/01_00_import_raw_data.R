@@ -69,7 +69,19 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
   ### Data corrections__________________________________________________________#
   # To delete 'site' and only keep observations with a success evaluation:
   aaa %>% dplyr::select(-site) %>%
-    dplyr::filter(success != 'NA') -> xxx
+    dplyr::filter(!is.na(success)) -> xxx
+  # IMPORTANT NOTE: although "success != 'NA'" works, this is not the proper way to deal with NAs!
+  # From StackOverflow, I learned that:
+  # "The == operator does not treat NAs as you would expect it to. Think of NA as meaning
+  # "I don't know what's there". The correct answer to 3 > NA is obviously NA because we don't know if
+  # the missing value is larger than 3 or not. Well, it's the same for NA == NA. They are both missing
+  # values but the true values could be quite different, so the correct answer is "I don't know."
+  # R doesn't know what you are doing in your analysis, so instead of potentially introducing bugs that
+  # would later end up being published and embarrass you, it doesn't allow comparison operators to
+  # think NA is a value".
+  # CONSEQUENTLY, I should not use "blabla != 'NA'" either but instead use the is.na() function:
+  # e.g. "is.na(blabla) == FALSE" or "!is.na(blabla)"!
+
 
   # To correct the erroneous "bird_id" (i.e. 'BRFAIPM1120'):
   xxx$id_bird <- as.character(xxx$id_bird) # As R cannot tolerate adding new levels to a factor
@@ -113,18 +125,20 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
 
   # TO correct wrong id_ring values for the females of DIJ-133_2022 and DIJ-179_2020:
   xxx$id_ring <- as.character(xxx$id_ring) # Idem and same problem here!
+  xxx$mother_id <- as.character(xxx$mother_id)
   xxx %>%
     dplyr::mutate(
       id_ring = dplyr::case_when(
         id_ring != "8877950" | is.na(id_ring) == "TRUE" ~ id_ring,
         id_ring == "8877950" & year == "2022" ~ "8877590")) %>%
     dplyr::mutate(
-      id_ring = dplyr::case_when(
-        id_ring != "8381599" | is.na(id_ring) == "TRUE" ~ id_ring,
-        id_ring == "8381599" & year == "2020" ~ "8581599")) -> xxx
+      mother_id = dplyr::case_when(
+        mother_id != "8581599" | is.na(mother_id) == "TRUE" ~ mother_id,
+        mother_id == "8581599" & year == "2020" ~ "8381599")) -> xxx
   # NOTE: here, there is another bug as it doesn't work unless I specify observations without NA
   # while the exact same procedure work above for "father_id" which contains NA as well...
-  xxx$id_ring <- as.factor(xxx$id_ring) # Idem and same problem here!
+  xxx$id_ring <- as.factor(xxx$id_ring)
+  xxx$mother_id <- as.factor(xxx$mother_id)
 
   # To correct the gender/sex of the presumed father of DIJ-212_2022:
   xxx$sex <- as.character(xxx$sex) # Idem and same problem here!
@@ -133,14 +147,12 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
       sex = dplyr::case_when(
         id_ring != "8877107" | is.na(id_ring) == "TRUE" ~ sex,
         id_ring == "8877107" ~ "male")) -> xxx
-
-  xxx %>% dplyr::filter(id_ring == "8877107") -> a
-  xxx %>% dplyr::filter(id_ring != "8877107" | is.na(id_ring) == "TRUE")
   xxx$sex <- as.factor(xxx$sex)
 
   # To delete late reproduction events (i.e. for DIJ-175 in 2019 and DIJ-044 in 2022):
   xxx %>% dplyr::filter(date != "28/06/2022") %>%
-    dplyr::filter(laying_date != "09/05/2019") -> xxx
+    dplyr::filter(laying_date != "09/05/2019" | is.na(laying_date) == "TRUE") -> xxx
+  # NOTE: here again, there is this bug in how R handles negative selections when there are NAs!
 
   # To convert "adult_aggress" into numeric variables:
   xxx %>% dplyr::mutate(
