@@ -25,14 +25,75 @@
 # -------------------------------- #
 
 # ---------------------------------------------------------------------------- #
-### * 0.1. Managing data in a R pckage -----------------------------------------
+### * 0.1. Managing data in a R package ----------------------------------------
 
 # I'm used to creating custom folders to store my input and output data in my the R packages I build
 # (e.g. mydata/; output/text/), although these folders are not expected by R. I recently discovered
 # why and how it may be problematic when I tried to share my package with someone else for the first
 # time. Therefore, from now on, I'll try to respect the way R deals with data with regard to their
 # nature: e.g. R objects, CSV files, texts, etc.
-# Cf. https://r-pkgs.org/data.html#data
+# Cf. https://r-pkgs.org/data.html#data (the next sections are only a summary).
+
+
+# ** 0.1.1. To make R objects available to users ----
+
+# If you want to store R objects and make them available to the user, put them in `data/`. This is
+# the best place to put example datasets (keep in mind that it is for R objects only). See section
+# Section 8.2. of the above link for more details.
+# To do that, the easiest way is to use:
+usethis::use_data(some_R_object) # This snippet creates `data/some_R_object.rda`
+# inside the source of the package and adds "LazyData: true" in your DESCRIPTION. This makes the
+# `some_R_object` R object available to users of the package via `pkg::some_R_object` or, after
+# attaching the package with:
+library(pkg)
+some_R_object
+# NOTE: the `use_data()` function used above is a workflow code and SHOULD NOT appear in the R/ folder
+# (so I can keep it in _devhistory.R).
+
+# The way `some_R_object` is created (raw data import, wrangling etc.) should preferably be saved as
+# well, but not necessarily as true function in R/. If you don't want to source the code directly in R/,
+# you can use:
+usethis::use_data_raw()
+# This function creates the data-raw/ folder and lists it in .Rbuildignore. A typical script in
+# data-raw/ includes code to prepare a dataset and ends with a call to `use_data()`.
+# NOTE: Objects in data/ are always effectively exported (they use a slightly different mechanism
+# than NAMESPACE but the details are not important). This means that they must be documented! See
+# section 8.2. of https://r-pkgs.org/data.html#data for more details (e.g. how to document data properly
+# with Roxygen2, how to include non-ACSII characters, etc.).
+
+
+# ** 0.1.2. To store R objects for internal use ----
+
+# If you want to store R objects for your own use as a developer, put them in R/sysdata.rda. This is
+# the best place to put internal data that your functions need. See section Section 8.3. of
+# https://r-pkgs.org/data.html#data for more details.
+# Sometimes the objects you need are small and simple enough that you can define them with `c()` or
+# `data.frame()` in the code below R/, perhaps in R/data.R. Larger or more complicated objects should
+# be stored in your package’s internal data in R/sysdata.rda.
+# The easiest way to create R/sysdata.rda is to use:
+internal_this <- ...
+internal_that <- ...
+usethis::use_data(internal_this, internal_that, internal = TRUE)
+# Unlike data/, where you use one .rda file per exported data object, you store all of your internal
+# data objects together in the single file R/sysdata.rda.
+# Let’s imagine we are working on a package named “pkg”. The snippet above creates R/sysdata.rda
+# inside the source of the {pkg} package. This makes the objects `internal_this` and `internal_that`
+# available for use inside of the functions defined below R/ and in the tests. During interactive
+# development, `internal_this` and `internal_that` are available after a call to `devtools::load_all()`,
+# just like any internal function.
+# IMPORTANT NOTE: unlike data in data/, objects in R/sysdata.rda are not exported (they shouldn’t be),
+# so they don’t need to be documented. Also, usage of R/sysdata.rda has no impact on DESCRIPTION,
+# i.e. the need to specify the "LazyData" field is strictly about the exported data below data/.
+
+
+# ** 0.1.3. To store and export data in non-R format (e.g. .csv) ----
+
+# If you want to store data in some raw, non-R-specific form and make it available to the user, put it
+# in inst/extdata/. See section Section 8.4. of https://r-pkgs.org/data.html#data for more details.
+# When the package is installed, all files (and folders) in inst/ are moved up one level to the
+# top-level directory, which is why they can’t have names that conflict with standard parts of an R
+# package, like R/ or DESCRIPTION . The files below inst/extdata/ in the source package will be
+# located below extdata/ in the corresponding installed package.
 
 
 
