@@ -41,14 +41,14 @@
 # the best place to put example datasets (keep in mind that it is for R objects only). See section
 # Section 8.2. of the above link for more details.
 # To do that, the easiest way is to use:
-usethis::use_data(some_R_object) # This snippet creates `data/some_R_object.rda`
-# inside the source of the package and adds "LazyData: true" in your DESCRIPTION. This makes the
-# `some_R_object` R object available to users of the package via `pkg::some_R_object` or, after
-# attaching the package with:
+usethis::use_data(some_R_object)
+# This snippet creates `data/some_R_object.rda` inside the source of the package and adds
+# "LazyData: true" in your DESCRIPTION. This makes the `some_R_object` R object available to users of
+# the package via `pkg::some_R_object` or, after attaching the package with:
 library(pkg)
 some_R_object
 # NOTE: the `use_data()` function used above is a workflow code and SHOULD NOT appear in the R/ folder
-# (so I can keep it in _devhistory.R).
+# (so I can keep it in _devhistory.R). See below for an example with my own package data!
 
 # The way `some_R_object` is created (raw data import, wrangling etc.) should preferably be saved as
 # well, but not necessarily as true function in R/. If you don't want to source the code directly in R/,
@@ -60,6 +60,8 @@ usethis::use_data_raw()
 # than NAMESPACE but the details are not important). This means that they must be documented! See
 # section 8.2. of https://r-pkgs.org/data.html#data for more details (e.g. how to document data properly
 # with Roxygen2, how to include non-ACSII characters, etc.).
+# EXAMPLE for the {ppl.tits} package:
+ntits_clean <- ppl.tits::tdata_upD_final()$final_dataset
 
 
 # ** 0.1.2. To store R objects for internal use ----
