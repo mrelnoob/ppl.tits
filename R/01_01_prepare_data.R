@@ -145,6 +145,9 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
   ##### Attribute ID to nest_years and improve formatting
   # _____________________________________________________
 
+  ### Setting the seed for random number generations____________________________#
+  set.seed(93)
+
   ### Assigning temp_stations to each observation and improving dates format____#
   loco <- readr::read_csv2(myboxtemp_data, col_names = TRUE, na = "NA",
                            col_types = readr::cols(id_nestbox = readr::col_factor(),
@@ -618,6 +621,9 @@ tdata_upD_parcond <- function(my_tdata = here::here("output", "tables", "ndata_r
 
   ##### Data preparation
   # ____________________
+
+  ### Setting the seed for random number generations____________________________#
+  set.seed(43)
 
   ### Import data files_________________________________________________________#
   rtits_original <- ppl.tits::import_raw_tits_data()
