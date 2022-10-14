@@ -64,6 +64,9 @@ usethis::use_data_raw()
 ntits_clean <- ppl.tits::tdata_upD_final()$final_dataset # My R object.
 usethis::use_data(ntits_clean) # Creates data/ntits_clean.rda and modifies DESCRIPTION.
 usethis::use_r("data") # To create R/data.R to document my dataset!
+# IMPORTANT NOTE: as this is a workflow code and is thus "off-package", it should be manually updated
+# as it won't be automatically by running the package's functions or the {targets} pipeline (see
+# chapter 4. below).
 
 
 # ** 0.1.2. To store R objects for internal use ----
@@ -482,11 +485,12 @@ usethis::use_git(message = ":pencil: Edited README")
 ### * 4.1. Setting-up the {targets} subproject ---------------------------------
 
 # To create the {targets} master script file:
-file.create("_targets.R")
-# This is the "master script", where every targets (goal) of the project is defined. It
+file.create("_targets.R") # Alternatively, I can use:
+targets::use_targets() # It will create the _targets.R file with helpful comments in it.
+# NOTE: This is the "master script", where every targets (goal) of the project is defined. It
 # should thus be UPDATED every time I progress in my analysis workflow and make a new
 # achievement (e.g. producing new results, new data tables, new figures, etc.).
-# To know how to specify the workflow, please refer to this file, to section 3.2. below,
+# To know how to specify the workflow, please refer to this file, to section 4.2. below,
 # and to online resources!
 
 # To tell devtools to ignore what {targets} does:
