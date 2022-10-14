@@ -9,9 +9,15 @@
 
 A data frame (tibble) with 406 rows and 47 columns. Here's
 \describe{
-\item{\strong{id_nestbox}}{The nestbox ID (categorical).}
-\item{iso2, iso3}{2 & 3 letter ISO country codes}
-\item{year}{Year}
+\item{\strong{id_nestbox}}{Categorical -- The nestbox ID.}
+\item{\strong{site}}{Categorical -- The name of the site where the nestbox is located.}
+\item{\strong{coord_x}}{Continuous -- The longitudinal coordinates of the nestbox location (Lambert-93
+projection).}
+\item{\strong{coord_y}}{Continuous -- The latitudinal coordinates of the nestbox location (Lambert-93
+projection).}
+\item{\strong{year}}{Categorical -- The year of observation (2019 to 2022).}
+\item{\strong{species}}{Categorical -- The observed species (PM or CC).}
+\item{\strong{xxx}}{TO BE CONTINUED UPON PUBLICATION***...}
 ...
 }
 }
@@ -31,7 +37,7 @@ prepared all raw data linked to tits breeding or local environmental conditions.
 contains the \strong{response} variables related to tits' \emph{reproduction success} and
 \emph{physical condition}, as well as all potential \strong{explanatory} variables and \strong{covariates}
 that could be used for analysis, with the exception of the \emph{connectivity} metrics that will be
-computed by the second group of functions of the package, giving the \verb{final tits dataset} (LINK?***). \cr
+computed by a second group of functions, giving the \verb{final tits dataset} (LINK?***). \cr
 }
 \details{
 For further details regarding data acquisition, processing or metadata, readers are referred to: i) the

@@ -8,7 +8,7 @@
 #' contains the \strong{response} variables related to tits' \emph{reproduction success} and
 #' \emph{physical condition}, as well as all potential \strong{explanatory} variables and \strong{covariates}
 #' that could be used for analysis, with the exception of the \emph{connectivity} metrics that will be
-#' computed by the second group of functions of the package, giving the `final tits dataset` (LINK?***). \cr
+#' computed by a second group of functions, giving the `final tits dataset` (LINK?***). \cr
 #'
 #' For further details regarding data acquisition, processing or metadata, readers are referred to: i) the
 #' documentation of the `{ppl.tits}` package functions and related reports (cf. the package's
@@ -18,9 +18,15 @@
 #' @format ## `ntits_clean`
 #' A data frame (tibble) with 406 rows and 47 columns. Here's
 #' \describe{
-#'   \item{\strong{id_nestbox}}{The nestbox ID (categorical).}
-#'   \item{iso2, iso3}{2 & 3 letter ISO country codes}
-#'   \item{year}{Year}
+#'   \item{\strong{id_nestbox}}{Categorical -- The nestbox ID.}
+#'   \item{\strong{site}}{Categorical -- The name of the site where the nestbox is located.}
+#'   \item{\strong{coord_x}}{Continuous -- The longitudinal coordinates of the nestbox location (Lambert-93
+#'   projection).}
+#'   \item{\strong{coord_y}}{Continuous -- The latitudinal coordinates of the nestbox location (Lambert-93
+#'   projection).}
+#'   \item{\strong{year}}{Categorical -- The year of observation (2019 to 2022).}
+#'   \item{\strong{species}}{Categorical -- The observed species (PM or CC).}
+#'   \item{\strong{xxx}}{TO BE CONTINUED UPON PUBLICATION***...}
 #'   ...
 #' }
 #' @source <https://github.com/mrelnoob/ppl.tits>
