@@ -43,10 +43,11 @@ list(
 
 
 
-  ##### All targets related to "internal" input files (including export)
-  # ____________________________________________________________________
+  ##### All targets related to "internal" input files (including export and use)
+  # ____________________________________________________________________________
   targets::tar_target(watch_ntits_clean, export_ndata_clean(my_clean_data = tdata_clean),
                       format = "file"),
+  targets::tar_target(get_ntits_clean, read_from_path(mypath = watch_ntits_clean)),
 
 
 

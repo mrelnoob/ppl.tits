@@ -54,7 +54,7 @@ This document outlines all the important data preparation and exploration steps 
 ```{r data import, include=FALSE}
 library(ppl.tits) # To be able to use pipes.
 tits_priorimp <- targets::tar_read(pimp_tdata)
-tits <- targets::tar_read(clean_tdata)
+tits <- targets::tar_read(get_ntits_clean)
 pm_imp_error <- targets::tar_read(imp_ooberror_pm)
 cc_imp_error <- targets::tar_read(imp_ooberror_cc)
 # As you can see, I import my data using 'targets'! If you are reading this report and don't know what it is or how I created and stored them, you should read the README or the _devhistory.R files available at https://github.com/mrelnoob/ppl.tits. 
