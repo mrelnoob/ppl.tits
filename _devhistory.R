@@ -53,7 +53,7 @@ some_R_object
 # The way `some_R_object` is created (raw data import, wrangling etc.) should preferably be saved as
 # well, but not necessarily as true function in R/. If you don't want to source the code directly in R/,
 # you can use:
-usethis::use_data_raw()
+usethis::use_data_raw("to_make_my_R_object")
 # This function creates the data-raw/ folder and lists it in .Rbuildignore. A typical script in
 # data-raw/ includes code to prepare a dataset and ends with a call to `use_data()`.
 # NOTE: Objects in data/ are always effectively exported (they use a slightly different mechanism
