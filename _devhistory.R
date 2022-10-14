@@ -48,7 +48,7 @@ usethis::use_data(some_R_object)
 library(pkg)
 some_R_object
 # NOTE: the `use_data()` function used above is a workflow code and SHOULD NOT appear in the R/ folder
-# (so I can keep it in _devhistory.R). See below for an example with my own package data!
+# (so I can keep it in _devhistory.R, or see below as well as the R files in the data-raw/ folder).
 
 # The way `some_R_object` is created (raw data import, wrangling etc.) should preferably be saved as
 # well, but not necessarily as true function in R/. If you don't want to source the code directly in R/,
@@ -61,8 +61,8 @@ usethis::use_data_raw()
 # section 8.2. of https://r-pkgs.org/data.html#data for more details (e.g. how to document data properly
 # with Roxygen2, how to include non-ACSII characters, etc.).
 # EXAMPLE for the {ppl.tits} package:
-ntits_clean <- ppl.tits::tdata_upD_final()$final_dataset # My R object.
-usethis::use_data(ntits_clean) # Creates data/ntits_clean.rda and modifies DESCRIPTION.
+ntits_clean <- ppl.tits::tdata_upD_final()$clean_dataset # My R object.
+usethis::use_data(ntits_clean, overwrite = TRUE) # Creates data/ntits_clean.rda and modifies DESCRIPTION.
 usethis::use_r("data") # To create R/data.R to document my dataset!
 # IMPORTANT NOTE: as this is a workflow code and is thus "off-package", it should be manually updated
 # as it won't be automatically by running the package's functions or the {targets} pipeline (see
@@ -80,7 +80,8 @@ usethis::use_r("data") # To create R/data.R to document my dataset!
 # The easiest way to create R/sysdata.rda is to use:
 internal_this <- ...
 internal_that <- ...
-usethis::use_data(internal_this, internal_that, internal = TRUE)
+usethis::use_data(internal_this, internal_that, internal = TRUE) # The documentation of `use_data()`
+# is also useful here.
 # Unlike data/, where you use one .rda file per exported data object, you store all of your internal
 # data objects together in the single file R/sysdata.rda.
 # Let’s imagine we are working on a package named “pkg”. The snippet above creates R/sysdata.rda
