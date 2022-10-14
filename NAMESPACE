@@ -2,6 +2,7 @@
 
 export("%>%")
 export(aggreg_by_nest)
+export(export_ndata_clean)
 export(export_nestling_aggreg)
 export(import_raw_tits_data)
 export(local_quality_model)
@@ -50,3 +51,4 @@ importFrom(stats,sd)
 importFrom(stringr,str_detect)
 importFrom(tidyr,separate)
 importFrom(tidyr,unite)
+importFrom(usethis,use_data)
