@@ -43,9 +43,10 @@ list(
 
 
 
-  ##### All targets related to "internal" input files
-  # _________________________________________________
-  # targets::tar_target(),
+  ##### All targets related to "internal" input files (including export)
+  # ____________________________________________________________________
+  targets::tar_target(watch_ntits_clean, export_ndata_clean(my_clean_data = tdata_clean),
+                      format = "file"),
 
 
 
@@ -59,8 +60,6 @@ list(
   ### Targets for the data preparation stage____________________________________#
   # Read the raw data and return a data.frame:
   targets::tar_target(raw_tits, import_raw_tits_data(mypath = raw_data_file)),
-  # Exporting the cleaned nestling dataset:
-  targets::tar_target(clean_tdata_export, export_ndata_clean(my_clean_data = tdata_clean)),
   # Creating the prior imputation nestling dataset:
   targets::tar_target(pimp_tdata, tdata_upD_final(my_tdata = tdata_parcond)$priorimp_dataset),
   # Producing the OOB imputation error table for PM:
