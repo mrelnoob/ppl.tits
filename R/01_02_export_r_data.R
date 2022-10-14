@@ -58,3 +58,29 @@ export_ndata_clean <- function(my_clean_data = here::here("output", "tables", "n
 }
 
 
+
+
+
+### ________________________________________
+#' Read stored RData objects from their path
+#'
+#' @description FOR INTERNAL USE ONLY. DO NOT RUN.
+#' @param mypath Path to the name of the stored data (created by
+#' \code{\link[base:save]{save}}).
+#'
+#' @return The stored data (exactly like `pkg::stored_data` would).
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # read_from_path(mypath = path_to_package_data)
+#' }
+read_from_path <- function(mypath){
+
+  envir <- environment()
+  data_name <- load(file = mypath, envir = envir)
+  get(data_name)
+
+  # To be fair, I stole this function from: https://github.com/ropensci/targets/discussions/598
+}
+
