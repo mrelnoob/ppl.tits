@@ -47,8 +47,11 @@ usethis::use_data(some_R_object)
 # the package via `pkg::some_R_object` or, after attaching the package with:
 library(pkg)
 some_R_object
-# NOTE: the `use_data()` function used above is a workflow code and SHOULD NOT appear in the R/ folder
-# (so I can keep it in _devhistory.R, or see below as well as the R files in the data-raw/ folder).
+# NOTE: the `use_data()` function used above is a workflow code and, theoretically, SHOULD NOT appear
+# in the R/ folder (it should be kept somewhere else: e.g. _devhistory.R, or in the R files in the
+# data-raw/ folder as shown below). HOWEVER, as I want to use it with my {targets} pipeline (see
+# Chapter 4. if you do not know what I mean), I will create custom functions to export and update
+# my exported datasets and call these functions in my _targets.R pipeline!
 
 # The way `some_R_object` is created (raw data import, wrangling etc.) should preferably be saved as
 # well, but not necessarily as true function in R/. If you don't want to source the code directly in R/,
@@ -57,16 +60,10 @@ usethis::use_data_raw("to_make_my_R_object")
 # This function creates the data-raw/ folder and lists it in .Rbuildignore. A typical script in
 # data-raw/ includes code to prepare a dataset and ends with a call to `use_data()`.
 # NOTE: Objects in data/ are always effectively exported (they use a slightly different mechanism
-# than NAMESPACE but the details are not important). This means that they must be documented! See
-# section 8.2. of https://r-pkgs.org/data.html#data for more details (e.g. how to document data properly
-# with Roxygen2, how to include non-ACSII characters, etc.).
-# EXAMPLE for the {ppl.tits} package:
-ntits_clean <- ppl.tits::tdata_upD_final()$clean_dataset # My R object.
-usethis::use_data(ntits_clean, overwrite = TRUE) # Creates data/ntits_clean.rda and modifies DESCRIPTION.
-usethis::use_r("data") # To create R/data.R to document my dataset!
-# IMPORTANT NOTE: as this is a workflow code and is thus "off-package", it should be manually updated
-# as it won't be automatically by running the package's functions or the {targets} pipeline (see
-# chapter 4. below).
+# than NAMESPACE but the details are not important). This means that they must be documented!
+usethis::use_r("data") # To create R/data.R to document my dataset! See section 8.2. of
+# https://r-pkgs.org/data.html#data for more details (e.g. how to document data properly with
+# Roxygen2, how to include non-ACSII characters, etc.).
 
 
 # ** 0.1.2. To store R objects for internal use ----
@@ -294,6 +291,7 @@ usethis::use_r("01_00_import_raw_data") # Automatically places the R file in the
 # RStudio may sometimes put other things in it, so it is a good idea to go and see once in
 # a while.
 usethis::use_r("01_01_prepare_data")
+usethis::use_r("01_02_export_r_data")
 usethis::use_r("02_00_local_predictive_modelling")
 usethis::use_r("02_01_graphab_analyses")
 
