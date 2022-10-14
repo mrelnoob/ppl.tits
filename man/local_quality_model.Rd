@@ -5,7 +5,7 @@
 \title{Build a predictive model of local habitat quality}
 \usage{
 local_quality_model(
-  my_tdata = here::here("output", "tables", "ndata_final.csv")
+  my_tdata = here::here("output", "tables", "ndata_clean.csv")
 )
 }
 \arguments{

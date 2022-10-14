@@ -51,8 +51,8 @@ list(
   ### Targets for the data preparation stage____________________________________#
   # Read the raw data and return a data.frame:
   targets::tar_target(raw_tits, import_raw_tits_data(mypath = raw_data_file)),
-  # Creating the final nestling dataset:
-  targets::tar_target(final_tdata, tdata_upD_final(my_tdata = tdata_parcond)$final_dataset),
+  # Creating the cleaned nestling dataset:
+  targets::tar_target(clean_tdata, tdata_upD_final(my_tdata = tdata_parcond)$clean_dataset),
   # Creating the prior imputation nestling dataset:
   targets::tar_target(pimp_tdata, tdata_upD_final(my_tdata = tdata_parcond)$priorimp_dataset),
   # Producing the OOB imputation error table for PM:
@@ -64,11 +64,11 @@ list(
 
   ### Targets for the intermediate analyses stage (RF, Graphab, etc.)___________#
   # Export the Random Forest from the local model for Parus major (PM):
-  targets::tar_target(local_RF, local_quality_model(my_tdata = tdata_final)$rf4pm),
+  targets::tar_target(local_RF, local_quality_model(my_tdata = tdata_clean)$rf4pm),
   # Export the R2 stability plot from the local RF model:
-  targets::tar_target(RF_r2plot, local_quality_model(my_tdata = tdata_final)$r_squared.stab),
+  targets::tar_target(RF_r2plot, local_quality_model(my_tdata = tdata_clean)$r_squared.stab),
   # Export the variable importance stability plot from the local RF model:
-  targets::tar_target(RF_importanceplot, local_quality_model(my_tdata = tdata_final)$var_importance.stab),
+  targets::tar_target(RF_importanceplot, local_quality_model(my_tdata = tdata_clean)$var_importance.stab),
 
 
 
@@ -93,7 +93,7 @@ list(
   targets::tar_target(tdata_parcond, tdata_upD_parcond(
     my_tdata = tdata_rawiv)$path, format = "file"),
   # Produce the fourth tits data update (imputing missing values):
-  targets::tar_target(tdata_final, tdata_upD_final(
+  targets::tar_target(tdata_clean, tdata_upD_final(
     my_tdata = tdata_parcond)$path, format = "file"),
 
 

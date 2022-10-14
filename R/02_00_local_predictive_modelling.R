@@ -71,7 +71,7 @@
 #' ppl.tits::local_quality_model()$var_importance.stab # To generate the variable importance
 #' # stability plot
 #' }
-local_quality_model <- function(my_tdata = here::here("output", "tables", "ndata_final.csv")){
+local_quality_model <- function(my_tdata = here::here("output", "tables", "ndata_clean.csv")){
 
   ##### Data preparation
   # ____________________

@@ -37,7 +37,8 @@ prepared all raw data linked to tits breeding or local environmental conditions.
 contains the \strong{response} variables related to tits' \emph{reproduction success} and
 \emph{physical condition}, as well as all potential \strong{explanatory} variables and \strong{covariates}
 that could be used for analysis, with the exception of the \emph{connectivity} metrics that will be
-computed by a second group of functions, giving the \verb{final tits dataset} (LINK?***). \cr
+computed by a second group of functions, giving the "final" tits dataset (\code{ndata_complete}; LINK when
+ready?***). \cr
 }
 \details{
 For further details regarding data acquisition, processing or metadata, readers are referred to: i) the

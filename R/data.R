@@ -8,7 +8,8 @@
 #' contains the \strong{response} variables related to tits' \emph{reproduction success} and
 #' \emph{physical condition}, as well as all potential \strong{explanatory} variables and \strong{covariates}
 #' that could be used for analysis, with the exception of the \emph{connectivity} metrics that will be
-#' computed by a second group of functions, giving the `final tits dataset` (LINK?***). \cr
+#' computed by a second group of functions, giving the "final" tits dataset (`ndata_complete`; LINK when
+#' ready?***). \cr
 #'
 #' For further details regarding data acquisition, processing or metadata, readers are referred to: i) the
 #' documentation of the `{ppl.tits}` package functions and related reports (cf. the package's

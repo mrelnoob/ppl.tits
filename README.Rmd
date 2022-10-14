@@ -43,7 +43,7 @@ If you want to access the **raw** datasets used in this package, you have to dow
 To load the latest version of the **cleaned dataset** directly in your `R` session, you need to call the `tdata_upD_final()` function as in:
 
 ```{r data access example}
-tits_data <- ppl.tits::tdata_upD_final()$final_dataset
+tits_data <- ppl.tits::tdata_upD_final()$clean_dataset
 ```
 
 For access to other datasets (e.g. raw data, working datasets), please refer to the functions documentation pages:
