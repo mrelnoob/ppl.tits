@@ -7,14 +7,15 @@
 import_raw_tits_data(mypath = here::here("mydata", "ppl_dijon_tits_data.csv"))
 }
 \arguments{
-\item{mypath}{The absolute path to the raw .csv file.}
+\item{mypath}{The absolute path to the raw data .csv file.}
 }
 \value{
-A tibble (i.e. a kind of improved data.frame). For further information on tibbles, please refer to
-the \code{tidyverse} or \link[readr]{readr} documentation.
+The path to \code{raw_tits_data}, an exported tibble (i.e. a kind of improved data.frame) of
+the raw tits data. For further information on tibbles, please refer to the \code{tidyverse} or
+\link[readr]{readr} documentation.
 }
 \description{
-Imports ONLY the raw dataset for the "tits" part of the PubPrivLands project, and drops
+Imports the raw dataset for the "tits" part of the PubPrivLands project, and drops
 lines with no information on 'success' as well as one useless column. It also correct a few mistakes
 and deletes two late reproduction events that would otherwise bias the analyses. \cr To avoid errors,
 if new data are added using this function, they should be formatted

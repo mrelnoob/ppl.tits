@@ -1,17 +1,23 @@
+# ---------------------------------------------------------------------------------- #
+##### Functions to import raw datasets (.csv) and export tables (.rda) available #####
+#####                  for the users of the {ppl.tits} package                   #####
+# ---------------------------------------------------------------------------------- #
 
+### __________________________
 #' Import the raw tits dataset
 #'
-#' Imports ONLY the raw dataset for the "tits" part of the PubPrivLands project, and drops
+#' Imports the raw dataset for the "tits" part of the PubPrivLands project, and drops
 #' lines with no information on 'success' as well as one useless column. It also correct a few mistakes
 #' and deletes two late reproduction events that would otherwise bias the analyses. \cr To avoid errors,
 #' if new data are added using this function, they should be formatted
 #' according to the first table I tailored this function for (i.e. same columns, no special characters, no
 #' spaces, etc.; the only tolerated differences may be different rows and cell values)!
 #'
-#' @param mypath The absolute path to the raw .csv file.
+#' @param mypath The absolute path to the raw data .csv file.
 #'
-#' @return A tibble (i.e. a kind of improved data.frame). For further information on tibbles, please refer to
-#' the `tidyverse` or \link[readr]{readr} documentation.
+#' @return The path to `raw_tits_data`, an exported tibble (i.e. a kind of improved data.frame) of
+#' the raw tits data. For further information on tibbles, please refer to the `tidyverse` or
+#' \link[readr]{readr} documentation.
 #' @export
 #'
 #' @importFrom readr read_csv2
@@ -23,6 +29,7 @@
 #' @importFrom dplyr filter
 #' @importFrom dplyr case_when
 #' @importFrom dplyr mutate
+#' @importFrom usethis use_data
 #'
 #' @examples
 #' \dontrun{
@@ -170,7 +177,18 @@ import_raw_tits_data <- function(mypath = here::here("mydata", "ppl_dijon_tits_d
   # then the variable called "myvar" should either be globally defined or set to NULL, otherwise
   # you'll get warnings when you'll build your package).
 
-  return(xxx)
+
+
+
+
+  ##### To export the updated table
+  # _______________________________
+  raw_tits_data <- xxx
+
+  usethis::use_data(raw_tits_data, overwrite = TRUE) # Creates/updates data/raw_tits_data.rda and, the
+  # first time it is run, modifies the DESCRIPTION file to add `LazyData: true` and `Depends:
+  # R (>= 2.10)`!
+  return(here::here("data", "raw_tits_data.rda"))
 
 }
 
