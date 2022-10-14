@@ -99,6 +99,8 @@ usethis::use_data(internal_this, internal_that, internal = TRUE) # The documenta
 # top-level directory, which is why they can’t have names that conflict with standard parts of an R
 # package, like R/ or DESCRIPTION . The files below inst/extdata/ in the source package will be
 # located below extdata/ in the corresponding installed package.
+dir.create("inst")
+dir.create("inst/extdata")
 # NOTE: The path to a package file found below extdata/ clearly depends on the local environment,
 # i.e. it depends on where installed packages live on that machine. The base function `system.file()`
 # can report the full path to files distributed with an R package. It can also be useful to list the
