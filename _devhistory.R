@@ -369,6 +369,7 @@ usethis::use_package("assertthat")
 usethis::use_package("missForest")
 usethis::use_package("randomForest")
 usethis::use_package("ggplot2")
+usethis::use_package("usethis")
 # REMINDER: The NAMESPACE controls what happens when my package is loaded but not when it's
 # installed. This is the role of the DESCRIPTION file!
 usethis::use_git(message = ":white_check_mark: Updated DESCRIPTION to add new packages")
