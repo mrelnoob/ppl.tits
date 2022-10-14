@@ -52,7 +52,7 @@ export_ndata_clean <- function(my_clean_data = here::here("output", "tables", "n
   # first time it is run, modifies the DESCRIPTION file to add `LazyData: true` and `Depends:
   # R (>= 2.10)`!
 
-  return(here::here("data", "ntits_clean.csv"))
+  return(here::here("data", "ntits_clean.rda"))
   # IMPORTANT NOTE:
   # An alternative function might be found here: https://github.com/ropensci/targets/discussions/588
 }
