@@ -5,7 +5,7 @@
 ### ______________________________________________________
 #' Exports the `ntits_clean` dataset to the "data/" folder
 #'
-#' @details FOR INTERNAL USE ONLY. DO NOT RUN.
+#' @description FOR INTERNAL USE ONLY. DO NOT RUN.
 #' @param my_clean_data The path to "ndata_clean.csv".
 #'
 #' @return The path to "data/ndata_clean.rda".
