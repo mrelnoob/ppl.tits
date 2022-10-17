@@ -38,7 +38,20 @@ devtools::install_github("mrelnoob/ppl.tits") # To install the {ppl.tits} packag
 
 ## Where can I find the data?
 
-If you want to access the **raw** datasets used in this package, you have to download them from the *input_raw_data/* folder on the [{ppl.tits} project Github page](https://github.com/mrelnoob/ppl.tits). You can also contact me directly through: francois-marie.martin@univ-fcomte.fr   
+The **raw tits observations** are an exported dataset (named `raw_tits_data`) of this package and can be directly loaded in an `R` session with the following call:
+
+```{r rawdata access example}
+library(ppl.tits)
+tits_data <- raw_tits_data
+# Or, without loading the package:
+tits_data <- ppl.tits::raw_tits_data
+
+# See also:
+?raw_tits_data # Currently unavailable (***).
+```
+
+If you want to access the other **raw** datasets used in this package (e.g. temperature records, environmental variable computations), you have to download them from the *input_raw_data/* folder on the [{ppl.tits} project Github page](https://github.com/mrelnoob/ppl.tits) by clicking the green **Code** button (and then **Download ZIP**) on the top-right corner of the page.  
+You can also contact me directly through: francois-marie.martin@univ-fcomte.fr   
 
 The latest version of the **cleaned nestling dataset** (named `ntits_clean`) is an exported dataset of this package and can be directly loaded in an `R` session with the following call:
 
@@ -48,8 +61,8 @@ tits_data <- ntits_clean
 # Or, without loading the package:
 tits_data <- ppl.tits::ntits_clean
 
-# See also:
-?ntits_clean
+# For a description of these data, see:
+?ntits_clean # Currently incomplete (***documentation in progress).
 ```
 
 For access to other datasets (e.g. raw data, working datasets), please refer to the functions documentation pages:
