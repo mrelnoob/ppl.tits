@@ -1,8 +1,8 @@
-# -------------------------------- #
-# -------------------------------- #
-##### DEV_HISTORY FOR ppl.tits #####
-# -------------------------------- #
-# -------------------------------- #
+# ---------------------------------- #
+# ---------------------------------- #
+##### DEV_HISTORY FOR {ppl.tits} #####
+# ---------------------------------- #
+# ---------------------------------- #
 
 # NOTE: all comments in this file or in this project are first meant for future me and, second,
 # for other so they can reproduce my work. That is why there are so many of them, so anyone can
@@ -23,93 +23,6 @@
 # -------------------------------- #
 ##### 0. Important R reminders #####
 # -------------------------------- #
-
-# ---------------------------------------------------------------------------- #
-### * 0.1. Managing data in a R package ----------------------------------------
-
-# I'm used to creating custom folders to store my input and output data in my the R packages I build
-# (e.g. input_raw_data/; output/text/), although these folders are not expected by R. I recently
-# discovered why and how it may be problematic when I tried to share my package with someone else for
-# the first time. Therefore, from now on, I'll try to respect the way R deals with data with regard
-# to their nature: e.g. R objects, CSV files, texts, etc.
-# Cf. https://r-pkgs.org/data.html#data (the next sections are only a summary).
-
-
-# ** 0.1.1. To make R objects available to users ----
-
-# If you want to store R objects and make them available to the user, put them in `data/`. This is
-# the best place to put example datasets (keep in mind that it is for R objects only). See section
-# Section 8.2. of the above link for more details.
-# To do that, the easiest way is to use:
-usethis::use_data(some_R_object)
-# This snippet creates `data/some_R_object.rda` inside the source of the package and adds
-# "LazyData: true" in your DESCRIPTION. This makes the `some_R_object` R object available to users of
-# the package via `pkg::some_R_object` or, after attaching the package with:
-library(pkg)
-some_R_object
-# NOTE: the `use_data()` function used above is a workflow code and, theoretically, SHOULD NOT appear
-# in the R/ folder (it should be kept somewhere else: e.g. _devhistory.R, or in the R files in the
-# data-raw/ folder as shown below). HOWEVER, as I want to use it with my {targets} pipeline (see
-# Chapter 4. if you do not know what I mean), I will create custom functions to export and update
-# my exported datasets and call these functions in my _targets.R pipeline!
-
-# The way `some_R_object` is created (raw data import, wrangling etc.) should preferably be saved as
-# well, but not necessarily as true function in R/. If you don't want to source the code directly in R/,
-# you can use:
-usethis::use_data_raw("to_make_my_R_object")
-# This function creates the data-raw/ folder and lists it in .Rbuildignore. A typical script in
-# data-raw/ includes code to prepare a dataset and ends with a call to `use_data()`.
-# NOTE: Objects in data/ are always effectively exported (they use a slightly different mechanism
-# than NAMESPACE but the details are not important). This means that they must be documented!
-usethis::use_r("data") # To create R/data.R to document my dataset! See section 8.2. of
-# https://r-pkgs.org/data.html#data for more details (e.g. how to document data properly with
-# Roxygen2, how to include non-ACSII characters, etc.).
-
-
-# ** 0.1.2. To store R objects for internal use ----
-
-# If you want to store R objects for your own use as a developer, put them in R/sysdata.rda. This is
-# the best place to put internal data that your functions need. See section Section 8.3. of
-# https://r-pkgs.org/data.html#data for more details.
-# Sometimes the objects you need are small and simple enough that you can define them with `c()` or
-# `data.frame()` in the code below R/, perhaps in R/data.R. Larger or more complicated objects should
-# be stored in your package’s internal data in R/sysdata.rda.
-# The easiest way to create R/sysdata.rda is to use:
-internal_this <- ...
-internal_that <- ...
-usethis::use_data(internal_this, internal_that, internal = TRUE) # The documentation of `use_data()`
-# is also useful here.
-# Unlike data/, where you use one .rda file per exported data object, you store all of your internal
-# data objects together in the single file R/sysdata.rda.
-# Let’s imagine we are working on a package named “pkg”. The snippet above creates R/sysdata.rda
-# inside the source of the {pkg} package. This makes the objects `internal_this` and `internal_that`
-# available for use inside of the functions defined below R/ and in the tests. During interactive
-# development, `internal_this` and `internal_that` are available after a call to `devtools::load_all()`,
-# just like any internal function.
-# IMPORTANT NOTE: unlike data in data/, objects in R/sysdata.rda are not exported (they shouldn’t be),
-# so they don’t need to be documented. Also, usage of R/sysdata.rda has no impact on DESCRIPTION,
-# i.e. the need to specify the "LazyData" field is strictly about the exported data below data/.
-
-
-# ** 0.1.3. To store and export data in non-R format (e.g. HTML files, .csv) ----
-
-# If you want to store data in some raw, non-R-specific form and make it available to the user, put it
-# in inst/extdata/. See section Section 8.4. of https://r-pkgs.org/data.html#data for more details.
-# When the package is installed, all files (and folders) in inst/ are moved up one level to the
-# top-level directory, which is why they can’t have names that conflict with standard parts of an R
-# package, like R/ or DESCRIPTION . The files below inst/extdata/ in the source package will be
-# located below extdata/ in the corresponding installed package.
-dir.create("inst")
-dir.create("inst/extdata")
-# NOTE: The path to a package file found below extdata/ clearly depends on the local environment,
-# i.e. it depends on where installed packages live on that machine. The base function `system.file()`
-# can report the full path to files distributed with an R package. It can also be useful to list the
-# files distributed with an R package; e.g.:
-system.file("extdata", package = "readxl") |> list.files()
-system.file("extdata", "clippy.xlsx", package = "readxl")
-# But don't forget `here::here()` either!
-
-
 
 # ---------------------------------------------------------------------------- #
 ### * 0.1. NA handling ---------------------------------------------------------
@@ -167,17 +80,16 @@ system.file("extdata", "clippy.xlsx", package = "readxl")
 # from a GitHub repository, the workflow is different but some same steps will be required so
 # I encourage my future self to carefully review the steps of this workflow anyway.
 
-
-
-# ---------------------------------------------------------------------------- #
-### * 1.2. Ignoring and keeping track of changes -------------------------------
-
-# First thing first, I will tell R to ignore my _devhistory.R file as it's only for me!
 # As this file is not part of a typical package structure, I need to tell R to ignore it
 # when checking and installing the package:
 usethis::use_build_ignore("_devhistory.R")
 
-# Then, to keep track of all future changes and have a backup, I need to initiate a Git
+
+
+# ---------------------------------------------------------------------------- #
+### * 1.2. Keeping track of changes (Git) --------------------------------------
+
+# To keep track of all future changes and have a backup, I need to initiate a Git
 # version control and link the 'ppl.tits' package with my GitHub account. In this precise case,
 # I'm connecting my 'ppl.tits' project AFTER its creation, so I'm following the 'GitHub-last'
 # procedure:
@@ -260,14 +172,18 @@ usethis::use_git(message = ":bulb: Update documentation")
 
 # Before writing my first functions to import and clean my data, I need to add the said data files
 # in the project folder. So I create a "input_raw_data" folder and copy-paste my data in it (manually):
-dir.create("input_raw_data")
+dir.create("input_raw_data") # As explained below, note that it is not the best way to create a package
+# if the functions are to be exported in the end (cf. section 3.1.)!
 usethis::use_build_ignore("input_raw_data") # Because it is not expected in a regular package root
-# folder. If I don't ignore it, it will cause warnings in my package checks and all kind of problems.
+# folder, I need to ignore it. If I don't, it will cause warnings in my package checks and all kind
+# of problems.
 
-# I also need other folders to organize my data processing work (e.g. outputs). However, note the right
-# way to do that would be to create the desired folders in the associated functions that require those
-# folders! Otherwise, the package will not be able to run properly for other users (because functions
-# will try to work with folders that do not exist from external installation of the package)!
+# I may also need other folders to organize my data processing work (e.g. outputs). However, note that
+# the right way to go that would be to create the desired folders in the associated functions that
+# require those folders or, EVEN BETTER, to not create custom folders but to use the ones intended in
+# a regular R package! Otherwise, the package will not be able to run properly for other end-users
+# because functions will try to work with folders that were not created during the external
+# installation of the package (cf. section 3.1.)!
 # Still, if I want to create them in my workflow (out of the pipeline), I can use:
 dir.create("output")
 dir.create("output/plots")
@@ -344,7 +260,113 @@ usethis::use_build_ignore("ppl.tits_biblio.bib")
 # --------------------------------------- #
 
 # ---------------------------------------------------------------------------- #
-### * 3.1. Writing functions for the package -----------------------------------
+### * 3.1. Managing data in a R package ----------------------------------------
+
+# I'm used to creating custom folders to store my input and output data in my the R packages I build
+# (e.g. input_raw_data/; output/text/), although these folders are not expected by R. I recently
+# discovered why and how it may be problematic when I tried to share my package with someone else for
+# the first time. Therefore, from now on, I'll try to respect the way R deals with data with regard
+# to their nature: e.g. R objects, CSV files, texts, etc.
+# Cf. https://r-pkgs.org/data.html#data (the next sections are only a summary).
+
+
+# ** 3.1.1. To export R objects for end-users ----
+
+# If you want to store R objects and make them available to the user, put them in `data/`. This is
+# the best place to put example datasets (keep in mind that it is for R objects only). See section
+# Section 8.2. of the above link for more details.
+# To do that, the easiest way is to use:
+usethis::use_data(some_R_object)
+# This snippet creates `data/some_R_object.rda` inside the source of the package and adds
+# "LazyData: true" in your DESCRIPTION. This makes the `some_R_object` R object available to users of
+# the package via `pkg::some_R_object` or, after attaching the package with:
+library(pkg)
+some_R_object
+# NOTE: the `use_data()` function used above is a workflow code and, theoretically, SHOULD NOT appear
+# in the R/ folder (it should be kept somewhere else: e.g. _devhistory.R, or in the R files in the
+# data-raw/ folder as shown below). HOWEVER, as I want to use it with my {targets} pipeline (see
+# Chapter 4. if you do not know what I mean), I will create custom functions to export and update
+# my exported datasets and call these functions in my _targets.R pipeline!
+# IMPORTANT NOTE: remember that data exported as `data/some_R_object.rda` are only meant for export
+# to end users and CANNOT be used internally (e.g. to load the data within a given function) because
+# R modifies the content of `data/` during install meaning that it won't be able to find the datasets
+# that are called (after installation, `some_R_object.rda` doesn't exist anymore, it's compiled in a
+# different way and named differently so it's still available to users but not to function internals)!!!
+# The same statement is true for .csv files stored in folders R does not expect (e.g. `outputs/` or
+# `results/`).
+# To store datasets for internal use, you NECESSARILY NEED TO use the proper way (cf. section 3.1.2.)!
+
+# The way `some_R_object` is created (raw data import, wrangling etc.) should preferably be saved as
+# well, but not necessarily as true function in R/. If you don't want to source the code directly in R/,
+# you can use:
+usethis::use_data_raw("to_make_my_R_object")
+# This function creates the data-raw/ folder and lists it in .Rbuildignore. A typical script in
+# data-raw/ includes code to prepare a dataset and ends with a call to `use_data()`.
+# NOTE: Objects in data/ are always effectively exported (they use a slightly different mechanism
+# than NAMESPACE but the details are not important). This means that they must be documented using:
+usethis::use_r("data") # To create R/data.R to document my dataset! See section 8.2. of
+# https://r-pkgs.org/data.html#data for more details (e.g. how to document data properly with
+# Roxygen2, how to include non-ACSII characters, etc.).
+
+
+# ** 3.1.2. To store R objects for internal use ----
+
+# If you want to store R objects for your own use as a developer, put them in R/sysdata.rda. This is
+# the best place to put internal data that your functions need. See section Section 8.3. of
+# https://r-pkgs.org/data.html#data for more details.
+# Sometimes the objects you need are small and simple enough that you can define them with `c()` or
+# `data.frame()` in the code below R/, perhaps in R/data.R. Larger or more complicated objects should
+# be stored in your package’s internal data in R/sysdata.rda.
+# The easiest way to create R/sysdata.rda is to use:
+internal_this <- ...
+internal_that <- ...
+usethis::use_data(internal_this, internal_that, internal = TRUE) # The documentation of `use_data()`
+# is also useful here.
+# Unlike data/, where you use one .rda file per exported data object, you store all of your internal
+# data objects together in the single file R/sysdata.rda.
+# Let’s imagine we are working on a package named “pkg”. The snippet above creates R/sysdata.rda
+# inside the source of the {pkg} package. This makes the objects `internal_this` and `internal_that`
+# available for use inside of the functions defined below R/ and in the tests. During interactive
+# development, `internal_this` and `internal_that` are available after a call to `devtools::load_all()`,
+# just like any internal function.
+# IMPORTANT NOTE: unlike data in data/, objects in R/sysdata.rda are not exported (they shouldn’t be),
+# so they don’t need to be documented. Also, usage of R/sysdata.rda has no impact on DESCRIPTION,
+# i.e. the need to specify the "LazyData" field is strictly about the exported data below data/.
+
+
+# ** 3.1.3. To store and export data in non-R format (e.g. HTML files, .csv) ----
+
+# If you want to store data in some raw, non-R-specific form and make it available to the user, put it
+# in inst/extdata/. See section Section 8.4. of https://r-pkgs.org/data.html#data for more details.
+# When the package is installed, all files (and folders) in inst/ are moved up one level to the
+# top-level directory, which is why they can’t have names that conflict with standard parts of an R
+# package, like R/ or DESCRIPTION . The files below inst/extdata/ in the source package will be
+# located below extdata/ in the corresponding installed package.
+dir.create("inst")
+dir.create("inst/extdata")
+# NOTE: The path to a package file found below extdata/ clearly depends on the local environment,
+# i.e. it depends on where installed packages live on that machine. The base function `system.file()`
+# can report the full path to files distributed with an R package. It can also be useful to list the
+# files distributed with an R package; e.g.:
+system.file("extdata", package = "readxl") |> list.files()
+system.file("extdata", "clippy.xlsx", package = "readxl")
+# But don't forget `here::here()` either!
+
+# IMPORTANT NOTE: remember that data exported in custom folders (e.g. outputs/ or results/) are
+# only available to users if they clone the package repository directly from Github, not if they
+# install the package from Github! Similarly to objects exported to `data/` (see section 3.1.1.), these
+# data thus CANNOT BE CALLED for internal use, as they do not exist anymore in the installed version
+# of the package (unless, perhaps [I did not try], if they are stored in int/extdata/)!!!
+# Here again, the reason is because R modifies the content of the package folder during install
+# meaning that it won't be able to find the datasets that are called (after installation, `data.csv`
+# doesn't exist anymore if it was stored in a custom folder, but I think it does if it was stored in
+# the proper folder: i.e. int/extdata/).
+# To store datasets for internal use, you NECESSARILY NEED TO use the proper way (cf. section 3.1.2.)!
+
+
+
+# ---------------------------------------------------------------------------- #
+### * 3.2. Writing functions for the package -----------------------------------
 
 # Now I can write my functions in the R files (= populating my R files) while keeping in mind
 # that, for EACH function I create:
@@ -382,14 +404,14 @@ usethis::use_git(message = ":white_check_mark: Updated DESCRIPTION to add new pa
 
 
 # ---------------------------------------------------------------------------- #
-### * 3.2. Load and check the package ------------------------------------------
+### * 3.3. Load and check the package ------------------------------------------
 
 # The following lines are run iteratively every time a new function is created within
 # the package or every time a function is modified. This is the central part that loads,
 # inspects (i.e. run the R CMD check) and test my functions and my whole package!
 
 
-# ** 3.2.1. To load and document functions ----
+# ** 3.3.1. To load and document functions ----
 devtools::load_all() # Now, all functions in the R folder are available!
 # IMPORTANT NOTE: if you try to load (or check) your package while working on a new script to
 # create new functions (i.e. having unfinished functions in a R file), make sure to put your
@@ -401,7 +423,7 @@ usethis::use_git(message = ":pencil: Documented new function(s)")
 usethis::use_git(message = ":white_check_mark: Updated function(s)")
 
 
-# ** 3.2.2. To test functions ----
+# ** 3.3.2. To test functions ----
 # To test my functions, I could use the "testthat" package:
 #usethis::use_testthat()
 
@@ -411,7 +433,7 @@ usethis::use_git(message = ":white_check_mark: Updated function(s)")
 # NOTE: All tests files are stored in tests/testthat/ and their names must start with test-*
 
 
-#  ** 3.2.3. To check the package integrity ----
+#  ** 3.3.3. To check the package integrity ----
 devtools::check() # Ok!
 # IMPORTANT NOTE: I had a lot of PROBLEMS in my first attempts to create a loading function
 # because the dataset contained comments in French and English, with special characters and
@@ -421,21 +443,21 @@ devtools::check() # Ok!
 
 
 # ---------------------------------------------------------------------------- #
-### * 3.3. To install and version the package ----------------------------------
+### * 3.4. To install and version the package ----------------------------------
 
-# ** 3.3.1. Installing the package ----
+# ** 3.4.1. Installing the package ----
 devtools::install()
 usethis::use_git(message = ":metal: Installed updated functions!")
 # My package is now installed on my R so I can use its functions whenever I want.
 
 
-# ** 3.3.2. Set package versions ----
+# ** 3.4.2. Set package versions ----
 usethis::use_version(which = "minor") # Automatically updates my package version.
 usethis::use_news_md() # Creates a NEWS.md file, that I should maintain updated.
 usethis::use_git(message = ":package: Release v0.1.0")
 
 
-# ** 3.3.3. Add and update a README file ----
+# ** 3.4.3. Add and update a README file ----
 usethis::use_readme_rmd() # Creates a README.Rmd and adds it automatically to .Rbuildignore
 # (and opens it). After manually editing the file, I need to compile it into a .md document
 # (otherwise, GitHub and the CRAN won't be able to read and display it on their websites):
