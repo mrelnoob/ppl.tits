@@ -28,10 +28,10 @@
 ### * 0.1. Managing data in a R package ----------------------------------------
 
 # I'm used to creating custom folders to store my input and output data in my the R packages I build
-# (e.g. mydata/; output/text/), although these folders are not expected by R. I recently discovered
-# why and how it may be problematic when I tried to share my package with someone else for the first
-# time. Therefore, from now on, I'll try to respect the way R deals with data with regard to their
-# nature: e.g. R objects, CSV files, texts, etc.
+# (e.g. input_raw_data/; output/text/), although these folders are not expected by R. I recently
+# discovered why and how it may be problematic when I tried to share my package with someone else for
+# the first time. Therefore, from now on, I'll try to respect the way R deals with data with regard
+# to their nature: e.g. R objects, CSV files, texts, etc.
 # Cf. https://r-pkgs.org/data.html#data (the next sections are only a summary).
 
 
@@ -259,13 +259,16 @@ usethis::use_git(message = ":bulb: Update documentation")
 ### * 2.1. Folders architecture ------------------------------------------------
 
 # Before writing my first functions to import and clean my data, I need to add the said data files
-# in the project folder. So I create a "mydata" folder and copy-paste my data in it (manually):
-dir.create("mydata")
-usethis::use_build_ignore("mydata") # Because it is not expected in a regular package root folder
-# (if I don't ignore it, it will cause warnings in my package checks and all kind of craps.
-# I just spent five hours to get rid of them, so trust me).
+# in the project folder. So I create a "input_raw_data" folder and copy-paste my data in it (manually):
+dir.create("input_raw_data")
+usethis::use_build_ignore("input_raw_data") # Because it is not expected in a regular package root
+# folder. If I don't ignore it, it will cause warnings in my package checks and all kind of problems.
 
-# I also need other folders to organize my data processing work (e.g. outputs):
+# I also need other folders to organize my data processing work (e.g. outputs). However, note the right
+# way to do that would be to create the desired folders in the associated functions that require those
+# folders! Otherwise, the package will not be able to run properly for other users (because functions
+# will try to work with folders that do not exist from external installation of the package)!
+# Still, if I want to create them in my workflow (out of the pipeline), I can use:
 dir.create("output")
 dir.create("output/plots")
 dir.create("output/tables")
