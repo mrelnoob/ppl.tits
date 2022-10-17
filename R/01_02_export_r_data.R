@@ -29,8 +29,8 @@ read_from_path <- function(mypath){
 
 
 
-### ______________________________________________________________________
-#' Export tits nestling aggregated dataset (i.e. `tits_nestling_data.csv`)
+### ____________________________________________________________________________
+#' Export the 'tits nestling' aggregated dataset (i.e. `tits_nestling_data.csv`)
 #'
 #' @description (THEORETICALLY MEANT FOR INTERNAL USE ONLY, use with caution!) \cr
 #' The `export_nestling_aggreg()` function aggregates the raw tits data to create a table
