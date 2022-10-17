@@ -87,7 +87,8 @@ This `randomForest` object is generated and exported by the
 `local_quality_model()` function and can be accessed as follows:
 
 ``` r
-rf <- ppl.tits::local_quality_model()$rf4pm
+rf <- ppl.tits::local_quality_model()$rf4pm # DOES NOT WORK: should be corrected (either with a
+# proper R object export [`rf4pm.rda`] or with a {targets} pipeline creation)!
 ```
 
   

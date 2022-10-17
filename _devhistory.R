@@ -591,7 +591,7 @@ usethis::use_git(message = ":metal: Created a new function")
 usethis::use_git(message = ":zap: Ignoring something")
 usethis::use_git(message = ":pencil: Documented a function or wrote something")
 usethis::use_git(message = ":hammer: Ongoing programming!")
-usethis::use_git(message = ":white_check_mark: Updated the {target} pipeline")
+usethis::use_git(message = ":white_check_mark: Updated guidelines!")
 usethis::use_git(message = ":x: Problem detected!")
 #system("git push") # Or using a CLI!
 # Don't forget to push your commits once you're sure you made no mistakes.
