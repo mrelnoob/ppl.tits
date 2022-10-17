@@ -5,7 +5,7 @@
 ### ________________________________________
 #' Read stored RData objects from their path
 #'
-#' @description FOR INTERNAL USE ONLY. DO NOT RUN.
+#' @description (THEORETICALLY MEANT FOR INTERNAL USE ONLY, use with caution!).
 #' @param mypath Path to the name of the stored data (created by
 #' \code{\link[base:save]{save}}).
 #'
@@ -111,16 +111,13 @@ export_nestling_aggreg <- function(myrawdata){
 #' Exports the `ntits_clean` dataset to the "data/" folder
 #'
 #' @description FOR INTERNAL USE ONLY. DO NOT RUN.
-#' @param my_clean_data The path to "ndata_clean.csv".
+#' @param my_tdata The path to "ndata_parcond.csv" because, internally, this function calls the
 #'
-#' @return The path to "data/ndata_clean.rda".
+#'
+#' @return The path to the dataset generated
+#' by \code{\link[ppl.tits:tdata_upD_parcond]{tdata_upD_parcond}} because, internally, this function calls
+#' \code{\link[ppl.tits:tdata_upD_final]{tdata_upD_final}} and thus requires the same input dataset.
 #' @export
-#' @importFrom here here
-#' @importFrom readr read_csv2
-#' @importFrom readr cols
-#' @importFrom readr col_factor
-#' @importFrom readr col_integer
-#' @importFrom readr col_date
 #' @importFrom usethis use_data
 #'
 #' @examples
@@ -128,31 +125,12 @@ export_nestling_aggreg <- function(myrawdata){
 #' # DO NOT USE!
 #' export_ndata_clean()
 #' }
-export_ndata_clean <- function(my_clean_data = here::here("output", "tables", "ndata_clean.csv")){
+export_ndata_clean <- function(my_tdata = here::here("output", "tables", "ndata_parcond.csv")){
 
   # To create the R object I want to export and made available for the package users:
-  ntits_clean <- readr::read_csv2(my_clean_data, col_names = TRUE,
-                                  col_types = readr::cols(id_nestbox = readr::col_factor(),
-                                                          site = readr::col_factor(),
-                                                          year = readr::col_factor(),
-                                                          species = readr::col_factor(),
-                                                          breeding_window = readr::col_factor(),
-                                                          laying_date = readr::col_date(),
-                                                          flight_date = readr::col_date(),
-                                                          clutch_size = readr::col_integer(),
-                                                          fledgling_nb = readr::col_integer(),
-                                                          father_id = readr::col_factor(),
-                                                          mother_id = readr::col_factor(),
-                                                          age_class = readr::col_factor(
-                                                            ordered = TRUE,
-                                                            levels = c("0", "1", "2"),
-                                                            include_na = TRUE
-                                                          ),
-                                                          strata_div = readr::col_factor(
-                                                            ordered = TRUE,
-                                                            levels = c("0", "1", "2", "3", "4"),
-                                                            include_na = TRUE)))
+  ntits_clean <- ppl.tits::tdata_upD_final(my_tdata = my_tdata)$clean_dataset
 
+  # To export the created dataset:
   usethis::use_data(ntits_clean, overwrite = TRUE) # Creates/updates data/ntits_clean.rda and, the
   # first time it is run, modifies the DESCRIPTION file to add `LazyData: true` and `Depends:
   # R (>= 2.10)`!

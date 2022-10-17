@@ -24,9 +24,9 @@
 #' for Blue tits (\emph{Cyanistes caeruleus}) were too unstable to be exploited due to insufficient
 #' sample size.
 #'
-#' @param my_tdata The name of the \strong{target} that contains the dataset generated
-#' by \code{\link[ppl.tits:tdata_upD_final]{tdata_upD_final}}. Note that this argument is not
-#' necessarily required but is strongly advised.
+#' @param my_tdata The path to the dataset generated
+#' by \code{\link[ppl.tits:tdata_upD_final]{tdata_upD_final}} (`ntits_clean.rda`). Note that this argument
+#' is not necessarily required but is strongly advised.
 #' Therefore, if you want to reproduce this work, you should not call this function unless you
 #' have previously built the {targets} pipeline described in _targets.R (e.g. by using
 #' targets::tar_make())! If you DO NOT KNOW what I'm talking about, then you should
@@ -64,26 +64,21 @@
 #' # This line should work as long as "my_newdata" is an appropriately formatted dataset containing
 #' # the same variables as the input RF model:
 #' patch_quality <- predict.randomForest(
-#'   ppl.tits::local_quality_model()$rf4pm,
+#'   ppl.tits::local_quality_model(my_tdata = ntits_clean_path)$rf4pm,
 #'   newdata = my_newdata)
 #'
-#' ppl.tits::local_quality_model()$r_squared.stab # To generate the R2 stability plot
-#' ppl.tits::local_quality_model()$var_importance.stab # To generate the variable importance
+#' ppl.tits::local_quality_model(my_tdata = ntits_clean_path)$r_squared.stab # To generate the R2
 #' # stability plot
+#' ppl.tits::local_quality_model(my_tdata = ntits_clean_path)$var_importance.stab # To generate the
+#' # variable importance stability plot
 #' }
-local_quality_model <- function(my_tdata = here::here("output", "tables", "ndata_clean.csv")){
+local_quality_model <- function(my_tdata = here::here("data", "ntits_clean.rda")){
 
   ##### Data preparation
   # ____________________
 
   # Dataset import and reduction:
-  tits <- readr::read_csv2(my_tdata, col_names = TRUE,
-                           col_types = readr::cols(clutch_size = readr::col_integer(),
-                                                   species = readr::col_factor())) # NOTE: I have
-  # to generate "tits" by reading the exported "ndata_parcond" dataset in order for {targets}
-  # to be able to follow modifications.
-  # Otherwise, I could just have used ppl.tits::tdata_upD_final())$dataset, or call its associated
-  # target!
+  tits <- ppl.tits::read_from_path(mypath = my_tdata)
 
   tits %>% dplyr::select(clutch_size, species, coord_x, coord_y, noise_m, noise_iq,
                          built_area, open_area, soft_manag_area, woodyveg_volume,

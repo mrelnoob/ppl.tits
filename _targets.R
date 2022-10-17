@@ -43,11 +43,11 @@ list(
 
 
 
-  ##### All targets related to "internal" input files (including export and use)
-  # ____________________________________________________________________________
-  targets::tar_target(watch_ntits_clean, export_ndata_clean(my_clean_data = tdata_clean),
+  ##### All targets related to "internal" files (including export and use)
+  # ______________________________________________________________________
+  targets::tar_target(ntits_clean_path, export_ndata_clean(my_tdata = tdata_parcond),
                       format = "file"),
-  targets::tar_target(get_ntits_clean, read_from_path(mypath = watch_ntits_clean)),
+  targets::tar_target(tdata_clean, read_from_path(mypath = ntits_clean_path)),
 
 
 
@@ -72,11 +72,11 @@ list(
 
   ### Targets for the intermediate analyses stage (RF, Graphab, etc.)___________#
   # Export the Random Forest from the local model for Parus major (PM):
-  targets::tar_target(local_RF, local_quality_model(my_tdata = tdata_clean)$rf4pm),
+  targets::tar_target(local_RF, local_quality_model(my_tdata = ntits_clean_path)$rf4pm),
   # Export the R2 stability plot from the local RF model:
-  targets::tar_target(RF_r2plot, local_quality_model(my_tdata = tdata_clean)$r_squared.stab),
+  targets::tar_target(RF_r2plot, local_quality_model(my_tdata = ntits_clean_path)$r_squared.stab),
   # Export the variable importance stability plot from the local RF model:
-  targets::tar_target(RF_importanceplot, local_quality_model(my_tdata = tdata_clean)$var_importance.stab),
+  targets::tar_target(RF_importanceplot, local_quality_model(my_tdata = ntits_clean_path)$var_importance.stab),
 
 
 
@@ -98,11 +98,10 @@ list(
   targets::tar_target(tdata_rawiv, tdata_upD_rawiv(
     my_tdata = tdata_temp, my_iv_data = predictor_file)$path, format = "file"),
   # Produce the third tits data update (computing the parental condition proxy variables):
-  targets::tar_target(tdata_parcond, tdata_upD_parcond(
+  targets::tar_target(tdata_parcond, tdata_upD_parcond(myrawdata = raw_tits,
     my_tdata = tdata_rawiv)$path, format = "file"),
-  # Produce the fourth tits data update (imputing missing values):
-  targets::tar_target(tdata_clean, tdata_upD_final(
-    my_tdata = tdata_parcond)$path, format = "file"),
+  # As the fourth tits data update (imputing missing values) gives a dataset that is exported internally, I
+  # do not export it as a .csv file.
 
 
 

@@ -7,7 +7,7 @@
 tdata_upD_final(my_tdata = here::here("output", "tables", "ndata_parcond.csv"))
 }
 \arguments{
-\item{my_tdata}{The name of the \strong{target} that contains the dataset generated
+\item{my_tdata}{The path to the dataset generated
 by \code{\link[ppl.tits:tdata_upD_parcond]{tdata_upD_parcond}}. Note that this argument is not
 necessarily required but is strongly advised.
 Therefore, if you want to reproduce this work, you should not call this function unless you
@@ -26,6 +26,7 @@ for both species (accessible with \code{tdata_upD_final()$impute_error_pm} or
 "clean" dataset (\code{ndata_clean.csv}; accessible with \code{tdata_upD_final()$path}).
 }
 \description{
+(THEORETICALLY MEANT FOR INTERNAL USE ONLY, use with caution!) \cr
 The function is the \strong{fourth} and last of a series of functions meant to
 update and complete the tits dataset with its independent variables (i.e. predictors and
 covariates).

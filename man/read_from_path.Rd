@@ -14,7 +14,7 @@ read_from_path(mypath)
 The stored data (exactly like \code{pkg::stored_data} would).
 }
 \description{
-FOR INTERNAL USE ONLY. DO NOT RUN.
+(THEORETICALLY MEANT FOR INTERNAL USE ONLY, use with caution!).
 }
 \examples{
 \dontrun{

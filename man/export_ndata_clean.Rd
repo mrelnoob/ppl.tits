@@ -5,14 +5,16 @@
 \title{Exports the \code{ntits_clean} dataset to the "data/" folder}
 \usage{
 export_ndata_clean(
-  my_clean_data = here::here("output", "tables", "ndata_clean.csv")
+  my_tdata = here::here("output", "tables", "ndata_parcond.csv")
 )
 }
 \arguments{
-\item{my_clean_data}{The path to "ndata_clean.csv".}
+\item{my_tdata}{The path to "ndata_parcond.csv" because, internally, this function calls the}
 }
 \value{
-The path to "data/ndata_clean.rda".
+The path to the dataset generated
+by \code{\link[ppl.tits:tdata_upD_parcond]{tdata_upD_parcond}} because, internally, this function calls
+\code{\link[ppl.tits:tdata_upD_final]{tdata_upD_final}} and thus requires the same input dataset.
 }
 \description{
 FOR INTERNAL USE ONLY. DO NOT RUN.

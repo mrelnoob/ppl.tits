@@ -11,17 +11,18 @@ tdata_upD_temp(
 )
 }
 \arguments{
-\item{myboxtemp_data}{The nestbox-temperature stations pairing dataset (.csv).}
+\item{myboxtemp_data}{The path to the nestbox-temperature stations pairing dataset (.csv).}
 
-\item{mytemp_data}{The temperature records dataset (.csv).}
+\item{mytemp_data}{The path to the temperature records dataset (.csv).}
 
-\item{mytits_data}{The tits nestling aggregated dataset (.csv). Cf.
+\item{mytits_data}{The path to the tits nestling aggregated dataset (.csv). Cf.
 \code{\link[ppl.tits:export_nestling_aggreg]{export_nestling_aggreg}}.}
 }
 \value{
 A .csv file of the updated version of the tits dataset, and its path.
 }
 \description{
+(THEORETICALLY MEANT FOR INTERNAL USE ONLY, use with caution!) \cr
 The function is the \strong{first} of a series of functions meant to update and complete
 the tits dataset with its \emph{independent variables} (i.e. predictors and covariates).
 The \code{tdata_upD_temp} function modifies the \emph{aggregated tits dataset} in several ways:
