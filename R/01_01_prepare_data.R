@@ -543,7 +543,7 @@ tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_tem
 #' path_to_csv <- tdata_upD_parcond(myrawdata = raw_tits, my_tdata = tdata_rawiv)$path
 #' # NOTE: this code won't work unless the {targets} pipeline has been built first!
 #' }
-tdata_upD_parcond <- function(myrawdata = raw_tits,
+tdata_upD_parcond <- function(myrawdata = here::here("data", "raw_tits_data.rda"),
                               my_tdata = here::here("output", "tables", "ndata_rawiv.csv")){
 
   ##### Data preparation
@@ -743,7 +743,7 @@ tdata_upD_parcond <- function(myrawdata = raw_tits,
 #' # data imputation.
 #' myerror_pm <- tdata_upD_final()$impute_error_pm
 #' myerror_cc <- tdata_upD_final()$impute_error_cc
-#' path_to_csv <- tdata_upD_parcond()$path
+#' path_to_csv <- tdata_upD_final()$path
 #' }
 tdata_upD_final <- function(my_tdata = here::here("output", "tables", "ndata_parcond.csv")){
 

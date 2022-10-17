@@ -5,7 +5,7 @@
 \title{Update and export the tits dataset completed with the parental condition variables}
 \usage{
 tdata_upD_parcond(
-  myrawdata = raw_tits,
+  myrawdata = here::here("data", "raw_tits_data.rda"),
   my_tdata = here::here("output", "tables", "ndata_rawiv.csv")
 )
 }
