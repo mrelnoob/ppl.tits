@@ -6,7 +6,7 @@
 \alias{ppl.tits-package}
 \title{ppl.tits: All data processing for the first part of the 'tits breeding success study' of the PubPrivLands project (i.e. {ppl.tits})}
 \description{
-This package project is meant to clean and prepare the data as well as do all spatial and statistical analyses for the first part of the "tits" reproduction study of the PubPrivLands project.
+This package project is meant to clean and prepare the data as well as do all spatial and statistical analyses for the first part of the "tits reproduction study" of the PubPrivLands project.
 }
 \author{
 \strong{Maintainer}: Francois-Marie Martin \email{francois-marie.martin@univ-fcomte.fr}
