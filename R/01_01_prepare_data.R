@@ -59,8 +59,8 @@ utils::globalVariables("where") # This is necessary for now as tidyselect::where
 #' \dontrun{
 #' mydata <- tdata_upD_temp()
 #' }
-tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp.csv"),
-                           mytemp_data = here::here("mydata", "temp_data_20192022.csv"),
+tdata_upD_temp <- function(myboxtemp_data = here::here("input_raw_data", "paired_boxtemp.csv"),
+                           mytemp_data = here::here("input_raw_data", "temp_data_20192022.csv"),
                            mytits_data = here::here("output", "tables", "tits_nestling_data.csv")){
   ##### Attribute ID to nest_years and improve formatting
   # _____________________________________________________
@@ -406,7 +406,7 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("mydata", "paired_boxtemp
 #' path_to_csv <- tdata_upD_rawiv()$path
 #' }
 tdata_upD_rawiv <- function(my_tdata = here::here("output", "tables", "ndata_temp.csv"),
-                               my_iv_data = here::here("mydata", "tits_predictors.csv")){
+                               my_iv_data = here::here("input_raw_data", "tits_predictors.csv")){
 
   ##### Import data files
   # _____________________

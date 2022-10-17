@@ -5,8 +5,8 @@
 \title{Update and export the tits dataset with temperature related variables}
 \usage{
 tdata_upD_temp(
-  myboxtemp_data = here::here("mydata", "paired_boxtemp.csv"),
-  mytemp_data = here::here("mydata", "temp_data_20192022.csv"),
+  myboxtemp_data = here::here("input_raw_data", "paired_boxtemp.csv"),
+  mytemp_data = here::here("input_raw_data", "temp_data_20192022.csv"),
   mytits_data = here::here("output", "tables", "tits_nestling_data.csv")
 )
 }

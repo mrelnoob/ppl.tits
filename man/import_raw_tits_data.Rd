@@ -4,7 +4,9 @@
 \alias{import_raw_tits_data}
 \title{Import the raw tits dataset}
 \usage{
-import_raw_tits_data(mypath = here::here("mydata", "ppl_dijon_tits_data.csv"))
+import_raw_tits_data(
+  mypath = here::here("input_raw_data", "ppl_dijon_tits_data.csv")
+)
 }
 \arguments{
 \item{mypath}{The absolute path to the raw data .csv file.}

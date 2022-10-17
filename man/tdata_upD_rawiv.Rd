@@ -6,7 +6,7 @@
 \usage{
 tdata_upD_rawiv(
   my_tdata = here::here("output", "tables", "ndata_temp.csv"),
-  my_iv_data = here::here("mydata", "tits_predictors.csv")
+  my_iv_data = here::here("input_raw_data", "tits_predictors.csv")
 )
 }
 \arguments{

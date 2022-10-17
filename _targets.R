@@ -30,13 +30,13 @@ list(
   ##### All targets related to "external" input files
   # _________________________________________________
 
-  targets::tar_target(raw_data_file, here::here("mydata", "ppl_dijon_tits_data.csv"),
+  targets::tar_target(raw_data_file, here::here("input_raw_data", "ppl_dijon_tits_data.csv"),
              format = "file"),
-  targets::tar_target(boxtemp_file, here::here("mydata", "paired_boxtemp.csv"),
+  targets::tar_target(boxtemp_file, here::here("input_raw_data", "paired_boxtemp.csv"),
              format = "file"),
-  targets::tar_target(temp_file, here::here("mydata", "temp_data_20192022.csv"),
+  targets::tar_target(temp_file, here::here("input_raw_data", "temp_data_20192022.csv"),
              format = "file"),
-  targets::tar_target(predictor_file, here::here("mydata", "tits_predictors.csv"),
+  targets::tar_target(predictor_file, here::here("input_raw_data", "tits_predictors.csv"),
              format = "file"),
 
 
