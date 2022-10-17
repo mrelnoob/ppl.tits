@@ -1,12 +1,12 @@
 Package: ppl.tits
-Title: Contains all Data Processing for the First Part Of Ppl.tits
+Title: All data processing for the first part of the 'tits breeding success study' of the PubPrivLands project (i.e. {ppl.tits})
 Version: 1.0.0
 Authors@R: 
     person(given = "Francois-Marie",
            family = "Martin",
            role = c("aut", "cre"),
            email = "francois-marie.martin@univ-fcomte.fr")
-Description: This package project is meant to clean and prepare the data as well as do all spatial and statistical analyses for the first part of the "tits" section of the PubPrivLands project.
+Description: This package project is meant to clean and prepare the data as well as do all spatial and statistical analyses for the first part of the "tits" reproduction study of the PubPrivLands project.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
