@@ -7,11 +7,11 @@
 # ### First, this will be my script for all Graphab analyses (preliminary and final). Then, if
 # # I can make RStudio accept that my R script behave like a shell CLI (command-line interface), I'll
 # # consider create associated functions and targets.
-# # If I find a way to do it, I shoud UPDATE _devhistory (at least to send future me here or, even
+# # If I find a way to do it, I shoud UPDATE _devhistory.R (at least to send future me here or, even
 # # better, to correct my script to avoid sentences saying that I did it in the Terminal/shell CLI).
 #
 # ### NOTE: For R packages with CLI wrappers it is important to name extra dependencies in the
-# # SystemRequirements field in the package description file. Thereby you formally declare that some
+# # SystemRequirements field in the package DESCRIPTION file. Thereby you formally declare that some
 # # additional piece of software is needed to make the package work
 # # (https://www.r-bloggers.com/2021/09/how-to-use-system-commands-in-your-r-script-or-package/)!
 #
@@ -37,14 +37,14 @@
 # # of Graphab at the same place (here, Graphab 2.8)!
 # # I also manually paste my input landcover raster file (lc_dijon_v8_simple.tif), and I tell Git to
 # # ignore the Graphab folder altogether because it contains heavy files.
-# dir.create("mydata/graphab")
+# dir.create("graphab")
 # usethis::use_build_ignore("graphab/")
-# usethis::use_build_ignore("graphab-2.8.jar")
+# usethis::use_build_ignore("graphab-2.8.1.jar")
 # usethis::use_git_ignore("graphab/")
-# usethis::use_git_ignore("graphab-2.8.jar")
-# # NOTE: As my landcover file is to heavy, I cannot put it on my Github account. To be able to
+# usethis::use_git_ignore("graphab-2.8.1.jar")
+# # NOTE: As my landcover file is too heavy, I cannot put it on my Github account. To be able to
 # # reproduce my work, you will need this file though. You should then either contact me directly or
-# # find it in the project's Zenodo archive.
+# # find it in the project's Zenodo archive (*** WHEN READY).
 #
 #
 #
@@ -57,6 +57,7 @@
 # # # automatically add "" but you can just ignore them!
 # # mydisk: # To change disk (e.g. D:).
 # # dir # For the content of the directory.
+#
 #
 # # ** 0.1.2. To comment ----
 # # rem # To comment (rem = remark). NOTE: this is a command, so it needs to be put first or after
@@ -78,9 +79,11 @@
 # # # NOTE: as commands are separated by spaces, project elements cannot contain spaces!
 # # --metrics # To display all available metrics.
 #
+#
 # # ** 0.2.2. Starting, loading and saving projects ----
 # # --create # To create a new project (includes compulsory parameters, cf. CLI User Guide).
 # # --project myproject.xml # To load an existing project.
+#
 #
 # # ** 0.2.3. Intervals and range of values ----
 # # min:inc:max # To define an interval of values, you have to specify a min, an increment, and a
@@ -90,10 +93,12 @@
 # # # NOTE: if a command contains several intervals/values for different parameters, the command will
 # # # be executed for each possible combination!
 #
+#
 # # ** 0.2.4. Commands sequencing ----
 # # Graphab can be launched with several commands on the same line, except for -help and -metrics!
 # # The "--create" and "--project" commands can only be used once and should be the first command,
 # # after the prefix command that launches Graphab itself (e.g. java -jar graphab-2.8.jar --project...).
+#
 #
 #
 # # ---------------------------------------------------------------------------- #
@@ -116,6 +121,7 @@
 # usethis::use_git(message = ":metal: Created a new function")
 # usethis::use_git(message = ":zap: Ignoring something")
 # usethis::use_git(message = ":pencil: Edited a file")
+# usethis::use_git(message = ":hammer: Ongoing programming")
 # usethis::use_git(message = ":white_check_mark: Saved updates!")
 # #system("git push")
 # # ---------------------------------------------------------------------------- #

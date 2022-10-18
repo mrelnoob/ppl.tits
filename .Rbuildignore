@@ -2,7 +2,7 @@
 ^\.Rproj\.user$
 ^_devhistory\.R$
 ^LICENSE\.md$
-^mydata$
+^input_raw_data$
 ^output$
 ^tables$
 ^texts$
@@ -12,7 +12,6 @@
 ^_targets\.R$
 ^_targets$
 ^spatial_layers$
-^graphab-2\.8\.jar$
-^graphab$
 ^ppl\.tits_biblio\.bib$
-^input_raw_data$
+^graphab$
+^graphab-2\.8\.1\.jar$
