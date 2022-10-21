@@ -261,29 +261,45 @@ java -j(...)myproject.xml --lmetric
 
 # ---------------------------------------------------------------------------- #
 ### * 1.1. Project with RF-based capacity --------------------------------------
+# ** 1.1.1. Loading the project ----
 
-
-
-
-# the Graphab project was created by
-# Gilles Vuidel in order for him to create the habitat patches to be able to extract their pixels
-# and compute the weightings for pixels and patches (i.e. their "capacity") based on the Random
-# Forest model exported by the `ppl.tits::local_quality_model()` function.
-# Consequently, I manually pasted the mentioned Graphab project and associated files in the graphab/
-# folder of the {ppl.tits} package.
-# I can then open the Graphab project (named `tits_gpb.xml`) with the following command:
+# In this case, we will not start the Graphab project from scratch as it has already been created by
+# Gilles Vuidel because he needed to create the habitat patches to be able to extract their pixels
+# and compute the weightings for pixels and patches (i.e. their "capacity") based on the RF model
+# exported by the `ppl.tits::local_quality_model()` function.
+# Consequently, here, I only need to manually paste the mentioned Graphab project and associated files
+# in the graphab/ folder of the {ppl.tits} package.
+# I can then open the Graphab project (named `tits_gpb.xml`) using:
 java -jar graphab-2.8.1.jar --project .\tits_graphab_project\tits_gpb.xml
 
 
+# ** 1.1.2. Computing relevant link-sets ----
+# Reduced scaling:
+java -jar graphab-2.8.1.jar --project .\tits_graphab_project\tits_gpb.xml --linkset distance=cost
+name=pmrf_smax200 maxcost=1500 31,32,33,34,35,36=1 51=10 62=15 11=20 1,2,25=25 71,81=50 61=150 12=200
+# The tested resistance values are stored in `ppl_survey_results_simplified.xlsx`.
+# The name is 'pmrf_smax200' because the scale max value is 200 and its capacity is based on the RF model.
+
+# Expanded scale:
+java -jar graphab-2.8.1.jar --project .\tits_graphab_project\tits_gpb.xml --linkset distance=cost
+name=pmrf_lmax1000 maxcost=1500 31,32,33,34,35,36=1 51=50 62=75 11=80 1,2,25=100 71,81=200 61=500 12=1000
 
 
-#### Exercices formation -----
-# Ex1.3. ok
 
 
 
 
-#graphe élagué avec 2 distances: 100 et 150??? Plus ?
+
+# Graphab parametrisation for PM:
+
+# Mean response for medianforaging distance: 52m
+# Mean response for maximum gap-crossing distance: ~375m
+# Median response for maximum gap-crossing distance: 150m
+# Maximal response for maximum gap-crossing distance: 1500m
+
+
+
+
 
 # For CC:
 # Only one approcah here§§§§§
