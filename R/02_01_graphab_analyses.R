@@ -57,6 +57,7 @@ cd \ # And write the path (with \ to separate directories) or press TAB for auto
 # automatically add "" but you can just ignore them!
 mydisk: # To change disk (e.g. D:).
 dir # For the content of the directory.
+Ctrl+C # Stops an ongoing process.
 
 
 # ** 0.1.2. To comment ----
@@ -245,9 +246,9 @@ java -j(...)myproject.xml --lmetric
 
 
 
-# ------------------------------------------------------ #
-##### 1. Connectivity modelling for PM (Parus major) #####
-# ------------------------------------------------------ #
+# --------------------------------------------------- #
+##### 1. Connectivity models for PM (Parus major) #####
+# --------------------------------------------------- #
 
 # In the "tits reproduction study" of the PubPrivLands project, we tried to assess the usefulness of
 # using a model-based habitat quality approximation for the computation of landscape connectivity
@@ -269,52 +270,132 @@ java -j(...)myproject.xml --lmetric
 # exported by the `ppl.tits::local_quality_model()` function.
 # Consequently, here, I only need to manually paste the mentioned Graphab project and associated files
 # in the graphab/ folder of the {ppl.tits} package.
-# I can then open the Graphab project (named `tits_gpb.xml`) using:
-java -jar graphab-2.8.1.jar --project .\tits_graphab_project\tits_gpb.xml
+# I can then open the Graphab project (named `pmrf_gpb.xml`) using:
+java -jar graphab-2.8.1.jar --project .\pmrf_gpb\pmrf_gpb.xml
 
 
 # ** 1.1.2. Computing relevant link-sets ----
 # Reduced scaling:
-java -jar graphab-2.8.1.jar --project .\tits_graphab_project\tits_gpb.xml --linkset distance=cost
+java -jar graphab-2.8.1.jar --project .\pmrf_gpb\pmrf_gpb.xml --linkset distance=cost
 name=pmrf_smax200 maxcost=1500 31,32,33,34,35,36=1 51=10 62=15 11=20 1,2,25=25 71,81=50 61=150 12=200
 # The tested resistance values are stored in `ppl_survey_results_simplified.xlsx`.
 # The name is 'pmrf_smax200' because the scale max value is 200 and its capacity is based on the RF model.
-
 # Expanded scale:
-java -jar graphab-2.8.1.jar --project .\tits_graphab_project\tits_gpb.xml --linkset distance=cost
+java -jar graphab-2.8.1.jar --project .\pmrf_gpb\pmrf_gpb.xml --linkset distance=cost
 name=pmrf_lmax1000 maxcost=1500 31,32,33,34,35,36=1 51=50 62=75 11=80 1,2,25=100 71,81=200 61=500 12=1000
 
 
+# ** 1.1.3. Creating graphs ----
+# Complete graphs:
+java -jar graphab-2.8.1.jar --project .\pmrf_gpb\pmrf_gpb.xml --graph
+# Pruned graphs:
+java -jar graphab-2.8.1.jar --project .\pmrf_gpb\pmrf_gpb.xml --graph threshold={750}
+# This value was chosen because it is half the maximum value answered in our survey as well as almost
+# twice the second highest value answered, thus representing an acceptable compromise for a maximal value,
+# especially considering that 3 respondents gave maximal distances <= 50.
 
 
+# ** 1.1.4. Computing local or delta metrics ----
+java -jar graphab-2.8.1.jar --project .\pmrf_gpb\pmrf_gpb.xml --lmetric F d={15,60,140,270}
+p=0.5 beta=0,1,2
+java -jar graphab-2.8.1.jar --project .\pmrf_gpb\pmrf_gpb.xml --lmetric BC d={15,60,140,270}
+p=0.5 beta=0,1,2
+# Among our 6 respondents, there was a clear divide in estimated gap-crossing distances with one group
+# that always gave very conservative values (median gap-crossing values ranging from 5 to 25m) while the
+# other half gave much higher values (ranging from 100 to 500m). It was thus hard to choose a single
+# central parameter to summarise PM gap-crossing abilities.
+# Consequently, I chose to test for various distance estimates:
+#   - 15 = the mean value for 'median gap-crossing distance' estimated by the "conservative half" of the
+# respondents.
+#   - 60 = roughly the median value estimated by all respondents.
+#   - 140 = roughly the mean value estimated by all respondents.
+#   - 270 = roughly the mean value for 'median gap-crossing distance' estimated by the "liberal half" of
+# the respondents.
 
-
-
-# Graphab parametrisation for PM:
-
-# Mean response for medianforaging distance: 52m
-# Mean response for maximum gap-crossing distance: ~375m
-# Median response for maximum gap-crossing distance: 150m
-# Maximal response for maximum gap-crossing distance: 1500m
-
-
-
-
-
-# For CC:
-# Only one approcah here§§§§§
+# For the beta parameter, two values were tested representing two hypotheses:
+# beta=1 - Implying that the weight of patches' capacity acts linearly with the weight of distances
+# (i.e. local patch quality affects proportionately the ability or willingness or tits to cross a gap).
+# beta=2 - Implying that the weight of patches' capacity is squared compared to the weight of distances
+# (i.e. birds are more likely to cross a given distance if patches are of good quality).
 
 
 
 # ---------------------------------------------------------------------------- #
+### * 1.2. Project with area-based capacity --------------------------------------
+# ** 1.1.1. Creating the project ----
+
+# In this case, we have to start the Graphab project from scratch:
+java -jar graphab-2.8.1.jar --create titscaparea_gpb lc_dijon_v8_simple.tif habitat=31,32,33,34,35,36 nodata=0
+minarea=0.001 maxsize=200
+
+# maxsize est en hectare ou en metre????????????????????????????????
+# maxsize est en hectare ou en metre????????????????????????????????
+# maxsize est en hectare ou en metre????????????????????????????????
+# maxsize est en hectare ou en metre????????????????????????????????
+# maxsize est en hectare ou en metre????????????????????????????????
+# maxsize est en hectare ou en metre????????????????????????????????
+
+
+# ** 1.1.2. Capacity, linkset and graphs ----
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --capa
+
+# Reduced scaling:
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --linkset distance=cost
+name=pmarea_smax200 maxcost=1500 31,32,33,34,35,36=1 51=10 62=15 11=20 1,2,25=25 71,81=50 61=150 12=200
+# Expanded scale:
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --linkset distance=cost
+name=pmarea_lmax1000 maxcost=1500 31,32,33,34,35,36=1 51=50 62=75 11=80 1,2,25=100 71,81=200 61=500 12=1000
+
+# Complete graphs:
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --graph
+# Pruned graphs:
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --graph threshold={750}
+
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --lmetric F d={15,60,140,270}
+p=0.5 beta=0,1,2
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --lmetric BC d={15,60,140,270}
+p=0.5 beta=0,1,2
+
+
+
+
+
+# ----------------------------------------------------------- #
+##### 2. Connectivity models for CC (Cyanistes caeruleus) #####
+# ----------------------------------------------------------- #
+
+# As we did not build a RF model for CC, we only need to compute metrics based on the "area" approximation
+# of patch capacity. As such, we can use the same project as before.
+
+
+
 # ---------------------------------------------------------------------------- #
-# ---------------------------------------------------------------------------- #
-usethis::use_git(message = ":boom: Started a new script")
-usethis::use_git(message = ":metal: Created a new function")
-usethis::use_git(message = ":zap: Ignoring something")
-usethis::use_git(message = ":pencil: Edited a file")
-usethis::use_git(message = ":hammer: Ongoing programming")
-usethis::use_git(message = ":white_check_mark: Saved updates!")
-# ---------------------------------------------------------------------------- #
-# ------------------------------- THE END ------------------------------------ #
-# ---------------------------------------------------------------------------- #
+### * 2.1. Project with area-based capacity --------------------------------------
+# ** 2.1.1. Loading the project ----
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml
+
+
+# ** 2.1.2. Computing relevant link-sets ----
+# Reduced scaling:
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --linkset distance=cost
+name=cc_smax200 maxcost=1500 31,32,33,34,35,36=1 51=10 62=15 11=20 1,2,25=25 71,81=50 61=150 12=200
+# Expanded scale:
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --linkset distance=cost
+name=cc_lmax1000 maxcost=1500 31,32,33,34,35,36=1 51=50 62=75 11=80 1,2,25=100 71,81=200 61=500 12=1000
+
+
+# ** 2.1.3. Creating graphs ----
+# Complete graphs:
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --graph
+# Pruned graphs:
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --graph threshold={500}
+
+
+# ** 2.1.4. Computing local or delta metrics ----
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --lmetric F d={10,30,130,250}
+p=0.5 beta=0,1,2
+java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --lmetric BC d={10,30,130,250}
+p=0.5 beta=0,1,2
+# Same rationale as for PM (but with slightly lower values for CC).
+
+
