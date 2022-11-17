@@ -14,6 +14,81 @@ knitr::opts_chunk$set(echo = FALSE)
 # Still, note that theoretically, you do not need to knit or modify this document as it is meant for reproducibility and you can simply read the .html file for that.
 ```
 
+```{r rawdata and functions, eval=TRUE, include=FALSE}
+library(ppl.tits)
+.pardefault <- par() # To save the default graphical parameters (in case I want to restore them: e.g.
+# using par(.pardefault)).
+
+### For NOW, I will SIMPLY plot the data and things I want to explore using the data and custom functions # called and written at the beginning of this document, so I need manually KNIT the report using the # button and not with {targets}!!!!!!!!
+# Ultimately, I will have to convert that into proper package functions and targets!!!!!!
+# Ultimately, I will have to convert that into proper package functions and targets!!!!!!
+
+
+##### DATA for connectivity metrics explorations:
+tits_clean <- ppl.tits::ntits_clean
+tits_clean %>% dplyr::filter(species == "PM") %>%
+  dplyr::select(id_nestbox, site, coord_x, coord_y, breeding_window,
+                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
+                father_cond, mother_cond, min_t_between, lsource_vs150_m, noise_m,
+                built_area, open_area, woody_area, woodyveg_volume, age_class, strata_div) -> pm
+
+fmetrics <- readr::read_csv2(here::here("input_raw_data", "cmetrics_pm.csv"),
+                          col_names = TRUE, na = "NA",
+                          col_types = readr::cols(id_nestbox = readr::col_factor(),
+                                                  id_patch = readr::col_factor()))
+fmetrics %>% dplyr::select(-id_patch, -cost_to_patch, -perim) %>%
+  dplyr::inner_join(pm, fmetrics, by = "id_nestbox") -> pm_f # Not clear why left_join worked for
+# ppl.tits::tdata_upD_rawiv() and not here (so I had to use inner_join())!!!
+
+
+
+##### CUSTOM EXPLO FUNCTIONS:
+# Outlier detection with Cleveland dotplots:
+uni.dotplots <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB = 2, BTY = "n",
+                         FG = "gray35", COL.AXIS = "gray35", COL.LAB = "gray20", CEX.PAR = 0.6,
+                         TCL = -0.3, MGP = c(1.7, 0.6, 0.1), OMA = c(1, 0, 1, 0), LAB = c(5, 10, 7),
+                         COL.PCH = "lightcoral", PCH = 19, COL.GRID = "lavender", NX = 5, NY = 9, LTY = 6,
+                         ...){
+  num.data <- dataset[, sapply(dataset, is.numeric)]
+  nam <- names(num.data)
+  ncol.data <- ncol(num.data)
+  ncol.adjust <- ceiling(x = ncol.data/4) # Round to the next integer (e.g. ceiling(x = 7.12) returns 8)!
+  num.data <- as.matrix(num.data)
+
+  graphics::par(mfrow= c (ncol.adjust,4), mar=MAR, cex.lab = CEX.LAB, font.lab=FONT.LAB, bty = BTY, fg = FG,
+                col.axis = COL.AXIS, col.lab = COL.LAB, cex = CEX.PAR, tcl = TCL,
+                mgp = MGP, oma = OMA, lab = LAB)
+  for (i in c(1:ncol(num.data))) {
+    graphics::plot(x = num.data[,i], y = 1:length(num.data[,i]), type = "p", xlab = nam[i], ylab = "",
+                   col = COL.PCH, pch = PCH, panel.first = {
+                     grid(col=COL.GRID,nx = NX,ny = NY, lty = LTY)
+                   }, ...) }
+  # Here, the argument panel.first={} is used to draw the grid first, so behind the points!
+}
+
+# Distribution observation with multi-histograms:
+uni.histograms <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB = 2, BTY = "n",
+                           FG = "gray35", COL.AXIS = "gray35", COL.LAB = "gray20", CEX.PAR = 0.6,
+                           TCL = -0.3, MGP = c(1.7, 0.6, 0.1), OMA = c(1, 0, 1, 0), LAB = c(5, 10, 7),
+                           BREAKS = 10, COL = "moccasin", BORDER = "white"){
+  num.data <- dataset[, sapply(dataset, is.numeric)]
+  nam <- names(num.data)
+  ncol.data <- ncol(num.data)
+  ncol.adjust <- ceiling(x = ncol.data/4) # Round to the next integer (e.g. ceiling(x = 7.12) returns 8)!
+  num.data <- as.matrix(num.data)
+
+  graphics::par(mfrow= c (ncol.adjust,4), mar=MAR, cex.lab = CEX.LAB, font.lab=FONT.LAB, bty = BTY, fg = FG,
+                col.axis = COL.AXIS, col.lab = COL.LAB, cex = CEX.PAR, tcl = TCL,
+                mgp = MGP, oma = OMA, lab = LAB)
+  for (i in c(1:ncol(num.data))) {
+    graphics::hist(num.data[,i], breaks = BREAKS, col = COL, border = BORDER,
+                   main = "", xlab = nam[i], ylab = "")
+  }
+}
+
+```
+
+
 # 1. Introduction
 ## 1.1. Regarding reproductibility
 
@@ -21,7 +96,7 @@ knitr::opts_chunk$set(echo = FALSE)
 In order to facilitate any attempt at reproducing this study, here is a depiction of the system information used to prepare and analyse the data from the PubPrivLands tits reproduction study (Martin *et al.* , *in prep.*).
 
 ```{r session information}
-rm(list=ls())
+# rm(list=ls())
 sessionInfo()
 ```
 
@@ -52,14 +127,13 @@ This document presents all analyses related to the third stage of our data proce
 # 2. Local habitat quality modelling
 ## 2.1. Rationale
 
-```{r data import, include=FALSE}
-library(ppl.tits) # To be able to use pipes.
-stab_r2plot <- targets::tar_read(RF_r2plot)
-stab_varimplot <- targets::tar_read(RF_importanceplot)
-# tits <- targets::tar_read(clean_tdata) # I don't need data for now!
-# As you can see, I import my data using 'targets'! If you are reading this report and don't know what it is or how I created and stored them, you should read the README or the _devhistory.R files available at https://github.com/mrelnoob/ppl.tits. 
-
-.pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
+```{r rfdata import, include=FALSE}
+# stab_r2plot <- targets::tar_read(RF_r2plot)
+# stab_varimplot <- targets::tar_read(RF_importanceplot)
+# # tits <- targets::tar_read(clean_tdata) # I don't need data for now!
+# # As you can see, I import my data using 'targets'! If you are reading this report and don't know what it is or how I created and stored them, you should read the README or the _devhistory.R files available at https://github.com/mrelnoob/ppl.tits. 
+# 
+# .pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
 ```
 
 In order to model the habitat connectivity of our focal species with the Graphab software [@graphab2021], we first have to approximate the *quality* of every habitat patches (i.e. patch capacity), hence enabling weighting the nodes of the graph. Usually, this habitat quality is simply approximated by the patch cover area. In this study, we tried to obtained a more meaningful proxy of habitat quality for tits by developing a model predicting the birds' *clutch size* using local environmental variables only, hence the denomination of "local habitat quality models", one for each species.  
@@ -82,13 +156,13 @@ Our Random Forest regression model obtained a MSE of **2.224875** and explained 
 To evaluate the stability of these outputs, I reiterated this modelling process a hundred times and monitored the variance of the $R^{2}_{oob}$ and the *variable importance metrics*:
 
 ```{r rf4pm r squared plot, fig.align='center', fig.cap="**Figure M1.** Cumulative density function of the Random Forest's $R^{2}_{oob}$ computed over a hundred random repetitions", fig.width=5, fig.height=3, warning=FALSE}
-stab_r2plot
+# stab_r2plot
 ```
 
 Fortunately, we can see that the $R^{2}_{oob}$ values converges towards ~12%. 
 
 ```{r rf4pm var_importance plot, fig.align='center', fig.cap="**Figure M2.** Disribution of predictors importance metrics (expressed as percentage increase in MSE when permuted) computed over a hundred random repetitions", warning=FALSE}
-stab_varimplot
+# stab_varimplot
 ```
 
 This figure shows that the variables importance is also stable across iterations. The grown forest thus seems reliable enough to be used for predictions.
@@ -103,9 +177,117 @@ Despite our efforts, we could not obtain reliable results with our Blue tits dat
 
 ******
 
-# 3. Connectivity modelling
+# 3. Connectivity metric exploration
+## 3.1. F-metrics for the Great tits (*Parus major*)
 
-To be continued...
+```{r data_function NOTE, include=FALSE}
+### For NOW, I will SIMPLY plot the data and things I want to explore using the data and custom functions # called and written at the beginning of this document, so I need manually KNIT the report using the # button and not with {targets}!!!!!!!!
+# Ultimately, I will have to convert that into proper package functions and targets!!!!!!
+# Ultimately, I will have to convert that into proper package functions and targets!!!!!!
+# Ultimately, I will have to convert that into proper package functions and targets!!!!!!
+# Ultimately, I will have to convert that into proper package functions and targets!!!!!!
+# Ultimately, I will have to convert that into proper package functions and targets!!!!!!
+# Ultimately, I will have to convert that into proper package functions and targets!!!!!!
+```
+
+### 3.1.1. Univariate exploration
+
+First, let's look at potential outliers in the metrics:
+
+```{r pmarea_F dotplot, fig.align='center', fig.cap="**Figure M3.** Cleveland dotplots for all computed F-metrics for *Parus major* nestboxes using AREA as capacity"}
+uni.dotplots(dataset = pm_f[,c(3:14, 2)]) # To have AREA at the end.
+```
+
+It appears all F metrics have extreme values that may be viewed as outliers even though the situation is less pronounced when ***beta* = 0**. 
+
+```{r pmarea_F outliers loc, echo=TRUE}
+pm_f$site[which(pm_f$pmF_d113_beta0 > 50)] # To know were the extreme values come from.
+pm_f$site[which(pm_f$pmF_d531_beta1 > 200000)]
+pm_f$site[which(pm_f$pmF_d1368_beta1 > 500000)]
+```
+\
+
+We can then look at their histograms:
+
+```{r pmarea_F histo, fig.align='center', fig.cap="**Figure M4.** Histograms for all computed F-metrics for *Parus major* nestboxes using AREA as capacity"}
+uni.histograms(dataset = pm_f[,c(3:14, 2)]) # To have AREA at the end.
+```
+
+We can see that, with the exception of the F with ***beta* = 0** and the **largest distance**, none of the metrics are close to a normal distribution. This might be problematic.
+\
+\
+
+
+### 3.1.2. Multivariate exploration
+
+Let's take a look at the bivariate correlations among the F metrics and some other predictors:
+
+```{r pmarea_F corrplot, fig.align='center', fig.cap="**Figure M5.** Correlation matrix displaying *Spearman*'s $\\rho$ for all computed F metrics and some selected predictors. Only significant correlations are displayed (with $\\alpha$ = 0.05)", warning=FALSE}
+
+pm_f %>% dplyr::select(-id_nestbox, -site, -breeding_window, -clutch_size, -brood_size, -fledgling_nb,
+                       -mass, -tarsus_length, -wing_length, -father_cond, -mother_cond,
+                       -pmF_d113_beta2, -pmF_d531_beta2,  -pmF_d1368_beta2, -pmF_d2848_beta2) -> pm_x
+pm_x$age_class <- as.numeric(levels(pm_f$age_class))[pm_f$age_class]
+pm_x$strata_div <- as.numeric(levels(pm_f$strata_div))[pm_f$strata_div]
+
+# To compute the correlation matrix:
+res.cor.pmx <- round(stats::cor(pm_x, use = "complete.obs", method = "spearman"), 2)
+# To compute a matrix of correlation p-values:
+res.pcor.pmx <- ggcorrplot::cor_pmat(x = pm_x, method = "spearman")
+
+ggcorrplot::ggcorrplot(res.cor.pmx, type = "upper",
+   outline.col = "white",
+   ggtheme = ggplot2::theme_gray,
+   colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.pmx, insig = "blank")
+```
+
+Obviously, there are many things to say here:
+
+* First, most predictors are significantly correlated with each others, and all *F metrics* are **positively correlated** with each other, suggesting that they may carry pretty much the same information.
+* Second, *woody vegetation cover* and *volume* are **strongly positively correlated** with all *F metrics*, which might be problematic for modelling. A closer look reveals that the correlation is **slightly weaker** with *woodyveg_volume* than with *woody_area*, and that **the lower the distance the higher the correlation**.
+* Third, the *F metrics* computed with the **largest distances** (i.e. *d* = 2848) are **extremely positively correlated** with each other BUT LESS SO with the other variables, perhaps because the distance is so high that the metric stops being linked to local environmental conditions. We can also see that they are **negatively correlated** with *longitude* displaying the expected **East-West gradient** of connectivity (a North-South gradient of *F metrics* exists as well).
+* Fourth, we could say that, besides the *F metrics* computed with the highest distances, **the highest among F metrics correlations** are between "consecutive" metrics (i.e. metrics with the *same distance* but *differing betas* or with the *same betas* but *differing distances*).
+
+
+\
+To further study distributions and bivariate correlations, we decided to plot every numeric predictor against each others. It gives us the possibility to start investigating potential **multivariate outliers**.
+
+```{r pmarea_F ggpairs, fig.align='center', fig.cap="**Figure M6.** Bivariate relationship among computed *F-metrics* and some key explanatory variables", fig.width=15, fig.height=12, message=FALSE, comment=NA, warning=FALSE}
+pm_x %>% dplyr::select(-strata_div, -age_class, -woody_area, -area, -noise_m, -lsource_vs150_m,
+                       -min_t_between) -> pm_fs
+GGally::ggpairs(pm_fs)
+```
+
+This figure emphasizes once more that **the *predictor space* has not been properly sampled** as there clearly are many **multivariate outliers** (or, at least, extreme values).  
+Other interesting observations can be made:
+
+1. For *F metrics* with *beta* = 0, the among metrics correlation is very clear and shows that the extreme values are the same regardless of the selected *distance*.
+2. For *F metrics* with *beta* = 1, patterns are less clear. The 5th row shows that the most extreme values from *pmF_d113_beta1* **are not the same** than those of the *F metrics* with *beta* = 0, suggesting that they do not entirely share the same information! Yet, as the *distance* increases, the information shared between the *F metrics* with *beta* = 0 or 1 increases as well!
+3. We can confirm that only the *F metrics* computed with *the 2 lowest distances* do not represent an **East-West gradient of connectivity**. 
+4. We can confirm that the connectivity increases with decreasing *built* and *open areas*!
+5. The last row shows that the sites with **the highest woody volume** are not necessarily those with **the highest *F metrics* **: i.e. although rank-based correlations are extremely high (particularly for metrics with *beta* = 1), the plot shows **clear bivariate outliers** as well as rather **flat relationships** between these variables with the notable exception of *pmF_d113_beta1*! It could mean that the supposedly correlated relationship between **woody vegetation volume** and our **connectivity proxies** may not be so analytically problematic and we could argue that **it legitimises our hypothesis** of an interaction between these two *variables of interest*! 
+
+So, up to this point, I'm rather inclined into **discarding** *F metrics* based on the *longest distances*, and I have a slight preference for *F metrics* computed with *beta* = 0.
+\
+\
+
+
+### 3.1.3. Y-based data exploration
+
+```{r pm_f Y data prep}
+
+# Exclude other Xs except woodyveg_volume??? Or not.
+# Subset n (training set)!
+# Simple correlations
+# Regression models with X and interactions????
+
+```
+\
+
+
+\
+\
 
 ******
-# XX. References
+
+# 4. References

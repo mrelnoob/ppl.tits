@@ -387,4 +387,96 @@ java -jar graphab-2.8.1.jar --project .\titscaparea_gpb\titscaparea_gpb.xml --lm
 p=0.5 beta=0,1,2
 # Same rationale as for PM (but with slightly lower values for CC).
 
+####### SCRIPT MUST BE UPDATED #########
+####### SCRIPT MUST BE UPDATED #########
+####### SCRIPT MUST BE UPDATED #########
+####### SCRIPT MUST BE UPDATED #########
+
+
+
+
+
+# ---------------------------------------------- #
+##### 3. Exploration of connectivity metrics #####
+# ---------------------------------------------- #
+
+# ---------------------------------------------------------------------------- #
+### * 3.1. Exploration functions creation --------------------------------------
+
+# As I'm unable to install my {jk.dusz.tarping} package that contains some useful functions for data
+# exploration, I will recreate the said functions here (ultimately, I should 1) fix the bug in the
+# {jk.dusz.tarping} package that prevents installation [see my "update script"] and 2) transfer the
+# useful functions in my truly exported utility package {airpoumpoum}!):
+
+# Outlier detection with Cleveland dotplots:
+uni.dotplots <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB = 2, BTY = "n",
+                         FG = "gray35", COL.AXIS = "gray35", COL.LAB = "gray20", CEX.PAR = 0.6,
+                         TCL = -0.3, MGP = c(1.7, 0.6, 0.1), OMA = c(1, 0, 1, 0), LAB = c(5, 10, 7),
+                         COL.PCH = "lightcoral", PCH = 19, COL.GRID = "lavender", NX = 5, NY = 9, LTY = 6,
+                         ...){
+  num.data <- dataset[, sapply(dataset, is.numeric)]
+  nam <- names(num.data)
+  ncol.data <- ncol(num.data)
+  ncol.adjust <- ceiling(x = ncol.data/4) # Round to the next integer (e.g. ceiling(x = 7.12) returns 8)!
+  num.data <- as.matrix(num.data)
+
+  graphics::par(mfrow= c (ncol.adjust,4), mar=MAR, cex.lab = CEX.LAB, font.lab=FONT.LAB, bty = BTY, fg = FG,
+                col.axis = COL.AXIS, col.lab = COL.LAB, cex = CEX.PAR, tcl = TCL,
+                mgp = MGP, oma = OMA, lab = LAB)
+  for (i in c(1:ncol(num.data))) {
+    graphics::plot(x = num.data[,i], y = 1:length(num.data[,i]), type = "p", xlab = nam[i], ylab = "",
+                   col = COL.PCH, pch = PCH, panel.first = {
+                     grid(col=COL.GRID,nx = NX,ny = NY, lty = LTY)
+                   }, ...) }
+  # Here, the argument panel.first={} is used to draw the grid first, so behind the points!
+}
+
+# Distribution observation with multi-histograms:
+uni.histograms <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB = 2, BTY = "n",
+                           FG = "gray35", COL.AXIS = "gray35", COL.LAB = "gray20", CEX.PAR = 0.6,
+                           TCL = -0.3, MGP = c(1.7, 0.6, 0.1), OMA = c(1, 0, 1, 0), LAB = c(5, 10, 7),
+                           BREAKS = 10, COL = "moccasin", BORDER = "white"){
+  num.data <- dataset[, sapply(dataset, is.numeric)]
+  nam <- names(num.data)
+  ncol.data <- ncol(num.data)
+  ncol.adjust <- ceiling(x = ncol.data/4) # Round to the next integer (e.g. ceiling(x = 7.12) returns 8)!
+  num.data <- as.matrix(num.data)
+
+  graphics::par(mfrow= c (ncol.adjust,4), mar=MAR, cex.lab = CEX.LAB, font.lab=FONT.LAB, bty = BTY, fg = FG,
+                col.axis = COL.AXIS, col.lab = COL.LAB, cex = CEX.PAR, tcl = TCL,
+                mgp = MGP, oma = OMA, lab = LAB)
+  for (i in c(1:ncol(num.data))) {
+    graphics::hist(num.data[,i], breaks = BREAKS, col = COL, border = BORDER,
+                   main = "", xlab = nam[i], ylab = "")
+  }
+}
+
+
+
+
+
+# ---------------------------------------------------------------------------- #
+### * 3.2. F-metrics for PM ----------------------------------------------------
+# ** 3.1.1. Loading and joining datasets ----
+
+tits_clean <- ppl.tits::ntits_clean
+tits_clean %>% dplyr::filter(species == "PM") %>%
+  dplyr::select(id_nestbox, site, coord_x, coord_y, breeding_window,
+                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
+                father_cond, mother_cond, min_t_between, lsource_vs150_m, noise_m,
+                built_area, open_area, woody_area, woodyveg_volume, age_class, strata_div) -> pm
+
+fmetrics <- readr::read_csv2(here::here("input_raw_data", "cmetrics_pm.csv"),
+                          col_names = TRUE, na = "NA",
+                          col_types = readr::cols(id_nestbox = readr::col_factor(),
+                                                  id_patch = readr::col_factor()))
+fmetrics %>% dplyr::select(-id_patch, -cost_to_patch, -perim) %>%
+  dplyr::inner_join(pm, fmetrics, by = "id_nestbox") -> pm_f # Not clear why left_join worked for
+# ppl.tits::tdata_upD_rawiv() and not here (so I had to use inner_join())!!!
+
+
+
+
+
+# ** 3.1.3. Univariate metric exploration ----
 
