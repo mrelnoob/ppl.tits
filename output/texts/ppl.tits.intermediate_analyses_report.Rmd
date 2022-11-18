@@ -267,7 +267,7 @@ Other interesting observations can be made:
 4. We can confirm that the connectivity increases with decreasing *built* and *open areas*!
 5. The last row shows that the sites with **the highest woody volume** are not necessarily those with **the highest *F metrics* **: i.e. although rank-based correlations are extremely high (particularly for metrics with *beta* = 1), the plot shows **clear bivariate outliers** as well as rather **flat relationships** between these variables with the notable exception of *pmF_d113_beta1*! It could mean that the supposedly correlated relationship between **woody vegetation volume** and our **connectivity proxies** may not be so analytically problematic and we could argue that **it legitimises our hypothesis** of an interaction between these two *variables of interest*! 
 
-So, up to this point, I'm rather inclined into **discarding** *F metrics* based on the *longest distances*, and I have a slight preference for *F metrics* computed with *beta* = 0.
+So, up to this point, we'd be rather inclined into **discarding** *F metrics* based on the *longest distances*, and we have a slight preference for *F metrics* computed with *beta* = 0.
 \
 \
 
@@ -316,40 +316,72 @@ On this figure, we can see that:
 To further examine these relationships, we plotted the Great tits couples' *clutch size* and the *mass* of nestlings against all our computed *F metrics*:
 
 
-```{r pm clutchsize scatterF, fig.align='center', fig.cap="**Figure M8a.** Bivariate scatterplot between *Parus major*'s clutch size and each potential connectivity metric", fig.width=12, fig.height=9, message=FALSE, comment=NA, warning=FALSE}
+```{r pm clutchsize scatterF, fig.align='center', fig.cap="**Figure M8a.** Bivariate scatterplot between *Parus major*'s clutch size and each potential connectivity metric, with and without log-tranformation", fig.width=12, fig.height=9, message=FALSE, comment=NA, warning=FALSE}
 
-summary(tpm_x)
+tpm_xs <- tpm_x[,c("clutch_size", "pmF_d113_beta0", "pmF_d531_beta0", "pmF_d1368_beta0", "pmF_d2848_beta0", "pmF_d113_beta1", "pmF_d531_beta1", "pmF_d1368_beta1", "pmF_d2848_beta1")]
 
+# Transforming predictors:
+tpm_xs <- tpm_xs %>%
+  dplyr::mutate("pmF_d113_beta0 (log)" = log(pmF_d113_beta0)) %>%
+  dplyr::mutate("pmF_d531_beta0 (log)" = log(pmF_d531_beta0)) %>%
+  dplyr::mutate("pmF_d1368_beta0 (log)" = log(pmF_d1368_beta0)) %>%
+  dplyr::mutate("pmF_d2848_beta0 (log)" = log(pmF_d2848_beta0)) %>%
+  dplyr::mutate("pmF_d113_beta1 (log)" = log(pmF_d113_beta1)) %>%
+  dplyr::mutate("pmF_d531_beta1 (log)" = log(pmF_d531_beta1)) %>%
+  dplyr::mutate("pmF_d1368_beta1 (log)" = log(pmF_d1368_beta1)) %>%
+  dplyr::mutate("pmF_d2848_beta1 (log)" = log(pmF_d2848_beta1)) # These transformations were made to linearise the relationships.
 
-
-eff2 <- erad[,c("high_eff", "distance", "followups", "obstacles", "sedicover_height", "slope", "stand_surface", "tarping_duration")]
-model <- glm(high_eff ~., data = eff2, family = binomial)
-# Predict the probability (p) of high efficacy:
-probabilities <- predict(model, type = "response")
-# Transforming predictors
-mydata <- eff2 %>%
-  dplyr::select_if(is.numeric) %>%
-  dplyr::mutate("stand_surface (log)" = log(stand_surface)) %>%
-  dplyr::mutate("distance (log+1)" = log(distance + 1)) %>%
-  dplyr::mutate("sedicover_height (log+1)" = log(sedicover_height+1)) # These transformations were made to linearize the relationships
-predictors <- colnames(mydata)
-# Bind the logit and tidying the data for plot (ggplot2, so long format)
-mydata <- mydata %>%
-  dplyr::mutate(logit = log(probabilities/(1-probabilities))) %>%
-  tidyr::gather(key = "predictors", value = "predictor.value", -logit)
-# Create scatterplot
-ggplot2::ggplot(mydata, ggplot2::aes(y = logit, x = predictor.value))+
+predictors <- colnames(tpm_xs)[2:ncol(tpm_xs)]
+# Bind the clutch_size and tidying the data for plot (ggplot2, so long format):
+mydata <- tpm_xs %>%
+  tidyr::gather(key = "F_metric", value = "F_values", -clutch_size)
+# Create scatterplot:
+ggplot2::ggplot(mydata, ggplot2::aes(y = clutch_size, x = F_values))+
   ggplot2::geom_point(size = 0.5, alpha = 0.5) +
   ggplot2::geom_smooth(method = "loess") +
   ggplot2::theme_bw() +
-  ggplot2::facet_wrap(~predictors, scales = "free_x")
-rm(eff2, model, probabilities, predictors, mydata)
-
-# Regression models with X and interactions????
+  ggplot2::facet_wrap(~F_metric, scales = "free_x")
 ```
+
+We can see here once again that the *beta0* metrics have more homogeneous distributions than the *beta1* metrics. It is also obvious that direct effects are rather weak (or even null) but an optimistic mind could say that there may be **weak negative relationships** between some of our *F metrics* (e.g. for *d113_beta0* and *beta1*, or for *d531_beta1*, all in log scale).  
+To deepen our grasp of the metrics relevance, we also looked at the relationships with the *mass* of nestlings:
+
+```{r pm mass scatterF, fig.align='center', fig.cap="**Figure M8b.** Bivariate scatterplot between the mass of *Parus major* nestlings and each potential connectivity metric, with and without log-tranformation", fig.width=12, fig.height=9, message=FALSE, comment=NA, warning=FALSE}
+
+tpm_xs <- tpm_x[,c("mass", "pmF_d113_beta0", "pmF_d531_beta0", "pmF_d1368_beta0", "pmF_d2848_beta0", "pmF_d113_beta1", "pmF_d531_beta1", "pmF_d1368_beta1", "pmF_d2848_beta1")]
+
+# Transforming predictors:
+tpm_xs <- tpm_xs %>%
+  dplyr::mutate("pmF_d113_beta0 (log)" = log(pmF_d113_beta0)) %>%
+  dplyr::mutate("pmF_d531_beta0 (log)" = log(pmF_d531_beta0)) %>%
+  dplyr::mutate("pmF_d1368_beta0 (log)" = log(pmF_d1368_beta0)) %>%
+  dplyr::mutate("pmF_d2848_beta0 (log)" = log(pmF_d2848_beta0)) %>%
+  dplyr::mutate("pmF_d113_beta1 (log)" = log(pmF_d113_beta1)) %>%
+  dplyr::mutate("pmF_d531_beta1 (log)" = log(pmF_d531_beta1)) %>%
+  dplyr::mutate("pmF_d1368_beta1 (log)" = log(pmF_d1368_beta1)) %>%
+  dplyr::mutate("pmF_d2848_beta1 (log)" = log(pmF_d2848_beta1)) # These transformations were made to linearise the relationships.
+
+predictors <- colnames(tpm_xs)[2:ncol(tpm_xs)]
+# Bind the mass and tidying the data for plot (ggplot2, so long format):
+mydata <- tpm_xs %>%
+  tidyr::gather(key = "F_metric", value = "F_values", -mass)
+# Create scatterplot:
+ggplot2::ggplot(mydata, ggplot2::aes(y = mass, x = F_values))+
+  ggplot2::geom_point(size = 0.5, alpha = 0.5) +
+  ggplot2::geom_smooth(method = "loess") +
+  ggplot2::theme_bw() +
+  ggplot2::facet_wrap(~F_metric, scales = "free_x")
+
+```
+
+Here again, it is clear that the metrics with the two *lowest distances* display smoother relationships with the *outcome* than the other two, regardless of the *beta* parameter. Interestingly, and contrarily to what was visible on the correlation matrix, all *F metrics* seem to have **positive effects** on the nestlings mass, but the relationships seem **straighter** for the *F* computed with *d* = 113 (regardless of its *beta* value) as well as for *F d531_beta0* on the log scale.  
 \
 \
 
+
+### 3.1.4. Conclusion
+
+Overall, these observations support our initial preference for the *F metrics* computed with *the two lowest distances* and with *beta* = 0.
 
 \
 \
