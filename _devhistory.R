@@ -215,6 +215,7 @@ usethis::use_r("01_01_prepare_data")
 usethis::use_r("01_02_export_r_data")
 usethis::use_r("02_00_local_predictive_modelling")
 usethis::use_r("02_01_graphab_analyses")
+usethis::use_r("02_02_exploratory_data_analyses")
 
 
 

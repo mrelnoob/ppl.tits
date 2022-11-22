@@ -7,7 +7,7 @@
 \format{
 \subsection{\code{ntits_clean}}{
 
-A data frame (tibble) with 406 rows and 47 columns. Here's
+A data frame (tibble) with 406 rows and 47 columns. Here's a short description of its content:
 \describe{
 \item{\strong{id_nestbox}}{Categorical -- The nestbox ID.}
 \item{\strong{site}}{Categorical -- The name of the site where the nestbox is located.}
@@ -44,6 +44,6 @@ ready?***). \cr
 For further details regarding data acquisition, processing or metadata, readers are referred to: i) the
 documentation of the \code{{ppl.tits}} package functions and related reports (cf. the package's
 \href{https://github.com/mrelnoob/ppl.tits}{README file}; ii) the associated article's Materials & Methods
-section; and iii) the articles's Supplementary Materials (LINKS?***).
+section; and iii) the article's Supplementary Materials (LINKS?***).
 }
 \keyword{datasets}

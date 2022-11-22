@@ -14,10 +14,10 @@
 #' For further details regarding data acquisition, processing or metadata, readers are referred to: i) the
 #' documentation of the `{ppl.tits}` package functions and related reports (cf. the package's
 #' [README file](https://github.com/mrelnoob/ppl.tits); ii) the associated article's Materials & Methods
-#' section; and iii) the articles's Supplementary Materials (LINKS?***).
+#' section; and iii) the article's Supplementary Materials (LINKS?***).
 #'
 #' @format ## `ntits_clean`
-#' A data frame (tibble) with 406 rows and 47 columns. Here's
+#' A data frame (tibble) with 406 rows and 47 columns. Here's a short description of its content:
 #' \describe{
 #'   \item{\strong{id_nestbox}}{Categorical -- The nestbox ID.}
 #'   \item{\strong{site}}{Categorical -- The name of the site where the nestbox is located.}
@@ -32,3 +32,29 @@
 #' }
 #' @source <https://github.com/mrelnoob/ppl.tits>
 "ntits_clean"
+
+
+
+
+#' Raw tits dataset
+#'
+#' This is the raw data used for the first part of the "tits reproduction study" of the PubPrivLands
+#' project containing observations of both Great tits (\emph{Parus major}) and Blue tits (\emph{Cyanistes
+#' caeruleus}) adults and nestlings in Dijon between 2019 and 2022. \cr
+#' This dataset was imported and corrected by the
+#' \code{\link[ppl.tits:import_raw_tits_data]{import_raw_tits_data}} function.
+#'
+#' For further details regarding data acquisition, processing or metadata, readers are referred to: i) the
+#' documentation of the `{ppl.tits}` package functions and related reports (cf. the package's
+#' [README file](https://github.com/mrelnoob/ppl.tits); ii) the associated article's Materials & Methods
+#' section; and iii) the article's Supplementary Materials (LINKS?***).
+#'
+#' @format ## `raw_tits_data`
+#' A data frame (tibble) with MANY ROWS AND COLUMNS§§§ TO BE CONTINUED
+#' \describe{
+#'   \item{\strong{id_nestbox}}{Categorical -- The nestbox ID.}
+#'   \item{\strong{xxx}}{TO BE CONTINUED UPON PUBLICATION***...}
+#'   ...
+#' }
+#' @source <https://github.com/mrelnoob/ppl.tits>
+"raw_tits_data"
