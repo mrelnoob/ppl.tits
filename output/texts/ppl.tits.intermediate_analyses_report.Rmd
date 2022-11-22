@@ -31,15 +31,27 @@ tits_clean %>% dplyr::filter(species == "PM") %>%
                 clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
                 father_cond, mother_cond, min_t_between, lsource_vs150_m, noise_m,
                 built_area, open_area, woody_area, woodyveg_volume, age_class, strata_div) -> pm
+tits_clean %>% dplyr::filter(species == "CC") %>%
+  dplyr::select(id_nestbox, site, coord_x, coord_y, breeding_window,
+                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
+                min_t_between, lsource_vs150_m, noise_m,
+                built_area, open_area, woody_area, woodyveg_volume, age_class, strata_div) -> cc
 
-fmetrics <- readr::read_csv2(here::here("input_raw_data", "cmetrics_pm.csv"),
+fmetrics_pm <- readr::read_csv2(here::here("input_raw_data", "cmetrics_pm.csv"),
                           col_names = TRUE, na = "NA",
                           col_types = readr::cols(id_nestbox = readr::col_factor(),
                                                   id_patch = readr::col_factor()))
-fmetrics %>% dplyr::select(-id_patch, -cost_to_patch, -perim) %>%
-  dplyr::inner_join(pm, fmetrics, by = "id_nestbox") -> pm_f # Not clear why left_join worked for
+fmetrics_pm %>% dplyr::select(-id_patch, -cost_to_patch, -perim) %>%
+  dplyr::inner_join(pm, fmetrics_pm, by = "id_nestbox") -> pm_f # Not clear why left_join worked for
 # ppl.tits::tdata_upD_rawiv() and not here (so I had to use inner_join())!!!
-
+fmetrics_cc <- readr::read_csv2(here::here("input_raw_data", "cmetrics_cc.csv"),
+                          col_names = TRUE, na = "NA",
+                          col_types = readr::cols(id_nestbox = readr::col_factor(),
+                                                  id_patch = readr::col_factor()))
+fmetrics_cc %>% dplyr::select(-id_patch, -cost_to_patch, -perim, -ccF_d92_beta2, 
+                              -ccF_d311_beta2, -ccF_d1573_beta2, -ccF_d3236_beta2) %>%
+  dplyr::inner_join(cc, fmetrics_cc, by = "id_nestbox") -> cc_f # Here, contrarily to PM, I do not keep
+# the beta2 metrics as we won't use them anyway. 
 
 
 ##### CUSTOM EXPLO FUNCTIONS:
@@ -194,7 +206,7 @@ Despite our efforts, we could not obtain reliable results with our Blue tits dat
 
 First, we investigated the existence of potential outliers in the metrics:
 
-```{r pmarea_F dotplot, fig.align='center', fig.cap="**Figure M3.** Cleveland dotplots for all computed F-metrics for *Parus major* nestboxes using AREA as capacity"}
+```{r pmarea_F dotplot, fig.align='center', fig.cap="**Figure M3pm.** Cleveland dotplots for all computed F-metrics for *Parus major* nestboxes using AREA as capacity"}
 uni.dotplots(dataset = pm_f[,c(3:14, 2)]) # To have AREA at the end.
 ```
 
@@ -209,7 +221,7 @@ pm_f$site[which(pm_f$pmF_d1368_beta1 > 500000)]
 
 We then looked at their histograms:
 
-```{r pmarea_F histo, fig.align='center', fig.cap="**Figure M4.** Histograms for all computed F-metrics for *Parus major* nestboxes using AREA as capacity"}
+```{r pmarea_F histo, fig.align='center', fig.cap="**Figure M4pm.** Histograms for all computed F-metrics for *Parus major* nestboxes using AREA as capacity"}
 uni.histograms(dataset = pm_f[,c(3:14, 2)]) # To have AREA at the end.
 ```
 
@@ -222,7 +234,7 @@ We can see that, with the exception of the F with ***beta* = 0** and the **large
 
 We then investigated the bivariate correlations among the F metrics and some other predictors:
 
-```{r pmarea_F corrplot, fig.align='center', fig.cap="**Figure M5.** Correlation matrix displaying *Spearman*'s $\\rho$ for all computed F metrics and some selected predictors. Only significant correlations are displayed (with $\\alpha$ = 0.05)", warning=FALSE}
+```{r pmarea_F corrplot, fig.align='center', fig.cap="**Figure M5pm.** Correlation matrix displaying *Spearman*'s $\\rho$ for all computed F metrics and some selected predictors. Only significant correlations are displayed (with $\\alpha$ = 0.05)", warning=FALSE}
 
 pm_f %>% dplyr::select(-id_nestbox, -site, -breeding_window, -clutch_size, -brood_size, -fledgling_nb,
                        -mass, -tarsus_length, -wing_length, -father_cond, -mother_cond,
@@ -252,7 +264,7 @@ Obviously, there are many things to say here:
 \
 To further study distributions and bivariate correlations, we decided to plot every numeric predictor against each others. It gave us the possibility to start investigating potential **multivariate outliers**.
 
-```{r pmarea_F ggpairs, fig.align='center', fig.cap="**Figure M6.** Bivariate relationship among computed *F-metrics* and some key explanatory variables", fig.width=15, fig.height=12, message=FALSE, comment=NA, warning=FALSE}
+```{r pmarea_F ggpairs, fig.align='center', fig.cap="**Figure M6pm.** Bivariate relationship among computed *F-metrics* and some key explanatory variables", fig.width=15, fig.height=12, message=FALSE, comment=NA, warning=FALSE}
 pm_x %>% dplyr::select(-strata_div, -age_class, -woody_area, -area, -noise_m, -lsource_vs150_m,
                        -min_t_between) -> pm_fs
 GGally::ggpairs(pm_fs)
@@ -288,7 +300,7 @@ To avoid illegitimate data-driven model development, we first started by dividin
 
 Then, we looked at simple rank-based bivariate correlations:
 
-```{r pm_f Y corrplot, fig.align='center', fig.cap="**Figure M7.** Correlation matrix displaying *Spearman*'s $\\rho$ for all computed F metrics and our response variables on our training set. Only significant correlations are displayed (with $\\alpha$ = 0.05)", warning=FALSE}
+```{r pm_f Y corrplot, fig.align='center', fig.cap="**Figure M7pm.** Correlation matrix displaying *Spearman*'s $\\rho$ for all computed F metrics and our response variables on our training set. Only significant correlations are displayed (with $\\alpha$ = 0.05)", warning=FALSE}
 
 trainset_pm %>% dplyr::select(id_nestbox, site, breeding_window, clutch_size, brood_size, fledgling_nb,
                        mass, tarsus_length, wing_length, father_cond, mother_cond, woodyveg_volume,
@@ -316,7 +328,7 @@ On this figure, we can see that:
 To further examine these relationships, we plotted the Great tits couples' *clutch size* and the *mass* of nestlings against all our computed *F metrics*:
 
 
-```{r pm clutchsize scatterF, fig.align='center', fig.cap="**Figure M8a.** Bivariate scatterplot between *Parus major*'s clutch size and each potential connectivity metric, with and without log-tranformation", fig.width=12, fig.height=9, message=FALSE, comment=NA, warning=FALSE}
+```{r pm clutchsize scatterF, fig.align='center', fig.cap="**Figure M8a_pm.** Bivariate scatterplot between *Parus major*'s clutch size and each potential connectivity metric, with and without log-tranformation", fig.width=12, fig.height=9, message=FALSE, comment=NA, warning=FALSE}
 
 tpm_xs <- tpm_x[,c("clutch_size", "pmF_d113_beta0", "pmF_d531_beta0", "pmF_d1368_beta0", "pmF_d2848_beta0", "pmF_d113_beta1", "pmF_d531_beta1", "pmF_d1368_beta1", "pmF_d2848_beta1")]
 
@@ -346,7 +358,7 @@ ggplot2::ggplot(mydata, ggplot2::aes(y = clutch_size, x = F_values))+
 We can see here once again that the *beta0* metrics have more homogeneous distributions than the *beta1* metrics. It is also obvious that direct effects are rather weak (or even null) but an optimistic mind could say that there may be **weak negative relationships** between some of our *F metrics* (e.g. for *d113_beta0* and *beta1*, or for *d531_beta1*, all in log scale).  
 To deepen our grasp of the metrics relevance, we also looked at the relationships with the *mass* of nestlings:
 
-```{r pm mass scatterF, fig.align='center', fig.cap="**Figure M8b.** Bivariate scatterplot between the mass of *Parus major* nestlings and each potential connectivity metric, with and without log-tranformation", fig.width=12, fig.height=9, message=FALSE, comment=NA, warning=FALSE}
+```{r pm mass scatterF, fig.align='center', fig.cap="**Figure M8b_pm.** Bivariate scatterplot between the mass of *Parus major* nestlings and each potential connectivity metric, with and without log-tranformation", fig.width=12, fig.height=9, message=FALSE, comment=NA, warning=FALSE}
 
 tpm_xs <- tpm_x[,c("mass", "pmF_d113_beta0", "pmF_d531_beta0", "pmF_d1368_beta0", "pmF_d2848_beta0", "pmF_d113_beta1", "pmF_d531_beta1", "pmF_d1368_beta1", "pmF_d2848_beta1")]
 
@@ -382,7 +394,196 @@ Here again, it is clear that the metrics with the two *lowest distances* display
 ### 3.1.4. Conclusion
 
 Overall, these observations support our initial preference for the *F metrics* computed with *the two lowest distances* and with *beta* = 0.
+\
+\
 
+
+## 3.2. F-metrics for the Blue tits (*Cyanistes caeruleus*)
+### 3.2.1. Univariate exploration
+
+Here, you'll notice that contrarily to what was done for *Parus major*, we did not evaluate the *F metrics* computed with *beta* = 2 to gain some time as they would have been discarded anyway.  
+Now, we first investigated the existence of potential outliers in the metrics:
+
+```{r ccarea_F dotplot, fig.align='center', fig.cap="**Figure M3cc.** Cleveland dotplots for all computed F-metrics for *Cyanistes caeruleus* nestboxes using AREA as capacity"}
+uni.dotplots(dataset = cc_f[,c(3:10, 2)], COL.PCH = "royalblue3") # To have AREA at the end.
+```
+
+It appears all *beta1 F metrics* have extreme values that may be viewed as outliers.
+\
+
+We then looked at their histograms:
+
+```{r ccarea_F histo, fig.align='center', fig.cap="**Figure M4cc.** Histograms for all computed F-metrics for *Cyanistes caeruleus* nestboxes using AREA as capacity"}
+uni.histograms(dataset = cc_f[,c(3:10, 2)], COL = "aquamarine3") # To have AREA at the end.
+```
+
+We can see that, with the exception of the F with ***beta* = 0** and the **largest distance**, most metrics are not close to a normal distribution. This might be problematic.
+\
+\
+
+
+### 3.2.2. Multivariate exploration
+
+We then investigated the bivariate correlations among the *F metrics* and some other predictors:
+
+```{r ccarea_F corrplot, fig.align='center', fig.cap="**Figure M5cc.** Correlation matrix displaying *Spearman*'s $\\rho$ for all computed F metrics and some selected predictors. Only significant correlations are displayed (with $\\alpha$ = 0.05)", warning=FALSE}
+
+cc_f %>% dplyr::select(-id_nestbox, -site, -breeding_window, -clutch_size, -brood_size, -fledgling_nb,
+                       -mass, -tarsus_length, -wing_length) -> cc_x
+cc_x$age_class <- as.numeric(levels(cc_f$age_class))[cc_f$age_class]
+cc_x$strata_div <- as.numeric(levels(cc_f$strata_div))[cc_f$strata_div]
+
+# To compute the correlation matrix:
+res.cor.ccx <- round(stats::cor(cc_x, use = "complete.obs", method = "spearman"), 2)
+# To compute a matrix of correlation p-values:
+res.pcor.ccx <- ggcorrplot::cor_pmat(x = cc_x, method = "spearman")
+
+ggcorrplot::ggcorrplot(res.cor.ccx, type = "upper",
+   outline.col = "white",
+   ggtheme = ggplot2::theme_gray,
+   colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.ccx, insig = "blank")
+```
+
+Obviously, there are many things to say here:
+
+* First, most predictors are significantly correlated with each others, and most *F metrics* are **positively correlated** with each other, suggesting that they may carry pretty much the same information.
+* Second, *woody vegetation cover* and *volume* are **strongly positively correlated** with all *F metrics*, which might be problematic for modelling. A closer look reveals that the correlation is **slightly weaker** with *woodyveg_volume* than with *woody_area*, and that **the lower the distance the higher the correlation**.
+* Third, the *F metrics* computed with the **largest distances** (i.e. *d* = 3236) are **extremely positively correlated** with each other BUT LESS SO with the other variables, perhaps because the distance is so high that the metric stops being linked to local environmental conditions. We can also see that they are **negatively correlated** with *longitude* displaying the expected **East-West gradient** of connectivity (a North-South gradient of *F metrics* exists as well).
+* Fourth, we could say that, besides the *F metrics* computed with the highest distances, **the highest among F metrics correlations** are between "consecutive" metrics (i.e. metrics with the *same distance* but *differing betas* or with the *same betas* but *differing distances*).
+
+
+\
+To further study distributions and bivariate correlations, we decided to plot every numeric predictor against each others. It gave us the possibility to start investigating potential **multivariate outliers**.
+
+```{r ccarea_F ggpairs, fig.align='center', fig.cap="**Figure M6cc.** Bivariate relationship among computed *F-metrics* and some key explanatory variables", fig.width=15, fig.height=12, message=FALSE, comment=NA, warning=FALSE}
+cc_x %>% dplyr::select(-strata_div, -age_class, -woody_area, -area, -noise_m, -lsource_vs150_m,
+                       -min_t_between) -> cc_fs
+GGally::ggpairs(cc_fs)
+```
+
+This figure shows patterns relatively similar with those observed for *Parus major*:  
+
+1. For *F metrics* with *beta* = 0, the among metrics correlation is very clear.
+2. For *F metrics* with *beta* = 1, patterns are less clear. The correlations are not so straightforward and the 5th and 6th rows show that the most extreme values from *beta1 metrics* **are not the same** than those of the *F metrics* with *beta* = 0, suggesting that they do not entirely share the same information! Interestingly, the among *beta1 metrics* correlations are not so clear.
+3. We can confirm that the connectivity increases with decreasing *built* and *open areas*!
+4. The last row shows that the sites with **the highest woody volume** are not necessarily those with **the highest *F metrics* **: i.e. although rank-based correlations are extremely high (particularly for metrics with *beta* = 1), the plot shows **clear bivariate outliers** as well as rather **flat relationships** with the *beta0 metrics*, while they display rather **linear relationships** with the *beta1 metrics* yet with enormous gaps in the predictor space.
+
+So, up to this point, we'd be rather inclined into **discarding** *F metrics* based on the *longest distances*, and we have a preference for *F metrics* computed with *beta* = 0.
+\
+\
+
+
+### 3.2.3. Y-based data exploration
+
+```{r cc_f Y data prep}
+rm(res.cor.ccx, res.pcor.ccx, cc_fs)
+
+# Subset n (training and test sets):
+set.seed(83)
+sample <- sample(c(TRUE, FALSE), nrow(cc_f), replace=TRUE, prob=c(0.65,0.35))
+trainset_cc  <- cc_f[sample, ]
+testset_cc   <- cc_f[!sample, ]
+```
+
+To avoid illegitimate data-driven model development, we first started by dividing our dataset into training and testing sets (representing 65% and 35% of the total sample size, respectively).  
+
+Then, we looked at simple rank-based bivariate correlations:
+
+```{r cc_f Y corrplot, fig.align='center', fig.cap="**Figure M7cc.** Correlation matrix displaying *Spearman*'s $\\rho$ for all computed F metrics and our response variables on our training set. Only significant correlations are displayed (with $\\alpha$ = 0.05)", warning=FALSE}
+
+trainset_cc %>% dplyr::select(id_nestbox, site, breeding_window, clutch_size, brood_size, fledgling_nb,
+                       mass, tarsus_length, wing_length, woodyveg_volume,
+                       ccF_d92_beta0, ccF_d311_beta0, ccF_d1573_beta0, ccF_d3236_beta0, 
+                       ccF_d92_beta1, ccF_d311_beta1, ccF_d1573_beta1, ccF_d3236_beta1) -> trainset_cc
+trainset_cc %>% dplyr::select(where(is.numeric)) -> tcc_x
+
+# To compute the correlation matrix:
+res.cor.tccx <- round(stats::cor(tcc_x, use = "complete.obs", method = "spearman"), 2)
+# To compute a matrix of correlation p-values:
+res.pcor.tccx <- ggcorrplot::cor_pmat(x = tcc_x, method = "spearman")
+
+ggcorrplot::ggcorrplot(res.cor.tccx, type = "upper",
+   outline.col = "white",
+   ggtheme = ggplot2::theme_gray,
+   colors = c("#00CCCC", "white", "#FF9900"), p.mat = res.pcor.tccx, insig = "blank")
+```
+
+On this figure, we can see that:
+
+1. Unlike for *Parus major*, several *response variables* appear **correlated** to some *F metrics* (according to Spearman's rank correlations).
+2. Similarly to PM, correlations seem **negative** for the *reproduction related variables* and **positive** for the *morphometric* ones. 
+
+To further examine these relationships, we plotted the Blue tits couples' *clutch size* and the *mass* of nestlings against all our computed *F metrics*:
+
+
+```{r cc clutchsize scatterF, fig.align='center', fig.cap="**Figure M8a_cc.** Bivariate scatterplot between *Cyanistes caeruleus*'s clutch size and each potential connectivity metric, with and without log-tranformation", fig.width=12, fig.height=9, message=FALSE, comment=NA, warning=FALSE}
+
+tcc_xs <- tcc_x[,c("clutch_size", "ccF_d92_beta0", "ccF_d311_beta0", "ccF_d1573_beta0", "ccF_d3236_beta0", 
+                   "ccF_d92_beta1", "ccF_d311_beta1", "ccF_d1573_beta1", "ccF_d3236_beta1")]
+
+# Transforming predictors:
+tcc_xs <- tcc_xs %>%
+  dplyr::mutate("ccF_d92_beta0 (log)" = log(ccF_d92_beta0)) %>%
+  dplyr::mutate("ccF_d311_beta0 (log)" = log(ccF_d311_beta0)) %>%
+  dplyr::mutate("ccF_d1573_beta0 (log)" = log(ccF_d1573_beta0)) %>%
+  dplyr::mutate("ccF_d3236_beta0 (log)" = log(ccF_d3236_beta0)) %>%
+  dplyr::mutate("ccF_d92_beta1 (log)" = log(ccF_d92_beta1)) %>%
+  dplyr::mutate("ccF_d311_beta1 (log)" = log(ccF_d311_beta1)) %>%
+  dplyr::mutate("ccF_d1573_beta1 (log)" = log(ccF_d1573_beta1)) %>%
+  dplyr::mutate("ccF_d3236_beta1 (log)" = log(ccF_d3236_beta1)) # These transformations were made to linearise the relationships.
+
+predictors <- colnames(tcc_xs)[2:ncol(tcc_xs)]
+# Bind the clutch_size and tidying the data for plot (ggplot2, so long format):
+mydata <- tcc_xs %>%
+  tidyr::gather(key = "F_metric", value = "F_values", -clutch_size)
+# Create scatterplot:
+ggplot2::ggplot(mydata, ggplot2::aes(y = clutch_size, x = F_values))+
+  ggplot2::geom_point(size = 0.5, alpha = 0.5) +
+  ggplot2::geom_smooth(method = "loess") +
+  ggplot2::theme_bw() +
+  ggplot2::facet_wrap(~F_metric, scales = "free_x")
+```
+
+We can see here once again that the *beta0* metrics have more homogeneous distributions than the *beta1* metrics. It is also obvious that direct effects are absent!  
+To deepen our grasp of the metrics relevance, we also looked at the relationships with the *mass* of nestlings:
+
+```{r cc mass scatterF, fig.align='center', fig.cap="**Figure M8b_cc.** Bivariate scatterplot between the mass of *Cyanistes caeruleus* nestlings and each potential connectivity metric, with and without log-tranformation", fig.width=12, fig.height=9, message=FALSE, comment=NA, warning=FALSE}
+
+tcc_xs <- tcc_x[,c("mass", "ccF_d92_beta0", "ccF_d311_beta0", "ccF_d1573_beta0", "ccF_d3236_beta0", 
+                   "ccF_d92_beta1", "ccF_d311_beta1", "ccF_d1573_beta1", "ccF_d3236_beta1")]
+
+# Transforming predictors:
+tcc_xs <- tcc_xs %>%
+  dplyr::mutate("ccF_d92_beta0 (log)" = log(ccF_d92_beta0)) %>%
+  dplyr::mutate("ccF_d311_beta0 (log)" = log(ccF_d311_beta0)) %>%
+  dplyr::mutate("ccF_d1573_beta0 (log)" = log(ccF_d1573_beta0)) %>%
+  dplyr::mutate("ccF_d3236_beta0 (log)" = log(ccF_d3236_beta0)) %>%
+  dplyr::mutate("ccF_d92_beta1 (log)" = log(ccF_d92_beta1)) %>%
+  dplyr::mutate("ccF_d311_beta1 (log)" = log(ccF_d311_beta1)) %>%
+  dplyr::mutate("ccF_d1573_beta1 (log)" = log(ccF_d1573_beta1)) %>%
+  dplyr::mutate("ccF_d3236_beta1 (log)" = log(ccF_d3236_beta1)) # These transformations were made to linearise the relationships.
+
+predictors <- colnames(tcc_xs)[2:ncol(tcc_xs)]
+# Bind the mass and tidying the data for plot (ggplot2, so long format):
+mydata <- tcc_xs %>%
+  tidyr::gather(key = "F_metric", value = "F_values", -mass)
+# Create scatterplot:
+ggplot2::ggplot(mydata, ggplot2::aes(y = mass, x = F_values))+
+  ggplot2::geom_point(size = 0.5, alpha = 0.5) +
+  ggplot2::geom_smooth(method = "loess") +
+  ggplot2::theme_bw() +
+  ggplot2::facet_wrap(~F_metric, scales = "free_x")
+
+```
+
+Interestingly, we can see that the *beta0* do not require log-transformations and that **mildly positive** relationship exist with, at least, the *ccF_d311* and *ccF_d1573* metrics, regardless of their *betas*. 
+\
+\
+
+
+### 3.2.4. Conclusion
+
+Overall, these observations converges with what we saw for *Parus major* and support our decision to select *beta0 F*s, probably with the second smallest distance value: i.e. the **median gap-crossing distance** given by the respondent to our expert-survey.
 \
 \
 
