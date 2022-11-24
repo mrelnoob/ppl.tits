@@ -52,52 +52,6 @@ fmetrics_cc %>% dplyr::select(-id_patch, -cost_to_patch, -perim, -ccF_d92_beta2,
                               -ccF_d311_beta2, -ccF_d1573_beta2, -ccF_d3236_beta2) %>%
   dplyr::inner_join(cc, fmetrics_cc, by = "id_nestbox") -> cc_f # Here, contrarily to PM, I do not keep
 # the beta2 metrics as we won't use them anyway. 
-
-
-##### CUSTOM EXPLO FUNCTIONS:
-# Outlier detection with Cleveland dotplots:
-uni.dotplots <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB = 2, BTY = "n",
-                         FG = "gray35", COL.AXIS = "gray35", COL.LAB = "gray20", CEX.PAR = 0.6,
-                         TCL = -0.3, MGP = c(1.7, 0.6, 0.1), OMA = c(1, 0, 1, 0), LAB = c(5, 10, 7),
-                         COL.PCH = "lightcoral", PCH = 19, COL.GRID = "lavender", NX = 5, NY = 9, LTY = 6,
-                         ...){
-  num.data <- dataset[, sapply(dataset, is.numeric)]
-  nam <- names(num.data)
-  ncol.data <- ncol(num.data)
-  ncol.adjust <- ceiling(x = ncol.data/4) # Round to the next integer (e.g. ceiling(x = 7.12) returns 8)!
-  num.data <- as.matrix(num.data)
-
-  graphics::par(mfrow= c (ncol.adjust,4), mar=MAR, cex.lab = CEX.LAB, font.lab=FONT.LAB, bty = BTY, fg = FG,
-                col.axis = COL.AXIS, col.lab = COL.LAB, cex = CEX.PAR, tcl = TCL,
-                mgp = MGP, oma = OMA, lab = LAB)
-  for (i in c(1:ncol(num.data))) {
-    graphics::plot(x = num.data[,i], y = 1:length(num.data[,i]), type = "p", xlab = nam[i], ylab = "",
-                   col = COL.PCH, pch = PCH, panel.first = {
-                     grid(col=COL.GRID,nx = NX,ny = NY, lty = LTY)
-                   }, ...) }
-  # Here, the argument panel.first={} is used to draw the grid first, so behind the points!
-}
-
-# Distribution observation with multi-histograms:
-uni.histograms <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB = 2, BTY = "n",
-                           FG = "gray35", COL.AXIS = "gray35", COL.LAB = "gray20", CEX.PAR = 0.6,
-                           TCL = -0.3, MGP = c(1.7, 0.6, 0.1), OMA = c(1, 0, 1, 0), LAB = c(5, 10, 7),
-                           BREAKS = 10, COL = "moccasin", BORDER = "white"){
-  num.data <- dataset[, sapply(dataset, is.numeric)]
-  nam <- names(num.data)
-  ncol.data <- ncol(num.data)
-  ncol.adjust <- ceiling(x = ncol.data/4) # Round to the next integer (e.g. ceiling(x = 7.12) returns 8)!
-  num.data <- as.matrix(num.data)
-
-  graphics::par(mfrow= c (ncol.adjust,4), mar=MAR, cex.lab = CEX.LAB, font.lab=FONT.LAB, bty = BTY, fg = FG,
-                col.axis = COL.AXIS, col.lab = COL.LAB, cex = CEX.PAR, tcl = TCL,
-                mgp = MGP, oma = OMA, lab = LAB)
-  for (i in c(1:ncol(num.data))) {
-    graphics::hist(num.data[,i], breaks = BREAKS, col = COL, border = BORDER,
-                   main = "", xlab = nam[i], ylab = "")
-  }
-}
-
 ```
 
 
