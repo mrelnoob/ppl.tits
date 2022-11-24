@@ -186,3 +186,31 @@ uni.histograms <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB 
 # create a META-function that calls all these functions and exports "targetable" outputs, for both PM
 # and CC!!!!!
 
+library(magrittr)
+tits_clean <- ppl.tits::ntits_clean
+tits_clean %>% dplyr::filter(species == "PM") %>%
+  dplyr::select(id_nestbox, site, coord_x, coord_y, breeding_window,
+                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
+                father_cond, mother_cond, min_t_between, lsource_vs150_m, noise_m,
+                built_area, open_area, woody_area, woodyveg_volume, age_class, strata_div) -> pm
+tits_clean %>% dplyr::filter(species == "CC") %>%
+  dplyr::select(id_nestbox, site, coord_x, coord_y, breeding_window,
+                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
+                min_t_between, lsource_vs150_m, noise_m,
+                built_area, open_area, woody_area, woodyveg_volume, age_class, strata_div) -> cc
+
+fmetrics_pm <- readr::read_csv2(here::here("input_raw_data", "cmetrics_pm.csv"),
+                                col_names = TRUE, na = "NA",
+                                col_types = readr::cols(id_nestbox = readr::col_factor(),
+                                                        id_patch = readr::col_factor()))
+fmetrics_pm %>% dplyr::select(-id_patch, -cost_to_patch, -perim) %>%
+  dplyr::inner_join(pm, fmetrics_pm, by = "id_nestbox") -> pm_f # Not clear why left_join worked for
+# ppl.tits::tdata_upD_rawiv() and not here (so I had to use inner_join())!!!
+fmetrics_cc <- readr::read_csv2(here::here("input_raw_data", "cmetrics_cc.csv"),
+                                col_names = TRUE, na = "NA",
+                                col_types = readr::cols(id_nestbox = readr::col_factor(),
+                                                        id_patch = readr::col_factor()))
+fmetrics_cc %>% dplyr::select(-id_patch, -cost_to_patch, -perim, -ccF_d92_beta2,
+                              -ccF_d311_beta2, -ccF_d1573_beta2, -ccF_d3236_beta2) %>%
+  dplyr::inner_join(cc, fmetrics_cc, by = "id_nestbox") -> cc_f # Here, contrarily to PM, I do not keep
+# the beta2 metrics as we won't use them anyway.

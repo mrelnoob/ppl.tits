@@ -58,8 +58,6 @@ tits <- targets::tar_read(tdata_clean)
 pm_imp_error <- targets::tar_read(imp_ooberror_pm)
 cc_imp_error <- targets::tar_read(imp_ooberror_cc)
 # As you can see, I import my data using 'targets'! If you are reading this report and don't know what it is or how I created and stored them, you should read the README or the _devhistory.R files available at https://github.com/mrelnoob/ppl.tits. 
-
-.pardefault <- par() # To save the default graphical parameters (in case I want to restore them).
 ```
 
 Similarly to many datasets in ecology, some of our variables contained missing values. As most of them were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in some of our *response variables* as well as in all *independent variables* containing missing values instead of deleting observations. For our morphometric *response variables*, however, missing values were not MAR as many were due to the fact that reproduction events failed. In such a case, it was impossible to measure morphometric variables as nestlings were either dead or missing. These *response variables* were thus excluded from the following imputation process.  
@@ -141,14 +139,22 @@ summary(cc)
 
 ******
 
-# 3. Data exploration
+# 3. Exploratory data analyses
 
-**TO BE CONTINUED...!!!!**
-Various aspects of our data (e.g. outliers, variables distribution, multicollinearity among predictors, homogeneity of variances, independence, potential interactions, multivariate relationships, linearity etc.) were explored and are presented in this document, mostly following @bolker2009, @zuur2010, and @harrell2015. However, as the response variables were of different nature (e.g. binary, continuous), they would be modelled using different types of models with varying assumptions:
+Various univariate or multivariate aspects of our data (e.g. outliers, variables distribution, potential multicollinearity, homogeneity of variances, linearity, etc.) were explored and are presented in this section, mostly following @bolker2009, @zuur2010, and @harrell2015.  
+Naturally, most actual models assumptions were checked during or after model building. Our intention here was simply to improve our knowledge of the data and identify potential problems upstream. As our global dataset contained many potential predictors (*p* ~ 40 - including interest variables, covariates and random factors), much effort was indeed directed toward reducing their number and keeping only the most reliable and important variables and proxies relative to our hypotheses. In other words, we tried to reduce the dimensionality of our data. 
 
-Naturally, most actual models assumptions were checked after model building and fitting. Our intention here was simply to improve our knowledge of the data and identify potentially problematic variables upstream. As our global dataset contained many potential predictors (*p* = XX), much effort was indeed directed toward reducing their number and keeping only the most reliable and important ones relative to our hypotheses. In other words, we tried to reduce the dimensionality of the data. 
+```{r BLABLA}
+.pardefault <- par() # To save the default graphical parameters (in case I want to restore them: e.g. with
+# par(.pardefault)).
+
+
+
+```
+
+
 \
 \
 
 ******
-# XX. References
+# 4. References
