@@ -186,31 +186,94 @@ uni.histograms <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB 
 # create a META-function that calls all these functions and exports "targetable" outputs, for both PM
 # and CC!!!!!
 
-library(magrittr)
-tits_clean <- ppl.tits::ntits_clean
-tits_clean %>% dplyr::filter(species == "PM") %>%
-  dplyr::select(id_nestbox, site, coord_x, coord_y, breeding_window,
-                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
-                father_cond, mother_cond, min_t_between, lsource_vs150_m, noise_m,
-                built_area, open_area, woody_area, woodyveg_volume, age_class, strata_div) -> pm
-tits_clean %>% dplyr::filter(species == "CC") %>%
-  dplyr::select(id_nestbox, site, coord_x, coord_y, breeding_window,
-                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
-                min_t_between, lsource_vs150_m, noise_m,
-                built_area, open_area, woody_area, woodyveg_volume, age_class, strata_div) -> cc
 
+
+##### Data import
+# _______________
+
+library(magrittr)
+
+### Binding the connectivity metrics to ntits data______________________________#
+# Important and binding:
+tits_clean <- ppl.tits::ntits_clean
 fmetrics_pm <- readr::read_csv2(here::here("input_raw_data", "cmetrics_pm.csv"),
                                 col_names = TRUE, na = "NA",
                                 col_types = readr::cols(id_nestbox = readr::col_factor(),
                                                         id_patch = readr::col_factor()))
-fmetrics_pm %>% dplyr::select(-id_patch, -cost_to_patch, -perim) %>%
-  dplyr::inner_join(pm, fmetrics_pm, by = "id_nestbox") -> pm_f # Not clear why left_join worked for
-# ppl.tits::tdata_upD_rawiv() and not here (so I had to use inner_join())!!!
+fmetrics_pm %>% dplyr::select(id_nestbox, pmF_d113_beta0, pmF_d531_beta0, pmF_d113_beta1, pmF_d531_beta1) %>%
+  dplyr::inner_join(tits_clean, fmetrics_pm, by = "id_nestbox") -> ttt
 fmetrics_cc <- readr::read_csv2(here::here("input_raw_data", "cmetrics_cc.csv"),
                                 col_names = TRUE, na = "NA",
                                 col_types = readr::cols(id_nestbox = readr::col_factor(),
                                                         id_patch = readr::col_factor()))
-fmetrics_cc %>% dplyr::select(-id_patch, -cost_to_patch, -perim, -ccF_d92_beta2,
-                              -ccF_d311_beta2, -ccF_d1573_beta2, -ccF_d3236_beta2) %>%
-  dplyr::inner_join(cc, fmetrics_cc, by = "id_nestbox") -> cc_f # Here, contrarily to PM, I do not keep
-# the beta2 metrics as we won't use them anyway.
+fmetrics_cc %>% dplyr::select(id_nestbox, ccF_d92_beta0, ccF_d311_beta0, ccF_d92_beta1, ccF_d311_beta1) %>%
+  dplyr::inner_join(ttt, fmetrics_cc, by = "id_nestbox") -> ttt
+
+tits_clean$age_num <- as.numeric(as.character(tits_clean$age_class))
+tits_clean$strata_num <- as.numeric(as.character(tits_clean$strata_div))
+tits_clean %>%  dplyr::relocate(age_num, .after = age_class) -> tits_clean
+
+ntits <- cbind(tits_clean, ttt[,2:9])
+ntits %>% dplyr::select(-coord_x, -coord_y, -father_id, -mother_id, -mean_winter_t, -sd_winter_t,
+                        -lsource_vs150_m, -lsource_vs150_iq) -> ntits
+rm(ttt, fmetrics_pm, fmetrics_cc, tits_clean)
+
+
+
+
+
+##### Data reduction
+# __________________
+
+### For variables related to vegetation characteristics_________________________#
+# Does not yield meaningful results.
+
+### For variables related to landscape composition______________________________#
+ntits %>% dplyr::select(id_nestbox, site, trafic, built_area, open_area, herbaceous_area) -> xxx
+
+# Normed-PCA:
+res.pca <- FactoMineR::PCA(X = xxx[, 3:ncol(xxx)], scale.unit = TRUE, graph = FALSE)
+# To plot results:
+varplot <- factoextra::fviz_pca_var(res.pca, col.var = "contrib",
+                         gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
+indplot <- plot(res.pca, choix = "ind", autoLab = "yes")
+gridExtra::grid.arrange(varplot, indplot, ncol = 2)
+
+# As the first axis (PC) of my PCA satisfactorily synthesizes a large amount of the variance (51.3%)
+# of my three variables, we can use the coordinates of observations on this axis as a synthetic variable:
+zzz <- res.pca$ind$coord[,1]
+ntits$urban_intensity <- zzz # This variable opposes nestboxes located in very dense urban areas with a
+# lot of traffic to those located in greener contexts.
+
+
+
+### For variables related to management and disturbances________________________#
+# Does not yield meaningful results.
+
+### For variables related to light pollution____________________________________#
+ntits %>% dplyr::select(id_nestbox, site,
+                        lsource_0_m, lsource_10_m, lflux_0_m, lflux_10_m) -> xxx
+
+# Normed-PCA:
+res.pca <- FactoMineR::PCA(X = xxx[, 3:ncol(xxx)], scale.unit = TRUE, graph = FALSE)
+# To plot results:
+varplot <- factoextra::fviz_pca_var(res.pca, col.var = "contrib",
+                                    gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
+indplot <- plot(res.pca, choix = "ind", autoLab = "yes")
+gridExtra::grid.arrange(varplot, indplot, ncol = 2)
+
+# As the first axis (PC) of my PCA satisfactorily synthesizes a large amount of the variance (75.8%)
+# of my four variables, we can use the coordinates of observations on this axis as a synthetic variable:
+zzz <- res.pca$ind$coord[,1]
+ntits$light_pollution <- zzz # This variable opposes nestboxes located in very dense urban areas with a
+# lot of traffic to those located in greener contexts.
+
+### For variables related to noise pollution____________________________________#
+# Does not yield meaningful results.
+
+### For variables related to parental condition_________________________________#
+# Does not yield meaningful results.
+
+
+colnames(ntits)
+
