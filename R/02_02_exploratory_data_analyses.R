@@ -181,6 +181,10 @@ uni.histograms <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB 
 
 
 
+
+
+
+
 ####### SUPER IMPORTANT NOTE #######
 # To finish converting all that into functions, I'll have to regenerate the data (used for the report) and
 # create a META-function that calls all these functions and exports "targetable" outputs, for both PM
@@ -188,14 +192,22 @@ uni.histograms <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB 
 
 
 
+##### DATA IMPORT #####
 ##### Data import
 # _______________
 
 library(magrittr)
 
-### Binding the connectivity metrics to ntits data______________________________#
-# Important and binding:
+### Data import and preparation_________________________________________________#
+# Import and binding:
 tits_clean <- ppl.tits::ntits_clean
+
+manag <- readr::read_csv2(here::here("input_raw_data", "veg_manag_factor.csv"),
+                                col_names = TRUE, na = "NA",
+                                col_types = readr::cols(id_nestbox = readr::col_factor(),
+                                                        manag_intensity = readr::col_factor()))
+tits_clean <- dplyr::inner_join(tits_clean, manag, by = "id_nestbox")
+
 fmetrics_pm <- readr::read_csv2(here::here("input_raw_data", "cmetrics_pm.csv"),
                                 col_names = TRUE, na = "NA",
                                 col_types = readr::cols(id_nestbox = readr::col_factor(),
@@ -211,17 +223,44 @@ fmetrics_cc %>% dplyr::select(id_nestbox, ccF_d92_beta0, ccF_d311_beta0, ccF_d92
 
 tits_clean$age_num <- as.numeric(as.character(tits_clean$age_class))
 tits_clean$strata_num <- as.numeric(as.character(tits_clean$strata_div))
+tits_clean$manag_num <- as.numeric(as.character(tits_clean$manag_intensity))
+tits_clean %>%  dplyr::relocate(manag_intensity, .after = age_class) -> tits_clean
+tits_clean %>%  dplyr::relocate(manag_num, .after = manag_intensity) -> tits_clean
 tits_clean %>%  dplyr::relocate(age_num, .after = age_class) -> tits_clean
 
 ntits <- cbind(tits_clean, ttt[,2:9])
 ntits %>% dplyr::select(-coord_x, -coord_y, -father_id, -mother_id, -mean_winter_t, -sd_winter_t,
-                        -lsource_vs150_m, -lsource_vs150_iq) -> ntits
-rm(ttt, fmetrics_pm, fmetrics_cc, tits_clean)
+                        -lsource_vs150_m, -lsource_vs150_iq, -soft_manag_area) -> ntits
+rm(ttt, fmetrics_pm, fmetrics_cc, manag, tits_clean)
+
+# Deletion of problematic observations:
+ntits <- tibble::as_tibble(ntits)
+ntits %>% dplyr::filter(id_nestbox != "DIJ-201") %>%
+  dplyr::filter(id_nestbox != "DIJ-212") %>%
+  dplyr::filter(id_nestbox != "DIJ-213") %>%
+  dplyr::filter(id_nestbox != "DIJ-214") %>%
+  dplyr::filter(id_nestbox != "DIJ-215") %>%
+  dplyr::filter(id_nestbox != "DIJ-216") %>%
+  dplyr::filter(id_nestbox != "DIJ-220") -> ntits
+# These observations were problematic because of a inmportant classification error from the landcover
+# map that underestimated their woody vegetation cover and thus affected many other variables, such as
+# the proportion of each landcover class as well as the connectivity metrics. If we have time, we will
+# correct the landcover map and recompute everything to avoid losing these 12 observations.
+
+# Weighting of woodyveg_volume with strata_num:
+ntits %>% dplyr::mutate(strata_w = dplyr::case_when(
+  strata_div == "0" ~ 0.4,
+  strata_div == "1" ~ 0.6,
+  strata_div == "2" ~ 0.8,
+  strata_div == "3" ~ 0.9,
+  strata_div == "4" ~ 1)) %>%
+  dplyr::mutate(woodyveg_vw = woodyveg_volume*strata_w) -> ntits
 
 
 
 
 
+##### DATA REDUCTION #####
 ##### Data reduction
 # __________________
 
@@ -234,21 +273,18 @@ ntits %>% dplyr::select(id_nestbox, site, trafic, built_area, open_area, herbace
 # Normed-PCA:
 res.pca <- FactoMineR::PCA(X = xxx[, 3:ncol(xxx)], scale.unit = TRUE, graph = FALSE)
 # To plot results:
-varplot <- factoextra::fviz_pca_var(res.pca, col.var = "contrib",
+landscape.varplot <- factoextra::fviz_pca_var(res.pca, col.var = "contrib",
                          gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
-indplot <- plot(res.pca, choix = "ind", autoLab = "yes")
-gridExtra::grid.arrange(varplot, indplot, ncol = 2)
+landscape.indplot <- plot(res.pca, choix = "ind", autoLab = "yes")
+#gridExtra::grid.arrange(landscape.varplot, landscape.indplot, ncol = 2)
 
-# As the first axis (PC) of my PCA satisfactorily synthesizes a large amount of the variance (51.3%)
+# As the first axis (PC) of my PCA satisfactorily synthesizes a large amount of the variance (52%)
 # of my three variables, we can use the coordinates of observations on this axis as a synthetic variable:
 zzz <- res.pca$ind$coord[,1]
 ntits$urban_intensity <- zzz # This variable opposes nestboxes located in very dense urban areas with a
 # lot of traffic to those located in greener contexts.
 
 
-
-### For variables related to management and disturbances________________________#
-# Does not yield meaningful results.
 
 ### For variables related to light pollution____________________________________#
 ntits %>% dplyr::select(id_nestbox, site,
@@ -257,22 +293,45 @@ ntits %>% dplyr::select(id_nestbox, site,
 # Normed-PCA:
 res.pca <- FactoMineR::PCA(X = xxx[, 3:ncol(xxx)], scale.unit = TRUE, graph = FALSE)
 # To plot results:
-varplot <- factoextra::fviz_pca_var(res.pca, col.var = "contrib",
+lightpol.varplot <- factoextra::fviz_pca_var(res.pca, col.var = "contrib",
                                     gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
-indplot <- plot(res.pca, choix = "ind", autoLab = "yes")
-gridExtra::grid.arrange(varplot, indplot, ncol = 2)
+lightpol.indplot <- plot(res.pca, choix = "ind", autoLab = "yes")
+#gridExtra::grid.arrange(lightpol.varplot, lightpol.indplot, ncol = 2)
 
-# As the first axis (PC) of my PCA satisfactorily synthesizes a large amount of the variance (75.8%)
+# As the first axis (PC) of my PCA satisfactorily synthesizes a large amount of the variance (76.2%)
 # of my four variables, we can use the coordinates of observations on this axis as a synthetic variable:
 zzz <- res.pca$ind$coord[,1]
 ntits$light_pollution <- zzz # This variable opposes nestboxes located in very dense urban areas with a
 # lot of traffic to those located in greener contexts.
 
-### For variables related to noise pollution____________________________________#
-# Does not yield meaningful results.
 
-### For variables related to parental condition_________________________________#
-# Does not yield meaningful results.
+
+### Final formatting____________________________________________________________#
+ntits %>% dplyr::filter(species == "PM") %>%
+  dplyr::select(id_nestbox, site, year, breeding_window, laying_date, flight_date,
+                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
+                pmF_d113_beta0, pmF_d531_beta0, pmF_d113_beta1, pmF_d531_beta1,
+                woodyveg_volume, woodyveg_vw, strata_div,
+                urban_intensity, manag_intensity, light_pollution, noise_m, cumdd_30,
+                father_cond, mother_cond) -> pm
+ntits %>% dplyr::filter(species == "CC") %>%
+  dplyr::select(id_nestbox, site, year, breeding_window, laying_date, flight_date,
+                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
+                ccF_d92_beta0, ccF_d311_beta0, ccF_d92_beta1, ccF_d311_beta1,
+                woodyveg_volume, woodyveg_vw,
+                urban_intensity, manag_intensity, light_pollution, noise_m, cumdd_30) -> cc
+rm(res.pca, xxx, zzz)
+
+
+
+
+
+##### UNIVARIATE OUTLIERS #####
+##### Looking for outliers
+# ________________________
+
+
+
 
 
 colnames(ntits)
