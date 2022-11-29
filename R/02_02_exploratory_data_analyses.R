@@ -479,13 +479,46 @@ GGally::ggpairs(cc.xnum)
 
 
 
+##### MULTICOLLINEARITY #####
+
+### For PM______________________________________________________________________#
+
+pm.x$response <- rnorm(n = nrow(pm.x), mean = 50, sd = 10)
+pm.x %>% dplyr::select(-pmF_d113_beta0, -pmF_d113_beta1, -pmF_d531_beta1, -woodyveg_volume) %>%
+  dplyr::mutate(manag_intensity = as.factor(manag_intensity),
+                strata_div = as.factor(strata_div)) -> pm.test
+test_lm <- lm(response~., data = pm.test)
+summary(test_lm)
+car::vif(mod = test_lm)
+# Curiously, the VIF and GVIF values are quite acceptable! And, as I was told on CV, they're invariant
+# to model type or response variable.
+
+
+
+### For CC______________________________________________________________________#
+
+cc.x$response <- rnorm(n = nrow(cc.x), mean = 50, sd = 10)
+cc.x %>% dplyr::select(-ccF_d92_beta0, -ccF_d92_beta1, -ccF_d311_beta1, -woodyveg_volume) %>%
+  dplyr::mutate(manag_intensity = as.factor(manag_intensity)) -> cc.test
+test_lm <- lm(response~., data = cc.test)
+summary(test_lm)
+car::vif(mod = test_lm)
+# Here, the GVIF is a bit high to my taste (yet < 5).
+
+
+
+
+
 ##### EXPLORATION OF THE RESPONSES #####
 ##### Outliers and distribution
 # _____________________________
 
-pm
+pm.y <- pm[,7:12]
 
 ### For PM______________________________________________________________________#
+
+uni.boxplots(pm.y)
+ppl.tits::uni.dotplots(pm.y)
 
 
 
