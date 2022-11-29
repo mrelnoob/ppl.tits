@@ -205,7 +205,10 @@ tits_clean <- ppl.tits::ntits_clean
 manag <- readr::read_csv2(here::here("input_raw_data", "veg_manag_factor.csv"),
                                 col_names = TRUE, na = "NA",
                                 col_types = readr::cols(id_nestbox = readr::col_factor(),
-                                                        manag_intensity = readr::col_factor()))
+                                                        manag_intensity = readr::col_factor(
+                                                          ordered = TRUE,
+                                                          levels = c("0", "1", "2"),
+                                                          include_na = FALSE)))
 tits_clean <- dplyr::inner_join(tits_clean, manag, by = "id_nestbox")
 
 fmetrics_pm <- readr::read_csv2(here::here("input_raw_data", "cmetrics_pm.csv"),
@@ -249,11 +252,11 @@ ntits %>% dplyr::filter(id_nestbox != "DIJ-201") %>%
 
 # Weighting of woodyveg_volume with strata_num:
 ntits %>% dplyr::mutate(strata_w = dplyr::case_when(
-  strata_div == "0" ~ 0.4,
-  strata_div == "1" ~ 0.6,
-  strata_div == "2" ~ 0.8,
-  strata_div == "3" ~ 0.9,
-  strata_div == "4" ~ 1)) %>%
+  strata_div == "0" ~ 0.25,
+  strata_div == "1" ~ 0.5,
+  strata_div == "2" ~ 0.6,
+  strata_div == "3" ~ 0.75,
+  strata_div == "4" ~ 0.9)) %>%
   dplyr::mutate(woodyveg_vw = woodyveg_volume*strata_w) -> ntits
 
 
@@ -330,9 +333,166 @@ rm(res.pca, xxx, zzz)
 ##### Looking for outliers
 # ________________________
 
+uni.boxplots <- function(dataset, MAR=c(0.5,4.1,1.1,1.5), CEX.LAB=1, FONT.LAB=2, BTY = "n", FG = "gray35",
+                         COL.AXIS = "gray35", COL.LAB = "gray20", CEX.PAR = 0.8, TCL = -0.3,
+                         MGP = c(2.4, 0.6, 0), OMA = c(1, 0, 0, 0),
+                         TYPE = "n", BORDER = "lightcoral", COL = "moccasin",  LTY = 1, STAPLEWEX = 0,
+                         WHISKLWD = 2, BOXWEX = 0.7, BOXLWD = 0.1, MEDLWD = 2.6, PCH = 19, ...){
+  num.data <- dataset[, sapply(dataset, is.numeric)]
+  nam <- names(num.data)
+  ncol.data <- ncol(num.data)
+  ncol.adjust <- ceiling(x = ncol.data/4) # Round to the next integer (e.g. ceiling(x = 7.12) returns 8)!
+
+  graphics::par(mfrow= c(ncol.adjust,4), mar=MAR, cex.lab=CEX.LAB, font.lab=FONT.LAB, bty=BTY, fg=FG,
+                col.axis=COL.AXIS, col.lab=COL.LAB, cex=CEX.PAR, tcl=TCL, mgp=MGP, oma=OMA)
+  for (i in c(1:ncol.data)) {
+    graphics::boxplot(num.data[,i],ylab =(nam[i]), type=TYPE, border=BORDER, col = COL,
+                      lty=LTY, staplewex=STAPLEWEX, whisklwd=WHISKLWD, boxwex=BOXWEX, boxlwd=BOXLWD,
+                      medlwd=MEDLWD, pch=PCH, cex=0.7, ...) }
+}
+
+### For PM______________________________________________________________________#
+
+uni.boxplots(pm[,13:ncol(pm)])
+ppl.tits::uni.dotplots(pm[,13:ncol(pm)])
+# We can see that:
+# - There are extreme values for all F-metrics, especially the "beta1" (we already know that, remove
+#   them for the FINAL VERSION)!!!
+# - There are extreme values for the "woodyveg" variables, yet the weighting by "strata_div" slightly
+#   alleviate the problem.
+# - The "pollution" variables are very slightly skewed.
+# - Otherwise, the IVs are quite well sampled.
+
+
+
+### For CC______________________________________________________________________#
+
+uni.boxplots(cc[,13:ncol(cc)]) # Only for IVs, not Ys.
+ppl.tits::uni.dotplots(cc[,13:ncol(cc)])
+# We can see that:
+# - There are extreme values for all F-metrics, especially the "beta1" (we already know that, remove
+#   them for the FINAL VERSION)!!!
+# - There are extreme values for the "woodyveg" variables. Here, the weighting does not change things much.
+# - The "pollution" variables are very slightly skewed.
 
 
 
 
-colnames(ntits)
+
+##### DISTRIBUTION, SKEWNESS AND KURTOSIS #####
+##### Examining normality, skewness and kurtosis
+# ______________________________________________
+
+### For PM______________________________________________________________________#
+
+ppl.tits::uni.histograms(pm[,13:ncol(pm)])
+
+pm.x <- pm[,13:ncol(pm)]
+pm.xnum <- pm.x[, sapply(pm.x, is.numeric)]
+tab <- data.frame(moments::skewness(x = pm.xnum), moments::kurtosis(x = pm.xnum)-3)
+knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
+# We can see that some variables have, as expected, quite excessive kurtosis, especially "woodyveg_vw"!
+
+
+
+### For CC______________________________________________________________________#
+
+ppl.tits::uni.histograms(cc[,13:ncol(cc)])
+
+cc.x <- cc[,13:ncol(cc)]
+cc.xnum <- cc.x[, sapply(cc.x, is.numeric)]
+tab <- data.frame(moments::skewness(x = cc.xnum), moments::kurtosis(x = cc.xnum)-3)
+knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
+# Interestingly, values are not that high although yet quite excessive.
+rm(tab)
+
+
+
+
+
+##### MULTIVARIATE RELATIONSHIPS #####
+##### Bivariate correlations and outliers
+# _______________________________________
+
+### For PM______________________________________________________________________#
+
+pm.x$strata_div <- as.numeric(as.character(pm.x$strata_div))
+pm.x$manag_intensity <- as.numeric(as.character(pm.x$manag_intensity))
+
+# To compute the correlation matrix:
+res.cor.pmx <- round(stats::cor(pm.x, use = "complete.obs", method = "spearman"), 2)
+# To compute a matrix of correlation p-values:
+res.pcor.pmx <- ggcorrplot::cor_pmat(x = pm.x, method = "spearman")
+
+ggcorrplot::ggcorrplot(res.cor.pmx, type = "upper",
+                       outline.col = "white",
+                       ggtheme = ggplot2::theme_gray,
+                       colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.pmx, insig = "blank")
+# We can see that:
+# - All F-metrics and woodyveg variables are quite strongly positively correlated, but negatively with
+#   urban intensity, management intensity and the pollution variables. That's quite unsurprising, the more
+#   woody vegetation in the landscape, the more connectivity, and the less room for urban features such as
+#   buildings, roads, pollution emissions, etc.
+# - Quite logically, the pollution variables are positively correlated with urban intensity.
+# - We see that "cumdd_30" is not correlated with any variable, except father_cond.
+# - Father_cond and mother_cond present reversed correlation patterns (I should verify the meaning of their
+#   values): fathers seem positively correlated with woody vegetation and connectivity proxies while mothers,
+#   are negatively correlated or, not correlated at all.
+
+GGally::ggpairs(pm.xnum)
+# We find again the same patterns. Yet, we can see that:
+# - Some relationships are actually not linear but curvilinear (e.g. between woodyveg/connectivity
+#   variables and "urban intensity" or "light pollution").
+# - We don't see very clear multivariate outliers.
+
+
+
+### For CC______________________________________________________________________#
+
+cc.x$manag_intensity <- as.numeric(as.character(cc.x$manag_intensity))
+
+# To compute the correlation matrix:
+res.cor.ccx <- round(stats::cor(cc.x, use = "complete.obs", method = "spearman"), 2)
+# To compute a matrix of correlation p-values:
+res.pcor.ccx <- ggcorrplot::cor_pmat(x = cc.x, method = "spearman")
+
+ggcorrplot::ggcorrplot(res.cor.ccx, type = "upper",
+                       outline.col = "white",
+                       ggtheme = ggplot2::theme_gray,
+                       colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.ccx, insig = "blank")
+# We can see that:
+# - All F-metrics and woodyveg variables are quite strongly positively correlated, but negatively with
+#   urban intensity, management intensity and the pollution variables. That's quite unsurprising, the more
+#   woody vegetation in the landscape, the more connectivity, and the less room for urban features such as
+#   buildings, roads, pollution emissions, etc.
+# - Quite logically, the pollution variables are positively correlated with urban intensity.
+# - We see that "cumdd_30" is not correlated with any variable.
+
+
+GGally::ggpairs(cc.xnum)
+# We find again the same patterns. Yet, we can see that:
+# - Some relationships are actually not linear but curvilinear (e.g. between woodyveg/connectivity
+#   variables and "urban intensity" or "light pollution").
+# - There may be problematic outliers.
+
+
+
+
+
+##### EXPLORATION OF THE RESPONSES #####
+##### Outliers and distribution
+# _____________________________
+
+pm
+
+### For PM______________________________________________________________________#
+
+
+
+colnames(cc)
+
+### WHAT Ys????? Explore their values too!!!
+### WHAT Ys????? Explore their values too!!!
+### WHAT Ys????? Explore their values too!!!
+### WHAT Ys????? Explore their values too!!!
 
