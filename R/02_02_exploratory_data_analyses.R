@@ -353,7 +353,9 @@ uni.boxplots <- function(dataset, MAR=c(0.5,4.1,1.1,1.5), CEX.LAB=1, FONT.LAB=2,
 
 ### For PM______________________________________________________________________#
 
-uni.boxplots(pm[,13:ncol(pm)])
+a <- uni.boxplots(pm[,13:ncol(pm)]) # I CANNOT export them as object (-> NULL), I don't know why. The problem is
+# not that it's a custom function (it doesn't work for airpoumpoum::superplot() either)! Nor that it's not
+# a list! Then why (linked to par())??? Ask SO?
 ppl.tits::uni.dotplots(pm[,13:ncol(pm)])
 # We can see that:
 # - There are extreme values for all F-metrics, especially the "beta1" (we already know that, remove
@@ -390,7 +392,7 @@ ppl.tits::uni.histograms(pm[,13:ncol(pm)])
 pm.x <- pm[,13:ncol(pm)]
 pm.xnum <- pm.x[, sapply(pm.x, is.numeric)]
 tab <- data.frame(moments::skewness(x = pm.xnum), moments::kurtosis(x = pm.xnum)-3)
-knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
+pmx_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
 # We can see that some variables have, as expected, quite excessive kurtosis, especially "woodyveg_vw"!
 
 
@@ -402,7 +404,7 @@ ppl.tits::uni.histograms(cc[,13:ncol(cc)])
 cc.x <- cc[,13:ncol(cc)]
 cc.xnum <- cc.x[, sapply(cc.x, is.numeric)]
 tab <- data.frame(moments::skewness(x = cc.xnum), moments::kurtosis(x = cc.xnum)-3)
-knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
+ccx_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
 # Interestingly, values are not that high although yet quite excessive.
 rm(tab)
 
@@ -424,7 +426,7 @@ res.cor.pmx <- round(stats::cor(pm.x, use = "complete.obs", method = "spearman")
 # To compute a matrix of correlation p-values:
 res.pcor.pmx <- ggcorrplot::cor_pmat(x = pm.x, method = "spearman")
 
-ggcorrplot::ggcorrplot(res.cor.pmx, type = "upper",
+pmx.corplot <- ggcorrplot::ggcorrplot(res.cor.pmx, type = "upper",
                        outline.col = "white",
                        ggtheme = ggplot2::theme_gray,
                        colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.pmx, insig = "blank")
@@ -439,7 +441,7 @@ ggcorrplot::ggcorrplot(res.cor.pmx, type = "upper",
 #   values): fathers seem positively correlated with woody vegetation and connectivity proxies while mothers,
 #   are negatively correlated or, not correlated at all.
 
-GGally::ggpairs(pm.xnum)
+pmx.pairplot <- GGally::ggpairs(pm.xnum)
 # We find again the same patterns. Yet, we can see that:
 # - Some relationships are actually not linear but curvilinear (e.g. between woodyveg/connectivity
 #   variables and "urban intensity" or "light pollution").
@@ -456,7 +458,7 @@ res.cor.ccx <- round(stats::cor(cc.x, use = "complete.obs", method = "spearman")
 # To compute a matrix of correlation p-values:
 res.pcor.ccx <- ggcorrplot::cor_pmat(x = cc.x, method = "spearman")
 
-ggcorrplot::ggcorrplot(res.cor.ccx, type = "upper",
+ccx.corplot <- ggcorrplot::ggcorrplot(res.cor.ccx, type = "upper",
                        outline.col = "white",
                        ggtheme = ggplot2::theme_gray,
                        colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.ccx, insig = "blank")
@@ -469,7 +471,7 @@ ggcorrplot::ggcorrplot(res.cor.ccx, type = "upper",
 # - We see that "cumdd_30" is not correlated with any variable.
 
 
-GGally::ggpairs(cc.xnum)
+ccx.pairplot <- GGally::ggpairs(cc.xnum)
 # We find again the same patterns. Yet, we can see that:
 # - Some relationships are actually not linear but curvilinear (e.g. between woodyveg/connectivity
 #   variables and "urban intensity" or "light pollution").
@@ -489,7 +491,7 @@ pm.x %>% dplyr::select(-pmF_d113_beta0, -pmF_d113_beta1, -pmF_d531_beta1, -woody
                 strata_div = as.factor(strata_div)) -> pm.test
 test_lm <- lm(response~., data = pm.test)
 summary(test_lm)
-car::vif(mod = test_lm)
+pmx.viftable <- car::vif(mod = test_lm)
 # Curiously, the VIF and GVIF values are quite acceptable! And, as I was told on CV, they're invariant
 # to model type or response variable.
 
@@ -502,7 +504,7 @@ cc.x %>% dplyr::select(-ccF_d92_beta0, -ccF_d92_beta1, -ccF_d311_beta1, -woodyve
   dplyr::mutate(manag_intensity = as.factor(manag_intensity)) -> cc.test
 test_lm <- lm(response~., data = cc.test)
 summary(test_lm)
-car::vif(mod = test_lm)
+ccx.viftable <- car::vif(mod = test_lm)
 # Here, the GVIF is a bit high to my taste (yet < 5).
 
 
@@ -514,18 +516,90 @@ car::vif(mod = test_lm)
 # _____________________________
 
 pm.y <- pm[,7:12]
+cc.y <- cc[,7:12]
 
 ### For PM______________________________________________________________________#
 
 uni.boxplots(pm.y)
 ppl.tits::uni.dotplots(pm.y)
+# we can say that the 6 DV (dependant variables) have relatively nice distributions although we could not
+# a probable zero-inflation for brood_size and fledgling_nb, as well as a slight left-skewness for the
+# morphometric variables.
+tab <- data.frame(moments::skewness(x = pm.y), moments::kurtosis(x = pm.y)-3)
+pmy_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
+# But skewness and jurtosis values are quite satisfactory.
+
+
+### For CC______________________________________________________________________#
+
+uni.boxplots(cc.y)
+ppl.tits::uni.dotplots(cc.y)
+# Overall, the same patterns as for PM can be seen but the distributions of "clutch_size" and especially
+# "brood_size" might reveal problematic.
+tab <- data.frame(moments::skewness(x = cc.y), moments::kurtosis(x = cc.y)-3)
+ccy_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
+# As expected, "clutch_size" present a slight excess in kurtosis.
 
 
 
-colnames(cc)
+##### Multivariate relationships
+# ______________________________
 
-### WHAT Ys????? Explore their values too!!!
-### WHAT Ys????? Explore their values too!!!
-### WHAT Ys????? Explore their values too!!!
-### WHAT Ys????? Explore their values too!!!
+### For PM______________________________________________________________________#
+
+# To compute the correlation matrix:
+res.cor.pmy <- round(stats::cor(pm.y, use = "complete.obs", method = "spearman"), 2)
+# To compute a matrix of correlation p-values:
+res.pcor.pmy <- ggcorrplot::cor_pmat(x = pm.y, method = "spearman")
+
+pmy.corplot <- ggcorrplot::ggcorrplot(res.cor.pmy, type = "upper",
+                       outline.col = "white",
+                       ggtheme = ggplot2::theme_gray,
+                       colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.pmy, insig = "blank")
+# We can see that:
+# - The 3 reproductive variables are strongly positively correlated.
+# - Mass is slightly negatively correlated with "cluch" and "brood_size" while "fledgling_nb" is weakly
+#   negatively correlated with "wing_length".
+# - The 3 morphometric variables seem to covary in the same direction as well!
+
+pmy.pairplot <- GGally::ggpairs(pm.y)
+# We can see that:
+# - The positive relationship among the morphometric variables is undeniable.
+# - Among the reproductive variables, positive trends are also quite clear although slightly muddied by the
+#   presence of zero-inflation and increasing variation with "time" (as in subsequent variable: egg > chick
+#   > fledgling).
+# - The negative correlation between "mass" and "clutch_size" and "brood_size" is not so clear here, and
+#   reproductive DV seem rather unrelated to morphometric ones.
+
+
+### For CC______________________________________________________________________#
+
+# To compute the correlation matrix:
+res.cor.ccy <- round(stats::cor(cc.y, use = "complete.obs", method = "spearman"), 2)
+# To compute a matrix of correlation p-values:
+res.pcor.ccy <- ggcorrplot::cor_pmat(x = cc.y, method = "spearman")
+
+ccy.corplot <- ggcorrplot::ggcorrplot(res.cor.ccy, type = "upper",
+                       outline.col = "white",
+                       ggtheme = ggplot2::theme_gray,
+                       colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.ccy, insig = "blank")
+# We can see that:
+# - If "clutch" and "brood_sizes" are strongly positively correlated, surprisingly, "fledgling_nb" appears
+#   uncorrelated to "clutch_size" (and "brood_size"?). Either this reflects a very non-linear relationship
+#   between these variables or that would imply that, for CC, the number of juvenile that take-off is
+#   globally unrelated to the number of eggs layed or the number of chicks in the brood, which seems
+#   IMPOSSIBLE! Perhaps a textbook example of the limits of bivariate correlations???
+# - On the other hand, "fledgling_nb" is positively correlated to all 3 morphometric DV!
+# - The 3 morphometric variables seem to covary in the same direction!
+
+ccy.pairplot <- GGally::ggpairs(cc.y)
+# We can see that:
+# - The positive relationship among the morphometric variables is undeniable.
+# - The positive relationship between "fledgling_nb" and the morphometric DV seems also quite strong!
+# - Increasing variability in "fledgling_nb" with increasing values of the other 2 reproductive DV seem
+#   to explain the lack of positive rank-based correlations (note that here, correlations are significant),
+#   but relationships do exist!
+# - Negative correlation between clutch" and "brood_sizes" and several morphometric DV might exist as well!
+
+
 
