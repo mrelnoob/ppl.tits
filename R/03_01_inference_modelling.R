@@ -9,8 +9,19 @@
 # that will have, by nature, far less support as the data have already been used for formal testing (so
 # type-I error rates cannot be guaranteed anymore)!
 
+####### SUPER IMPORTANT NOTE #######
+# SHOULD START BY CALLING/SOURCING the EDA script first (because no function yet???)!
+# SHOULD START BY CALLING/SOURCING the EDA script first (because no function yet???)!
+# SHOULD START BY CALLING/SOURCING the EDA script first (because no function yet???)!
+# SHOULD START BY CALLING/SOURCING the EDA script first (because no function yet???)!
 # SHOULD START BY CALLING/SOURCING the EDA script first (because no function yet???)!
 
-a <- summary(pm.x)
-a
+##### PM MODELS #####
+##### 1. Clutch size: Poisson GLMM #####
+# ______________________________________
 
+
+hist(pm$clutch_size)
+
+colnames(pm)
+summary(pm)

@@ -418,7 +418,6 @@ rm(tab)
 
 ### For PM______________________________________________________________________#
 
-pm.x$strata_div <- as.numeric(as.character(pm.x$strata_div))
 pm.x$manag_intensity <- as.numeric(as.character(pm.x$manag_intensity))
 
 # To compute the correlation matrix:
@@ -487,8 +486,7 @@ ccx.pairplot <- GGally::ggpairs(cc.xnum)
 
 pm.x$response <- rnorm(n = nrow(pm.x), mean = 50, sd = 10)
 pm.x %>% dplyr::select(-pmF_d113_beta0, -pmF_d113_beta1, -pmF_d531_beta1, -woodyveg_volume) %>%
-  dplyr::mutate(manag_intensity = as.factor(manag_intensity),
-                strata_div = as.factor(strata_div)) -> pm.test
+  dplyr::mutate(manag_intensity = as.factor(manag_intensity)) -> pm.test
 test_lm <- lm(response~., data = pm.test)
 summary(test_lm)
 pmx.viftable <- car::vif(mod = test_lm)
@@ -606,9 +604,8 @@ ccy.pairplot <- GGally::ggpairs(cc.y)
 
 
 ##### FINAL FORMATTING #####
-##### For PM
-# __________
+##### Datasets
+# ____________
 
-
-
-summary(pm)
+pm %>% dplyr::select(-pmF_d113_beta0, -pmF_d113_beta1, -pmF_d531_beta1, -woodyveg_volume) -> pm
+cc %>% dplyr::select(-ccF_d92_beta0, -ccF_d92_beta1, -ccF_d311_beta1, -woodyveg_volume) -> cc
