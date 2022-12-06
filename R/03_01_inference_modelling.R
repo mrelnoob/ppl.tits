@@ -2,8 +2,15 @@
 ##### Functions for initial inference modelling #####
 # ------------------------------------------------- #
 
+# The functions of this R file are meant to wrap all formal inference modelling made in this study, as
+# opposed to "preparation modelling" (cf. previous scripts) and "exploratory modelling" that will perhaps
+# be made afterwards; i.e. after we have formally tested our research hypotheses in a robust inferential
+# framework. The so-called "exploratory modelling" is related to additional questions and perspectives
+# that will have, by nature, far less support as the data have already been used for formal testing (so
+# type-I error rates cannot be guaranteed anymore)!
 
+# SHOULD START BY CALLING/SOURCING the EDA script first (because no function yet???)!
 
+a <- summary(pm.x)
+a
 
-# The functions of this R file are meant for all exploratory data analyses (EDA), whether for
-# connectivity metrics evaluation or for the construction of statistical models.

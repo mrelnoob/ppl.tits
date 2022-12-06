@@ -309,12 +309,12 @@ ntits$light_pollution <- zzz # This variable opposes nestboxes located in very d
 
 
 
-### Final formatting____________________________________________________________#
+### Reduction results formatting____________________________________________________________#
 ntits %>% dplyr::filter(species == "PM") %>%
   dplyr::select(id_nestbox, site, year, breeding_window, laying_date, flight_date,
                 clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
                 pmF_d113_beta0, pmF_d531_beta0, pmF_d113_beta1, pmF_d531_beta1,
-                woodyveg_volume, woodyveg_vw, strata_div,
+                woodyveg_volume, woodyveg_vw,
                 urban_intensity, manag_intensity, light_pollution, noise_m, cumdd_30,
                 father_cond, mother_cond) -> pm
 ntits %>% dplyr::filter(species == "CC") %>%
@@ -603,3 +603,12 @@ ccy.pairplot <- GGally::ggpairs(cc.y)
 
 
 
+
+
+##### FINAL FORMATTING #####
+##### For PM
+# __________
+
+
+
+summary(pm)
