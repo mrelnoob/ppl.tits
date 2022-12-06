@@ -353,7 +353,7 @@ uni.boxplots <- function(dataset, MAR=c(0.5,4.1,1.1,1.5), CEX.LAB=1, FONT.LAB=2,
 
 ### For PM______________________________________________________________________#
 
-a <- uni.boxplots(pm[,13:ncol(pm)]) # I CANNOT export them as object (-> NULL), I don't know why. The problem is
+uni.boxplots(pm[,13:ncol(pm)]) # I CANNOT export them as object (-> NULL), I don't know why. The problem is
 # not that it's a custom function (it doesn't work for airpoumpoum::superplot() either)! Nor that it's not
 # a list! Then why (linked to par())??? Ask SO?
 ppl.tits::uni.dotplots(pm[,13:ncol(pm)])
@@ -588,7 +588,7 @@ ccy.corplot <- ggcorrplot::ggcorrplot(res.cor.ccy, type = "upper",
 #   uncorrelated to "clutch_size" (and "brood_size"?). Either this reflects a very non-linear relationship
 #   between these variables or that would imply that, for CC, the number of juvenile that take-off is
 #   globally unrelated to the number of eggs layed or the number of chicks in the brood, which seems
-#   IMPOSSIBLE! Perhaps a textbook example of the limits of bivariate correlations???
+#   IMPOSSIBLE! Perhaps a textbook example of the limits of biv <- riate correlations???
 # - On the other hand, "fledgling_nb" is positively correlated to all 3 morphometric DV!
 # - The 3 morphometric variables seem to covary in the same direction!
 
