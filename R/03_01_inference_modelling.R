@@ -148,7 +148,8 @@ pmCy_bglmm1 <- update(pmCy_bglmm0, start=ss,
 ### ** 1.2. Diagnostics and assumption checks ----
 # ________________________________________________
 
-# Poisson distribution:
+### *** 1.2.1. Poisson distribution ----
+# Theoretical count distribution:
 theo_count <- rpois(n = nrow(pm), lambda = mean(pm$clutch_size))
 tc_df <-data.frame(theo_count)
 
@@ -161,41 +162,105 @@ ggplot2::ggplot(pm, ggplot2::aes(clutch_size)) +
 # underdispersed and relatively symmetrical.
 # hist(rnorm(n = nrow(pm), mean = mean(pm$clutch_size), sd = stats::sd(pm$clutch_size))) # Perhaps Normal?
 
-# Overdispersion and underdispersion:
+
+# Assessing over or under-dispersion:
 aods3::gof(pmCy_bglmm1)
 # The sum of squared Pearson residuals is less than the residual degrees of freedom, it's a known
-# sign of underdispersion!
+# sign of underdispersion! We can confirm it by dividing the residual deviance by the number of degrees
+# of freedom: 65.7/245=0.27 (<< 1), so underdispersion!
 AER::dispersiontest(object = pmCy_glm0, alternative = c("less"))
-# The data are indeed under-dispersed, explaining the lack of fit!
+# The data are indeed significantly under-dispersed (explaining the lack of fit?).
 
-# Plots:
+
+### *** 1.2.2. Model goodness-of-fit and performances ----
+# Residual analyses:
 plot(pmCy_bglmm1)
-plot(pmCy_bglmm1, id_nestbox~stats::resid(.))
+plot(pmCy_bglmm1, id_nestbox~stats::resid(.)) # Justification for the nestbox random effect (RE).
 plot(pmCy_bglmm1, site~stats::resid(.)) # That's interesting because it shows that there's quite a lot
-# of among and between sites variability in the residuals. It may mean a "site" random effect is required.
+# of among and within sites variability in the residuals. It may mean a "site" RE is required.
 # Note also that "chateau_de_larrey" is an 'outlier' site and 3 other sites have extreme values
 # ("seminaire", "chateau_de_pouilly" and "arquebuse").
-boxplot(pm$clutch_size~pm$site)
+# However, according to glmer(), this variation is still consistent with Poisson variation among
+# otherwise identical sites. Still following Bolker, we will do posterior predictive simulations to test
+# if the model is behaving like the data.
+
+
+# Posterior predictive simulations:
+obsprop <- prop.table(table(pm2$clutch_size))
+sims <- stats::simulate(pmCy_bglmm1, nsim = 1000)
+nsim1 <- colSums(sims == 1) # Number of ones (min obs value)
+par(las=1,bty="l")
+plot(pt <- prop.table(table(nsim1)),
+     ylab="Probability", xlab="Number of ones")
+obs1 <- sum(pm2$clutch_size == 1)
+points(obs1, 0.004, col="red", pch=16, cex=2) # See y values in obsprop
+
+nsim8 <- colSums(sims == 8) # Number of eights (modal obs value).
+par(las=1,bty="l")
+plot(pt <- prop.table(table(nsim8)),
+     ylab="Probability", xlab="Number of eights")
+obs8 <- sum(pm2$clutch_size == 8)
+points(obs8, 0.26, col="red", pch=16, cex=2)
+
+nsim12 <- colSums(sims == 12) # Number of twelves (max obs value).
+par(las=1,bty="l")
+plot(pt <- prop.table(table(nsim12)),
+     ylab="Probability", xlab="Number of twelves")
+(obs12 <- sum(pm2$clutch_size == 12))
+points(obs12, 0.13, col="red", pch=16, cex=2)
+# These three examples confirm that the model does not fit the data at all!
+
+# Let's try with the among-nestbox variance:
+sims2 <- simulate(pmCy_bglmm1,nsim=1000)
+vfun <- function(x) {
+  m_new <- update(pmCy_bglmm1, data = transform(pm2, clutch_size = x))
+  pm2$.resid <- stats::residuals(m_new, "pearson")
+  nestboxmeans <- plyr::ddply(pm2, "id_nestbox", plyr::summarise, mresid = mean(.resid))
+  stats::var(nestboxmeans$mresid)
+}
+vdist <- sapply(sims2, vfun) # VERY LONG§§§
+
+pm2$.glmresid <- stats::residuals(pmCy_bglmm1, "pearson")
+obs_boxmeans <- plyr::ddply(pm2, "id_nestbox", plyr::summarise, mresid = mean(.glmresid))
+obs_boxvar <- stats::var(obs_boxmeans$mresid)
+par(las=1,bty="l")
+hist(vdist, breaks = 30, col = "gray", freq = FALSE, main = "",
+     xlab="Among-nestbox variance in residuals")
+par(xpd = NA) ## prevent point getting cut off at top of plot
+points(obs_boxvar, §§§§§, col="red", pch=16, cex=2) # §§§§§ = variance estimée de id_nestbox par le modèle
+
+
+# Likelihood-ration tests (LRT) of GOF:
+# See hartig for LRT for RE!
+# + LRT avec modèle null?????
+# + FINIR checks/diags by https://datavoreconsulting.com/post/count-data-glms-choosing-poisson-negative-binomial-zero-inflated-poisson/
 
 
 
-hist(pm$clutch_size)
-ppl.tits::uni.histograms(pm2)
-ppl.tits::uni.dotplots(pm2)
-colnames(pm2)
-summary(pm)
+### ** 1.3. Inference and predictions ----
+# ________________________________________
+
+### *** 1.2.1. Hypothesis testing ----
+# + WALD for fixed effects
+# See bolker + delladata for other stuff in inference+predictions
+# See bolker + delladata for other stuff in inference+predictions
+# See bolker + delladata for other stuff in inference+predictions
+
 
 par(.pardefault)
 
 ######################################### TO DO LIST ####################################################
-# - Finish diagnostics and assumption checks
-# - Sdt comme NOVA avec MEDIAN et 1.5*IQR????? (C'est d'ailleurs la step1 de Bolker pour la convergence)!
+# - Finish diagnostics and assumption checks: ii) truc ZIpoisson pscl
+# - Tester Sdt comme NOVA avec MEDIAN et 1.5*IQR????? (C'est d'ailleurs la step1 de Bolker pour la convergence)!
 # - LRT boot (Hartig?) to assess random effects + null model (~1)?????
 # - Simplify!
 # - Try binomial.
-# - Move on to another Y.
 # - Try LMM.
+# - Move on to another Y.
 # - Try the Conway-Maxwell Poisson (Shmueli et al, 2005*) avec {COMPoissonReg} (Sellers & Lotze, 2015*).
+# - Compare all methods of estimation and inference (cf. inference bolker example) for the **same model**
+#   to see if any is making a difference????
+
 # - Idem mais avec CC en plus, year en effet fixe????? (mais sans paternal cond!) --> mais QUID de
 #   possibles interactions entre species et autres X??????
 #_______________________________________________________________________________________________________#
