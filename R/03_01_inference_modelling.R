@@ -168,6 +168,15 @@ aods3::gof(pmCy_bglmm1)
 AER::dispersiontest(object = pmCy_glm0, alternative = c("less"))
 # The data are indeed under-dispersed, explaining the lack of fit!
 
+# Plots:
+plot(pmCy_bglmm1)
+plot(pmCy_bglmm1, id_nestbox~stats::resid(.))
+plot(pmCy_bglmm1, site~stats::resid(.)) # That's interesting because it shows that there's quite a lot
+# of among and between sites variability in the residuals. It may mean a "site" random effect is required.
+# Note also that "chateau_de_larrey" is an 'outlier' site and 3 other sites have extreme values
+# ("seminaire", "chateau_de_pouilly" and "arquebuse").
+boxplot(pm$clutch_size~pm$site)
+
 
 
 hist(pm$clutch_size)
@@ -181,6 +190,7 @@ par(.pardefault)
 ######################################### TO DO LIST ####################################################
 # - Finish diagnostics and assumption checks
 # - Sdt comme NOVA avec MEDIAN et 1.5*IQR????? (C'est d'ailleurs la step1 de Bolker pour la convergence)!
+# - LRT boot (Hartig?) to assess random effects + null model (~1)?????
 # - Simplify!
 # - Try binomial.
 # - Move on to another Y.
