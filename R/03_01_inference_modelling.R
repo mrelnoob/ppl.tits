@@ -234,6 +234,7 @@ points(obs_boxvar, §§§§§, col="red", pch=16, cex=2) # §§§§§ = variance
 # See hartig for LRT for RE!
 # + LRT avec modèle null?????
 # + FINIR checks/diags by https://datavoreconsulting.com/post/count-data-glms-choosing-poisson-negative-binomial-zero-inflated-poisson/
+# and https://bookdown.org/egarpor/PM-UC3M/glm-diagnostics.html#glm-diagnostics-1
 
 
 
