@@ -16,41 +16,138 @@
 # SHOULD START BY CALLING/SOURCING the EDA script first (because no function yet???)!
 # SHOULD START BY CALLING/SOURCING the EDA script first (because no function yet???)!
 
-##### PM MODELS #####
 
-pm %>% dplyr::mutate(f_metric = scale(pmF_d531_beta0),
-                     woodvol = scale(woodyveg_vw),
-                     urbanity = scale(urban_intensity),
-                     light_pol = scale(light_pollution),
-                     noise_pol = scale(noise_m),
-                     temperature = scale(cumdd_30),
-                     male_cond = scale(father_cond),
-                     female_cond = scale(mother_cond),
-                     f_metric_cent = scale(pmF_d531_beta0, scale = FALSE),
-                     woodvol_cent = scale(woodyveg_vw, scale = FALSE)) -> pm2
+
+
+
+# ----------------- #
+##### PM MODELS #####
+# ----------------- #
+
+##### * 0. Data transformations ------------------------------------------------
+# ---------------------------------------------------------------------------- #
+
+
+# Rescaling variables:
+pm %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
+                     noise_m = noise_m/10, # Converting dB into B.
+                     cumdd_30 = cumdd_30/100) %>% # Converting degree-days into hundred of degree-days.
+  dplyr::mutate(logged_Fmetric = log10(pmF_d531_beta0),
+                logged_woodyveg = log10(woodyveg_vw)) %>%
+  dplyr::mutate(manag_low = ifelse(manag_intensity == "0", "1", "0"),
+                manag_mid = ifelse(manag_intensity == "1", "1", "0"),
+                manag_high = ifelse(manag_intensity == "2", "1", "0")) %>%
+  dplyr::mutate(dplyr::across(where(is.matrix), as.numeric),
+                dplyr::across(where(is.character), as.factor)) -> pm2
 ## QUID de factors????? manag_intensity + year (et quid des levels de year?)!!!
 # schielzeth dit dummy coding + centrage -----> mais ça dépend des objectifs!!!
 # Sans dummy: manag0 = gestion nat; year0 = 2019!
 # Mais poser question CV car toujours pas vraiment régler cette histoire de scaling/centrage!!!!!!
-
-##### 1. Clutch size: Poisson GLMM #####
-# ______________________________________
-
-### Initial model fit___________________________________________________________#
-# Without centering or scaling:
-pmclutch_glmm0 <- lme4::glmer(clutch_size ~ woodyveg_vw*pmF_d531_beta0 + urban_intensity +
-                                manag_intensity + light_pollution + noise_m + cumdd_30 + father_cond +
-                                mother_cond + (1|id_nestbox) + (1|breeding_window),
-                              data = pm2, family = poisson) #### Voir ?glmerControl
-# Voir rescaling (jouer avec les unités) > std > glmercontrol!!!!!!!!
-# Voir rescaling (jouer avec les unités) > std > glmercontrol!!!!!!!!
-# Voir rescaling (jouer avec les unités) > std > glmercontrol!!!!!!!!
-# Voir rescaling (jouer avec les unités) > std > glmercontrol!!!!!!!!
-# Voir rescaling (jouer avec les unités) > std > glmercontrol!!!!!!!!
-# Voir rescaling (jouer avec les unités) > std > glmercontrol!!!!!!!!
+# I could also try median-centering, that would be more relevant????
 
 
-### Checking preliminary assumptions____________________________________________#
+
+
+
+##### * 1. Clutch size: Poisson GLMM -------------------------------------------
+# ---------------------------------------------------------------------------- #
+
+### ** 1.1. Model fit ----
+# ________________________
+
+# I first started with the full model including the interaction term, but it appears to be too complex
+# for the data, so I'll switch to trying to properly fit the full additive-only model first:
+pmCy_glmm0 <- lme4::glmer(clutch_size ~ woodyveg_vw + pmF_d531_beta0 + urban_intensity + manag_low +
+                                manag_high + light_pollution + noise_m + cumdd_30 +
+                                father_cond + mother_cond + (1|id_nestbox) + (1|breeding_window),
+                              data = pm2, family = poisson) # See ?glmerControl and Bolker's examples
+# in case of fitting warnings and errors: e.g. convergence, etc.
+# I get the following warnings:
+# "boundary (singular) fit: see help('isSingular')
+# Warning message:
+#   Some predictor variables are on very different scales: consider rescaling".
+# So my model is singular and some variables should be rescaled!
+
+# So I'll try by log-transforming some variables:
+pmCy_glmm1 <- lme4::glmer(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+                                manag_low + manag_high + light_pollution + noise_m +
+                                cumdd_30 + father_cond + mother_cond + (1|id_nestbox) +
+                                (1|breeding_window),
+                              data = pm2, family = poisson)
+# lme4::VarCorr(pmCy_glmm1)
+# It works but gives a singular fit (i.e. random effect variance = 0)!
+
+# So I'll continue by dropping "breeding_window" as random effect and using year as fixed effect instead:
+pmCy_glmm2 <- lme4::glmer(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+                                manag_low + manag_high + light_pollution + noise_m +
+                                cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
+                              data = pm2, family = poisson)
+# Still singular, so "id_nestbox" is problematic as well!
+
+# I will then try to better tune the models parameters. First, by trying using the "bobyqa" optimizer:
+pmCy_glmm2_b <- stats::update(pmCy_glmm2, control = lme4::glmerControl(optimizer = "bobyqa"))
+# Does not change a thing! So I'll try using the Gauss-Hermite quadrature (GHQ) for estimation:
+pmCy_glmm2_bGHQ <- stats::update(pmCy_glmm2_b, nAGQ = 10)
+# Changing the fitting method strongly modified the AIC/BIC, log-likelihood and deviance but changed
+# absolutely NOTHING to the parameter estimates! That is simply because GHQ computes things differently.
+# I'll try fitting a simple GLM (without 'id_nestbox') to compare:
+pmCy_glm0 <- stats::glm(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+                          manag_low + manag_high + light_pollution + noise_m +
+                          cumdd_30 + father_cond + mother_cond + year,
+                        data = pm2, family = poisson)
+summary(pmCy_glm0)
+# Switching to a simple GLM gives absolutely identical estimates with the first GLMMs (with Laplace
+# fits), indicating that the in the absence of variance in the random effects, glmer() was actually
+# computing a simple GLM this whole time!
+# Even then, estimates and p-values are extremely surprising as only one effect is significant, which
+# I do not believe... It is thus time to investigate things further, notably to assess Poisson
+# regression assumptions.
+
+# But first, following Ben Bolker's advices, I'll try the approach proposed by Chung et al. (2013)
+# that sets a weak prior on the variance to get an approximate Bayesian maximum a posteriori estimate
+# that avoids singularity:
+pmCy_bglmm0 <- blme::bglmer(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+                              manag_low + manag_high + light_pollution + noise_m +
+                              cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
+                            data = pm2, family = poisson)
+summary(pmCy_bglmm0)
+# Estimates are now different but this yields a warning regarding convergence:
+# Warning message:
+#   In checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv,  :
+#     Model failed to converge with max|grad| = 1.98177 (tol = 0.002, component 1)
+# To try and fix it, I follow the steps from Ben Bolker presented here in the following document:
+# https://rstudio-pubs-static.s3.amazonaws.com/33653_57fc7b8e5d484c909b615d8633c01d51.html
+# I don't keep track of all of it, you can do it again if you want.
+# Restart, increase iterations and change optimizer:
+ss <- lme4::getME(pmCy_bglmm0, c("theta", "fixef"))
+pmCy_bglmm1 <- update(pmCy_bglmm0, start=ss,
+                      control=lme4::glmerControl(optimizer="bobyqa",
+                                                 optCtrl=list(maxfun=2e5)))
+# summary(pmCy_bglmm1) # It now converges and throws no warnings but estimates are still weird!
+# # Try all optimizers:
+# pmCy_bglmm_all <- lme4::allFit(pmCy_bglmm1)
+# summary(pmCy_bglmm_all) # Only "bobyqa" converges but this lack of convergence does not seem to matter
+# # much as values from all optimizers do not seem to vary much (e.g. logLik, estimates...) and are
+# # still wonky.
+#
+# # Perhaps, with GHQ:
+# pmCy_bglmm2 <- update(pmCy_bglmm1, nAGQ = 10)
+# summary(pmCy_bglmm2) # Nope...
+# pmCy_bglmm2_bootCI <- stats::confint(pmCy_bglmm2, method = "boot") # Very long to run (write it in
+# # a file to know how long)!
+#
+# # As apparently, lme4 output values from models fitted with GHQ are not comparable with models fitted
+# # with Laplace approximation or with simple GLMs, I cannot compare the "GHQ model" with the others:
+# AICcmodavg::aictab(cand.set = list(pmCy_glmm0, pmCy_glmm1, pmCy_glmm2, pmCy_glmm2_b),
+#                    modnames = c("glmm0", "glmm1", "glmm2", "glmm2_b")) # Only works for same type models,
+# # so I cannot compare with the "bglmm" but it doesn't change much anyway. I really have to check the
+# # underlying modelling assumptions!
+
+
+
+### ** 1.2. Diagnostics and assumption checks ----
+# ________________________________________________
+
 # Poisson distribution:
 theo_count <- rpois(n = nrow(pm), lambda = mean(pm$clutch_size))
 tc_df <-data.frame(theo_count)
@@ -60,17 +157,35 @@ ggplot2::ggplot(pm, ggplot2::aes(clutch_size)) +
   ggplot2::geom_bar(data = tc_df, ggplot2::aes(theo_count, fill="#1E90FF", alpha=0.5)) +
   ggplot2::theme_classic() +
   ggplot2::theme(legend.position = "none") # Blue = observed counts; red = simulated.
-# This plot suggests that clutch_size may not be following a Poisson distribution (underdispersion?
-# Normality?), but perhaps it's ok.
+# This plot suggests that clutch_size may not be following a Poisson distribution: it seems slightly
+# underdispersed and relatively symmetrical.
+# hist(rnorm(n = nrow(pm), mean = mean(pm$clutch_size), sd = stats::sd(pm$clutch_size))) # Perhaps Normal?
 
-# Overdispersion:
-aods3::gof()
-
-
+# Overdispersion and underdispersion:
+aods3::gof(pmCy_bglmm1)
+# The sum of squared Pearson residuals is less than the residual degrees of freedom, it's a known
+# sign of underdispersion!
+AER::dispersiontest(object = pmCy_glm0, alternative = c("less"))
+# The data are indeed under-dispersed, explaining the lack of fit!
 
 
 
 hist(pm$clutch_size)
 ppl.tits::uni.histograms(pm2)
+ppl.tits::uni.dotplots(pm2)
 colnames(pm2)
 summary(pm)
+
+par(.pardefault)
+
+######################################### TO DO LIST ####################################################
+# - Finish diagnostics and assumption checks
+# - Sdt comme NOVA avec MEDIAN et 1.5*IQR????? (C'est d'ailleurs la step1 de Bolker pour la convergence)!
+# - Simplify!
+# - Try binomial.
+# - Move on to another Y.
+# - Try LMM.
+# - Try the Conway-Maxwell Poisson (Shmueli et al, 2005*) avec {COMPoissonReg} (Sellers & Lotze, 2015*).
+# - Idem mais avec CC en plus, year en effet fixe????? (mais sans paternal cond!) --> mais QUID de
+#   possibles interactions entre species et autres X??????
+#_______________________________________________________________________________________________________#

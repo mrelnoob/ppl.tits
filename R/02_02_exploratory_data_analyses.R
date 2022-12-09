@@ -197,6 +197,7 @@ uni.histograms <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB 
 # _______________
 
 library(magrittr)
+.pardefault <- par()
 
 ### Data import and preparation_________________________________________________#
 # Import and binding:
@@ -206,7 +207,6 @@ manag <- readr::read_csv2(here::here("input_raw_data", "veg_manag_factor.csv"),
                                 col_names = TRUE, na = "NA",
                                 col_types = readr::cols(id_nestbox = readr::col_factor(),
                                                         manag_intensity = readr::col_factor(
-                                                          ordered = TRUE,
                                                           levels = c("0", "1", "2"),
                                                           include_na = FALSE)))
 tits_clean <- dplyr::inner_join(tits_clean, manag, by = "id_nestbox")
