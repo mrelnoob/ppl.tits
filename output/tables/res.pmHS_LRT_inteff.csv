@@ -1,0 +1,2 @@
+Method;Models;Log Likelihood (M1/M0);p-value
+DHARMa simulated LRT;m0: pmHSy_glmm2 m1: pmHSy_glmm3;0.410887471948286;0.388

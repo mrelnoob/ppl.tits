@@ -592,7 +592,7 @@ tt %>% dplyr::rename("Method" = V1,
                      "Models" = V2,
                      "Log Likelihood (M1/M0)" = V3,
                      "p-value" = V4) -> tt
-readr::write_csv2(x = tt, file = here::here("output", "tables", "pmHS_LRT_inteff.csv"))
+readr::write_csv2(x = tt, file = here::here("output", "tables", "res.pmHS_LRT_inteff.csv"))
 tictoc::toc() # DISCLAIMER: took ~3h35 to run!
 # If significant, I should compute bootCI for glmm3 parameters! But it's not.
 # A FINIR§§§§§§§§
