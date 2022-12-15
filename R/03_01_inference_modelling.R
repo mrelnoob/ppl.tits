@@ -580,8 +580,9 @@ res.LRT_null <- stats::anova(object = pmHSy_glm0, pmHSy_glm1, test = "LRT")
 
 ### *** 2.1.3.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
 ## For the additive effect of the connectivity metric:
+pmHSy_glmm1 <- update(pmHSy_glmm2, .~. -logged_Fmetric)
 tictoc::tic("Parametric bootstrap LRT for additive effect")
-res.LRT_addeff <- DHARMa::simulateLRT(m0 = pmHSy_glmm2, m1 = pmHSy_glmm3, n = 500, seed = 51)
+res.LRT_addeff <- DHARMa::simulateLRT(m0 = pmHSy_glmm1, m1 = pmHSy_glmm2, n = 500, seed = 298)
 
 tt <- as.data.frame(cbind(res.LRT_addeff$method,
                           res.LRT_addeff$data.name,
@@ -611,9 +612,14 @@ tt %>% dplyr::rename("Method" = V1,
 readr::write_csv2(x = tt, file = here::here("output", "tables", "res.pmHSy_LRT_inteff.csv"))
 tictoc::toc() # DISCLAIMER: took ~3h35 to run!
 # If significant, I should compute bootCI for glmm3 parameters! But it's not.
+
+
+
 # A FINIR§§§§§§§§
 # A FINIR§§§§§§§§
-# A FINIR§§§§§§§§
+tictoc::tic("Parametric bootstrap LRT for interaction effect with PBmodcomp()")
+res.LRT_inteff_pbkr <- pbkrtest::PBmodcomp(pmHSy_glmm3, pmHSy_glmm1, nsim = 500, seed = 51)
+tictoc::toc() # DISCLAIMER: took ~??? to run!
 # tester si les résultats sont identiques avec pbkrtest::PBmodcomp()!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # A FINIR§§§§§§§§
 # A FINIR§§§§§§§§
@@ -623,7 +629,7 @@ tictoc::toc() # DISCLAIMER: took ~3h35 to run!
 tictoc::tic("Bootstrap CI for additive GLMM parameters")
 res.pmHSy_addeff_CI_boot <- confint(pmHSy_glmm2, method="boot")
 readr::write_csv2(x = as.data.frame(res.pmHSy_addeff_CI_boot),
-                  file = here::here("output", "tables", "res.pmHSy_bootCI_inteff.csv"))
+                  file = here::here("output", "tables", "res.pmHSy_bootCI_addeff.csv"))
 tictoc::toc() # DISCLAIMER: took ~2h10 to run!
 
 
