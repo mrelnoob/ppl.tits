@@ -232,7 +232,7 @@ tits_clean %>%  dplyr::relocate(manag_num, .after = manag_intensity) -> tits_cle
 tits_clean %>%  dplyr::relocate(age_num, .after = age_class) -> tits_clean
 
 ntits <- cbind(tits_clean, ttt[,2:9])
-ntits %>% dplyr::select(-coord_x, -coord_y, -father_id, -mother_id, -mean_winter_t, -sd_winter_t,
+ntits %>% dplyr::select(-father_id, -mother_id, -mean_winter_t, -sd_winter_t,
                         -lsource_vs150_m, -lsource_vs150_iq, -soft_manag_area) -> ntits
 rm(ttt, fmetrics_pm, fmetrics_cc, manag, tits_clean)
 
@@ -311,14 +311,14 @@ ntits$light_pollution <- zzz # This variable opposes nestboxes located in very d
 
 ### Reduction results formatting____________________________________________________________#
 ntits %>% dplyr::filter(species == "PM") %>%
-  dplyr::select(id_nestbox, site, year, breeding_window, laying_date, flight_date,
+  dplyr::select(id_nestbox, site, coord_x, coord_y, year, breeding_window, laying_date, flight_date,
                 clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
                 pmF_d113_beta0, pmF_d531_beta0, pmF_d113_beta1, pmF_d531_beta1,
                 woodyveg_volume, woodyveg_vw,
                 urban_intensity, manag_intensity, light_pollution, noise_m, cumdd_30,
                 father_cond, mother_cond) -> pm
 ntits %>% dplyr::filter(species == "CC") %>%
-  dplyr::select(id_nestbox, site, year, breeding_window, laying_date, flight_date,
+  dplyr::select(id_nestbox, site, coord_x, coord_y, year, breeding_window, laying_date, flight_date,
                 clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
                 ccF_d92_beta0, ccF_d311_beta0, ccF_d92_beta1, ccF_d311_beta1,
                 woodyveg_volume, woodyveg_vw,
@@ -353,10 +353,10 @@ uni.boxplots <- function(dataset, MAR=c(0.5,4.1,1.1,1.5), CEX.LAB=1, FONT.LAB=2,
 
 ### For PM______________________________________________________________________#
 
-uni.boxplots(pm[,13:ncol(pm)]) # I CANNOT export them as object (-> NULL), I don't know why. The problem is
+uni.boxplots(pm[,15:ncol(pm)]) # I CANNOT export them as object (-> NULL), I don't know why. The problem is
 # not that it's a custom function (it doesn't work for airpoumpoum::superplot() either)! Nor that it's not
 # a list! Then why (linked to par())??? Ask SO?
-ppl.tits::uni.dotplots(pm[,13:ncol(pm)])
+ppl.tits::uni.dotplots(pm[,15:ncol(pm)])
 # We can see that:
 # - There are extreme values for all F-metrics, especially the "beta1" (we already know that, remove
 #   them for the FINAL VERSION)!!!
@@ -369,8 +369,8 @@ ppl.tits::uni.dotplots(pm[,13:ncol(pm)])
 
 ### For CC______________________________________________________________________#
 
-uni.boxplots(cc[,13:ncol(cc)]) # Only for IVs, not Ys.
-ppl.tits::uni.dotplots(cc[,13:ncol(cc)])
+uni.boxplots(cc[,15:ncol(cc)]) # Only for IVs, not Ys.
+ppl.tits::uni.dotplots(cc[,15:ncol(cc)])
 # We can see that:
 # - There are extreme values for all F-metrics, especially the "beta1" (we already know that, remove
 #   them for the FINAL VERSION)!!!
@@ -387,9 +387,9 @@ ppl.tits::uni.dotplots(cc[,13:ncol(cc)])
 
 ### For PM______________________________________________________________________#
 
-ppl.tits::uni.histograms(pm[,13:ncol(pm)])
+ppl.tits::uni.histograms(pm[,15:ncol(pm)])
 
-pm.x <- pm[,13:ncol(pm)]
+pm.x <- pm[,15:ncol(pm)]
 pm.xnum <- pm.x[, sapply(pm.x, is.numeric)]
 tab <- data.frame(moments::skewness(x = pm.xnum), moments::kurtosis(x = pm.xnum)-3)
 pmx_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
@@ -399,9 +399,9 @@ pmx_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", 
 
 ### For CC______________________________________________________________________#
 
-ppl.tits::uni.histograms(cc[,13:ncol(cc)])
+ppl.tits::uni.histograms(cc[,15:ncol(cc)])
 
-cc.x <- cc[,13:ncol(cc)]
+cc.x <- cc[,15:ncol(cc)]
 cc.xnum <- cc.x[, sapply(cc.x, is.numeric)]
 tab <- data.frame(moments::skewness(x = cc.xnum), moments::kurtosis(x = cc.xnum)-3)
 ccx_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
@@ -417,7 +417,6 @@ rm(tab)
 # _______________________________________
 
 ### For PM______________________________________________________________________#
-
 pm.x$manag_intensity <- as.numeric(as.character(pm.x$manag_intensity))
 
 # To compute the correlation matrix:
@@ -449,7 +448,6 @@ pmx.pairplot <- GGally::ggpairs(pm.xnum)
 
 
 ### For CC______________________________________________________________________#
-
 cc.x$manag_intensity <- as.numeric(as.character(cc.x$manag_intensity))
 
 # To compute the correlation matrix:
@@ -483,7 +481,6 @@ ccx.pairplot <- GGally::ggpairs(cc.xnum)
 ##### MULTICOLLINEARITY #####
 
 ### For PM______________________________________________________________________#
-
 pm.x$response <- rnorm(n = nrow(pm.x), mean = 50, sd = 10)
 pm.x %>% dplyr::select(-pmF_d113_beta0, -pmF_d113_beta1, -pmF_d531_beta1, -woodyveg_volume) %>%
   dplyr::mutate(manag_intensity = as.factor(manag_intensity)) -> pm.test
@@ -496,7 +493,6 @@ pmx.viftable <- car::vif(mod = test_lm)
 
 
 ### For CC______________________________________________________________________#
-
 cc.x$response <- rnorm(n = nrow(cc.x), mean = 50, sd = 10)
 cc.x %>% dplyr::select(-ccF_d92_beta0, -ccF_d92_beta1, -ccF_d311_beta1, -woodyveg_volume) %>%
   dplyr::mutate(manag_intensity = as.factor(manag_intensity)) -> cc.test
@@ -513,8 +509,8 @@ ccx.viftable <- car::vif(mod = test_lm)
 ##### Outliers and distribution
 # _____________________________
 
-pm.y <- pm[,7:12]
-cc.y <- cc[,7:12]
+pm.y <- pm[,9:14]
+cc.y <- cc[,9:14]
 
 ### For PM______________________________________________________________________#
 
@@ -609,3 +605,6 @@ ccy.pairplot <- GGally::ggpairs(cc.y)
 
 pm %>% dplyr::select(-pmF_d113_beta0, -pmF_d113_beta1, -pmF_d531_beta1, -woodyveg_volume) -> pm
 cc %>% dplyr::select(-ccF_d92_beta0, -ccF_d92_beta1, -ccF_d311_beta1, -woodyveg_volume) -> cc
+
+rm(cc.test, cc.x, cc.y, cc.xnum, pm.test, pm.x, pm.y, pm.xnum, tab, test_lm,
+   res.cor.ccx, res.cor.ccy, res.cor.pmx, res.cor.pmy, res.pcor.ccx, res.pcor.ccy, res.pcor.pmx, res.pcor.pmy)
