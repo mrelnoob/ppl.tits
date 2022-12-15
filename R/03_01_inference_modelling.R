@@ -579,7 +579,23 @@ res.LRT_null <- stats::anova(object = pmHSy_glm0, pmHSy_glm1, test = "LRT")
 # __________________________________________
 
 ### *** 2.1.3.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
+## For the additive effect of the connectivity metric:
+tictoc::tic("Parametric bootstrap LRT for additive effect")
+res.LRT_addeff <- DHARMa::simulateLRT(m0 = pmHSy_glmm2, m1 = pmHSy_glmm3, n = 500, seed = 51)
 
+tt <- as.data.frame(cbind(res.LRT_addeff$method,
+                          res.LRT_addeff$data.name,
+                          res.LRT_addeff$statistic,
+                          res.LRT_addeff$p.value))
+rownames(tt) <- NULL
+tt %>% dplyr::rename("Method" = V1,
+                     "Models" = V2,
+                     "Log Likelihood (M1/M0)" = V3,
+                     "p-value" = V4) -> tt
+readr::write_csv2(x = tt, file = here::here("output", "tables", "res.pmHSy_LRT_addeff.csv"))
+tictoc::toc() # DISCLAIMER: took ~3h35 to run!
+
+## For the interaction effect:
 tictoc::tic("Parametric bootstrap LRT for interaction effect")
 res.LRT_inteff <- DHARMa::simulateLRT(m0 = pmHSy_glmm2, m1 = pmHSy_glmm3, n = 500, seed = 51)
 
@@ -592,34 +608,23 @@ tt %>% dplyr::rename("Method" = V1,
                      "Models" = V2,
                      "Log Likelihood (M1/M0)" = V3,
                      "p-value" = V4) -> tt
-readr::write_csv2(x = tt, file = here::here("output", "tables", "res.pmHS_LRT_inteff.csv"))
+readr::write_csv2(x = tt, file = here::here("output", "tables", "res.pmHSy_LRT_inteff.csv"))
 tictoc::toc() # DISCLAIMER: took ~3h35 to run!
 # If significant, I should compute bootCI for glmm3 parameters! But it's not.
 # A FINIR§§§§§§§§
 # A FINIR§§§§§§§§
 # A FINIR§§§§§§§§
-# INCLUDING LRT entre glmm1 (sans F-metric) et 2
-# INCLUDING LRT entre glmm1 (sans F-metric) et 2
-# INCLUDING LRT entre glmm1/0 (sans F-metric) et 2
 # tester si les résultats sont identiques avec pbkrtest::PBmodcomp()!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # A FINIR§§§§§§§§
 # A FINIR§§§§§§§§
 
 
 ### *** 2.1.3.2. Bootstrapped confidence intervals for estimated parameters ----
-
-
-
 tictoc::tic("Bootstrap CI for additive GLMM parameters")
-pmHSy_glmm2_CI_boot <- confint(pmHSy_glmm2, method="boot")
+res.pmHSy_addeff_CI_boot <- confint(pmHSy_glmm2, method="boot")
+readr::write_csv2(x = as.data.frame(res.pmHSy_addeff_CI_boot),
+                  file = here::here("output", "tables", "res.pmHSy_bootCI_inteff.csv"))
 tictoc::toc() # DISCLAIMER: took ~2h10 to run!
-# A FINIR§§§§§§§§
-# A FINIR§§§§§§§§
-# A FINIR§§§§§§§§
-# A FINIR§§§§§§§§
-# A FINIR§§§§§§§§
-###################### FAIRE diagnostics+boot CI (si LRT ***) sur modèle interactifffff??????? -> glmm3?
-
 
 
 

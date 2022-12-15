@@ -588,7 +588,7 @@ targets::tar_visnetwork(targets_only = FALSE) # This argument enables the displa
 # ---------------------------------------------------------------------------- #
 ########################## Main Git commits ####################################
 # ---------------------------------------------------------------------------- #
-usethis::use_git(message = ":boom: Started a new script")
+usethis::use_git(message = ":boom: First exported results!")
 usethis::use_git(message = ":metal: Created a new function")
 usethis::use_git(message = ":zap: Ignoring something")
 usethis::use_git(message = ":pencil: Documented a function or wrote something")
