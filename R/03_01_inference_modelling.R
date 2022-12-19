@@ -139,10 +139,12 @@ summary(pmCy_bglmm1) # It now converges and throws no warnings but estimates are
 
 
 
+
+
 ### ** 1.1.2. Diagnostics and assumption checks ----
 # ________________________________________________
 
-### *** 1.1.2.1. Residuals inspection ----
+### *** 1.1.2.1. Residuals extraction, autocorrelation and collinearity ----
 # Traditional residuals:
 plot(pmCy_bglmm1)
 plot(pmCy_bglmm1, id_nestbox~stats::resid(.)) # Justification for the nestbox random effect (RE).
@@ -162,6 +164,7 @@ DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
 performance::check_autocorrelation(pmCy_bglmm1) # Significant autocorrelation: use "site" RE?
 performance::check_collinearity(pmCy_bglmm1) # Ok.
 stats::vcov(pmCy_bglmm1)
+
 
 
 ### *** 1.1.2.2. Distribution (family, ZI, dispersion) ----
@@ -200,6 +203,7 @@ DHARMa::testDispersion(simu.resid)
 # All methods indicate significantly under-dispersed data (explaining the lack of fit?).
 
 
+
 ### *** 1.1.2.3. Model goodness-of-fit (GOF) and performances ----
 # GOF test of Pearson's Chi2 residuals:
 dat.resid <- sum(stats::resid(pmCy_bglmm1, type = "pearson")^2)
@@ -221,6 +225,7 @@ pmCy_nullglm <- stats::glm(formula = clutch_size ~ 1, family = poisson, data = p
 res.LRT_null <- stats::anova(object = pmCy_nullglm, pmCy_glm0, test = "LRT")
 # Here again, the test is NOT significant, meaning that the GLM does not a improve the model compared to
 # a completely random model.
+
 
 
 ### *** 1.1.2.4. Posterior predictive simulations ----
@@ -275,6 +280,7 @@ vfun <- function(x) {
 # # Here again, the model does not model well!
 
 
+
 ### *** 1.1.2.5. Conclusion ----
 
 # Our diagnostics clearly show that the data are underdispersed, explaining why our models do not fit.
@@ -310,46 +316,7 @@ pmCy_lmm1 <- lme4::lmer(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_i
 ### ** 1.2.2. Diagnostics and assumption checks ----
 # __________________________________________________
 
-# Fitted vs residuals:
-plot(pmCy_lmm0, type=c("p","smooth"), col.line = 2) # Bibof.
-# Scale-location plot:
-plot(pmCy_lmm0,
-     sqrt(abs(stats::resid(.)))~stats::fitted(.),
-     type=c("p","smooth"), col.line=1)
-# Linearity plots:
-plot(pm2$logged_woodyveg, stats::residuals(pmCy_lmm0))
-plot(pm2$logged_Fmetric, stats::residuals(pmCy_lmm0))
-plot(pm2$father_cond, stats::residuals(pmCy_lmm0)) # Linearity seems ok.
-# QQ plot:
-stats::qqnorm(stats::residuals(pmCy_lmm0)) # Ok-ish but clear non-normality for the extreme values.
-stats::qqline(stats::residuals(pmCy_lmm0))
-# Residuals vs leverage:
-plot(pmCy_lmm0, stats::rstudent(.) ~ stats::hatvalues(.))
-cd <- stats::cooks.distance(pmCy_lmm0)
-plot(cd)
-pm2[which(cd>0.4),] # Should not be > 0.5!
-# Voir comments in the raw DATA§§§§§
-
-
-### LRT:
-pmCy_nullglm <- lme4::lmer(clutch_size ~ 1 + (1|id_nestbox), data = pm2)
-stats::anova(pmCy_nullglm, pmCy_lmm0)
-
-pmCy_lmm1 <- lme4::lmer(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
-                          manag_low + manag_high + light_pollution + noise_m +
-                          cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox) + (1|site),
-                        data = pm2)
-stats::anova(pmCy_lmm0, pmCy_lmm1)
-
-
-## Likelihood-ration tests (LRT) of GOF:
-# For the "id_nestbox" random-effect (RE):
-tictoc::tic("Parametric bootstrap LRT (LM vs LMM0)")
-res.LRT_re1 <- DHARMa::simulateLRT(m0 = pmCy_lm0, m1 = pmCy_lmm0, n = 500, seed = 42)
-tictoc::toc() # DISCLAIMER: took ~9.97s to run.
-tictoc::tic("Parametric bootstrap LRT (LMM0 vs LMM1)")
-res.LRT_re2 <- DHARMa::simulateLRT(m0 = pmCy_lmm0, m1 = pmCy_lmm1, n = 500, seed = 963)
-tictoc::toc() # DISCLAIMER: took ~17.81s to run.
+####### A REPRENDRE §§§§§ ########
 
 
 
@@ -431,10 +398,12 @@ summary(pmHSy_glmm3_wo)$AIC # Strongly improved AIC, BIC, and deviance. However,
 
 
 
+
+
 ### ** 2.1.2. Diagnostics and assumption checks ----
 # __________________________________________________
 
-### *** 2.1.2.1. Residuals inspection ----
+### *** 2.1.2.1. Residuals extraction, autocorrelation and collinearity ----
 ## Traditional residuals:
 par(.pardefault)
 plot(pmHSy_glmm3, id = 0.05, idLabels = ~.obs) # Strange pattern.
@@ -466,6 +435,7 @@ performance::check_collinearity(pmHSy_glmm3) # Ok.
 stats::vcov(pmHSy_glmm3) # Ok.
 
 
+
 ### *** 2.1.2.2. Distribution and dispersion ----
 ## Assessing over or under-dispersion:
 aods3::gof(pmHSy_glmm3) # Note that this test is meant for count data!
@@ -483,6 +453,7 @@ par(mfrow= c(1,2))
 hist(probabilities)
 hist(pm2$brood_size/pm2$clutch_size) # The model seems to nicely fit the observed proportions of hatching
 # success. But then, why are estimated SE so high?
+
 
 
 ### *** 2.1.2.3. Linearity ----
@@ -590,6 +561,7 @@ tictoc::toc() # DISCLAIMER: took ~3h35 to run!
 # {pbkrtest} is much faster and should thus likely be favoured.
 
 
+
 ### *** 2.1.3.2. Bootstrapped confidence intervals for estimated parameters ----
 tictoc::tic("Bootstrap CI for additive GLMM parameters")
 res.pmHSy_addeff_CI_boot <- confint(pmHSy_glmm2, method="boot")
@@ -598,6 +570,7 @@ tt$parameters <- rownames(tt)
 readr::write_csv2(x = tt,
                   file = here::here("output", "tables", "res.pmHSy_bootCI_addeff.csv"))
 tictoc::toc() # DISCLAIMER: took ~2h10 to run!
+
 
 
 ### *** 2.1.3.3. Conclusion ----
@@ -670,10 +643,12 @@ pmFSy_glmm3 <- lme4::glmer(fledgling_nb/clutch_size ~
 
 
 
+
+
 ### ** 3.1.2. Diagnostics and assumption checks ----
 # __________________________________________________
 
-### *** 3.1.2.1. Residuals inspection ----
+### *** 3.1.2.1. Residuals extraction, autocorrelation and collinearity ----
 ## Traditional residuals:
 par(.pardefault)
 plot(pmFSy_glmm3, id = 0.05, idLabels = ~.obs) # Seems rather ok to me.
@@ -705,6 +680,7 @@ performance::check_collinearity(pmFSy_glmm3) # Ok.
 stats::vcov(pmFSy_glmm3) # Ok.
 
 
+
 ### *** 3.1.2.2. Distribution and dispersion ----
 ## Assessing over or under-dispersion:
 aods3::gof(pmFSy_glmm3) # Note that this test is meant for count data!
@@ -721,6 +697,7 @@ par(mfrow= c(1,2))
 hist(probabilities)
 hist(pm2$fledgling_nb/pm2$clutch_size) # The model does not work that well. It is overdispersed and cannot
 # seem to be able to properly account for the obvious zero-inflation!
+
 
 
 ### *** 3.1.2.3. Linearity ----
@@ -812,6 +789,7 @@ readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
 # (mediated) model.
 
 
+
 ### *** 3.1.3.2. Bootstrapped confidence intervals for estimated parameters ----
 tictoc::tic("Bootstrap CI for additive GLMM parameters")
 res.pmFSy_addeff_CI_boot <- confint(pmFSy_glmm2, method="boot")
@@ -820,6 +798,7 @@ tt$parameters <- rownames(tt)
 readr::write_csv2(x = tt,
                   file = here::here("output", "tables", "res.pmFSy_bootCI_addeff.csv"))
 tictoc::toc() # DISCLAIMER: took ~1h45 to run!
+
 
 
 ### *** 3.1.3.3. Conclusion ----
@@ -874,15 +853,15 @@ pmMMy_blmm1 <- blme::blmer(morphometry ~ logged_woodyveg + logged_Fmetric + urba
                              cumdd_30 + year + (1|id_nestbox), data = pm3)
 # As there are convergence issues, I change the optimizer and increase iterations:
 pmMMy_blmm2 <- stats::update(pmMMy_blmm1, control=lme4::lmerControl(optimizer="bobyqa",
-                                                        optCtrl=list(maxfun=2e5))) # Convergence ok.
-# Try all optimizers:
-pmMMy_blmm2_all <- lme4::allFit(pmMMy_blmm2)
-summary(pmMMy_blmm2_all) # Two optimizers failed to converge but give rather similar results, except the
-# "nloptwrap.NLOPT_LN_BOBYQA" optimizer that computes a larger RE variance and thus, lower coefficient
-# estimates. We will thus stick with "bobyqa".
+                                                        optCtrl=list(maxfun=2e5)))
+# # Try all optimizers:
+# pmMMy_blmm2_all <- lme4::allFit(pmMMy_blmm2)
+# summary(pmMMy_blmm2_all) # Two optimizers failed to converge but give rather similar results, except the
+# # "nloptwrap.NLOPT_LN_BOBYQA" optimizer that computes a larger RE variance and thus, lower coefficient
+# # estimates. We will thus stick with "bobyqa".
 
 ## Fitting interactive (mediated) LMMs:
-pmMMy_lmm3 <- blme::blmer(morphometry ~
+pmMMy_blmm3 <- blme::blmer(morphometry ~
                              scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
                             urban_intensity + cumdd_30 + year + (1|id_nestbox), data = pm3,
                           control=lme4::lmerControl(optimizer="bobyqa",
@@ -897,17 +876,386 @@ pmMMy_lmm3 <- blme::blmer(morphometry ~
 
 
 
-
-
-
-
-
-### ** 3.1.2. Diagnostics and assumption checks ----
+### ** 4.1.2. Diagnostics and assumption checks ----
 # __________________________________________________
 
-### *** 3.1.2.1. Residuals inspection ----
-## Traditional residuals:
+### *** 4.1.2.1. Residuals extraction, autocorrelation and collinearity ----
+## Extracting residuals (with the {redres}):
+raw_cond <- redres::compute_redres(pmMMy_blmm3) # Computes the raw conditional residuals (conditional on
+# the random effects (RE)).
+pearson_mar <- redres::compute_redres(pmMMy_blmm3, type = "pearson_mar") # Computes the Pearson marginal
+# (not accounting for the RE) residuals.
+std_cond <- redres::compute_redres(pmMMy_blmm3, type = "std_cond") # Computes the studentised cond. ones.
+# Joins the residuals to the paprika data:
+xxx <- cbind(pm3, raw_cond, pearson_mar, std_cond)
+
+## Simulation-based scaled residuals computation (DHARMa method):
+simu.resid <- DHARMa::simulateResiduals(fittedModel = pmMMy_blmm3, n = 1000, plot = FALSE)
 par(.pardefault)
+plot(simu.resid) # Ok.
+
+## Autocorrelation and collinearity:
+DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
+                                   x = pm3$coord_x, y = pm3$coord_y, plot = TRUE) # Ok.
+performance::check_autocorrelation(pmMMy_blmm3) # Ok.
+performance::check_collinearity(pmMMy_blmm3) # Ok.
+stats::vcov(pmMMy_blmm3) # Ok, but "cumdd_30" has a slightly high covariance with the intercept.
+
+
+
+### *** 4.1.2.2. Distribution and homoscedasticity ----
+## Assessing the normality of the residuals:
+stats::shapiro.test(xxx$raw_cond) # Significant deviation from normality detected, but the Shapiro test is
+# known to be extremely sensitive. So plotting would be better:
+xxx %>%
+  tidyr::gather(key = "type", value = "residual", 30:32) %>%
+  ggplot2::ggplot(ggplot2::aes(x = residual)) +
+  ggplot2::geom_histogram(bins = 20) +
+  ggplot2::facet_grid(. ~ type, scales = "free") +
+  ggplot2::theme_bw() # The residuals are indeed slightly left-skewed and possibly lack kurtosis but that
+# could be acceptable.
+redres::plot_resqq(pmMMy_blmm3) # As expected, the plot shows a substantial departure from Normality at the
+# extreme ends of the quantiles, that is at the border of the parameters space. Overall, as almost all
+# points stay within the 95% CI, we can say it is ok-ish.
+
+## Assessing the normality if the random effect:
+redres::plot_ranef(pmMMy_blmm3) # Same thing here.
+
+## Assessing homogeneity of variance and influential observations:
+plot(pmMMy_blmm3, type=c("p","smooth"), col.line = 2, id = 0.05, idLabels = ~.obs) # A slight curvature
+# seem to exist and there are 5 possible outliers. Otherwise, there is no clear heteroscedasticity.
+pm3[c(10,86,46,97,61),] # RAS.
+
+redres::plot_redres(pmMMy_blmm3, xvar = "scale(logged_Fmetric, scale = F)") +
+  ggplot2::geom_smooth(method = "loess") +
+  ggplot2::theme_classic() +
+  ggplot2::labs(title = "Residual vs F-metric (log scale)") # Plotting residuals against the predictors
+# does not give much odd results, but emphasized the incomplete sampling of the predictor
+# space for some variables such as the F-metric.
+# plot(pm3$logged_Fmetric, stats::residuals(pmMMy_blmm3)) # Same plot (I should create a custom function).
+redres::plot_redres(pmMMy_blmm3, type = "raw_mar", xvar = "year")
+
+# Residuals vs leverage:
+plot(pmMMy_blmm3, stats::rstudent(.) ~ stats::hatvalues(.))
+cd <- stats::cooks.distance(pmMMy_blmm3)
+plot(cd)
+pm3[which(cd>0.4),] # Ok, all observations are < 0.5, so no overly influential points.
+pm3[which(cd>0.15),] # If we pick very conservative values, we find the same obs as before.
+
+## Distribution of the predicted values:
+par(.pardefault)
+predictions <- stats::predict(object = pmMMy_blmm3, type = "response") # Extract the predicted values.
+par(mfrow= c(1,2))
+hist(predictions)
+plot(ecdf(predictions))
+fitdistrplus::plotdist(data = pm3$morphometry, histo = TRUE, demp = TRUE) # Ok-ish...
+
+
+
+### *** 4.1.2.3. Linearity ----
+## Plotting the response on the logit scale (= log odds) against predictors:
+# Format data:
+pm3 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
+                      father_cond, mother_cond) %>%
+  dplyr::mutate("Fmetric" = pmF_d531_beta0,
+                "Fmetric (log)" = log10(pmF_d531_beta0),
+                "woodyveg_vw" = woodyveg_vw,
+                "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
+predictors <- colnames(mydata)
+# Bind 'morphometry' and tidying the data for plot (ggplot2, so long format):
+mydata <- mydata %>%
+  dplyr::mutate(morphometry = pm3$morphometry) %>%
+  tidyr::gather(key = "predictors", value = "predictor.value", -morphometry)
+# Create scatterplot
+ggplot2::ggplot(mydata, ggplot2::aes(y = morphometry, x = predictor.value))+
+  ggplot2::geom_point(size = 0.5, alpha = 0.5) +
+  ggplot2::geom_smooth(method = "loess") +
+  ggplot2::theme_bw() +
+  ggplot2::facet_wrap(~predictors, scales = "free_x") # We can see that the slight curvature seems to come
+# from "urban_intensity" and it seems that log-transforming "woodyveg_vw" might not be such a good idea here
+# as it enables an abnormal distortion effect of its lowest value (try without?). Otherwise ok!
+
+
+
+### *** 4.1.2.4. Goodness-of-fit (GOF) and performances ----
+## Computing a pseudo-R2:
+performance::r2_nakagawa(pmMMy_blmm2) # [Additive model]: Marg_R2_lmm = 0.31; Cond_R2_lmm = 0.38.
+performance::r2_nakagawa(pmMMy_blmm3) # [Interact. model]: Marg_R2_lmm = 0.31; Cond_R2_lmm = 0.38.
+
+## Likelihood-ration tests (LRT) of GOF:
+# Importance of the "id_nestbox" random-effect (RE):
+tictoc::tic("Parametric bootstrap LRT")
+res.LRT_re <- DHARMa::simulateLRT(m0 = pmMMy_lm1, m1 = pmMMy_blmm2, n = 500, seed = 24)
+tictoc::toc() # Took ~23s to run.
+# The LRT is significant, suggesting that M1 better describes the data than M0, supporting the importance of
+# the random effect!
+
+# Importance of the fixed effects (only using the LM):
+pmMMy_lm0 <- stats::lm(morphometry ~ 1, data = pm3)
+res.LRT_null <- stats::anova(object = pmMMy_lm0, pmMMy_lm1, test = "LRT")
+# The test is highly significant, confirming that the model is useful to explain the data.
+
+
+
+
+
+### ** 4.1.3. Inference and predictions ----
+# __________________________________________
+
+### *** 4.1.3.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
+## For the additive effect of the connectivity metric:
+pmMMy_blmm1 <- stats::update(pmMMy_blmm2, .~. -logged_Fmetric)
+
+res.LRT_addeff <- pbkrtest::PBmodcomp(pmMMy_blmm2, pmMMy_blmm1, nsim = 1000, seed = 399) # Took ~85s to run!
+readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
+                                                             "res.pmMMy_LRT_addeff.csv"))
+# The LRT is significant, indicating that our connectivity metric does improve the description of the data.
+
+
+## For the interaction effect:
+res.LRT_inteff <- pbkrtest::PBmodcomp(pmMMy_blmm3, pmMMy_blmm2, nsim = 1000, seed = 428) # Took ~67s to run!
+readr::write_csv2(x = res.LRT_inteff$test, file = here::here("output", "tables",
+                                                             "res.pmMMy_LRT_inteff.csv"))
+# The LRT is NOT significant, indicating that our hypothesis of an interaction effect is not supported
+# by the data.
+
+
+
+### *** 4.1.3.2. Bootstrapped confidence intervals for estimated parameters ----
+tictoc::tic("Bootstrap CI for additive LMM parameters")
+res.pmMMy_addeff_CI_boot <- confint(pmMMy_blmm2, method="boot")
+tt <- as.data.frame(res.pmMMy_addeff_CI_boot)
+tt$parameters <- rownames(tt)
+readr::write_csv2(x = tt,
+                  file = here::here("output", "tables", "res.pmMMy_bootCI_addeff.csv"))
+tictoc::toc() # DISCLAIMER: took ~17,7s to run!
+
+
+
+### *** 4.1.3.3. Conclusion ----
+
+# Our models only moderately fit the observed data. Nonetheless, the importance of the additive effect of
+# connectivity is supported by both the parametric bootstrap LRT and the CI on the parameters.
+# Diagnostics indicated that removing some influential observations as well as the lowest "woodyveg_vw"
+# value (or un-loging it) could perhaps have an impact on the results.
+
+
+
+
+
+##################### *------------------------------* #########################
+##### * 4.2 Mass: LMM ----------------------------------------------------------
+# ---------------------------------------------------------------------------- #
+### ** 4.2.1. Initial model fit ----
+# __________________________________
+
+## Fitting a regular linear model:
+pm2 %>% dplyr::filter(is.na(mass) == FALSE) -> pm3 # Only 213 observations left.
+
+pmMMy_lm1 <- stats::lm(morphometry ~ logged_woodyveg + logged_Fmetric +
+                         urban_intensity + cumdd_30 + father_cond + mother_cond + year, data = pm3)
+# pmMMy_lm2 <- stats::lm(morphometry ~ scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
+#                            urban_intensity + year, data = pm3) # Interaction not significant!
+
+
+## Fitting an additive LMM:
+pmMMy_lmm1 <- lme4::lmer(morphometry ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+                           cumdd_30 + year + (1|id_nestbox), data = pm3)
+# Gives a singular fit (RE variance = 0). I'll thus try setting a weak prior on the variance:
+pmMMy_blmm1 <- blme::blmer(morphometry ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+                             cumdd_30 + year + (1|id_nestbox), data = pm3)
+# As there are convergence issues, I change the optimizer and increase iterations:
+pmMMy_blmm2 <- stats::update(pmMMy_blmm1, control=lme4::lmerControl(optimizer="bobyqa",
+                                                                    optCtrl=list(maxfun=2e5)))
+# # Try all optimizers:
+# pmMMy_blmm2_all <- lme4::allFit(pmMMy_blmm2)
+# summary(pmMMy_blmm2_all) # Two optimizers failed to converge but give rather similar results, except the
+# # "nloptwrap.NLOPT_LN_BOBYQA" optimizer that computes a larger RE variance and thus, lower coefficient
+# # estimates. We will thus stick with "bobyqa".
+
+## Fitting interactive (mediated) LMMs:
+pmMMy_blmm3 <- blme::blmer(morphometry ~
+                             scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
+                             urban_intensity + cumdd_30 + year + (1|id_nestbox), data = pm3,
+                           control=lme4::lmerControl(optimizer="bobyqa",
+                                                     optCtrl=list(maxfun=2e5)))
+# # Test by removing possible overly influential observations:
+# pm2_wo <- pm2[-c(49,58,50,143),]
+# pmFSy_glmm3_wo <- stats::update(pmFSy_glmm3, data=pm2_wo)
+# summary(pmFSy_glmm3)$AIC
+# summary(pmFSy_glmm3_wo)$AIC # Strongly improved AIC, BIC, and deviance. However, it yields lower R2_glmm!
+
+
+
+
+
+### ** 4.2.2. Diagnostics and assumption checks ----
+# __________________________________________________
+
+### *** 4.2.2.1. Residuals extraction, autocorrelation and collinearity ----
+## Extracting residuals (with the {redres}):
+raw_cond <- redres::compute_redres(pmMMy_blmm3) # Computes the raw conditional residuals (conditional on
+# the random effects (RE)).
+pearson_mar <- redres::compute_redres(pmMMy_blmm3, type = "pearson_mar") # Computes the Pearson marginal
+# (not accounting for the RE) residuals.
+std_cond <- redres::compute_redres(pmMMy_blmm3, type = "std_cond") # Computes the studentised cond. ones.
+# Joins the residuals to the paprika data:
+xxx <- cbind(pm3, raw_cond, pearson_mar, std_cond)
+
+## Simulation-based scaled residuals computation (DHARMa method):
+simu.resid <- DHARMa::simulateResiduals(fittedModel = pmMMy_blmm3, n = 1000, plot = FALSE)
+par(.pardefault)
+plot(simu.resid) # Ok.
+
+## Autocorrelation and collinearity:
+DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
+                                   x = pm3$coord_x, y = pm3$coord_y, plot = TRUE) # Ok.
+performance::check_autocorrelation(pmMMy_blmm3) # Ok.
+performance::check_collinearity(pmMMy_blmm3) # Ok.
+stats::vcov(pmMMy_blmm3) # Ok, but "cumdd_30" has a slightly high covariance with the intercept.
+
+
+
+### *** 4.2.2.2. Distribution and homoscedasticity ----
+## Assessing the normality of the residuals:
+stats::shapiro.test(xxx$raw_cond) # Significant deviation from normality detected, but the Shapiro test is
+# known to be extremely sensitive. So plotting would be better:
+xxx %>%
+  tidyr::gather(key = "type", value = "residual", 30:32) %>%
+  ggplot2::ggplot(ggplot2::aes(x = residual)) +
+  ggplot2::geom_histogram(bins = 20) +
+  ggplot2::facet_grid(. ~ type, scales = "free") +
+  ggplot2::theme_bw() # The residuals are indeed slightly left-skewed and possibly lack kurtosis but that
+# could be acceptable.
+redres::plot_resqq(pmMMy_blmm3) # As expected, the plot shows a substantial departure from Normality at the
+# extreme ends of the quantiles, that is at the border of the parameters space. Overall, as almost all
+# points stay within the 95% CI, we can say it is ok-ish.
+
+## Assessing the normality if the random effect:
+redres::plot_ranef(pmMMy_blmm3) # Same thing here.
+
+## Assessing homogeneity of variance and influential observations:
+plot(pmMMy_blmm3, type=c("p","smooth"), col.line = 2, id = 0.05, idLabels = ~.obs) # A slight curvature
+# seem to exist and there are 5 possible outliers. Otherwise, there is no clear heteroscedasticity.
+pm3[c(10,86,46,97,61),] # RAS.
+
+redres::plot_redres(pmMMy_blmm3, xvar = "scale(logged_Fmetric, scale = F)") +
+  ggplot2::geom_smooth(method = "loess") +
+  ggplot2::theme_classic() +
+  ggplot2::labs(title = "Residual vs F-metric (log scale)") # Plotting residuals against the predictors
+# does not give much odd results, but emphasized the incomplete sampling of the predictor
+# space for some variables such as the F-metric.
+# plot(pm3$logged_Fmetric, stats::residuals(pmMMy_blmm3)) # Same plot (I should create a custom function).
+redres::plot_redres(pmMMy_blmm3, type = "raw_mar", xvar = "year")
+
+# Residuals vs leverage:
+plot(pmMMy_blmm3, stats::rstudent(.) ~ stats::hatvalues(.))
+cd <- stats::cooks.distance(pmMMy_blmm3)
+plot(cd)
+pm3[which(cd>0.4),] # Ok, all observations are < 0.5, so no overly influential points.
+pm3[which(cd>0.15),] # If we pick very conservative values, we find the same obs as before.
+
+## Distribution of the predicted values:
+par(.pardefault)
+predictions <- stats::predict(object = pmMMy_blmm3, type = "response") # Extract the predicted values.
+par(mfrow= c(1,2))
+hist(predictions)
+plot(ecdf(predictions))
+fitdistrplus::plotdist(data = pm3$morphometry, histo = TRUE, demp = TRUE) # Ok-ish...
+
+
+
+### *** 4.2.2.3. Linearity ----
+## Plotting the response on the logit scale (= log odds) against predictors:
+# Format data:
+pm3 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
+                      father_cond, mother_cond) %>%
+  dplyr::mutate("Fmetric" = pmF_d531_beta0,
+                "Fmetric (log)" = log10(pmF_d531_beta0),
+                "woodyveg_vw" = woodyveg_vw,
+                "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
+predictors <- colnames(mydata)
+# Bind 'morphometry' and tidying the data for plot (ggplot2, so long format):
+mydata <- mydata %>%
+  dplyr::mutate(morphometry = pm3$morphometry) %>%
+  tidyr::gather(key = "predictors", value = "predictor.value", -morphometry)
+# Create scatterplot
+ggplot2::ggplot(mydata, ggplot2::aes(y = morphometry, x = predictor.value))+
+  ggplot2::geom_point(size = 0.5, alpha = 0.5) +
+  ggplot2::geom_smooth(method = "loess") +
+  ggplot2::theme_bw() +
+  ggplot2::facet_wrap(~predictors, scales = "free_x") # We can see that the slight curvature seems to come
+# from "urban_intensity" and it seems that log-transforming "woodyveg_vw" might not be such a good idea here
+# as it enables an abnormal distortion effect of its lowest value (try without?). Otherwise ok!
+
+
+
+### *** 4.2.2.4. Goodness-of-fit (GOF) and performances ----
+## Computing a pseudo-R2:
+performance::r2_nakagawa(pmMMy_blmm2) # [Additive model]: Marg_R2_lmm = 0.31; Cond_R2_lmm = 0.38.
+performance::r2_nakagawa(pmMMy_blmm3) # [Interact. model]: Marg_R2_lmm = 0.31; Cond_R2_lmm = 0.38.
+
+## Likelihood-ration tests (LRT) of GOF:
+# Importance of the "id_nestbox" random-effect (RE):
+tictoc::tic("Parametric bootstrap LRT")
+res.LRT_re <- DHARMa::simulateLRT(m0 = pmMMy_lm1, m1 = pmMMy_blmm2, n = 500, seed = 24)
+tictoc::toc() # Took ~23s to run.
+# The LRT is significant, suggesting that M1 better describes the data than M0, supporting the importance of
+# the random effect!
+
+# Importance of the fixed effects (only using the LM):
+pmMMy_lm0 <- stats::lm(morphometry ~ 1, data = pm3)
+res.LRT_null <- stats::anova(object = pmMMy_lm0, pmMMy_lm1, test = "LRT")
+# The test is highly significant, confirming that the model is useful to explain the data.
+
+
+
+
+
+### ** 4.2.3. Inference and predictions ----
+# __________________________________________
+
+### *** 4.2.3.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
+## For the additive effect of the connectivity metric:
+pmMMy_blmm1 <- stats::update(pmMMy_blmm2, .~. -logged_Fmetric)
+
+res.LRT_addeff <- pbkrtest::PBmodcomp(pmMMy_blmm2, pmMMy_blmm1, nsim = 1000, seed = 399) # Took ~85s to run!
+readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
+                                                             "res.pmMMy_LRT_addeff.csv"))
+# The LRT is significant, indicating that our connectivity metric does improve the description of the data.
+
+
+## For the interaction effect:
+res.LRT_inteff <- pbkrtest::PBmodcomp(pmMMy_blmm3, pmMMy_blmm2, nsim = 1000, seed = 428) # Took ~67s to run!
+readr::write_csv2(x = res.LRT_inteff$test, file = here::here("output", "tables",
+                                                             "res.pmMMy_LRT_inteff.csv"))
+# The LRT is NOT significant, indicating that our hypothesis of an interaction effect is not supported
+# by the data.
+
+
+
+### *** 4.2.3.2. Bootstrapped confidence intervals for estimated parameters ----
+tictoc::tic("Bootstrap CI for additive LMM parameters")
+res.pmMMy_addeff_CI_boot <- confint(pmMMy_blmm2, method="boot")
+tt <- as.data.frame(res.pmMMy_addeff_CI_boot)
+tt$parameters <- rownames(tt)
+readr::write_csv2(x = tt,
+                  file = here::here("output", "tables", "res.pmMMy_bootCI_addeff.csv"))
+tictoc::toc() # DISCLAIMER: took ~17,7s to run!
+
+
+
+### *** 4.2.3.3. Conclusion ----
+
+# Our models only moderately fit the observed data. Nonetheless, the importance of the additive effect of
+# connectivity is supported by both the parametric bootstrap LRT and the CI on the parameters.
+# Diagnostics indicated that removing some influential observations as well as the lowest "woodyveg_vw"
+# value (or un-loging it) could perhaps have an impact on the results.
+
+
+
+
+
 
 
 
@@ -915,9 +1263,6 @@ par(.pardefault)
 
 ########################## ************************************************* ###############################
 par(.pardefault)
-fitdistrplus::plotdist(data = pm2$brood_size, histo = TRUE, demp = TRUE) # In case of NA's, I can use
-# 'na.omit()' in the call. This function works better for continuous unbounded variables.
-
 ######################################### TO DO LIST ####################################################
 # 4) Write sub-conclusionS??? Saying that quasi is not a good option??? Or try anyway with a package that
 #    does it OR BETA-BINOMIAL? --> But too many parameters (ZI+OI)!!! I should wait for the MERGE!
