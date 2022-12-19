@@ -274,8 +274,13 @@ vfun <- function(x) {
 # # estimated by the model (i.e. variance of the RE reported in the summary).
 # # Here again, the model does not model well!
 
-# Try COMREGPOISSON !
-# Try COMREGPOISSON !
+
+### *** 1.1.2.5. Conclusion ----
+
+# Our diagnostics clearly show that the data are underdispersed, explaining why our models do not fit.
+# Clutch size should thus be modelled using a generalized-Poisson model or a Conway-Maxell Poisson model.
+
+
 
 
 
@@ -335,7 +340,6 @@ pmCy_lmm1 <- lme4::lmer(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_i
                           cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox) + (1|site),
                         data = pm2)
 stats::anova(pmCy_lmm0, pmCy_lmm1)
-performance::check_autocorrelation(pmCy_lmm1) # Kewa?
 
 
 ## Likelihood-ration tests (LRT) of GOF:
@@ -589,9 +593,17 @@ tictoc::toc() # DISCLAIMER: took ~3h35 to run!
 ### *** 2.1.3.2. Bootstrapped confidence intervals for estimated parameters ----
 tictoc::tic("Bootstrap CI for additive GLMM parameters")
 res.pmHSy_addeff_CI_boot <- confint(pmHSy_glmm2, method="boot")
-readr::write_csv2(x = as.data.frame(res.pmHSy_addeff_CI_boot),
+tt <- as.data.frame(res.pmHSy_addeff_CI_boot)
+tt$parameters <- rownames(tt)
+readr::write_csv2(x = tt,
                   file = here::here("output", "tables", "res.pmHSy_bootCI_addeff.csv"))
 tictoc::toc() # DISCLAIMER: took ~2h10 to run!
+
+
+### *** 2.1.3.3. Conclusion ----
+
+# Our models fit the data quite nicely but, unfortunately, our hypotheses were not validated and only one
+# variable turned out significant: "father_cond".
 
 
 
@@ -622,7 +634,7 @@ pmFSy_glm2 <- stats::glm(fledgling_nb/clutch_size ~
                          data = pm2, family = "binomial")
 
 ## Fitting an additive GLMM:
-pmFSy_qglmm1 <- lme4::glmer(fledgling_nb/clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+pmFSy_glmm1 <- lme4::glmer(fledgling_nb/clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
                              manag_low + manag_high + light_pollution + noise_m +
                              cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
                            weights = clutch_size, data = pm2, family = "binomial")
@@ -738,7 +750,7 @@ resid <- resid(pmFSy_glmm3, type = 'deviance')
 d <- data.frame(cbind(fitted, resid))
 d %>%
   ggplot2::ggplot(ggplot2::aes(fitted, resid))+
-  ggplot2::geom_point() # Strange patterns, but residuals diagnostics for binomial GLMs is always tricky.
+  ggplot2::geom_point() # Strange patterns, but residuals diagnostic for binomial GLMs are always tricky.
 
 
 
@@ -796,19 +808,106 @@ readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
 # the data here.
 
 ## For the interaction effect:
-###### AFINIR§§ ----
-###### AFINIR§§ ----
-###### AFINIR§§ ----
-###### AFINIR§§ ----
-# Use {pbkrtest}!***********
+# Since even the additive model is NOT SIGNIFICANT, there is no point in testing the effect of the interactive
+# (mediated) model.
 
 
 ### *** 3.1.3.2. Bootstrapped confidence intervals for estimated parameters ----
 tictoc::tic("Bootstrap CI for additive GLMM parameters")
 res.pmFSy_addeff_CI_boot <- confint(pmFSy_glmm2, method="boot")
-readr::write_csv2(x = as.data.frame(res.pmFSy_addeff_CI_boot),
+tt <- as.data.frame(res.pmFSy_addeff_CI_boot)
+tt$parameters <- rownames(tt)
+readr::write_csv2(x = tt,
                   file = here::here("output", "tables", "res.pmFSy_bootCI_addeff.csv"))
 tictoc::toc() # DISCLAIMER: took ~1h45 to run!
+
+
+### *** 3.1.3.3. Conclusion ----
+
+# Our models does not fit the data adequately. Moreover, our hypotheses were not validated and only three
+# variables turned out significant: "father_cond", "mother_cond" and "year2022".
+
+
+
+
+
+########################## ************************************************* ###############################
+# ----------------------------------------------- #
+##### 4. Modelling the morphometric variables #####
+# ----------------------------------------------- #
+
+##### * 4.1 Morphometry: LMM ---------------------------------------------------
+# ---------------------------------------------------------------------------- #
+### ** 4.1.1. Initial model fit ----
+# __________________________________
+
+## Creating a synthetic morphometric variable:
+pm2 %>% dplyr::filter(is.na(wing_length) == FALSE) -> pm3 # Only 141 observations left.
+pm3 %>% dplyr::select(id_nestbox, site, mass, tarsus_length, wing_length) -> xxx
+
+# Normed-PCA:
+res.pca <- FactoMineR::PCA(X = xxx[, 3:ncol(xxx)], scale.unit = TRUE, graph = FALSE)
+# To plot results:
+morpho_pm.varplot <- factoextra::fviz_pca_var(res.pca, col.var = "contrib",
+                                              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), repel = TRUE)
+morpho_pm.indplot <- plot(res.pca, choix = "ind", autoLab = "yes")
+#gridExtra::grid.arrange(morpho_pm.varplot, morpho_pm.indplot, ncol = 2)
+
+# As the first axis (PC) of my PCA satisfactorily synthesizes a large amount of the variance (84.5%)
+# of my three variables, we can use the coordinates of observations on this axis as a synthetic variable:
+zzz <- res.pca$ind$coord[,1]
+pm3$morphometry <- zzz # This variable opposes nestboxes that host "big" (potentially well-fed) nestlings.
+
+
+## Fitting a regular linear model:
+pmMMy_lm1 <- stats::lm(morphometry ~ logged_woodyveg + logged_Fmetric +
+                           urban_intensity + cumdd_30 + father_cond + mother_cond + year, data = pm3)
+# pmMMy_lm2 <- stats::lm(morphometry ~ scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
+#                            urban_intensity + year, data = pm3) # Interaction not significant!
+
+
+## Fitting an additive LMM:
+pmMMy_lmm1 <- lme4::lmer(morphometry ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+                           cumdd_30 + year + (1|id_nestbox), data = pm3)
+# Gives a singular fit (RE variance = 0). I'll thus try setting a weak prior on the variance:
+pmMMy_blmm1 <- blme::blmer(morphometry ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+                             cumdd_30 + year + (1|id_nestbox), data = pm3)
+# As there are convergence issues, I change the optimizer and increase iterations:
+pmMMy_blmm2 <- stats::update(pmMMy_blmm1, control=lme4::lmerControl(optimizer="bobyqa",
+                                                        optCtrl=list(maxfun=2e5))) # Convergence ok.
+# Try all optimizers:
+pmMMy_blmm2_all <- lme4::allFit(pmMMy_blmm2)
+summary(pmMMy_blmm2_all) # Two optimizers failed to converge but give rather similar results, except the
+# "nloptwrap.NLOPT_LN_BOBYQA" optimizer that computes a larger RE variance and thus, lower coefficient
+# estimates. We will thus stick with "bobyqa".
+
+## Fitting interactive (mediated) LMMs:
+pmMMy_lmm3 <- blme::blmer(morphometry ~
+                             scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
+                            urban_intensity + cumdd_30 + year + (1|id_nestbox), data = pm3,
+                          control=lme4::lmerControl(optimizer="bobyqa",
+                                                      optCtrl=list(maxfun=2e5)))
+# # Test by removing possible overly influential observations:
+# pm2_wo <- pm2[-c(49,58,50,143),]
+# pmFSy_glmm3_wo <- stats::update(pmFSy_glmm3, data=pm2_wo)
+# summary(pmFSy_glmm3)$AIC
+# summary(pmFSy_glmm3_wo)$AIC # Strongly improved AIC, BIC, and deviance. However, it yields lower R2_glmm!
+
+
+
+
+
+
+
+
+
+
+### ** 3.1.2. Diagnostics and assumption checks ----
+# __________________________________________________
+
+### *** 3.1.2.1. Residuals inspection ----
+## Traditional residuals:
+par(.pardefault)
 
 
 
