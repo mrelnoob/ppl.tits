@@ -654,7 +654,7 @@ summary(pmCy_comglmm1)
 # the observed one. Possible leads for improvement could be to remove the possible outliers, merge observations,
 # and try to improve the modelling of the dispersion (nu) parameter!
 # As they are, unfortunately, the models do not support our hypotheses and only four predictors turned out
-# significant: "manag_high", cumdd_30, mother_cond, and year2021; while the lowest value of AIC = 974.5/975.
+# significant: "manag_high", "cumdd_30", "mother_cond", and "year2021"; while the lowest value of AIC ~ 975.
 
 
 
@@ -858,15 +858,15 @@ pmHSy_ziglmm0 <- glmmTMB::glmmTMB(brood_size/clutch_size ~
 summary(pmHSy_ziglmm0) # The non-mixed model gives AIC = 589.5 while the mixed-model gave AIC = 563.4, so the
 # the use of the mixed model seems warranted by the data!
 
-# Importance of the fixed effects:
-pmHSy_ziglmm0 <- lme4::glmer(brood_size/clutch_size ~ 1 + (1|id_nestbox),
-                           weights = clutch_size, data = pm2, family = "binomial",
-                           control=lme4::glmerControl(optimizer="bobyqa",
-                                                      optCtrl=list(maxfun=2e5)))
-tictoc::tic("Parametric bootstrap LRT")
-res.LRT_re <- DHARMa::simulateLRT(m0 = pmHSy_ziglmm0, m1 = pmHSy_ziglmm1, n = 500, seed = 85)
-tictoc::toc() # DISCLAIMER: took ~1h45 to run!
-# The LRT is highly significant, suggesting that M1 better describes the data than M0!
+# # Importance of the fixed effects:
+# pmHSy_ziglmm0 <- lme4::glmer(brood_size/clutch_size ~ 1 + (1|id_nestbox),
+#                            weights = clutch_size, data = pm2, family = "binomial",
+#                            control=lme4::glmerControl(optimizer="bobyqa",
+#                                                       optCtrl=list(maxfun=2e5)))
+# tictoc::tic("Parametric bootstrap LRT")
+# res.LRT_re <- DHARMa::simulateLRT(m0 = pmHSy_ziglmm0, m1 = pmHSy_ziglmm1, n = 500, seed = 85)
+# tictoc::toc() # DISCLAIMER: took ~1h45 to run!
+# # The LRT is highly significant, suggesting that M1 better describes the data than M0!
 
 
 
@@ -918,7 +918,7 @@ tictoc::toc() # DISCLAIMER: took ~2h10 to run!
 ### *** 2.1.3.3. Conclusion ----
 
 # Our models fit the data quite nicely but, unfortunately, our hypotheses were not validated and only one
-# variable turned out significant: "father_cond".
+# variable turned out significant: "XXXX".
 
 
 
@@ -1251,12 +1251,6 @@ pmFSy_glm1 <- stats::glm(fledgling_nb/clutch_size ~ logged_woodyveg + logged_Fme
                          weights = clutch_size, # Prior weights!
                          data = pm2, family = "binomial") # Weights should not
 # be forgotten. Otherwise, the formulation should be: cbind(fledgling_nb, clutch_size-fledgling_nb)!
-pmFSy_glm2 <- stats::glm(fledgling_nb/clutch_size ~
-                           scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
-                           urban_intensity + manag_low + manag_high + light_pollution + noise_m +
-                           cumdd_30 + father_cond + mother_cond + year,
-                         weights = clutch_size, # Prior weights!
-                         data = pm2, family = "binomial")
 
 ## Fitting an additive GLMM:
 pmFSy_glmm1 <- lme4::glmer(fledgling_nb/clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
@@ -1279,14 +1273,18 @@ pmFSy_glmm2 <- stats::update(pmFSy_glmm1, start=ss,
 # summary(pmFSy_glmm2_all) # All optimizers converge but give rather similar results, even though Nelder-
 # # Mead appears to disagree.
 
-## Fitting interactive (mediated) GLMMs:
-pmFSy_glmm3 <- lme4::glmer(fledgling_nb/clutch_size ~
-                             scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
-                             urban_intensity + manag_low + manag_high + light_pollution + noise_m +
-                             cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
-                           weights = clutch_size, data = pm2, family = "binomial",
-                           control=lme4::glmerControl(optimizer="bobyqa",
-                                                      optCtrl=list(maxfun=2e5)))
+# ## Fitting interactive (mediated) GLMMs:
+# pmFSy_glmm3 <- lme4::glmer(fledgling_nb/clutch_size ~
+#                              scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
+#                              urban_intensity + manag_low + manag_high + light_pollution + noise_m +
+#                              cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
+#                            weights = clutch_size, data = pm2, family = "binomial",
+#                            control=lme4::glmerControl(optimizer="bobyqa",
+#                                                       optCtrl=list(maxfun=2e5))) # Doesn't seem supported
+# by the data.
+summary(pmFSy_glm1) # AIC = 1569.9.
+summary(pmFSy_glmm2) # AIC = 1248.4.
+
 # # Test by removing possible overly influential observations:
 # pm2_wo <- pm2[-c(49,58,50,143),]
 # pmFSy_glmm3_wo <- stats::update(pmFSy_glmm3, data=pm2_wo)
@@ -1303,52 +1301,83 @@ pmFSy_glmm3 <- lme4::glmer(fledgling_nb/clutch_size ~
 ### *** 3.1.2.1. Residuals extraction, autocorrelation and collinearity ----
 ## Traditional residuals:
 par(.pardefault)
-plot(pmFSy_glmm3, id = 0.05, idLabels = ~.obs) # Seems rather ok to me.
-pm2[c(49,18,45,234,104,73,26,86,56,203,37,222,153,21),] # Nestboxes with the highest residuals = ~100%
-# fledging success!
-pm2[c(143,58,198,70,50,105,152,27,221,20,202,235,194,54,162,16,36,187),] # Nestboxes with the lowest
-# residuals = ~0% fledging success!
-performance::check_outliers(pmFSy_glmm3) # Detected 23 possible outliers:
-pm2[c(16,18,20,22,27,49,50,56,58,70,73,74,86,87,105,110,143,152,153,157,198,203,221),]
+plot(pmFSy_glmm2, id = 0.05, idLabels = ~.obs) # Strange pattern. Many extreme residuals.
+pm2[c(45,49,234),] # Nestboxes with the highest residuals = ~100% fledging success!
+pm2[c(50,58,143),] # Nestboxes with the lowest residuals = ~0% fledging success!
+# Interestingly, they may belong to the same nestbox, suggesting a strong year effect.
+performance::check_outliers(pmFSy_glmm2) # Detected 25 potential outliers.
 
 # To further investigate patterns, I can plot the residuals against some predictors:
-resid <- stats::resid(pmFSy_glmm3, type = 'deviance')
-plot(x = pm2$logged_woodyveg, y = resid) # Only "light_pollution" and "noise_m" show slightly strange
-# patterns. Possibly because "noise_m" should be transformed (standardisation?). Otherwise, seems ok.
-plot(pmFSy_glmm3, id_nestbox~stats::resid(.)) # Justification for the nestbox random effect (RE).
-plot(pmFSy_glmm3, site~stats::resid(.)) # There's a bit of among-site variance.
+resid <- stats::resid(pmFSy_glmm2, type = 'deviance')
+plot(x = pm2$noise_m, y = resid) # Only "light_pollution" and "noise_m" show slightly strange patterns.
+# Possibly because "noise_m" should be transformed (standardisation?). Otherwise, most predictors only
+# show a higher variability at medium values.
+plot(pmFSy_glmm2, id_nestbox~stats::resid(.)) # Justification for the nestbox random effect (RE).
+plot(pmFSy_glmm2, site~stats::resid(.)) # Interestingly, there are not that much among-sites variance.
 
-## Simulation-based scaled residuals computation ({DHARMa} method):
-simu.resid <- DHARMa::simulateResiduals(fittedModel = pmFSy_glmm3, n = 1000, plot = FALSE)
-par(.pardefault)
-plot(simu.resid) # Slight deviation detected! Sign of a mild overdispersion.
+## Simulation-based scaled residuals computation (DHARMa method):
+simu.resid <- DHARMa::simulateResiduals(fittedModel = pmFSy_glmm2, n = 1000, seed = 37)
+plot(simu.resid) # Significant deviations detected! There seems to be a clear zero-inflation!
 
-# Autocorrelation and collinearity:
+## Autocorrelation and collinearity:
 DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
                                    x = pm2$coord_x, y = pm2$coord_y, plot = TRUE) # Ok.
-performance::check_autocorrelation(pmFSy_glmm3) # Significant autocorrelation, but the Durbin-Watson test
+performance::check_autocorrelation(pmFSy_glmm2) # Significant autocorrelation, but the Durbin-Watson test
 # is known to be very sensitive.
-performance::check_collinearity(pmFSy_glmm3) # Ok.
-stats::vcov(pmFSy_glmm3) # Ok.
+performance::check_collinearity(pmFSy_glmm2) # Ok-ish, but "urban_intensity" > 3!
+stats::vcov(pmFSy_glmm2) # Ok.
+
+## Heteroscedasticity and possible model misspecifications:
+par(.pardefault)
+DHARMa::plotResiduals(simu.resid, form = pm2$logged_woodyveg)
+DHARMa::plotResiduals(simu.resid, form = pm2$logged_Fmetric)
+DHARMa::plotResiduals(simu.resid, form = pm2$urban_intensity)
+DHARMa::plotResiduals(simu.resid, form = pm2$manag_intensity)
+DHARMa::plotResiduals(simu.resid, form = pm2$light_pollution)
+DHARMa::plotResiduals(simu.resid, form = pm2$noise_m)
+DHARMa::plotResiduals(simu.resid, form = pm2$cumdd_30)
+DHARMa::plotResiduals(simu.resid, form = pm2$father_cond) # Signs of heteroscedasticity?
+DHARMa::plotResiduals(simu.resid, form = pm2$mother_cond)
+DHARMa::plotResiduals(simu.resid, form = pm2$year) # Signs of heteroscedasticity?
+# There are rather clear signs of heteroscedasticity that are possibly linked to the zero-inflation.
 
 
 
 ### *** 3.1.2.2. Distribution and dispersion ----
 ## Assessing over or under-dispersion:
-aods3::gof(pmFSy_glmm3) # Note that this test is meant for count data!
-# Tests are significant, so overdispersion!
-DHARMa::testDispersion(simu.resid) # Significant too!
-performance::check_overdispersion(x = pmFSy_glmm3) # Here as well, there is mild overdispersion (ratio
-# between 1.3 and 1.5)!
+aods3::gof(pmFSy_glmm2) # Note that this test is meant for count data! Overdispersion?
+DHARMa::testDispersion(simu.resid, alternative = "greater") # Significant overdispersion detected!
+performance::check_overdispersion(x = pmFSy_glmm2) # Same here!
 
 ## Distribution of the predicted probabilities:
-par(.pardefault)
-probabilities <- stats::predict(object = pmFSy_glmm3, type = "response") # Extract the predicted
+probabilities <- stats::predict(object = pmFSy_glmm2, type = "response") # Extract the predicted
 # probabilities.
 par(mfrow= c(1,2))
 hist(probabilities)
-hist(pm2$fledgling_nb/pm2$clutch_size) # The model does not work that well. It is overdispersed and cannot
-# seem to be able to properly account for the obvious zero-inflation!
+hist(pm2$fledgling_nb/pm2$clutch_size) # The model does not fit the data well! It over-predicts average
+# probabilities and strongly under-predicts the number of failures!
+
+## Zero-inflation:
+DHARMa::testZeroInflation(simu.resid) # Significant inflation detected!
+# Fitting a zero-inflated (ZI) model and compare it:
+pmFSy_ziglmm1 <- glmmTMB::glmmTMB(fledgling_nb/clutch_size ~
+                                    logged_woodyveg + logged_Fmetric +
+                                    urban_intensity + manag_low + manag_high + light_pollution + noise_m +
+                                    cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
+                                  weights = clutch_size,
+                                  data = pm2, family = binomial,
+                                  ziformula = ~ 1) # Specifies a null ZI model.
+summary(pmFSy_glmm2) # AIC = 1248.4.
+summary(pmFSy_ziglmm1) # AIC = 970.4!
+simu.resid_zi <- DHARMa::simulateResiduals(fittedModel = pmFSy_ziglmm1, n = 1000)
+plot(simu.resid_zi) # The use of the ZI-binomial model seem to have solved the problems. To verify, I will
+# look at the predictions from this new model:
+probabilities <- stats::predict(object = pmFSy_ziglmm1, type = "response") # Extract the predicted
+# probabilities.
+par(mfrow= c(1,2))
+hist(probabilities)
+hist(pm2$fledgling_nb/pm2$clutch_size) # Surprisingly, the model's predictions are perhaps even worse: it
+# seems unable to predict extreme events, whether total successes or failures.
 
 
 
@@ -1358,66 +1387,56 @@ hist(pm2$fledgling_nb/pm2$clutch_size) # The model does not work that well. It i
 pm2 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
                       father_cond, mother_cond) %>%
   dplyr::mutate("Fmetric" = pmF_d531_beta0,
+                "Fmetric (sqrt)" = sqrt(pmF_d531_beta0),
                 "Fmetric (log)" = log10(pmF_d531_beta0),
                 "woodyveg_vw" = woodyveg_vw,
+                "woodyveg_vw (sqrt)" = sqrt(woodyveg_vw),
                 "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
 predictors <- colnames(mydata)
 # Bind the logit and tidying the data for plot (ggplot2, so long format):
 mydata <- mydata %>%
   dplyr::mutate(logit = log(probabilities/(1-probabilities))) %>%
   tidyr::gather(key = "predictors", value = "predictor.value", -logit)
-# Create scatterplot
+# Create scatterplot:
 ggplot2::ggplot(mydata, ggplot2::aes(y = logit, x = predictor.value))+
   ggplot2::geom_point(size = 0.5, alpha = 0.5) +
   ggplot2::geom_smooth(method = "loess") +
   ggplot2::theme_bw() +
-  ggplot2::facet_wrap(~predictors, scales = "free_x") # Seems rather ok (but could be better).
-
-## Using the residuals:
-fitted <- predict(pmFSy_glmm3, type = "link") # Fitted predictions on the logit scale.
-resid <- resid(pmFSy_glmm3, type = 'deviance')
-d <- data.frame(cbind(fitted, resid))
-d %>%
-  ggplot2::ggplot(ggplot2::aes(fitted, resid))+
-  ggplot2::geom_point() # Strange patterns, but residuals diagnostic for binomial GLMs are always tricky.
+  ggplot2::facet_wrap(~predictors, scales = "free_x") # Ok.
 
 
 
 ### *** 3.1.2.4. Goodness-of-fit (GOF) and performances ----
 ## GOF test of Pearson's Chi2 residuals:
-dat.resid <- sum(stats::resid(pmFSy_glmm3, type = "pearson")^2)
-1 - stats::pchisq(dat.resid, stats::df.residual(pmFSy_glmm3)) # p < 0.001, indicating that there is a
-# significant lack of fit. Keep in mind though that GOF measures for mixed models is an extremely complicated
-# topic and interpretations are not straightforward.
+dat.resid <- sum(stats::resid(pmFSy_ziglmm1, type = "pearson")^2)
+1 - stats::pchisq(dat.resid, stats::df.residual(pmFSy_ziglmm1)) # p = 0, likely a mistake?
 
 ## Computing a pseudo-R2:
 performance::r2_nakagawa(pmFSy_glmm2) # [Additive model]: Marg_R2_glmm = 0.11; Cond_R2_glmm = 0.48.
-performance::r2_nakagawa(pmFSy_glmm3) # [Interact. model]: Marg_R2_glmm = 0.11; Cond_R2_glmm = 0.48.
+performance::r2_nakagawa(pmFSy_ziglmm1) # [Additive model]: Marg_R2_glmm = 0.10; Cond_R2_glmm = 0.2 (but strange
+# warning, so probably a mistake).
 
 ## Likelihood-ration tests (LRT) of GOF:
 # Importance of the "id_nestbox" random-effect (RE):
+pmFSy_ziglmm0 <- glmmTMB::glmmTMB(fledgling_nb/clutch_size ~
+                                    logged_woodyveg + logged_Fmetric +
+                                    urban_intensity + manag_low + manag_high + light_pollution + noise_m +
+                                    cumdd_30 + father_cond + mother_cond + year,
+                                  weights = clutch_size,
+                                  data = pm2, family = binomial,
+                                  ziformula = ~1)
+summary(pmFSy_ziglmm0) # The non-mixed model gives AIC = 990.9 while the mixed-model gave AIC = 970.4, so the
+# the use of the mixed model seems warranted by the data!
+
+# # Importance of the fixed effects:
+# pmFSy_ziglmm0 <- lme4::glmer(fledgling_nb/clutch_size ~ 1 + (1|id_nestbox),
+#                              weights = clutch_size, data = pm2, family = "binomial",
+#                              control=lme4::glmerControl(optimizer="bobyqa",
+#                                                         optCtrl=list(maxfun=2e5)))
 # tictoc::tic("Parametric bootstrap LRT")
-# res.LRT_re <- DHARMa::simulateLRT(m0 = pmFSy_glm1, m1 = pmFSy_glmm2, n = 500, seed = 51)
-# tictoc::toc() # Does not work...
-# tictoc::tic("Parametric bootstrap LRT")
-# res.LRT_re <- pbkrtest::PBmodcomp(largeModel = pmFSy_glmm2, smallModel = pmFSy_glm1,
-#                                   nsim = 500, seed = 12)
-# tictoc::toc() # Does it work???
-# Importance of the fixed effects:
-pmFSy_glmm0 <- lme4::glmer(fledgling_nb/clutch_size ~ 1 + (1|id_nestbox),
-                           weights = clutch_size, data = pm2, family = "binomial",
-                           control=lme4::glmerControl(optimizer="bobyqa",
-                                                      optCtrl=list(maxfun=2e5)))
-tictoc::tic("Parametric bootstrap LRT")
-res.LRT_re <- DHARMa::simulateLRT(m0 = pmFSy_glmm0, m1 = pmFSy_glmm2, n = 500, seed = 51)
-tictoc::toc() # DISCLAIMER: took ~1h45 to run!
-# The LRT is highly significant, suggesting that M1 better describes the data than M0!
-# For the whole simple GLM model:
-pmFSy_glm0 <- stats::glm(fledgling_nb/clutch_size ~ 1,
-                         weights = clutch_size, # Prior weights!
-                         data = pm2, family = "binomial")
-res.LRT_null <- stats::anova(object = pmFSy_glm0, pmFSy_glm1, test = "LRT")
-# The test is significant, confirming that the model is useful to explain the data.
+# res.LRT_re <- DHARMa::simulateLRT(m0 = pmFSy_ziglmm0, m1 = pmFSy_ziglmm1, n = 500, seed = 85)
+# tictoc::toc() # DISCLAIMER: took ~1h45 to run!
+# # The LRT is highly significant, suggesting that M1 better describes the data than M0!
 
 
 
@@ -1426,11 +1445,13 @@ res.LRT_null <- stats::anova(object = pmFSy_glm0, pmFSy_glm1, test = "LRT")
 ### ** 3.1.3. Inference and predictions ----
 # __________________________________________
 
+##### TO BE RUN §§§ -----
+
 ### *** 3.1.3.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
 ## For the additive effect of the connectivity metric:
-pmFSy_glmm1 <- stats::update(pmFSy_glmm2, .~. -logged_Fmetric)
+pmFSy_ziglmm0 <- stats::update(pmFSy_ziglmm1, .~. -logged_Fmetric)
 
-res.LRT_addeff <- pbkrtest::PBmodcomp(pmFSy_glmm2, pmFSy_glmm1, nsim = 500, seed = 84) # Took ~2h40 to run!
+res.LRT_addeff <- pbkrtest::PBmodcomp(pmFSy_ziglmm1, pmFSy_ziglmm0, nsim = 500, seed = 56) # Took ~??? to run!
 readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
                                                              "res.pmFSy_LRT_addeff.csv"))
 # The LRT is not significant, indicating that our connectivity metric does not improve the description of
@@ -1444,7 +1465,7 @@ readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
 
 ### *** 3.1.3.2. Bootstrapped confidence intervals for estimated parameters ----
 tictoc::tic("Bootstrap CI for additive GLMM parameters")
-res.pmFSy_addeff_CI_boot <- confint(pmFSy_glmm2, method="boot")
+res.pmFSy_addeff_CI_boot <- confint(pmFSy_ziglmm1, method="boot")
 tt <- as.data.frame(res.pmFSy_addeff_CI_boot)
 tt$parameters <- rownames(tt)
 readr::write_csv2(x = tt,
@@ -1456,7 +1477,11 @@ tictoc::toc() # DISCLAIMER: took ~1h45 to run!
 ### *** 3.1.3.3. Conclusion ----
 
 # Our models does not fit the data adequately. Moreover, our hypotheses were not validated and only three
-# variables turned out significant: "father_cond", "mother_cond" and "year2022".
+# variables turned out significant: "mother_cond", "year2020" and "year2022" (but "woodyveg" could be too).
+# The best model so far gave an AIC = 970.4.
+
+
+##### SHOULD FINISH WITH FLEDGLING_NB ALONE§§§ -----
 
 
 
