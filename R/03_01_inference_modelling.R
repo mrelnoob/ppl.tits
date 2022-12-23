@@ -1479,6 +1479,7 @@ tictoc::toc() # DISCLAIMER: took ~1h45 to run!
 # Our models does not fit the data adequately. Moreover, our hypotheses were not validated and only three
 # variables turned out significant: "mother_cond", "year2020" and "year2022" (but "woodyveg" could be too).
 # The best model so far gave an AIC = 970.4.
+# ALSO I should redo full-diags for the ZI model to find improvements??? AND/OR model fledg/brood!!!???
 
 
 ##### SHOULD FINISH WITH FLEDGLING_NB ALONE§§§ -----
