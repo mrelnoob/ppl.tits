@@ -654,7 +654,8 @@ summary(pmCy_comglmm1)
 # Our diagnostics show that the use of a COM-Poisson regression strongly improves models predictive accuracy.
 # However, improvements are still likely possible as the models still tend to predict a wider count-range than
 # the observed one. Possible leads for improvement could be to remove the possible outliers, merge observations,
-# and try to improve the modelling of the dispersion (nu) parameter!
+# and try to improve the modelling of the dispersion (nu) parameter (some exploration showed that several
+# predictors could here be significant: e.g. "F_metric", "cumdd_30", "manag_low", "year")!
 # As they are, unfortunately, the models do not support our hypotheses and only four predictors turned out
 # significant: "manag_high", "cumdd_30", "mother_cond", and "year2021"; while the lowest value of AIC ~ 975.
 
@@ -986,28 +987,20 @@ summary(pmBSy_zicomglmm1) # AIC = 1072.2
 ####### SHOULD BE CORRECTED WITH BROOD_SIZE§§§§§§§§ -----
 ####### SHOULD BE CORRECTED WITH BROOD_SIZE§§§§§§§§ -----
 ####### SHOULD BE CORRECTED WITH BROOD_SIZE§§§§§§§§ -----
-####### SHOULD BE CORRECTED WITH BROOD_SIZE§§§§§§§§ -----
-####### SHOULD BE CORRECTED WITH BROOD_SIZE§§§§§§§§ -----
-# IMPORTANT NOTE: diagnostics showed that the model 'pmBSy_zicomglmm1' could be substantially improved by using
-# "cumdd_30" to model the dispersion (instead of modelling an intercept only). It was done in section 2.2.2.2.,
-# and I went back to diagnose the new improved model called 'pmBSy_zicomglmm2'. For conciseness, I only display
-# the code for the latter model but it's fairly easy to recompute the diagnostics for the former model, and
-# some comments actually relate to it. Here's the new model:
-pmBSy_zicomglmm2 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+pmBSy_zicomglmm1 <- glmmTMB::glmmTMB(brood_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
                                        manag_low + manag_high + light_pollution + noise_m +
                                        cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
                                      data = pm2, family = glmmTMB::compois(link = "log"),
-                                     dispformula = ~ cumdd_30, # Specifies a more complex dispersion model.
-                                     ziformula = ~ 1) # Specifies a null ZI model.
-summary(pmBSy_zicomglmm1) # AIC = 1072.2.
-summary(pmBSy_zicomglmm2) # With cumdd_30 to model dispersion, AIC = 963.2!
+                                     dispformula = ~1,
+                                     ziformula = ~1) # Rather long to fit.
+
 
 
 
 
 
 ### ** 2.2.2. Diagnostics and assumption checks ----
-# ________________________________________________
+# __________________________________________________
 
 ### *** 2.2.2.1. Residuals extraction, autocorrelation and collinearity ----
 ## Traditional residuals:
@@ -1792,7 +1785,7 @@ summary(pmFNy_zicomglmm2) # Exploratory improved model!
 # "parental condition" variables and "noise_m"!
 # If the use of a ZICOM-Poisson regression strongly improved models predictive accuracy, it seems clear that the
 # ZI is caused by another process. Possible leads for improvement could be to remove the possible outliers, merge observations,
-# and try to improve the modelling of the dispersion (nu) and ZI parameters.
+# and try to improve the modelling of the dispersion (nu) and ZI parameters (or remove the zeros).
 # As they are, unfortunately, the models do not support our hypotheses and only two predictors turned out
 # significant in "pmFNy_zicomglmm1": "cumdd_30", and "year2022" (with AIC = 1151.9). However, the exploratory
 # improved model suggest that our "F-metric" could be important to model the ZI and that "manag_low" could be
