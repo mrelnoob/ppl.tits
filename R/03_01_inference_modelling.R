@@ -394,7 +394,7 @@ pmCy_comglmm1 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric
                                     manag_low + manag_high + light_pollution + noise_m +
                                     cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
                                   data = pm2, family = glmmTMB::compois(link = "log"),
-                                  dispformula = ~1) # Intercept only 'nu' (default). This is rather long to run!
+                                  dispformula = ~1) # Intercept only 'nu' (default). Rather long to run!
 summary(pmCy_comglmm1) # Gives AIC = 975 but a very small variance for the RE.
 
 pmCy_comglmm3 <- glmmTMB::glmmTMB(clutch_size ~
@@ -421,8 +421,9 @@ plot(resid, id = 0.05, idLabels = ~.obs) # Ok-ish but there are a few low residu
 pm2[which(resid < -2.1),] # Five potential outliers: nestboxes with very small clutch sizes.
 
 # To further investigate patterns, I can plot the residuals against some predictors:
-plot(x = pm2$father_cond, y = resid) # There may be signs of heteroscedasticity for some predictors: "F-metric",
-# "noise_m", and "cumdd_30". Otherwise, seems ok (but, once again, simulated residuals will be more useful).
+plot(x = pm2$father_cond, y = resid) # There may be signs of heteroscedasticity for some predictors:
+# "F-metric", "noise_m", and "cumdd_30". Otherwise, seems ok (but, once again, simulated residuals will be
+# more useful).
 # plot(pmCy_comglmm1, id_nestbox~stats::resid(.)) # Does not work for this type of model.
 # plot(pmCy_comglmm1, site~stats::resid(.)) # Does not work for this type of model.
 
@@ -652,10 +653,10 @@ tictoc::toc() # DISCLAIMER: took ~2h10 to run!
 
 summary(pmCy_comglmm1)
 # Our diagnostics show that the use of a COM-Poisson regression strongly improves models predictive accuracy.
-# However, improvements are still likely possible as the models still tend to predict a wider count-range than
-# the observed one. Possible leads for improvement could be to remove the possible outliers, merge observations,
-# and try to improve the modelling of the dispersion (nu) parameter (some exploration showed that several
-# predictors could here be significant: e.g. "F_metric", "cumdd_30", "manag_low", "year")!
+# However, improvements are still likely possible as the models still tend to predict a wider count-range
+# than the observed one. Possible leads for improvement could be to remove the possible outliers, merge
+# observations, and try to improve the modelling of the dispersion (nu) parameter (some exploration showed
+# that several predictors could here be significant: e.g. "F_metric", "cumdd_30", "manag_low", "year")!
 # As they are, unfortunately, the models do not support our hypotheses and only four predictors turned out
 # significant: "manag_high", "cumdd_30", "mother_cond", and "year2021"; while the lowest value of AIC ~ 975.
 
@@ -745,10 +746,10 @@ plot(pmHSy_glmm3, site~stats::resid(.)) # Interestingly, there are not that much
 
 ## Simulation-based scaled residuals computation (DHARMa method):
 simu.resid <- DHARMa::simulateResiduals(fittedModel = pmHSy_glmm3, n = 1000, seed = 37)
-plot(simu.resid) # The QQplot is ok but there are significant quantile deviations detected with most simulated
-# residuals > 0.5 for the lowest predictions, meaning that the model is consistently predicting lower values
-# than the lowest observed proportions (unless I'm mistaken). This could be due to the zero-inflation in
-# "brood_size", i.e. the numerator of the modelled proportion.
+plot(simu.resid) # The QQplot is ok but there are significant quantile deviations detected with most
+# simulated residuals > 0.5 for the lowest predictions, meaning that the model is consistently predicting
+# lower values than the lowest observed proportions (unless I'm mistaken). This could be due to the ZI
+# in "brood_size", i.e. the numerator of the modelled proportion.
 
 ## Autocorrelation and collinearity:
 DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
@@ -846,8 +847,8 @@ dat.resid <- sum(stats::resid(pmHSy_ziglmm1, type = "pearson")^2)
 
 ## Computing a pseudo-R2:
 performance::r2_nakagawa(pmHSy_glmm2) # [Additive model]: Marg_R2_glmm = 0.12; Cond_R2_glmm = 0.73.
-performance::r2_nakagawa(pmHSy_ziglmm1) # [Additive model]: Marg_R2_glmm = 0.09; Cond_R2_glmm = 0.35 (but strange
-# warning, so probably a mistake).
+performance::r2_nakagawa(pmHSy_ziglmm1) # [Additive model]: Marg_R2_glmm = 0.09; Cond_R2_glmm = 0.35 (but
+# strange warning, so probably a mistake).
 
 ## Likelihood-ration tests (LRT) of GOF:
 # Importance of the "id_nestbox" random-effect (RE):
@@ -969,8 +970,18 @@ summary(pmBSy_ziglmm1) # AIC = 1180.3
 summary(pmBSy_zicomglmm1) # AIC = 1072.2
 # It seems that, if the inclusion of a random effect (RE) did not improve the fit, accounting for both the
 # zero-inflation and the likely underdispersion strongly improved the fit! I will thus carry on with the last
-# model to the diagnostic part and assess whether the use of the RE is truly justified or not and if the model
-# behaves as expected.
+# model to the diagnostic part and assess whether the use of the RE is truly justified or not and if the
+# model behaves as expected.
+pmBSy_zicomglmm2 <- glmmTMB::glmmTMB(brood_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+                                       manag_low + manag_high + light_pollution + noise_m +
+                                       cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
+                                     data = pm2, family = glmmTMB::compois(link = "log"),
+                                     dispformula = ~father_cond,
+                                     ziformula = ~father_cond+cumdd_30) # Rather long to fit.
+summary(pmBSy_zicomglmm2) # AIC = 1065.9 vs 1072.2, so slightly better.
+# NOTE: After a few attempts to tune the model, I found that this specification slightly improved the model.
+# But as it is a kind of data-dredging, I prefer carry on with my initially intended model. Still, I will
+# perform diagnostics on both models. This 2nd model will be sometimes called ""exploratory improved model".
 
 # # The interactive (mediated) model:
 # pmBSy_zicomglmm3 <- glmmTMB::glmmTMB(brood_size ~
@@ -983,20 +994,6 @@ summary(pmBSy_zicomglmm1) # AIC = 1072.2
 # summary(pmBSy_zicomglmm3) # AIC = 1074.2, doesn't seem supported by the data.
 
 
-####### SHOULD BE CORRECTED WITH BROOD_SIZE§§§§§§§§ -----
-####### SHOULD BE CORRECTED WITH BROOD_SIZE§§§§§§§§ -----
-####### SHOULD BE CORRECTED WITH BROOD_SIZE§§§§§§§§ -----
-####### SHOULD BE CORRECTED WITH BROOD_SIZE§§§§§§§§ -----
-pmBSy_zicomglmm1 <- glmmTMB::glmmTMB(brood_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
-                                       manag_low + manag_high + light_pollution + noise_m +
-                                       cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
-                                     data = pm2, family = glmmTMB::compois(link = "log"),
-                                     dispformula = ~1,
-                                     ziformula = ~1) # Rather long to fit.
-
-
-
-
 
 
 
@@ -1006,35 +1003,34 @@ pmBSy_zicomglmm1 <- glmmTMB::glmmTMB(brood_size ~ logged_woodyveg + logged_Fmetr
 ### *** 2.2.2.1. Residuals extraction, autocorrelation and collinearity ----
 ## Traditional residuals:
 par(.pardefault)
-resid <- stats::resid(pmBSy_zicomglmm2, type = 'response')
+resid <- stats::resid(pmBSy_zicomglmm1, type = 'response')
 plot(resid, id = 0.05, idLabels = ~.obs) # Ok-ish but there are a few potential outliers.
-# performance::check_outliers(pmBSy_zicomglmm2) # Does not work for this type of model.
-pm2[which(resid < -2),] # As could have been guessed from the plot, the 2nd group (with the lowest residuals)
+# performance::check_outliers(pmBSy_zicomglmm1) # Does not work for this type of model.
+pm2[which(resid < -4),] # As could have been guessed from the plot, the 2nd group (with the lowest residuals)
 # consist of all the observations where "brood_size" ~ 0. It could be a sign that the zero-part of the model
 # should indeed be modelled with relevant predictors. However, we do not seem to have the relevant predictors
-# for that.
+# since the patterns still exist even with the "exploratory improved model" (i.e. 'pmBSy_zicomglmm2').
 
 # To further investigate patterns, I can plot the residuals against some predictors:
 plot(x = pm2$logged_Fmetric, y = resid) # There may be signs of heteroscedasticity for the "F-metric".
 # Otherwise, it seems ok (but, once again, simulated residuals will be more useful).
-# plot(pmBSy_zicomglmm2, id_nestbox~stats::resid(.)) # Does not work for this type of model.
-# plot(pmBSy_zicomglmm2, site~stats::resid(.)) # Does not work for this type of model.
+# plot(pmBSy_zicomglmm1, id_nestbox~stats::resid(.)) # Does not work for this type of model.
+# plot(pmBSy_zicomglmm1, site~stats::resid(.)) # Does not work for this type of model.
 
 ## Simulation-based scaled residuals computation ({DHARMa} method):
-simu.resid <- DHARMa::simulateResiduals(fittedModel = pmBSy_zicomglmm2, n = 1000, re.form = NULL) # The 're.form'
-# argument is to base simulations on the model unconditional of the random effects (and only works for
-# {lme4} formulations). It is useful for testing dispersion (see below) but can be omitted eventually.
-plot(simu.resid) # It's ok-ish but there seems to be outliers.
-DHARMa::outliers(simu.resid) # Three potential outliers:
-pm2[c(198,233,236),] # The same as for the "clutch_size" model! True outliers?
+simu.resid <- DHARMa::simulateResiduals(fittedModel = pmBSy_zicomglmm1, n = 1000, re.form = NULL) # The
+# 're.form' argument is to base simulations on the model unconditional of the random effects (and only works
+# for {lme4} formulations). It is useful for testing dispersion (see below) but can be omitted eventually.
+plot(simu.resid) # Quantile deviation detected (but better for 'pmBSy_zicomglmm2')!
+DHARMa::outliers(simu.resid) # None.
 
 ## Autocorrelation and collinearity:
 DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
-                                   x = pm2$coord_x, y = pm2$coord_y, plot = TRUE) # Significant spatial
-# autocorrelation detected. Add a "site" RE?
-performance::check_autocorrelation(pmBSy_zicomglmm2) # Ok.
-performance::check_collinearity(pmBSy_zicomglmm2) # Ok-ish, but "urban_intensity" > 3!
-stats::vcov(pmBSy_zicomglmm2) # But values of the covariance matrix seem ok.
+                                   x = pm2$coord_x, y = pm2$coord_y, plot = TRUE) # Slightly significant
+# spatial autocorrelation detected. Add a "site" RE?
+performance::check_autocorrelation(pmBSy_zicomglmm1) # Ok-ish!
+performance::check_collinearity(pmBSy_zicomglmm1) # Ok-ish, but "urban_intensity" > 3!
+stats::vcov(pmBSy_zicomglmm1) # But values of the covariance matrix seem ok.
 
 ## Heteroscedasticity and possible model misspecifications:
 par(.pardefault)
@@ -1055,37 +1051,38 @@ DHARMa::plotResiduals(simu.resid, form = pm2$year)
 
 ### *** 2.2.2.2. Distribution (family, ZI, dispersion) ----
 ## Assessing over or under-dispersion:
-aods3::gof(pmBSy_zicomglmm2) # Does not work for this type of model!
-AER::dispersiontest(object = pmBSy_zicomglmm2, alternative = c("less")) # Does not work for this type of model!
+aods3::gof(pmBSy_zicomglmm1) # Does not work for this type of model!
+AER::dispersiontest(object = pmBSy_zicomglmm1, alternative = c("less")) # Does not work for this model type!
 DHARMa::testDispersion(simu.resid) # Ok.
 
 ## Theoretical count distribution:
 theo_count <- COMPoissonReg::rzicmp(n = nrow(pm2), lambda = mean(pm2$brood_size),
-                                    nu = 1.2,  # The 'nu' parameter should be chosen by trial-and-errors.
+                                    nu = 1.1,  # The 'nu' parameter should be chosen by trial-and-errors.
                                     p = 0.05) # And so does the probability of 0.
 tc_df <- data.frame(theo_count)
 
 ggplot2::ggplot(pm, ggplot2::aes(brood_size)) +
-  ggplot2::geom_bar(data = tc_df, ggplot2::aes(theo_count, fill="#1E90FF", alpha=0.5)) +
   ggplot2::geom_bar(fill = "#1E90FF") +
+  ggplot2::geom_bar(data = tc_df, ggplot2::aes(theo_count, fill="#1E90FF", alpha=0.5)) +
   ggplot2::theme_classic() +
   ggplot2::theme(legend.position = "none") # Blue = observed counts; red = simulated.
-# This plot suggests that brood_size could be following a COM-Poisson distribution of parameter nu~1.2,
+# This plot suggests that brood_size could be following a COM-Poisson distribution of parameter nu~1.1,
 # especially if we consider that the zero-inflation (ZI) is generated by another process.
 
 ## Distribution of the predicted counts:
-pred_counts <- stats::predict(object = pmBSy_zicomglmm1, type = "response") # Extract the predicted counts.
+pred_counts <- stats::predict(object = pmBSy_zicomglmm2, type = "response") # Extract the predicted counts.
 par(mfrow= c(1,2))
 hist(pred_counts)
 hist(pm2$brood_size) # Compared to the predictions from "pmBSy_zicomglmm1", the ones from "pmBSy_zicomglmm2"
-# seem more accurate but predictions are still too narrow and the model still fails to predict small brood sizes!
+# seem more accurate but predictions are still too narrow and the model still fails to predict small brood
+# sizes!
 
 ## Zero-inflation (ZI):
 simu.resid_woZI <- DHARMa::simulateResiduals(fittedModel = pmBSy_glmm1, n = 1000) # Model without ZI.
 DHARMa::testZeroInflation(simu.resid) # Nope.
 DHARMa::testZeroInflation(simu.resid_woZI) # Yes, so there truly is a ZI. Yet, this model accounts for it but
 # cannot predict it.
-# I made a few attempts at improving the ZI part of the model, but I failed.
+# I made a few attempts at improving the ZI part of the model, but I mostly failed (cf. 'pmBSy_zicomglmm2').
 
 
 
@@ -1115,8 +1112,8 @@ ggplot2::ggplot(mydata, ggplot2::aes(y = log_y, x = predictor.value))+
 
 ### *** 2.2.2.4. Model goodness-of-fit (GOF) and performances ----
 # GOF test of Pearson's Chi2 residuals:
-dat.resid <- sum(stats::resid(pmBSy_zicomglmm2, type = "pearson")^2)
-1 - stats::pchisq(dat.resid, stats::df.residual(pmBSy_zicomglmm1)) # p = 0.99, indicating that there is no
+dat.resid <- sum(stats::resid(pmBSy_zicomglmm1, type = "pearson")^2)
+1 - stats::pchisq(dat.resid, stats::df.residual(pmBSy_zicomglmm1)) # p = 0.42, indicating that there is no
 # significant lack of fit. Keep in mind though that GOF measures for mixed models is an extremely complicated
 # topic and interpretations are not straightforward.
 
@@ -1130,11 +1127,11 @@ pmBSy_zicomglm1 <- glmmTMB::glmmTMB(brood_size ~ logged_woodyveg + logged_Fmetri
                                        manag_low + manag_high + light_pollution + noise_m +
                                        cumdd_30 + father_cond + mother_cond + year,
                                      data = pm2, family = glmmTMB::compois(link = "log"),
-                                     dispformula = ~ cumdd_30, # Specifies a more complex dispersion model.
-                                     ziformula = ~ 1) # Specifies a null ZI model.
-summary(pmBSy_zicomglm1) # The non-mixed model gives AIC = 1072.9 while the mixed-model with "id_nestbox" as RE
-# gives AIC = 963.2. The one with both RE gives something similar, so it seems like the use of only one RE is
-# warranted by the data.
+                                     dispformula = ~1,
+                                     ziformula = ~1)
+summary(pmBSy_zicomglm1) # The non-mixed model gives AIC = 1072.9 while the mixed-model with "id_nestbox"
+# as RE gives AIC = 963.2. The one with both RE gives something similar, so it seems like the use of only
+# one RE is warranted by the data. The same is true for the "exploratory improved model" (not shown here).
 
 ## For the whole model:
 pmBSy_comglm0 <- glmmTMB::glmmTMB(brood_size ~ 1,
@@ -1151,7 +1148,7 @@ res.LRT_null <- stats::anova(object = pmBSy_comglm0, pmBSy_zicomglm1, test = "LR
 # Predicted counts:
 par(.pardefault)
 obsprop <- prop.table(table(pm2$brood_size))
-sims <- stats::simulate(pmBSy_zicomglmm2, nsim = 1000)
+sims <- stats::simulate(pmBSy_zicomglmm1, nsim = 1000)
 
 nsim0 <- colSums(sims == 0) # Number of zeros (min obs value)
 par(las=1,bty="l")
@@ -1165,7 +1162,7 @@ par(las=1,bty="l")
 plot(pt <- prop.table(table(nsim8)),
      ylab="Probability", xlab="Number of eights")
 (obs8 <- sum(pm2$brood_size == 8))
-points(obs8, 0.26, col="red", pch=16, cex=2)
+points(obs8, 0.24, col="red", pch=16, cex=2)
 
 nsim12 <- colSums(sims == 12) # Number of twelves (max obs value).
 par(las=1,bty="l")
@@ -1173,8 +1170,8 @@ plot(pt <- prop.table(table(nsim12)),
      ylab="Probability", xlab="Number of twelves")
 (obs12 <- sum(pm2$brood_size == 12))
 points(obs12, 0.004, col="red", pch=16, cex=2)
-# These three examples confirm that the model still predicts values that are too narrow and a bit too high
-# compared to the true observed values. Small broods are not correctly predicted!
+# These three examples indicate that the model(s) is not that bad. The range of zero predictions are in line
+# with observations, yet the mode could be better predicted and so does the right-tail of the distribution.
 
 
 
@@ -1185,10 +1182,10 @@ points(obs12, 0.004, col="red", pch=16, cex=2)
 
 ### *** 2.2.3.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
 ## Parametric bootstrap to test the additive effect of the connectivity metric:
-pmBSy_zicomglmm0 <- stats::update(pmBSy_zicomglmm2, .~. -logged_Fmetric)
+pmBSy_zicomglmm0 <- stats::update(pmBSy_zicomglmm1, .~. -logged_Fmetric)
 
 tictoc::tic("Parametric bootstrap LRT for the additive effect")
-res.LRT_inteff <- DHARMa::simulateLRT(m0 = pmBSy_zicomglmm0, m1 = pmBSy_zicomglmm2, n = 500, seed = 13)
+res.LRT_inteff <- DHARMa::simulateLRT(m0 = pmBSy_zicomglmm0, m1 = pmBSy_zicomglmm1, n = 500, seed = 107)
 tt <- as.data.frame(cbind(res.LRT_inteff$method,
                           res.LRT_inteff$data.name,
                           res.LRT_inteff$statistic,
@@ -1199,7 +1196,7 @@ tt %>% dplyr::rename("Method" = V1,
                      "Log Likelihood (M1/M0)" = V3,
                      "p-value" = V4) -> tt
 readr::write_csv2(x = tt, file = here::here("output", "tables", "res.pmBSy_LRT_addeff.csv"))
-tictoc::toc() # DISCLAIMER: took ~3h35 to run!
+tictoc::toc() # DISCLAIMER: took ~??? to run!
 # The PB-based LRT is non-significant, indicating that our connectivity metric does not improve the
 # description of the data here.
 # NOTE: initially, normally I would use the more efficient 'pbkrtest::PBmodcomp()' instead of the
@@ -1214,7 +1211,7 @@ tictoc::toc() # DISCLAIMER: took ~3h35 to run!
 
 ### *** 2.2.3.2. Bootstrapped confidence intervals for estimated parameters ----
 tictoc::tic("Bootstrap CI for the additive COM-Poisson GLMM parameters")
-res.pmBSy_addeff_CI_boot <- confint(pmBSy_zicomglmm2, method="boot")
+res.pmBSy_addeff_CI_boot <- confint(pmBSy_zicomglmm1, method="boot")
 tt <- as.data.frame(res.pmBSy_addeff_CI_boot)
 tt$parameters <- rownames(tt)
 readr::write_csv2(x = tt,
@@ -1225,13 +1222,19 @@ tictoc::toc() # DISCLAIMER: took ~2h10 to run!
 
 ### *** 2.2.3.3. Conclusion ----
 
+summary(pmBSy_zicomglmm1)
 summary(pmBSy_zicomglmm2)
-# Our diagnostics show that the use of a ZICOM-Poisson regression strongly improves models predictive accuracy.
-# However, improvements are still likely possible as the models still tend to predict a higher count-range than
-# the observed one. Possible leads for improvement could be to remove the possible outliers, merge observations,
-# and try to improve the modelling of the dispersion (nu) parameter, although previous attempts were unfruitful.
-# As they are, unfortunately, the models do not support our hypotheses and only three predictors turned out
-# significant: "cumdd_30", "mother_cond", and "year2021"; while the lowest value of AIC = 963.2.
+# Our diagnostics show that the use of a ZICOM-Poisson regression strongly improves models predictive
+# accuracy, and our models seem to fit the data fairly well. However, there is still room for improvements
+# as the models still tend to predict a higher count-range than the observed one and the mode is not
+# satisfyingly predicted. Interestingly, for this response variable, the use of RE does not seem useful.
+# Possible leads for improvement could be to remove the zeros (as it may stem from a distinct process), merge
+# observations, and try to improve the modelling of the dispersion (nu) parameter, although previous attempts
+# were not very conclusive: still, the "exploratory improved model" showed that "father_cond" and "cumdd_30"
+# could be useful to better model the ZI and the dispersion (cf. 'pmBSy_zicomglmm2').
+# As they are, unfortunately, the models do not support our hypotheses and only four predictors turned out
+# significant: "cumdd_30", "manag_high", "year2022" and either "mother_cond" or "woodyveg", depending on the
+# model specification; while the lowest value of AIC = 1065.9. Here, our current "F-metric" is useless!
 
 
 
@@ -1416,8 +1419,8 @@ dat.resid <- sum(stats::resid(pmFSy_ziglmm1, type = "pearson")^2)
 
 ## Computing a pseudo-R2:
 performance::r2_nakagawa(pmFSy_glmm2) # [Additive model]: Marg_R2_glmm = 0.11; Cond_R2_glmm = 0.48.
-performance::r2_nakagawa(pmFSy_ziglmm1) # [Additive model]: Marg_R2_glmm = 0.10; Cond_R2_glmm = 0.2 (but strange
-# warning, so probably a mistake).
+performance::r2_nakagawa(pmFSy_ziglmm1) # [Additive model]: Marg_R2_glmm = 0.10; Cond_R2_glmm = 0.2 (but
+# strange warning, so probably a mistake).
 
 ## Likelihood-ration tests (LRT) of GOF:
 # Importance of the "id_nestbox" random-effect (RE):
@@ -1531,9 +1534,6 @@ summary(pmFNy_zicomglmm1) # AIC = 1151.9.
 # It seems that all sequential additional specifications improved the fit, albeit the inclusion of the
 # COM-Poisson distribution only produced a mild effect. I will still use that model for diagnostics and see
 # how it behaves.
-# NOTE: After a few attempts to tune the model, I found that this specification slightly improved the model.
-# But as it is a kind of data-dredging, I prefer carry on with my initially intended model. Still, I will
-# perform diagnostics on both models.
 pmFNy_zicomglmm2 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woodyveg + logged_Fmetric + urban_intensity +
                                        manag_low + manag_high + light_pollution + noise_m +
                                        cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
@@ -1541,6 +1541,9 @@ pmFNy_zicomglmm2 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woodyveg + logged_Fme
                                      dispformula = ~logged_Fmetric,
                                      ziformula = ~manag_low) # Rather long to fit.
 summary(pmFNy_zicomglmm2) # AIC = 1144.8 vs 1151.9.
+# NOTE: After a few attempts to tune the model, I found that this specification slightly improved the model.
+# But as it is a kind of data-dredging, I prefer carry on with my initially intended model. Still, I will
+# perform diagnostics on both models. This 2nd model will be sometimes called "exploratory improved model".
 
 # # The interactive (mediated) model:
 # pmFNy_zicomglmm3 <- glmmTMB::glmmTMB(fledgling_nb ~
@@ -1569,7 +1572,8 @@ plot(resid, id = 0.05, idLabels = ~.obs) # Ok-ish but there are a few potential 
 # performance::check_outliers(pmFNy_zicomglmm1) # Does not work for this type of model.
 pm2[which(resid < -4),] # As could have been guessed from the plot, the 2nd group (with the lowest residuals)
 # consist of all the observations where "fledgling_nb" ~ 0. It could be a sign that the zero-part of the model
-# should indeed be modelled with more relevant predictors.
+# should indeed be modelled with more relevant predictors. But even the "exploratory improved model" does not
+# erase this pattern.
 
 # To further investigate patterns, I can plot the residuals against some predictors:
 plot(x = pm2$logged_Fmetric, y = resid) # There may be signs of heteroscedasticity for the "F-metric".
@@ -1581,7 +1585,8 @@ plot(x = pm2$logged_Fmetric, y = resid) # There may be signs of heteroscedastici
 simu.resid <- DHARMa::simulateResiduals(fittedModel = pmFNy_zicomglmm1, n = 1000, re.form = NULL)
 simu.resid2 <- DHARMa::simulateResiduals(fittedModel = pmFNy_zicomglmm2, n = 1000, re.form = NULL)
 # The 're.form' argument is to base simulations on the model unconditional of the random effects (and only
-# works for {lme4} formulations). It is useful for testing dispersion (see below) but can be omitted eventually.
+# works for {lme4} formulations). It is useful for testing dispersion (see below) but can be omitted
+# eventually.
 plot(simu.resid) # Ok_ish (but very slight deviation?).
 DHARMa::outliers(simu.resid) # None.
 
@@ -1610,7 +1615,7 @@ DHARMa::plotResiduals(simu.resid, form = pm2$year)
 ### *** 3.2.2.2. Distribution (family, ZI, dispersion) ----
 ## Assessing over or under-dispersion:
 aods3::gof(pmFNy_zicomglmm1) # Does not work for this type of model!
-AER::dispersiontest(object = pmFNy_zicomglmm1, alternative = c("less")) # Does not work for this type of model!
+AER::dispersiontest(object = pmFNy_zicomglmm1, alternative = c("less")) # Does not work for this model type!
 DHARMa::testDispersion(simu.resid) # Ok.
 
 ## Theoretical count distribution:
@@ -1687,8 +1692,8 @@ pmFNy_zicomglm2 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woodyveg + logged_Fmet
                                      data = pm2, family = glmmTMB::compois(link = "log"),
                                      dispformula = ~logged_Fmetric,
                                      ziformula = ~manag_low) # Rather long to fit.
-summary(pmFNy_zicomglm2) # AIC = 1143 vs 1144.8, so the inclusion of the RE does not seem warranted by the data.
-# Still, we will keep using it as it is the originally intended model.
+summary(pmFNy_zicomglm2) # AIC = 1143 vs 1144.8, so the inclusion of the RE does not seem warranted by the
+# data. Still, we will keep using it as it is the originally intended model.
 
 ## For the whole model:
 pmFNy_zicomglm0 <- glmmTMB::glmmTMB(fledgling_nb ~ 1,
@@ -1784,9 +1789,10 @@ summary(pmFNy_zicomglmm2) # Exploratory improved model!
 # satisfying. Both models overestimate lower counts but fail to properly model the ZI (it could be a sign of
 # missing predictors)! Moreover, the linearity assumptions seems violated by several predictors: i.e. both
 # "parental condition" variables and "noise_m"!
-# If the use of a ZICOM-Poisson regression strongly improved models predictive accuracy, it seems clear that the
-# ZI is caused by another process. Possible leads for improvement could be to remove the possible outliers, merge observations,
-# and try to improve the modelling of the dispersion (nu) and ZI parameters (or remove the zeros).
+# If the use of a ZICOM-Poisson regression strongly improved models predictive accuracy, it seems clear that
+# the ZI is caused by another process. Possible leads for improvement could be to remove the possible outliers,
+# merge observations, and try to improve the modelling of the dispersion (nu) and ZI parameters (or remove the
+# zeros).
 # As they are, unfortunately, the models do not support our hypotheses and only two predictors turned out
 # significant in "pmFNy_zicomglmm1": "cumdd_30", and "year2022" (with AIC = 1151.9). However, the exploratory
 # improved model suggest that our "F-metric" could be important to model the ZI and that "manag_low" could be
