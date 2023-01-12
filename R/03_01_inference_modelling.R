@@ -921,8 +921,9 @@ tictoc::toc() # DISCLAIMER: took ~2h10 to run!
 
 ### *** 2.1.3.3. Conclusion ----
 
+summary(pmHSy_glmm2)
 # Our models fit the data quite nicely but, unfortunately, our hypotheses were not validated and only one
-# variable turned out significant: "XXXX".
+# variable turned out significant: "father_cond".
 
 
 
@@ -1482,6 +1483,7 @@ tictoc::toc() # DISCLAIMER: took ~1h45 to run!
 
 ### *** 3.1.3.3. Conclusion ----
 
+summary(pmFSy_ziglmm1) # AIC = 970.4!
 # Our models does not fit the data adequately. Moreover, our hypotheses were not validated and only three
 # variables turned out significant: "mother_cond", "year2020" and "year2022" (but "woodyveg" could be too).
 # The best model so far gave an AIC = 970.4.
@@ -2028,10 +2030,12 @@ tictoc::toc() # DISCLAIMER: took ~17,7s to run!
 
 ### *** 4.1.3.3. Conclusion ----
 
+summary(pmMMy_blmm2)
 # Our models only moderately fit the observed data. Nonetheless, the importance of the additive effect of
 # connectivity is supported by both the parametric bootstrap LRT and the CI on the parameters.
 # Diagnostics indicated that removing some influential observations as well as the lowest "woodyveg_vw"
 # value (or un-loging it) could perhaps have an impact on the results.
+# REMINDER: there are less variables because the sample size is smaller!
 
 
 
@@ -2241,6 +2245,7 @@ tictoc::toc() # DISCLAIMER: took ~7s to run!
 
 ### *** 4.2.3.3. Conclusion ----
 
+summary(pmMAy_lmm2)
 # Our models fit the observed data relatively well. The importance of the additive effect of connectivity
 # is supported by both the parametric bootstrap LRT and the CI on the parameters. An optimist would even
 # say that the PB-based LRT for the interactive effect is close to be meaningful. We also saw, again, that

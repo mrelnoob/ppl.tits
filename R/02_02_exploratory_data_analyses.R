@@ -235,20 +235,7 @@ ntits <- cbind(tits_clean, ttt[,2:9])
 ntits %>% dplyr::select(-father_id, -mother_id, -mean_winter_t, -sd_winter_t,
                         -lsource_vs150_m, -lsource_vs150_iq, -soft_manag_area) -> ntits
 rm(ttt, fmetrics_pm, fmetrics_cc, manag, tits_clean)
-
-# Deletion of problematic observations:
 ntits <- tibble::as_tibble(ntits)
-ntits %>% dplyr::filter(id_nestbox != "DIJ-201") %>%
-  dplyr::filter(id_nestbox != "DIJ-212") %>%
-  dplyr::filter(id_nestbox != "DIJ-213") %>%
-  dplyr::filter(id_nestbox != "DIJ-214") %>%
-  dplyr::filter(id_nestbox != "DIJ-215") %>%
-  dplyr::filter(id_nestbox != "DIJ-216") %>%
-  dplyr::filter(id_nestbox != "DIJ-220") -> ntits
-# These observations were problematic because of a inmportant classification error from the landcover
-# map that underestimated their woody vegetation cover and thus affected many other variables, such as
-# the proportion of each landcover class as well as the connectivity metrics. If we have time, we will
-# correct the landcover map and recompute everything to avoid losing these 12 observations.
 
 # Weighting of woodyveg_volume with strata_num:
 ntits %>% dplyr::mutate(strata_w = dplyr::case_when(
@@ -258,6 +245,19 @@ ntits %>% dplyr::mutate(strata_w = dplyr::case_when(
   strata_div == "3" ~ 0.75,
   strata_div == "4" ~ 0.9)) %>%
   dplyr::mutate(woodyveg_vw = woodyveg_volume*strata_w) -> ntits
+
+# Deletion of problematic observations:
+ntits %>% dplyr::filter(id_nestbox != "DIJ-201") %>%
+  dplyr::filter(id_nestbox != "DIJ-212") %>%
+  dplyr::filter(id_nestbox != "DIJ-213") %>%
+  dplyr::filter(id_nestbox != "DIJ-214") %>%
+  dplyr::filter(id_nestbox != "DIJ-215") %>%
+  dplyr::filter(id_nestbox != "DIJ-216") %>%
+  dplyr::filter(id_nestbox != "DIJ-220") -> ntits_red # The "red" stands for reduced because these
+# observations were problematic because of a important classification error from the landcover
+# map that underestimated their woody vegetation cover and thus affected many other variables, such as
+# the proportion of each landcover class as well as the connectivity metrics. If we have time, we will
+# correct the landcover map and recompute everything to avoid losing these 12 observations.
 
 
 
@@ -271,7 +271,7 @@ ntits %>% dplyr::mutate(strata_w = dplyr::case_when(
 # Does not yield meaningful results.
 
 ### For variables related to landscape composition______________________________#
-ntits %>% dplyr::select(id_nestbox, site, trafic, built_area, open_area, herbaceous_area) -> xxx
+ntits_red %>% dplyr::select(id_nestbox, site, trafic, built_area, open_area, herbaceous_area) -> xxx
 
 # Normed-PCA:
 res.pca <- FactoMineR::PCA(X = xxx[, 3:ncol(xxx)], scale.unit = TRUE, graph = FALSE)
