@@ -246,6 +246,7 @@ ntits %>% dplyr::mutate(strata_w = dplyr::case_when(
   strata_div == "4" ~ 0.9)) %>%
   dplyr::mutate(woodyveg_vw = woodyveg_volume*strata_w) -> ntits
 
+##### *** THIS CODE SHOULD BE DELETED WHEN OS IS UPDATED§§§ ----
 # Deletion of problematic observations:
 ntits %>% dplyr::filter(id_nestbox != "DIJ-201") %>%
   dplyr::filter(id_nestbox != "DIJ-212") %>%
@@ -253,8 +254,8 @@ ntits %>% dplyr::filter(id_nestbox != "DIJ-201") %>%
   dplyr::filter(id_nestbox != "DIJ-214") %>%
   dplyr::filter(id_nestbox != "DIJ-215") %>%
   dplyr::filter(id_nestbox != "DIJ-216") %>%
-  dplyr::filter(id_nestbox != "DIJ-220") -> ntits_red # The "red" stands for reduced because these
-# observations were problematic because of a important classification error from the landcover
+  dplyr::filter(id_nestbox != "DIJ-220") -> ntits
+# These observations were problematic because of a important classification error from the landcover
 # map that underestimated their woody vegetation cover and thus affected many other variables, such as
 # the proportion of each landcover class as well as the connectivity metrics. If we have time, we will
 # correct the landcover map and recompute everything to avoid losing these 12 observations.
@@ -271,7 +272,7 @@ ntits %>% dplyr::filter(id_nestbox != "DIJ-201") %>%
 # Does not yield meaningful results.
 
 ### For variables related to landscape composition______________________________#
-ntits_red %>% dplyr::select(id_nestbox, site, trafic, built_area, open_area, herbaceous_area) -> xxx
+ntits %>% dplyr::select(id_nestbox, site, trafic, built_area, open_area, herbaceous_area) -> xxx
 
 # Normed-PCA:
 res.pca <- FactoMineR::PCA(X = xxx[, 3:ncol(xxx)], scale.unit = TRUE, graph = FALSE)
@@ -304,8 +305,8 @@ lightpol.indplot <- plot(res.pca, choix = "ind", autoLab = "yes")
 # As the first axis (PC) of my PCA satisfactorily synthesizes a large amount of the variance (76.2%)
 # of my four variables, we can use the coordinates of observations on this axis as a synthetic variable:
 zzz <- res.pca$ind$coord[,1]
-ntits$light_pollution <- zzz # This variable opposes nestboxes located in very dense urban areas with a
-# lot of traffic to those located in greener contexts.
+ntits$light_pollution <- zzz # This variable opposes nestboxes located in areas experiencing strong light
+# pollution against more preserved areas.
 
 
 
