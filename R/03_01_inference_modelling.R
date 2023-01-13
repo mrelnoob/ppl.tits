@@ -21,7 +21,7 @@ pm %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
                      noise_m = noise_m/10, # Converting dB into B.
                      cumdd_30 = cumdd_30/100) %>% # Converting degree-days into hundred of degree-days.
   dplyr::mutate(brood_size = round(brood_size, digits = 0), # There was a decimal count.
-                logged_Fmetric = log10(pmF_d531_beta0), # Predictors normalisation.
+                logged_Fmetric = log10(pmF_d60_beta0), # Predictors normalisation.
                 logged_woodyveg = log10(woodyveg_vw)) %>%
   dplyr::mutate(year = stats::relevel(x = year, ref = 3)) %>% # Assign 2019 as the reference group.
   dplyr::mutate(manag_low = ifelse(manag_intensity == "0", "1", "0"),
@@ -54,7 +54,7 @@ pm %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
 
 # # I first started with the full model including the interaction term, but it appears to be too complex
 # # for the data, so I'll switch to trying to properly fit the full additive-only model first:
-# pmCy_glmm0 <- lme4::glmer(clutch_size ~ woodyveg_vw + pmF_d531_beta0 + urban_intensity + manag_low +
+# pmCy_glmm0 <- lme4::glmer(clutch_size ~ woodyveg_vw + pmF_d60_beta0 + urban_intensity + manag_low +
 #                                 manag_high + light_pollution + noise_m + cumdd_30 +
 #                                 father_cond + mother_cond + (1|id_nestbox) + (1|breeding_window),
 #                               data = pm2, family = poisson) # See ?glmerControl and Bolker's examples
@@ -255,10 +255,10 @@ plot(simu.resid_zi) # Does not fix the problems, so ZI is not the issue here!
 ### *** 1.1.2.3. Linearity ----
 ## Plotting the response on the log scale against predictors:
 # Format data:
-pm2 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
+pm2 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
                       father_cond, mother_cond) %>%
-  dplyr::mutate("Fmetric" = pmF_d531_beta0,
-                "Fmetric (log)" = log10(pmF_d531_beta0),
+  dplyr::mutate("Fmetric" = pmF_d60_beta0,
+                "Fmetric (log)" = log10(pmF_d60_beta0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
 predictors <- colnames(mydata)
@@ -517,11 +517,11 @@ plot(simu.resid_zi) # Worse than before!
 ### *** 1.2.2.3. Linearity ----
 
 # IMPORTANT NOTE: I already checked the linearity of log(Y)~Xs, so here I look at the predicted counts!
-pm2 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
+pm2 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
                       father_cond, mother_cond) %>%
-  dplyr::mutate("Fmetric" = pmF_d531_beta0,
-                "Fmetric (sqrt)" = sqrt(pmF_d531_beta0),
-                "Fmetric (log)" = log10(pmF_d531_beta0),
+  dplyr::mutate("Fmetric" = pmF_d60_beta0,
+                "Fmetric (sqrt)" = sqrt(pmF_d60_beta0),
+                "Fmetric (log)" = log10(pmF_d60_beta0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (sqrt)" = sqrt(woodyveg_vw),
                 "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
@@ -818,11 +818,11 @@ hist(pm2$brood_size/pm2$clutch_size) # The model seems to better fit the observe
 ### *** 2.1.2.3. Linearity ----
 ## Plotting the response on the logit scale (= log odds) against predictors:
 # Format data:
-pm2 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
+pm2 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
                       father_cond, mother_cond) %>%
-  dplyr::mutate("Fmetric" = pmF_d531_beta0,
-                "Fmetric (sqrt)" = sqrt(pmF_d531_beta0),
-                "Fmetric (log)" = log10(pmF_d531_beta0),
+  dplyr::mutate("Fmetric" = pmF_d60_beta0,
+                "Fmetric (sqrt)" = sqrt(pmF_d60_beta0),
+                "Fmetric (log)" = log10(pmF_d60_beta0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (sqrt)" = sqrt(woodyveg_vw),
                 "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
@@ -1089,11 +1089,11 @@ DHARMa::testZeroInflation(simu.resid_woZI) # Yes, so there truly is a ZI. Yet, t
 
 ### *** 2.2.2.3. Linearity ----
 ## Plotting the response on the log scale against predictors:
-pm2 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
+pm2 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
                       father_cond, mother_cond) %>%
-  dplyr::mutate("Fmetric" = pmF_d531_beta0,
-                "Fmetric (sqrt)" = sqrt(pmF_d531_beta0),
-                "Fmetric (log)" = log10(pmF_d531_beta0),
+  dplyr::mutate("Fmetric" = pmF_d60_beta0,
+                "Fmetric (sqrt)" = sqrt(pmF_d60_beta0),
+                "Fmetric (log)" = log10(pmF_d60_beta0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (sqrt)" = sqrt(woodyveg_vw),
                 "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
@@ -1391,11 +1391,11 @@ hist(pm2$fledgling_nb/pm2$clutch_size) # Surprisingly, the model's predictions a
 ### *** 3.1.2.3. Linearity ----
 ## Plotting the response on the logit scale (= log odds) against predictors:
 # Format data:
-pm2 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
+pm2 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
                       father_cond, mother_cond) %>%
-  dplyr::mutate("Fmetric" = pmF_d531_beta0,
-                "Fmetric (sqrt)" = sqrt(pmF_d531_beta0),
-                "Fmetric (log)" = log10(pmF_d531_beta0),
+  dplyr::mutate("Fmetric" = pmF_d60_beta0,
+                "Fmetric (sqrt)" = sqrt(pmF_d60_beta0),
+                "Fmetric (log)" = log10(pmF_d60_beta0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (sqrt)" = sqrt(woodyveg_vw),
                 "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
@@ -1651,11 +1651,11 @@ DHARMa::testZeroInflation(simu.resid_woZI) # Yes, so there truly is a ZI. Yet, t
 
 ### *** 3.2.2.3. Linearity ----
 ## Plotting the response on the log scale against predictors:
-pm2 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
+pm2 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
                       father_cond, mother_cond) %>%
-  dplyr::mutate("Fmetric" = pmF_d531_beta0,
-                "Fmetric (sqrt)" = sqrt(pmF_d531_beta0),
-                "Fmetric (log)" = log10(pmF_d531_beta0),
+  dplyr::mutate("Fmetric" = pmF_d60_beta0,
+                "Fmetric (sqrt)" = sqrt(pmF_d60_beta0),
+                "Fmetric (log)" = log10(pmF_d60_beta0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (sqrt)" = sqrt(woodyveg_vw),
                 "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
@@ -1951,10 +1951,10 @@ fitdistrplus::plotdist(data = pm3$morphometry, histo = TRUE, demp = TRUE) # Ok-i
 ### *** 4.1.2.3. Linearity ----
 ## Plotting the response on the logit scale (= log odds) against predictors:
 # Format data:
-pm3 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
+pm3 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
                       father_cond, mother_cond) %>%
-  dplyr::mutate("Fmetric" = pmF_d531_beta0,
-                "Fmetric (log)" = log10(pmF_d531_beta0),
+  dplyr::mutate("Fmetric" = pmF_d60_beta0,
+                "Fmetric (log)" = log10(pmF_d60_beta0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
 predictors <- colnames(mydata)
@@ -2162,10 +2162,10 @@ fitdistrplus::plotdist(data = pm3$mass, histo = TRUE, demp = TRUE) # Rather ok.
 ### *** 4.2.2.3. Linearity ----
 ## Plotting the response on the logit scale (= log odds) against predictors:
 # Format data:
-pm3 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
+pm3 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
                       father_cond, mother_cond) %>%
-  dplyr::mutate("Fmetric" = pmF_d531_beta0,
-                "Fmetric (log)" = log10(pmF_d531_beta0),
+  dplyr::mutate("Fmetric" = pmF_d60_beta0,
+                "Fmetric (log)" = log10(pmF_d60_beta0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (log)" = log10(woodyveg_vw),
                 "woodyveg_vw (sqrt)" = sqrt(woodyveg_vw), .keep = "unused") -> mydata
@@ -2374,9 +2374,9 @@ fitdistrplus::plotdist(data = pm3$tarsus_length, histo = TRUE, demp = TRUE) # Co
 ### *** 4.3.2.3. Linearity ----
 ## Plotting the response on the logit scale (= log odds) against predictors:
 # Format data:
-pm3 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, cumdd_30) %>%
-  dplyr::mutate("Fmetric" = pmF_d531_beta0,
-                "Fmetric (log)" = log10(pmF_d531_beta0),
+pm3 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, cumdd_30) %>%
+  dplyr::mutate("Fmetric" = pmF_d60_beta0,
+                "Fmetric (log)" = log10(pmF_d60_beta0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (log)" = log10(woodyveg_vw),
                 "woodyveg_vw (sqrt)" = sqrt(woodyveg_vw), .keep = "unused") -> mydata
@@ -2594,9 +2594,9 @@ fitdistrplus::plotdist(data = pm3$wing_length, histo = TRUE, demp = TRUE) # Very
 ### *** 4.4.2.3. Linearity ----
 ## Plotting the response on the logit scale (= log odds) against predictors:
 # Format data:
-pm3 %>% dplyr::select(woodyveg_vw, pmF_d531_beta0, urban_intensity, cumdd_30) %>%
-  dplyr::mutate("Fmetric" = pmF_d531_beta0,
-                "Fmetric (log)" = log10(pmF_d531_beta0),
+pm3 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, cumdd_30) %>%
+  dplyr::mutate("Fmetric" = pmF_d60_beta0,
+                "Fmetric (log)" = log10(pmF_d60_beta0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (log)" = log10(woodyveg_vw),
                 "woodyveg_vw (sqrt)" = sqrt(woodyveg_vw), .keep = "unused") -> mydata
