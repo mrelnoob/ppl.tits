@@ -316,14 +316,14 @@ ntits$light_pollution <- zzz # This variable opposes nestboxes located in areas 
 ntits %>% dplyr::filter(species == "PM") %>%
   dplyr::select(id_nestbox, site, coord_x, coord_y, year, breeding_window, laying_date, flight_date,
                 clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
-                pmF_d15_beta0, pmF_d60_beta0, pmF_d15_beta1, pmF_d60_beta1,
+                pmF_d15_beta0, pmF_d60_beta0, pmF_d140_beta0, pmF_d15_beta1, pmF_d60_beta1, pmF_d140_beta1,
                 woodyveg_volume, woodyveg_vw,
                 urban_intensity, manag_intensity, light_pollution, noise_m, cumdd_30,
                 father_cond, mother_cond) -> pm
 ntits %>% dplyr::filter(species == "CC") %>%
   dplyr::select(id_nestbox, site, coord_x, coord_y, year, breeding_window, laying_date, flight_date,
                 clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
-                ccF_d10_beta0, ccF_d30_beta0, ccF_d10_beta1, ccF_d30_beta1,
+                ccF_d10_beta0, ccF_d30_beta0, ccF_d130_beta0, ccF_d10_beta1, ccF_d30_beta1, ccF_d130_beta1,
                 woodyveg_volume, woodyveg_vw,
                 urban_intensity, manag_intensity, light_pollution, noise_m, cumdd_30) -> cc
 rm(res.pca, xxx, zzz)
@@ -485,7 +485,9 @@ ccx.pairplot <- GGally::ggpairs(cc.xnum)
 
 ### For PM______________________________________________________________________#
 pm.x$response <- rnorm(n = nrow(pm.x), mean = 50, sd = 10)
-pm.x %>% dplyr::select(-pmF_d15_beta0, -pmF_d15_beta1, -pmF_d60_beta1, -woodyveg_volume) %>%
+pm.x %>% dplyr::select(-pmF_d15_beta0, -pmF_d140_beta0,
+                       -pmF_d15_beta1, -pmF_d60_beta1, -pmF_d140_beta1,
+                       -woodyveg_volume) %>%
   dplyr::mutate(manag_intensity = as.factor(manag_intensity)) -> pm.test
 test_lm <- lm(response~., data = pm.test)
 summary(test_lm)
@@ -497,7 +499,8 @@ pmx.viftable <- car::vif(mod = test_lm)
 
 ### For CC______________________________________________________________________#
 cc.x$response <- rnorm(n = nrow(cc.x), mean = 50, sd = 10)
-cc.x %>% dplyr::select(-ccF_d10_beta0, -ccF_d10_beta1, -ccF_d30_beta1, -woodyveg_volume) %>%
+cc.x %>% dplyr::select(-ccF_d10_beta0, -ccF_d130_beta0,
+                       -ccF_d10_beta1, -ccF_d30_beta1, -ccF_d130_beta1, -woodyveg_volume) %>%
   dplyr::mutate(manag_intensity = as.factor(manag_intensity)) -> cc.test
 test_lm <- lm(response~., data = cc.test)
 summary(test_lm)
@@ -606,8 +609,6 @@ ccy.pairplot <- GGally::ggpairs(cc.y)
 ##### Datasets
 # ____________
 
-pm %>% dplyr::select(-pmF_d15_beta0, -pmF_d15_beta1, -pmF_d60_beta1, -woodyveg_volume) -> pm
-cc %>% dplyr::select(-ccF_d10_beta0, -ccF_d10_beta1, -ccF_d30_beta1, -woodyveg_volume) -> cc
-
 rm(cc.test, cc.x, cc.y, cc.xnum, pm.test, pm.x, pm.y, pm.xnum, tab, test_lm,
    res.cor.ccx, res.cor.ccy, res.cor.pmx, res.cor.pmy, res.pcor.ccx, res.pcor.ccy, res.pcor.pmx, res.pcor.pmy)
+
