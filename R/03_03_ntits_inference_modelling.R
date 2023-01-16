@@ -25,39 +25,50 @@
 # __________________________________
 
 ## Fitting a regular Poisson regression:
-ntitsCy_glm1 <- stats::glm(clutch_size ~ logged_woodyveg + logged_Fmetric +
+ttCy_glm1 <- stats::glm(clutch_size ~ logged_woodyveg + logged_Fmetric + species +
                           urban_intensity + manag_low + manag_high + light_pollution + noise_m +
-                          cumdd_30 + father_cond + mother_cond + year,
+                          cumdd_30 + year,
                         data = ntits2, family = "poisson")
 
-## Fitting a regular Conway-Maxwell (COM) Poisson regression:
-ntitsCy_comp1 <- COMPoissonReg::glm.cmp(formula.lambda =
-                                       clutch_size ~ logged_woodyveg + logged_Fmetric +
+## Fitting a regular Poisson GLMM:
+ttCy_glmm1 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + species +
+                                     urban_intensity + manag_low + manag_high + light_pollution + noise_m +
+                                     cumdd_30 + year + (1|id_nestbox),
+                                   data = ntits2, family = "poisson")
+
+## Fitting a regular Conway-Maxwell (COM) Poisson regression (GLM):
+ttCy_comglm1 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + species +
+                                          urban_intensity + manag_low + manag_high + light_pollution + noise_m +
+                                          cumdd_30 + year,
+                                        data = ntits2, family = glmmTMB::compois(link = "log"),
+                                        dispformula = ~1) # Intercept only 'nu' (default).
+# OR:
+ttCy_comglm1b <- COMPoissonReg::glm.cmp(formula.lambda =
+                                       clutch_size ~ logged_woodyveg + logged_Fmetric + species +
                                        urban_intensity + manag_low + manag_high + light_pollution + noise_m +
-                                       cumdd_30 + father_cond + mother_cond + year,
+                                       cumdd_30 + year,
                                      data = ntits2, formula.nu = ~1) # Intercept only 'nu' (default).
-summary(ntitsCy_glm1)
-summary(ntitsCy_bglmm1)
-summary(ntitsCy_comp1)
-# The COM-Poisson GLM displays much improved coefficients and AIC values (AIC=976.5) compared to the regular
-# Poisson GLM (AIC=1122.3) and the Poisson bGLMM (AIC=1125.8)! That's an improvement! Now let's see if the
-# addition of random effect(s) (RE) further improves the fit.
 
-## Fitting a COM-Poisson mixed regression model (COM-Poisson GLMM):
-ntitsCy_comglmm1 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
-                                    manag_low + manag_high + light_pollution + noise_m +
-                                    cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
-                                  data = ntits2, family = glmmTMB::compois(link = "log"),
-                                  dispformula = ~1) # Intercept only 'nu' (default). Rather long to run!
-summary(ntitsCy_comglmm1) # Gives AIC = 975 but a very small variance for the RE.
+## Fitting a regular Conway-Maxwell (COM) Poisson mixed model (GLMM):
+ttCy_comglmm1 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + species +
+                                   urban_intensity + manag_low + manag_high + light_pollution + noise_m +
+                                   cumdd_30 + year + (1|id_nestbox),
+                                 data = ntits2, family = glmmTMB::compois(link = "log"),
+                                 dispformula = ~1) # Rather long to fit.
+summary(ttCy_glm1) # AIC = 1758.2
+summary(ttCy_glmm1) # AIC = 1760.2
+summary(ttCy_comglm1) # AIC = 1624.7
+summary(ttCy_comglm1b) # AIC = 1624.5 (so it's not exactly the same?!).
+summary(ttCy_comglmm1) # AIC = 1626.7.
+# It seems that, if the inclusion of a random effect (RE) did not improve the fit, but accounting for a
+# likely underdispersion quite strongly improved the fit! I will thus carry on with the last
+# model to the diagnostic part and assess whether the use of the RE is truly justified or not and if the
+# model behaves as expected.
 
-ntitsCy_comglmm3 <- glmmTMB::glmmTMB(clutch_size ~
-                                    scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
-                                    urban_intensity + manag_low + manag_high + light_pollution + noise_m +
-                                    cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
-                                  data = ntits2, family = glmmTMB::compois(link = "log"),
-                                  dispformula = ~1)
-summary(ntitsCy_comglmm3) # Gives AIC = 977.
+
+
+
+
 
 
 
@@ -69,35 +80,35 @@ summary(ntitsCy_comglmm3) # Gives AIC = 977.
 ### *** 1.1.2.1. Residuals extraction, autocorrelation and collinearity ----
 ## Traditional residuals:
 par(.pardefault)
-resid <- stats::resid(ntitsCy_comglmm1, type = 'response')
+resid <- stats::resid(ttCy_comglmm1, type = 'response')
 plot(resid, id = 0.05, idLabels = ~.obs) # Ok-ish but there are a few low residuals.
-# performance::check_outliers(ntitsCy_comglmm1) # Does not work for this type of model.
+# performance::check_outliers(ttCy_comglmm1) # Does not work for this type of model.
 ntits2[which(resid < -2.1),] # Five potential outliers: nestboxes with very small clutch sizes.
 
 # To further investigate patterns, I can plot the residuals against some predictors:
 plot(x = ntits2$father_cond, y = resid) # There may be signs of heteroscedasticity for some predictors:
 # "F-metric", "noise_m", and "cumdd_30". Otherwise, seems ok (but, once again, simulated residuals will be
 # more useful).
-# plot(ntitsCy_comglmm1, id_nestbox~stats::resid(.)) # Does not work for this type of model.
-# plot(ntitsCy_comglmm1, site~stats::resid(.)) # Does not work for this type of model.
+# plot(ttCy_comglmm1, id_nestbox~stats::resid(.)) # Does not work for this type of model.
+# plot(ttCy_comglmm1, site~stats::resid(.)) # Does not work for this type of model.
 
 ## Simulation-based scaled residuals computation ({DHARMa} method):
-simu.resid <- DHARMa::simulateResiduals(fittedModel = ntitsCy_comglmm1, n = 1000, re.form = NULL) # The 're.form'
-# argument is to base simulations on the model unconditional of the random effects (and only works for
-# {lme4} formulations). It is useful for testing dispersion (see below) but can be omitted eventually.
+simu.resid <- DHARMa::simulateResiduals(fittedModel = ttCy_comglmm1, n = 1000, re.form = NULL) # The
+# 're.form' argument is to base simulations on the model unconditional of the random effects (and only works
+# for {lme4} formulations). It is useful for testing dispersion (see below) but can be omitted eventually.
 plot(simu.resid) # The outlier test is significant, but otherwise it is ok!
 DHARMa::outliers(simu.resid) # Three potential outliers.
-ntits2[c(198,233,236),] # They're from "chateau_de_pouilly", "seminaire" and "chateau_de_larrey" and indeed, they
-# have surprisingly low clutch sizes with regards to their locations and their adjacent observations. They may
-# well be true outliers (whose clutch sizes are function of other processes).
+ntits2[c(198,233,236),] # They're from "chateau_de_pouilly", "seminaire" and "chateau_de_larrey" and indeed,
+# they have surprisingly low clutch sizes with regards to their locations and their adjacent observations.
+# They may well be true outliers (whose clutch sizes are function of other processes).
 
 ## Autocorrelation and collinearity:
 DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
                                    x = ntits2$coord_x, y = ntits2$coord_y, plot = TRUE) # Significant spatial
 # autocorrelation detected. Add a "site" RE?
-performance::check_autocorrelation(ntitsCy_comglmm1) # Ok.
-performance::check_collinearity(ntitsCy_comglmm1) # Ok-ish, but "urban_intensity" > 3!
-stats::vcov(ntitsCy_comglmm1) # But values of the covariance matrix seem ok.
+performance::check_autocorrelation(ttCy_comglmm1) # Ok.
+performance::check_collinearity(ttCy_comglmm1) # Ok-ish, but "urban_intensity" > 3!
+stats::vcov(ttCy_comglmm1) # But values of the covariance matrix seem ok.
 
 ## Heteroscedasticity and possible model misspecifications:
 par(.pardefault)
@@ -117,11 +128,11 @@ DHARMa::plotResiduals(simu.resid, form = ntits2$year)
 
 ### *** 1.1.2.2. Distribution (family, ZI, dispersion) ----
 ## Assessing over or under-dispersion:
-aods3::gof(ntitsCy_comglmm1)
+aods3::gof(ttCy_comglmm1)
 # The sum of squared Pearson residuals is less than the residual degrees of freedom, it's a known
 # sign of underdispersion! We can confirm it by dividing the residual deviance by the number of degrees
 # of freedom: 65.7/245=0.27 (<< 1), so underdispersion!
-AER::dispersiontest(object = ntitsCy_glm0, alternative = c("less")) # Significant underdispersion!
+AER::dispersiontest(object = ttCy_glm0, alternative = c("less")) # Significant underdispersion!
 DHARMa::testDispersion(simu.resid, alternative = "less") # Ok, but could be better.
 # There still may be a lower dispersion than expected.
 
@@ -139,7 +150,7 @@ ggplot2::ggplot(pm, ggplot2::aes(clutch_size)) +
 # especially if we consider that the lowest values are outliers!
 
 ## Distribution of the predicted counts:
-pred_counts <- stats::predict(object = ntitsCy_comglmm1, type = "response") # Extract the predicted counts.
+pred_counts <- stats::predict(object = ttCy_comglmm1, type = "response") # Extract the predicted counts.
 par(mfrow= c(1,2))
 hist(pred_counts)
 hist(ntits2$clutch_size) # The model's predictions are quite good.
@@ -156,14 +167,14 @@ ggplot2::ggplot(pm, ggplot2::aes(clutch_size)) +
 # This plot suggests that Y is not following a zero-inflated Poisson distribution (with p=0.01). See also:
 DHARMa::testZeroInflation(simu.resid) # Nope. However, to get more conclusive results, I should try to
 # fit a zero-inflated (ZI) model and compare it:
-ntitsCy_zicomglmm1 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+ttCy_zicomglmm1 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
                                       manag_low + manag_high + light_pollution + noise_m +
                                       cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
                                     data = ntits2, family = glmmTMB::compois(link = "log"),
                                     dispformula = ~1,
                                     ziformula = ~1) # Specifies a null ZI model.
-summary(ntitsCy_zicomglmm1) # Results are rather similar but the RE variance is too low!
-simu.resid_zi <- DHARMa::simulateResiduals(fittedModel = ntitsCy_zicomglmm1, n = 1000)
+summary(ttCy_zicomglmm1) # Results are rather similar but the RE variance is too low!
+simu.resid_zi <- DHARMa::simulateResiduals(fittedModel = ttCy_zicomglmm1, n = 1000)
 plot(simu.resid_zi) # Worse than before!
 
 
@@ -196,30 +207,30 @@ ggplot2::ggplot(mydata, ggplot2::aes(y = Predicted_counts, x = predictor.value))
 
 ### *** 1.1.2.4. Model goodness-of-fit (GOF) and performances ----
 # GOF test of Pearson's Chi2 residuals:
-dat.resid <- sum(stats::resid(ntitsCy_comglmm1, type = "pearson")^2)
-1 - stats::pchisq(dat.resid, stats::df.residual(ntitsCy_comglmm1)) # p = 0.99, indicating that there is no
+dat.resid <- sum(stats::resid(ttCy_comglmm1, type = "pearson")^2)
+1 - stats::pchisq(dat.resid, stats::df.residual(ttCy_comglmm1)) # p = 0.99, indicating that there is no
 # significant lack of fit. Keep in mind though that GOF measures for mixed models is an extremely complicated
 # topic and interpretations are not straightforward.
 
 # Computing a pseudo-R2:
-performance::r2_nakagawa(ntitsCy_comglmm1) # [Additive model]: Marg_R2_glmm = 0.06; Cond_R2_glmm = 0.03.
+performance::r2_nakagawa(ttCy_comglmm1) # [Additive model]: Marg_R2_glmm = 0.06; Cond_R2_glmm = 0.03.
 
 ## Likelihood-ration tests (LRT) of GOF:
 # For the random-effects (RE):
-ntitsCy_comglmm0 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
+ttCy_comglmm0 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
                                     manag_low + manag_high + light_pollution + noise_m +
                                     cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox) + (1|site),
                                   data = ntits2, family = glmmTMB::compois(link = "log"),
                                   dispformula = ~1)
-summary(ntitsCy_comglmm0) # The non-mixed model gives AIC = 976 so approximatively equal to the mixed-model with
-# "id_nestbox" as RE. The mixed model with "site" as a RE gives AIC = 975.3. The one with both RE gives
+summary(ttCy_comglmm0) # The non-mixed model gives AIC = 976 so approximatively equal to the mixed-model
+# with "id_nestbox" as RE. The mixed model with "site" as a RE gives AIC = 975.3. The one with both RE gives
 # AIC = 976. So it seems like the use of mixed models is here not supported by the data!
 
 ## For the whole model:
-ntitsCy_comglmm0 <- glmmTMB::glmmTMB(clutch_size ~ 1,
+ttCy_comglmm0 <- glmmTMB::glmmTMB(clutch_size ~ 1,
                                   data = ntits2, family = glmmTMB::compois(link = "log"),
                                   dispformula = ~1)
-res.LRT_null <- stats::anova(object = ntitsCy_comglmm0, ntitsCy_comglmm1, test = "LRT")
+res.LRT_null <- stats::anova(object = ttCy_comglmm0, ttCy_comglmm1, test = "LRT")
 # The test is significant, confirming that the model is useful to explain the data.
 
 
@@ -229,7 +240,7 @@ res.LRT_null <- stats::anova(object = ntitsCy_comglmm0, ntitsCy_comglmm1, test =
 # Predicted counts:
 par(.pardefault)
 obsprop <- prop.table(table(ntits2$clutch_size))
-sims <- stats::simulate(ntitsCy_comglmm1, nsim = 1000)
+sims <- stats::simulate(ttCy_comglmm1, nsim = 1000)
 nsim1 <- colSums(sims == 1) # Number of ones (min obs value)
 par(las=1,bty="l")
 plot(pt <- prop.table(table(nsim1)),
@@ -262,10 +273,10 @@ points(obs12, 0.13, col="red", pch=16, cex=2)
 
 ### *** 1.1.3.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
 ## Parametric bootstrap to test the additive effect of the connectivity metric:
-ntitsCy_comglmm0 <- stats::update(ntitsCy_comglmm1, .~. -logged_Fmetric)
+ttCy_comglmm0 <- stats::update(ttCy_comglmm1, .~. -logged_Fmetric)
 
 tictoc::tic("Parametric bootstrap LRT for the additive effect")
-res.LRT_inteff <- DHARMa::simulateLRT(m0 = ntitsCy_comglmm0, m1 = ntitsCy_comglmm1, n = 500, seed = 10)
+res.LRT_inteff <- DHARMa::simulateLRT(m0 = ttCy_comglmm0, m1 = ttCy_comglmm1, n = 500, seed = 10)
 tt <- as.data.frame(cbind(res.LRT_inteff$method,
                           res.LRT_inteff$data.name,
                           res.LRT_inteff$statistic,
@@ -275,7 +286,7 @@ tt %>% dplyr::rename("Method" = V1,
                      "Models" = V2,
                      "Log Likelihood (M1/M0)" = V3,
                      "p-value" = V4) -> tt
-readr::write_csv2(x = tt, file = here::here("output", "tables", "res.ntitsCy_LRT_addeff.csv"))
+readr::write_csv2(x = tt, file = here::here("output", "tables", "res.ttCy_LRT_addeff.csv"))
 tictoc::toc() # DISCLAIMER: took ~3h35 to run!
 # The PB-based LRT is non-significant, indicating that our connectivity metric does not improve the
 # description of the data here.
@@ -294,18 +305,18 @@ tictoc::toc() # DISCLAIMER: took ~3h35 to run!
 
 ### *** 1.1.3.2. Bootstrapped confidence intervals for estimated parameters ----
 tictoc::tic("Bootstrap CI for the additive COM-Poisson GLMM parameters")
-res.ntitsCy_addeff_CI_boot <- confint(ntitsCy_comglmm1, method="boot")
-tt <- as.data.frame(res.ntitsCy_addeff_CI_boot)
+res.ttCy_addeff_CI_boot <- confint(ttCy_comglmm1, method="boot")
+tt <- as.data.frame(res.ttCy_addeff_CI_boot)
 tt$parameters <- rownames(tt)
 readr::write_csv2(x = tt,
-                  file = here::here("output", "tables", "res.ntitsCy_bootCI_addeff.csv"))
+                  file = here::here("output", "tables", "res.ttCy_bootCI_addeff.csv"))
 tictoc::toc() # DISCLAIMER: took ~2h10 to run!
 
 
 
 ### *** 1.1.3.3. Conclusion ----
 
-summary(ntitsCy_comglmm1)
+summary(ttCy_comglmm1)
 # Our diagnostics show that the use of a COM-Poisson regression strongly improves models predictive accuracy.
 # However, improvements are still likely possible as the models still tend to predict a wider count-range
 # than the observed one. Possible leads for improvement could be to remove the possible outliers, merge
@@ -345,7 +356,7 @@ ntitsHSy_glmm1 <- lme4::glmer(brood_size/clutch_size ~ logged_woodyveg + logged_
 ss <- lme4::getME(ntitsHSy_glmm1, c("theta", "fixef"))
 ntitsHSy_glmm2 <- stats::update(ntitsHSy_glmm1, start=ss,
                              control=lme4::glmerControl(optimizer="bobyqa",
-                                                        optCtrl=list(maxfun=2e5))) # Convergence ok. AIC = 712.5.
+                                                        optCtrl=list(maxfun=2e5))) # Convergence ok. AIC=712.5.
 
 # # *** FURTHER TESTS *** #
 # # So I'll try using the Gauss-Hermite quadrature (GHQ) for estimation:
@@ -443,8 +454,8 @@ probabilities <- stats::predict(object = ntitsHSy_glmm3, type = "response") # Ex
 # probabilities.
 par(mfrow= c(1,2))
 hist(probabilities)
-hist(ntits2$brood_size/ntits2$clutch_size) # The model seems to fit the observed proportions rather nicely although
-# it over-predicts total success and under-predicts the failures.
+hist(ntits2$brood_size/ntits2$clutch_size) # The model seems to fit the observed proportions rather nicely
+# although it over-predicts total success and under-predicts the failures.
 
 ## Zero-inflation:
 DHARMa::testZeroInflation(simu.resid) # Significant inflation detected!
@@ -456,7 +467,8 @@ ntitsHSy_ziglmm1 <- glmmTMB::glmmTMB(brood_size/clutch_size ~
                                   weights = clutch_size,
                                   data = ntits2, family = binomial,
                                   ziformula = ~1) # Specifies a null ZI model.
-summary(ntitsHSy_ziglmm1) # Seems to yield better results (e.g. RE variance). AIC = 563.4 (without ZI, AIC ~ 713)!
+summary(ntitsHSy_ziglmm1) # Seems to yield better results (e.g. RE variance). AIC = 563.4 (without ZI,
+# AIC ~ 713)!
 simu.resid_zi <- DHARMa::simulateResiduals(fittedModel = ntitsHSy_ziglmm1, n = 1000)
 plot(simu.resid_zi) # The use of the ZI-binomial model seem to have solved the problems. To verify, I will
 # look at the predictions from this new model:
@@ -464,8 +476,8 @@ probabilities <- stats::predict(object = ntitsHSy_ziglmm1, type = "response") # 
 # probabilities.
 par(mfrow= c(1,2))
 hist(probabilities)
-hist(ntits2$brood_size/ntits2$clutch_size) # The model seems to better fit the observed proportions, even though it
-# still under-predicts the proportion of failures.
+hist(ntits2$brood_size/ntits2$clutch_size) # The model seems to better fit the observed proportions, even
+# though it still under-predicts the proportion of failures.
 
 
 
@@ -513,7 +525,7 @@ ntitsHSy_ziglmm0 <- glmmTMB::glmmTMB(brood_size/clutch_size ~
                                   weights = clutch_size,
                                   data = ntits2, family = binomial,
                                   ziformula = ~1)
-summary(ntitsHSy_ziglmm0) # The non-mixed model gives AIC = 589.5 while the mixed-model gave AIC = 563.4, so the
+summary(ntitsHSy_ziglmm0) # The non-mixed model gives AIC = 589.5 while the mixed-model gave AIC = 563.4, so
 # the use of the mixed model seems warranted by the data!
 
 # # Importance of the fixed effects:
@@ -661,10 +673,11 @@ par(.pardefault)
 resid <- stats::resid(ntitsBSy_zicomglmm1, type = 'response')
 plot(resid, id = 0.05, idLabels = ~.obs) # Ok-ish but there are a few potential outliers.
 # performance::check_outliers(ntitsBSy_zicomglmm1) # Does not work for this type of model.
-ntits2[which(resid < -4),] # As could have been guessed from the plot, the 2nd group (with the lowest residuals)
-# consist of all the observations where "brood_size" ~ 0. It could be a sign that the zero-part of the model
-# should indeed be modelled with relevant predictors. However, we do not seem to have the relevant predictors
-# since the patterns still exist even with the "exploratory improved model" (i.e. 'ntitsBSy_zicomglmm2').
+ntits2[which(resid < -4),] # As could have been guessed from the plot, the 2nd group (with the lowest
+# residuals) consist of all the observations where "brood_size" ~ 0. It could be a sign that the zero-part of
+# the model should indeed be modelled with relevant predictors. However, we do not seem to have the relevant
+# predictors since the patterns still exist even with the "exploratory improved model" (i.e.
+# 'ntitsBSy_zicomglmm2').
 
 # To further investigate patterns, I can plot the residuals against some predictors:
 plot(x = ntits2$logged_Fmetric, y = resid) # There may be signs of heteroscedasticity for the "F-metric".
@@ -728,9 +741,9 @@ ggplot2::ggplot(pm, ggplot2::aes(brood_size)) +
 pred_counts <- stats::predict(object = ntitsBSy_zicomglmm2, type = "response") # Extract the predicted counts.
 par(mfrow= c(1,2))
 hist(pred_counts)
-hist(ntits2$brood_size) # Compared to the predictions from "ntitsBSy_zicomglmm1", the ones from "ntitsBSy_zicomglmm2"
-# seem more accurate but predictions are still too narrow and the model still fails to predict small brood
-# sizes!
+hist(ntits2$brood_size) # Compared to the predictions from "ntitsBSy_zicomglmm1", the ones from
+# "ntitsBSy_zicomglmm2" seem more accurate but predictions are still too narrow and the model still fails to
+# predict small brood sizes!
 
 ## Zero-inflation (ZI):
 simu.resid_woZI <- DHARMa::simulateResiduals(fittedModel = ntitsBSy_glmm1, n = 1000) # Model without ZI.
@@ -1037,8 +1050,8 @@ probabilities <- stats::predict(object = ntitsFSy_ziglmm1, type = "response") # 
 # probabilities.
 par(mfrow= c(1,2))
 hist(probabilities)
-hist(ntits2$fledgling_nb/ntits2$clutch_size) # Surprisingly, the model's predictions are perhaps even worse: it
-# seems unable to predict extreme events, whether total successes or failures.
+hist(ntits2$fledgling_nb/ntits2$clutch_size) # Surprisingly, the model's predictions are perhaps even worse:
+# it seems unable to predict extreme events, whether total successes or failures.
 
 
 
@@ -1086,7 +1099,7 @@ ntitsFSy_ziglmm0 <- glmmTMB::glmmTMB(fledgling_nb/clutch_size ~
                                   weights = clutch_size,
                                   data = ntits2, family = binomial,
                                   ziformula = ~1)
-summary(ntitsFSy_ziglmm0) # The non-mixed model gives AIC = 990.9 while the mixed-model gave AIC = 970.4, so the
+summary(ntitsFSy_ziglmm0) # The non-mixed model gives AIC = 990.9 while the mixed-model gave AIC = 970.4, so
 # the use of the mixed model seems warranted by the data!
 
 # # Importance of the fixed effects:
@@ -1112,7 +1125,8 @@ summary(ntitsFSy_ziglmm0) # The non-mixed model gives AIC = 990.9 while the mixe
 ## For the additive effect of the connectivity metric:
 ntitsFSy_ziglmm0 <- stats::update(ntitsFSy_ziglmm1, .~. -logged_Fmetric)
 
-res.LRT_addeff <- pbkrtest::PBmodcomp(ntitsFSy_ziglmm1, ntitsFSy_ziglmm0, nsim = 500, seed = 56) # Took ~??? to run!
+res.LRT_addeff <- pbkrtest::PBmodcomp(ntitsFSy_ziglmm1,
+                                      ntitsFSy_ziglmm0, nsim = 500, seed = 56) # Took ~??? to run!
 readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
                                                              "res.ntitsFSy_LRT_addeff.csv"))
 # The LRT is not significant, indicating that our connectivity metric does not improve the description of
@@ -1203,7 +1217,8 @@ summary(ntitsFNy_zicomglmm2) # AIC = 1144.8 vs 1151.9.
 
 # # The interactive (mediated) model:
 # ntitsFNy_zicomglmm3 <- glmmTMB::glmmTMB(fledgling_nb ~
-#                                        scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
+#                                        scale(logged_woodyveg, scale = F) * scale(logged_Fmetric,
+#                                                                                  scale = F) +
 #                                        urban_intensity + manag_low + manag_high + light_pollution + noise_m +
 #                                        cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
 #                                      data = ntits2, family = glmmTMB::compois(link = "log"),
@@ -1226,10 +1241,10 @@ par(.pardefault)
 resid <- stats::resid(ntitsFNy_zicomglmm1, type = 'response')
 plot(resid, id = 0.05, idLabels = ~.obs) # Ok-ish but there are a few potential outliers.
 # performance::check_outliers(ntitsFNy_zicomglmm1) # Does not work for this type of model.
-ntits2[which(resid < -4),] # As could have been guessed from the plot, the 2nd group (with the lowest residuals)
-# consist of all the observations where "fledgling_nb" ~ 0. It could be a sign that the zero-part of the model
-# should indeed be modelled with more relevant predictors. But even the "exploratory improved model" does not
-# erase this pattern.
+ntits2[which(resid < -4),] # As could have been guessed from the plot, the 2nd group (with the lowest
+# residuals) consist of all the observations where "fledgling_nb" ~ 0. It could be a sign that the zero-part
+# of the model should indeed be modelled with more relevant predictors. But even the "exploratory improved
+# model" does not erase this pattern.
 
 # To further investigate patterns, I can plot the residuals against some predictors:
 plot(x = ntits2$logged_Fmetric, y = resid) # There may be signs of heteroscedasticity for the "F-metric".
@@ -1292,8 +1307,9 @@ ggplot2::ggplot(pm, ggplot2::aes(fledgling_nb)) +
 pred_counts <- stats::predict(object = ntitsFNy_zicomglmm1, type = "response") # Extract the predicted counts.
 par(mfrow= c(1,2))
 hist(pred_counts)
-hist(ntits2$fledgling_nb) # The "ntitsFNy_zicomglmm2" model yields better predictions than the simpler model but
-# neither fit is truly satisfactory. Both models overestimate lower counts but fail to properly model the ZI!
+hist(ntits2$fledgling_nb) # The "ntitsFNy_zicomglmm2" model yields better predictions than the simpler model
+# but neither fit is truly satisfactory. Both models overestimate lower counts but fail to properly model
+# the ZI!
 
 ## Zero-inflation (ZI):
 simu.resid_woZI <- DHARMa::simulateResiduals(fittedModel = ntitsFNy_glmm1, n = 1000) # Model without ZI.
@@ -1332,9 +1348,9 @@ ggplot2::ggplot(mydata, ggplot2::aes(y = log_y, x = predictor.value))+
 ### *** 3.2.2.4. Model goodness-of-fit (GOF) and performances ----
 # GOF test of Pearson's Chi2 residuals:
 dat.resid <- sum(stats::resid(ntitsFNy_zicomglmm2, type = "pearson")^2)
-1 - stats::pchisq(dat.resid, stats::df.residual(ntitsFNy_zicomglmm2)) # p ~ 0.32 for both models, indicating that
-# there is no significant lack of fit. Keep in mind though that GOF measures for mixed models is an extremely
-# complicated topic and interpretations are not straightforward.
+1 - stats::pchisq(dat.resid, stats::df.residual(ntitsFNy_zicomglmm2)) # p ~ 0.32 for both models, indicating
+# that there is no significant lack of fit. Keep in mind though that GOF measures for mixed models is an
+# extremely complicated topic and interpretations are not straightforward.
 
 # Computing a pseudo-R2:
 performance::r2_nakagawa(ntitsFNy_zicomglmm1) # [Additive model]: Marg_R2_glmm = 0.04; Cond_R2_glmm = 0.04.
@@ -1450,9 +1466,9 @@ summary(ntitsFNy_zicomglmm2) # Exploratory improved model!
 # merge observations, and try to improve the modelling of the dispersion (nu) and ZI parameters (or remove the
 # zeros).
 # As they are, unfortunately, the models do not support our hypotheses and only two predictors turned out
-# significant in "ntitsFNy_zicomglmm1": "cumdd_30", and "year2022" (with AIC = 1151.9). However, the exploratory
-# improved model suggest that our "F-metric" could be important to model the ZI and that "manag_low" could be
-# important to model the dispersion (AIC = 1144.8 with "woodyveg" also significant)!
+# significant in "ntitsFNy_zicomglmm1": "cumdd_30", and "year2022" (with AIC = 1151.9). However, the
+# exploratory improved model suggest that our "F-metric" could be important to model the ZI and that
+# "manag_low" could be important to model the dispersion (AIC = 1144.8 with "woodyveg" also significant)!
 
 
 
@@ -1490,7 +1506,8 @@ ntits3$morphometry <- zzz # This variable opposes nestboxes that host "big" (pot
 ## Fitting a regular linear model:
 ntitsMMy_lm1 <- stats::lm(morphometry ~ logged_woodyveg + logged_Fmetric +
                          urban_intensity + cumdd_30 + father_cond + mother_cond + year, data = ntits3)
-# ntitsMMy_lm2 <- stats::lm(morphometry ~ scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
+# ntitsMMy_lm2 <- stats::lm(morphometry ~ scale(logged_woodyveg, scale = F) * scale(logged_Fmetric,
+#                                                                                   scale = F) +
 #                            urban_intensity + year, data = ntits3) # Interaction not significant!
 
 
@@ -1589,7 +1606,8 @@ redres::plot_redres(ntitsMMy_blmm3, xvar = "scale(logged_Fmetric, scale = F)") +
   ggplot2::labs(title = "Residual vs F-metric (log scale)") # Plotting residuals against the predictors
 # does not give much odd results, but emphasized the incomplete sampling of the predictor
 # space for some variables such as the F-metric.
-# plot(ntits3$logged_Fmetric, stats::residuals(ntitsMMy_blmm3)) # Same plot (I should create a custom function).
+# plot(ntits3$logged_Fmetric, stats::residuals(ntitsMMy_blmm3)) # Same plot (I should create a
+# custom function).
 redres::plot_redres(ntitsMMy_blmm3, type = "raw_mar", xvar = "year")
 
 ## Distribution of the predicted values:
@@ -1656,14 +1674,16 @@ res.LRT_null <- stats::anova(object = ntitsMMy_lm0, ntitsMMy_lm1, test = "LRT")
 ## For the additive effect of the connectivity metric:
 ntitsMMy_blmm1 <- stats::update(ntitsMMy_blmm2, .~. -logged_Fmetric)
 
-res.LRT_addeff <- pbkrtest::PBmodcomp(ntitsMMy_blmm2, ntitsMMy_blmm1, nsim = 1000, seed = 399) # Took ~85s to run!
+res.LRT_addeff <- pbkrtest::PBmodcomp(ntitsMMy_blmm2,
+                                      ntitsMMy_blmm1, nsim = 1000, seed = 399) # Took ~85s to run!
 readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
                                                              "res.ntitsMMy_LRT_addeff.csv"))
 # The LRT is significant, indicating that our connectivity metric does improve the description of the data.
 
 
 ## For the interaction effect:
-res.LRT_inteff <- pbkrtest::PBmodcomp(ntitsMMy_blmm3, ntitsMMy_blmm2, nsim = 1000, seed = 428) # Took ~67s to run!
+res.LRT_inteff <- pbkrtest::PBmodcomp(ntitsMMy_blmm3,
+                                      ntitsMMy_blmm2, nsim = 1000, seed = 428) # Took ~67s to run!
 readr::write_csv2(x = res.LRT_inteff$test, file = here::here("output", "tables",
                                                              "res.ntitsMMy_LRT_inteff.csv"))
 # The LRT is NOT significant, indicating that our hypothesis of an interaction effect is not supported
@@ -1800,7 +1820,8 @@ redres::plot_redres(ntitsMAy_lmm3, xvar = "mother_cond") +
   ggplot2::geom_smooth(method = "loess") +
   ggplot2::theme_classic() +
   ggplot2::labs(title = "Residual vs predictor") # Ok for most, acceptable for some.
-# plot(ntits3$logged_Fmetric, stats::residuals(ntitsMAy_lmm3)) # Same plot (I should create a custom function).
+# plot(ntits3$logged_Fmetric, stats::residuals(ntitsMAy_lmm3)) # Same plot (I should create a
+# custom function).
 redres::plot_redres(ntitsMAy_lmm3, type = "raw_mar", xvar = "year") # Ok.
 
 ## Distribution of the predicted values:
@@ -1871,14 +1892,16 @@ res.LRT_null <- stats::anova(object = ntitsMAy_lm0, ntitsMAy_lm1, test = "LRT")
 ## For the additive effect of the connectivity metric:
 ntitsMAy_lmm1 <- stats::update(ntitsMAy_lmm2, .~. -logged_Fmetric)
 
-res.LRT_addeff <- pbkrtest::PBmodcomp(ntitsMAy_lmm2, ntitsMAy_lmm1, nsim = 1000, seed = 22) # Took ~34s to run!
+res.LRT_addeff <- pbkrtest::PBmodcomp(ntitsMAy_lmm2,
+                                      ntitsMAy_lmm1, nsim = 1000, seed = 22) # Took ~34s to run!
 readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
                                                              "res.ntitsMAy_LRT_addeff.csv"))
 # The LRT is significant, indicating that our connectivity metric does improve the description of the data.
 
 
 ## For the interaction effect:
-res.LRT_inteff <- pbkrtest::PBmodcomp(ntitsMAy_lmm3, ntitsMAy_lmm2, nsim = 1000, seed = 253) # Took ~31s to run!
+res.LRT_inteff <- pbkrtest::PBmodcomp(ntitsMAy_lmm3,
+                                      ntitsMAy_lmm2, nsim = 1000, seed = 253) # Took ~31s to run!
 readr::write_csv2(x = res.LRT_inteff$test, file = here::here("output", "tables",
                                                              "res.ntitsMAy_LRT_inteff.csv"))
 # The LRT is NOT significant, indicating that our hypothesis of an interaction effect is not supported
@@ -1922,7 +1945,8 @@ ntits2 %>% dplyr::filter(is.na(tarsus_length) == FALSE) -> ntits3 # Only 173 obs
 
 ntitsTLy_lm1 <- stats::lm(tarsus_length ~ logged_woodyveg + logged_Fmetric +
                          urban_intensity + manag_low + manag_high + cumdd_30 + year, data = ntits3)
-# ntitsTLy_lm2 <- stats::lm(tarsus_length ~ scale(logged_woodyveg, scale = F) * scale(logged_Fmetric, scale = F) +
+# ntitsTLy_lm2 <- stats::lm(tarsus_length ~ scale(logged_woodyveg, scale = F) * scale(logged_Fmetric,
+#                                                                                     scale = F) +
 #                          urban_intensity + manag_low + manag_high + cumdd_30 + year,
 #                        data = ntits3) # Interaction not significant!
 
@@ -2014,7 +2038,8 @@ redres::plot_redres(ntitsTLy_lmm3, xvar = "scale(logged_woodyveg, scale = F)") +
   ggplot2::geom_smooth(method = "loess") +
   ggplot2::theme_classic() +
   ggplot2::labs(title = "Residual vs predictor") # Ok for most, acceptable for some.
-# plot(ntits3$logged_Fmetric, stats::residuals(ntitsTLy_lmm3)) # Same plot (I should create a custom function).
+# plot(ntits3$logged_Fmetric, stats::residuals(ntitsTLy_lmm3)) # Same plot (I should create a
+# custom function).
 redres::plot_redres(ntitsTLy_lmm3, type = "raw_mar", xvar = "year") # Ok.
 
 ## Distribution of the predicted values:
@@ -2082,7 +2107,8 @@ res.LRT_null <- stats::anova(object = ntitsTLy_lm0, ntitsTLy_lm1, test = "LRT")
 ## For the additive effect of the connectivity metric:
 ntitsTLy_lmm1 <- stats::update(ntitsTLy_lmm2, .~. -logged_Fmetric)
 
-res.LRT_addeff <- pbkrtest::PBmodcomp(ntitsTLy_lmm2, ntitsTLy_lmm1, nsim = 1000, seed = 129) # Took ~42s to run!
+res.LRT_addeff <- pbkrtest::PBmodcomp(ntitsTLy_lmm2,
+                                      ntitsTLy_lmm1, nsim = 1000, seed = 129) # Took ~42s to run!
 readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
                                                              "res.ntitsTLy_LRT_addeff.csv"))
 # The LRT is ALMOST significant, indicating that our connectivity metric might be useful to improve the
@@ -2090,7 +2116,8 @@ readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
 
 
 ## For the interaction effect:
-res.LRT_inteff <- pbkrtest::PBmodcomp(ntitsTLy_lmm3, ntitsTLy_lmm2, nsim = 1000, seed = 20) # Took ~32s to run!
+res.LRT_inteff <- pbkrtest::PBmodcomp(ntitsTLy_lmm3,
+                                      ntitsTLy_lmm2, nsim = 1000, seed = 20) # Took ~32s to run!
 readr::write_csv2(x = res.LRT_inteff$test, file = here::here("output", "tables",
                                                              "res.ntitsTLy_LRT_inteff.csv"))
 # The LRT is NOT significant, indicating that our hypothesis of an interaction effect is not supported
@@ -2299,7 +2326,8 @@ res.LRT_null <- stats::anova(object = ntitsWLy_lm0, ntitsWLy_lm1, test = "LRT")
 ## For the additive effect of the connectivity metric:
 ntitsWLy_blmm1 <- stats::update(ntitsWLy_blmm2, .~. -logged_Fmetric)
 
-res.LRT_addeff <- pbkrtest::PBmodcomp(ntitsWLy_blmm2, ntitsWLy_blmm1, nsim = 1000, seed = 455) # Took ~104s to run!
+res.LRT_addeff <- pbkrtest::PBmodcomp(ntitsWLy_blmm2, ntitsWLy_blmm1,
+                                      nsim = 1000, seed = 455) # Took ~104s to run!
 readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
                                                              "res.ntitsWLy_LRT_addeff.csv"))
 # The LRT is significant, indicating that our connectivity metric might be useful to improve the
@@ -2307,7 +2335,8 @@ readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
 
 
 ## For the interaction effect:
-res.LRT_inteff <- pbkrtest::PBmodcomp(ntitsWLy_blmm3, ntitsWLy_blmm2, nsim = 1000, seed = 99) # Took ~32s to run!
+res.LRT_inteff <- pbkrtest::PBmodcomp(ntitsWLy_blmm3,
+                                      ntitsWLy_blmm2, nsim = 1000, seed = 99) # Took ~32s to run!
 readr::write_csv2(x = res.LRT_inteff$test, file = here::here("output", "tables",
                                                              "res.ntitsWLy_LRT_inteff.csv"))
 # The LRT is NOT significant, indicating that our hypothesis of an interaction effect is not supported
@@ -2339,7 +2368,8 @@ tictoc::toc() # DISCLAIMER: took ~27s to run!
 ########################## ************************************************* ###############################
 par(.pardefault)
 ############################################ TO DO LIST ####################################################
-# - Refaire tourner tous les modèles avec NTITS
+# - Refaire tourner tous les modèles avec NTITS --> Utiliser clutch_size et brood_size comme prédicteur, ou
+#   la date de ponte??????? ASK JC??????????? Tester????
 # - Explorer chaque modèle pour voir qu'est-ce qui marche le mieux et s'il y a une spécification unique qui
 #   va bien!!! ATTENTION à la gamme des variables explorées (transformations???????)!!!!
 # - Si rien de bien concluant, essayer en fusionnant les années pour supprimer les RE nichoirs.
