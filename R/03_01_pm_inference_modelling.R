@@ -3,7 +3,7 @@
 ######################### *--------------------------------------------------* #########################
 
 
-# The functions of this R file are meant to wrap all formal inference modelling made in this study, as
+# The functions of this R file are meant to wrap all formal inference modelling related to PM, as
 # opposed to "preparation modelling" (cf. previous scripts) and "exploratory modelling" that will perhaps
 # be made afterwards; i.e. after we have formally tested our research hypotheses in a robust inferential
 # framework. The so-called "exploratory modelling" is related to additional questions and perspectives
