@@ -403,10 +403,10 @@ uni.boxplots(pm[,15:ncol(pm)]) # I CANNOT export them as object (-> NULL), I don
 # a list! Then why (linked to par())??? Ask SO?
 ppl.tits::uni.dotplots(pm[,15:ncol(pm)])
 # We can see that:
-# - There are extreme values for all F-metrics, especially the "beta1" (we already know that, remove
-#   them for the FINAL VERSION)!!!
-# - There are extreme values for the "woodyveg" variables, yet the weighting by "strata_div" slightly
-#   alleviate the problem.
+# - There are extreme values for all F-metrics, especially the "beta1" (but we already knew that).
+# - There are extreme values for the "woodyveg_volume" variables, yet the weighting by "strata_div" slightly
+#   alleviate the problem, and the "woodyveg_sd" variable has a rather nice distribution. Besides, "woody_area" also
+#   has a nicer distribution than the volume ones.
 # - The "pollution" variables are very slightly skewed.
 # - Otherwise, the IVs are quite well sampled.
 
@@ -417,10 +417,25 @@ ppl.tits::uni.dotplots(pm[,15:ncol(pm)])
 uni.boxplots(cc[,15:ncol(cc)]) # Only for IVs, not Ys.
 ppl.tits::uni.dotplots(cc[,15:ncol(cc)])
 # We can see that:
+# - There are extreme values for all F-metrics, especially the "beta1".
+# - There are extreme values for the "woodyveg_volume" variables. Here, the weighting does not change things much.
+# - The "pollution" variables are very slightly skewed.
+
+
+
+### For NTITS___________________________________________________________________#
+
+uni.boxplots(pm[,15:ncol(pm)]) # I CANNOT export them as object (-> NULL), I don't know why. The problem is
+# not that it's a custom function (it doesn't work for airpoumpoum::superplot() either)! Nor that it's not
+# a list! Then why (linked to par())??? Ask SO?
+ppl.tits::uni.dotplots(pm[,15:ncol(pm)])
+# We can see that:
 # - There are extreme values for all F-metrics, especially the "beta1" (we already know that, remove
 #   them for the FINAL VERSION)!!!
-# - There are extreme values for the "woodyveg" variables. Here, the weighting does not change things much.
+# - There are extreme values for the "woodyveg" variables, yet the weighting by "strata_div" slightly
+#   alleviate the problem.
 # - The "pollution" variables are very slightly skewed.
+# - Otherwise, the IVs are quite well sampled.
 
 
 
@@ -647,21 +662,11 @@ ccy.pairplot <- GGally::ggpairs(cc.y)
 
 
 
-##### FINAL FORMATTING #####
+##### DATA PREPARATION FOR MODELLING #####
 ##### Datasets
 # ____________
 
 ### For PM and CC_______________________________________________________________#
-ntits %>% dplyr::filter(species == "PM") %>%
-  dplyr::select(id_nestbox, site, coord_x, coord_y, year, breeding_window, laying_date, flight_date,
-                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
-                pmF_d15_beta0, pmF_d60_beta0, pmF_d140_beta0, pmF_d15_beta1, pmF_d60_beta1, pmF_d140_beta1,
-                woodyveg_volume, woodyveg_vw, woodyveg_sd, woody_area,
-                herbaceous_area, age_class, manag_intensity,
-                light_pollution, noise_m, noise_iq, trafic, built_area, open_area, urban_intensity,
-                cumdd_30, min_t_before, min_t_between,
-                father_cond, mother_cond) -> pm
-
 pm %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
                      noise_m = noise_m/10, # Converting dB into B.
                      cumdd_30 = cumdd_30/100) %>% # Converting degree-days into hundred of degree-days.

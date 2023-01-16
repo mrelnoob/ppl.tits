@@ -196,6 +196,10 @@ usethis::use_build_ignore("tables/")
 usethis::use_build_ignore("texts/")
 usethis::use_build_ignore("plots/")
 usethis::use_build_ignore("spatial_layers/")
+usethis::use_git_ignore("tables/")
+usethis::use_git_ignore("plots/")
+usethis::use_git_ignore("spatial_layers/") # To avoid saturing Git, I ignore the folders prone to contain rather
+# heavy files such as tables and plots, but not texts (as I want to save my reports)!
 
 
 
