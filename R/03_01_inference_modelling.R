@@ -2658,6 +2658,11 @@ tictoc::toc() # DISCLAIMER: took ~27s to run!
 ########################## ************************************************* ###############################
 par(.pardefault)
 ############################################ TO DO LIST ####################################################
+# - Refaire tourner tous les modèles avec NTITS
+# - Explorer chaque modèle pour voir qu'est-ce qui marche le mieux et s'il y a une spécification unique qui
+#   va bien!!! ATTENTION à la gamme des variables explorées (transformations???????)!!!!
+# - Si rien de bien concluant, essayer en fusionnant les années pour supprimer les RE nichoirs.
+
 # 3) Re-diagsnose models with inputs from the DHARMa vignette (including conditional simu)!!! Then:
 # 4) Improve sub-conclusions! Saying that quasi is not a good option??? Or try anyway with a package that
 #    does it OR BETA-BINOMIAL? --> But too many parameters (ZI+OI)!!! I should wait for the MERGE!
