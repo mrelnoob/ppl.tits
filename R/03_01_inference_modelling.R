@@ -10,39 +10,12 @@
 # that will have, by nature, far less support as the data have already been used for formal testing (so
 # type-I error rates cannot be guaranteed anymore)!
 
-
-# --------------------------- #
-##### 0. Data preparation #####
-# --------------------------- #
-
-# For now, this script should be run after having sourced the EDA script (because no function yet)!
-
-pm %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
-                     noise_m = noise_m/10, # Converting dB into B.
-                     cumdd_30 = cumdd_30/100) %>% # Converting degree-days into hundred of degree-days.
-  dplyr::mutate(brood_size = round(brood_size, digits = 0), # There was a decimal count.
-                logged_Fmetric = log10(pmF_d60_beta0), # Predictors normalisation.
-                logged_woodyveg = log10(woodyveg_vw)) %>%
-  dplyr::mutate(year = stats::relevel(x = year, ref = 3)) %>% # Assign 2019 as the reference group.
-  dplyr::mutate(manag_low = ifelse(manag_intensity == "0", "1", "0"),
-                manag_mid = ifelse(manag_intensity == "1", "1", "0"),
-                manag_high = ifelse(manag_intensity == "2", "1", "0")) %>%
-  dplyr::mutate(dplyr::across(where(is.matrix), as.numeric),
-                dplyr::across(where(is.character), as.factor)) %>%
-  dplyr::mutate(coord_y = jitter(x = coord_y, factor = 1.2)) %>%
-  dplyr::mutate(coord_x = jitter(x = coord_x, factor = 1.2)) -> pm2 # Added a very small amount of
-# noise to coordinates to avoid groups with exactly similar coordinates (related to low Lat/Long
-# resolution) which prevent the proper use of the DHARMa package autocorrelation test!
-# schielzeth dit dummy coding + centrage -----> mais ça dépend des objectifs!!!
-# Sans dummy: manag0 = gestion nat; year0 = 2019!
-# Mais poser question CV car toujours pas vraiment régler cette histoire de scaling/centrage!!!!!!
-# I could also try median-centering + IQR (cf. marque-page NOVA)!
+# For now, this script should be run after having sourced the EDA script (because no function yet)!!!
 
 
 
 
 
-########################## ************************************************* ###############################
 # -------------------------------- #
 ##### 1. Modelling clutch size #####
 # -------------------------------- #

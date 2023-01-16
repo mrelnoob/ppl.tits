@@ -185,6 +185,7 @@ uni.histograms <- function(dataset, MAR=c(3,2,0.5,1.5), CEX.LAB = 1.2, FONT.LAB 
 
 
 
+########################## ************************************************* ###############################
 ####### SUPER IMPORTANT NOTE #######
 # To finish converting all that into functions, I'll have to regenerate the data (used for the report) and
 # create a META-function that calls all these functions and exports "targetable" outputs, for both PM
@@ -312,26 +313,67 @@ ntits$light_pollution <- zzz # This variable opposes nestboxes located in areas 
 
 
 
-### Reduction results formatting____________________________________________________________#
+
+
+##### DATASETS FORMATTING #####
+##### For PM and CC
+# _________________
+
 ntits %>% dplyr::filter(species == "PM") %>%
   dplyr::select(id_nestbox, site, coord_x, coord_y, year, breeding_window, laying_date, flight_date,
                 clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
                 pmF_d15_beta0, pmF_d60_beta0, pmF_d140_beta0, pmF_d15_beta1, pmF_d60_beta1, pmF_d140_beta1,
-                woodyveg_volume, woodyveg_vw,
-                urban_intensity, manag_intensity, light_pollution, noise_m, cumdd_30,
+                woodyveg_volume, woodyveg_vw, woodyveg_sd, woody_area,
+                herbaceous_area, age_class, manag_intensity,
+                light_pollution, noise_m, noise_iq, trafic, built_area, open_area, urban_intensity,
+                cumdd_30, min_t_before, min_t_between,
                 father_cond, mother_cond) -> pm
 ntits %>% dplyr::filter(species == "CC") %>%
   dplyr::select(id_nestbox, site, coord_x, coord_y, year, breeding_window, laying_date, flight_date,
                 clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
                 ccF_d10_beta0, ccF_d30_beta0, ccF_d130_beta0, ccF_d10_beta1, ccF_d30_beta1, ccF_d130_beta1,
-                woodyveg_volume, woodyveg_vw,
-                urban_intensity, manag_intensity, light_pollution, noise_m, cumdd_30) -> cc
+                woodyveg_volume, woodyveg_vw, woodyveg_sd, woody_area,
+                herbaceous_area, age_class, manag_intensity,
+                light_pollution, noise_m, noise_iq, trafic, built_area, open_area, urban_intensity,
+                cumdd_30, min_t_before, min_t_between) -> cc
+
+
+
+##### For all tit nestlings (ntits)
+# _________________________________
+ntits %>% dplyr::mutate(
+  F_metric_d1b0 = dplyr::case_when(
+    species == "PM" ~ pmF_d15_beta0,
+    species == "CC" ~ ccF_d10_beta0),
+  F_metric_d2b0 = dplyr::case_when(
+    species == "PM" ~ pmF_d60_beta0,
+    species == "CC" ~ ccF_d30_beta0),
+  F_metric_d3b0 = dplyr::case_when(
+    species == "PM" ~ pmF_d140_beta0,
+    species == "CC" ~ ccF_d130_beta0),
+  F_metric_d1b1 = dplyr::case_when(
+    species == "PM" ~ pmF_d15_beta1,
+    species == "CC" ~ ccF_d10_beta1),
+  F_metric_d2b1 = dplyr::case_when(
+    species == "PM" ~ pmF_d60_beta1,
+    species == "CC" ~ ccF_d30_beta1),
+  F_metric_d3b1 = dplyr::case_when(
+    species == "PM" ~ pmF_d140_beta1,
+    species == "CC" ~ ccF_d130_beta1)) %>%
+  dplyr::select(id_nestbox, site, coord_x, coord_y, year, species, laying_date, flight_date,
+                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
+                F_metric_d1b0, F_metric_d2b0, F_metric_d3b0, F_metric_d1b1, F_metric_d2b1, F_metric_d3b1,
+                woodyveg_volume, woodyveg_vw, woodyveg_sd, woody_area,
+                herbaceous_area, age_class, manag_intensity,
+                light_pollution, noise_m, noise_iq, trafic, built_area, open_area, urban_intensity,
+                cumdd_30, min_t_before, min_t_between) -> ntits_reduced
 rm(res.pca, xxx, zzz)
 
 
 
 
 
+########################## ************************************************* ###############################
 ##### UNIVARIATE OUTLIERS #####
 ##### Looking for outliers
 # ________________________
@@ -608,6 +650,63 @@ ccy.pairplot <- GGally::ggpairs(cc.y)
 ##### FINAL FORMATTING #####
 ##### Datasets
 # ____________
+
+### For PM and CC_______________________________________________________________#
+ntits %>% dplyr::filter(species == "PM") %>%
+  dplyr::select(id_nestbox, site, coord_x, coord_y, year, breeding_window, laying_date, flight_date,
+                clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
+                pmF_d15_beta0, pmF_d60_beta0, pmF_d140_beta0, pmF_d15_beta1, pmF_d60_beta1, pmF_d140_beta1,
+                woodyveg_volume, woodyveg_vw, woodyveg_sd, woody_area,
+                herbaceous_area, age_class, manag_intensity,
+                light_pollution, noise_m, noise_iq, trafic, built_area, open_area, urban_intensity,
+                cumdd_30, min_t_before, min_t_between,
+                father_cond, mother_cond) -> pm
+
+pm %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
+                     noise_m = noise_m/10, # Converting dB into B.
+                     cumdd_30 = cumdd_30/100) %>% # Converting degree-days into hundred of degree-days.
+  dplyr::mutate(brood_size = round(brood_size, digits = 0), # There was a decimal count.
+                logged_Fmetric = log10(pmF_d60_beta0), # Predictors normalisation.
+                logged_woodyveg = log10(woodyveg_vw)) %>%
+  dplyr::mutate(year = stats::relevel(x = year, ref = 3)) %>% # Assign 2019 as the reference group.
+  dplyr::mutate(manag_low = ifelse(manag_intensity == "0", "1", "0"),
+                manag_mid = ifelse(manag_intensity == "1", "1", "0"),
+                manag_high = ifelse(manag_intensity == "2", "1", "0")) %>%
+  dplyr::mutate(dplyr::across(where(is.matrix), as.numeric),
+                dplyr::across(where(is.character), as.factor)) %>%
+  dplyr::mutate(coord_y = jitter(x = coord_y, factor = 1.2)) %>%
+  dplyr::mutate(coord_x = jitter(x = coord_x, factor = 1.2)) -> pm2 # Added a very small amount of
+# noise to coordinates to avoid groups with exactly similar coordinates (related to low Lat/Long
+# resolution) which prevent the proper use of the DHARMa package autocorrelation test!
+# I could also try median-centering + IQR.
+
+# If I need to generate a dataset for CC (that is, if I intend to analyse the CC data alone), then I could copy-paste
+# the code for PM and simply remove the "parental condition" variables.
+
+
+### For all tit nestlings (ntits)_______________________________________________#
+###### TO DO????? ----
+# ntits_reduced %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
+#                      noise_m = noise_m/10, # Converting dB into B.
+#                      cumdd_30 = cumdd_30/100) %>% # Converting degree-days into hundred of degree-days.
+#   dplyr::mutate(brood_size = round(brood_size, digits = 0), # There was a decimal count.
+#                 logged_Fmetric = log10(pmF_d60_beta0), # Predictors normalisation.
+#                 logged_woodyveg = log10(woodyveg_vw)) %>%
+#   dplyr::mutate(year = stats::relevel(x = year, ref = 3)) %>% # Assign 2019 as the reference group.
+#   dplyr::mutate(manag_low = ifelse(manag_intensity == "0", "1", "0"),
+#                 manag_mid = ifelse(manag_intensity == "1", "1", "0"),
+#                 manag_high = ifelse(manag_intensity == "2", "1", "0")) %>%
+#   dplyr::mutate(dplyr::across(where(is.matrix), as.numeric),
+#                 dplyr::across(where(is.character), as.factor)) %>%
+#   dplyr::mutate(coord_y = jitter(x = coord_y, factor = 1.2)) %>%
+#   dplyr::mutate(coord_x = jitter(x = coord_x, factor = 1.2)) -> ntits2
+
+###### TO DO§§§§§§ ----
+
+# - Explo de NTITS et export des figures!
+# - Refaire tourner tous les modèles avec NTITS
+# - Explorer chaque modèle pour voir qu'est-ce qui marche le mieux et s'il y a une spécification unique qui va bien!!!
+# - Si rien de bien concluant, essayer en fusionnant les années pour supprimer les RE nichoirs.
 
 rm(cc.test, cc.x, cc.y, cc.xnum, pm.test, pm.x, pm.y, pm.xnum, tab, test_lm,
    res.cor.ccx, res.cor.ccy, res.cor.pmx, res.cor.pmy, res.pcor.ccx, res.pcor.ccy, res.pcor.pmx, res.pcor.pmy)
