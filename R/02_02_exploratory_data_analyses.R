@@ -769,7 +769,13 @@ ntits_reduced %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 
                      cumdd_30 = cumdd_30/100) %>% # Converting degree-days into hundred of degree-days.
   dplyr::mutate(brood_size = round(brood_size, digits = 0), # There was a decimal count.
                 logged_Fmetric = log10(F_metric_d2b0), # Predictors normalisation.
-                logged_woodyveg = log10(woodyveg_vw)) %>%
+                logged_Fmetric_d1 = log10(F_metric_d1b0),
+                logged_Fmetric_d3 = log10(F_metric_d3b0),
+                logged_Fmetric_d1b1 = log10(F_metric_d1b1),
+                logged_Fmetric_d2b1 = log10(F_metric_d2b1),
+                logged_woodyveg = log10(woodyveg_vw),
+                logged_woody_area = log10(woody_area),
+                logged_herby_area = log10(herbaceous_area)) %>%
   dplyr::mutate(year = stats::relevel(x = year, ref = 3)) %>% # Assign 2019 as the reference group.
   dplyr::mutate(manag_low = ifelse(manag_intensity == "0", "1", "0"),
                 manag_mid = ifelse(manag_intensity == "1", "1", "0"),

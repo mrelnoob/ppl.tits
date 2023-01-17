@@ -69,10 +69,37 @@ summary(ttCy_comglmm1) # AIC = 1626.7.
 
 
 
-### ** 1.1.2. Diagnostics and assumption checks ----
-# ________________________________________________
+### ** 1.1.2. Improved model (exploration) ----
+# _____________________________________________
 
-### *** 1.1.2.1. Residuals extraction, autocorrelation and collinearity ----
+
+ntits3 <- ntits2[-c(156,170,181,210,227,314,362,367),]
+
+
+
+ttCy_comglmm1b <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric_d2b1 + species +
+                                     urban_intensity + manag_low + manag_high + light_pollution + noise_iq +
+                                     cumdd_30 + year + (1|site),
+                                   data = ntits3, family = glmmTMB::compois(link = "log"),
+                                   dispformula = ~cumdd_30+min_t_before) # Rather long to fit.
+ttCy_comglmm1c <- glmmTMB::glmmTMB(clutch_size ~ logged_woody_area + logged_Fmetric_d2b1 + species +
+                                     urban_intensity + manag_low + manag_high + light_pollution + noise_iq +
+                                     cumdd_30 + year + (1|site),
+                                   data = ntits3, family = glmmTMB::compois(link = "log"),
+                                   dispformula = ~cumdd_30+min_t_before) # Rather long to fit.
+summary(ttCy_comglmm1b)$AIC # AIC = 1389.2 (avec woody_area et F_d2b1) vs 1626.7 (for ttCy_comglmm1 = initial model).
+# AIC = 1391.3 with "site" and "F_d2b1"!
+# AIC = 1388.1 with "site" (RE) and "woody_area" + "F_d2b1" and "cumdd30" + "min_t_before" (NU)!
+
+
+
+
+
+
+### ** 1.1.4. Diagnostics and assumption checks ----
+# __________________________________________________
+
+### *** 1.1.4.1. Residuals extraction, autocorrelation and collinearity ----
 ## Traditional residuals:
 par(.pardefault)
 resid <- stats::resid(ttCy_comglmm1, type = 'response')
@@ -120,7 +147,7 @@ DHARMa::plotResiduals(simu.resid, form = ntits2$year)
 
 
 
-### *** 1.1.2.2. Distribution (family, ZI, dispersion) ----
+### *** 1.1.4.2. Distribution (family, ZI, dispersion) ----
 ## Assessing over or under-dispersion:
 AER::dispersiontest(object = ttCy_glm1, alternative = c("less")) # Significant underdispersion!
 DHARMa::testDispersion(simu.resid, alternative = "less") # Ok, but could be better.
@@ -147,7 +174,7 @@ hist(ntits2$clutch_size, main = "Observed counts", xlab = "Number of layed eggs"
 
 
 
-### *** 1.1.2.3. Linearity ----
+### *** 1.1.4.3. Linearity ----
 # For the sake of further exploration, I also plot variants of our predictors:
 ntits2 %>% dplyr::select(woodyveg_vw, woody_area, woodyveg_sd,
                          F_metric_d2b0, F_metric_d1b0, F_metric_d3b0, F_metric_d1b1, F_metric_d2b1,
@@ -174,7 +201,7 @@ ggplot2::ggplot(mydata, ggplot2::aes(y = log_y, x = predictor.value))+
 
 
 
-### *** 1.1.2.4. Model goodness-of-fit (GOF) and performances ----
+### *** 1.1.4.4. Model goodness-of-fit (GOF) and performances ----
 # GOF test of Pearson's Chi2 residuals:
 dat.resid <- sum(stats::resid(ttCy_comglmm1, type = "pearson")^2)
 1 - stats::pchisq(dat.resid, stats::df.residual(ttCy_comglmm1)) # p = 0.89, indicating that there is no
@@ -205,7 +232,7 @@ res.LRT_null <- stats::anova(object = ttCy_comglmm0, ttCy_comglmm1, test = "LRT"
 
 
 
-### *** 1.1.2.5. Posterior predictive simulations ----
+### *** 1.1.4.5. Posterior predictive simulations ----
 # Predicted counts:
 par(.pardefault)
 obsprop <- prop.table(table(ntits2$clutch_size))
@@ -237,10 +264,10 @@ points(obs14, 0.01, col="red", pch=16, cex=2)
 
 
 
-### ** 1.1.3. Inference and predictions ----
+### ** 1.1.4. Inference and predictions ----
 # __________________________________________
 
-### *** 1.1.3.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
+### *** 1.1.4.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
 ## Parametric bootstrap to test the additive effect of the connectivity metric:
 ttCy_comglmm0 <- stats::update(ttCy_comglmm1, .~. -logged_Fmetric)
 
@@ -272,7 +299,7 @@ tictoc::toc() # DISCLAIMER: took ~3h35 to run!
 # J'ai du stoppé le LRT après ~25H!!!!!!!!!!!
 # J'ai du stoppé le LRT après ~25H!!!!!!!!!!!
 
-### *** 1.1.3.2. Bootstrapped confidence intervals for estimated parameters ----
+### *** 1.1.4.2. Bootstrapped confidence intervals for estimated parameters ----
 tictoc::tic("Bootstrap CI for the additive COM-Poisson GLMM parameters")
 res.ttCy_addeff_CI_boot <- confint(ttCy_comglmm1, method="boot")
 tt <- as.data.frame(res.ttCy_addeff_CI_boot)
@@ -283,8 +310,7 @@ tictoc::toc() # DISCLAIMER: took ~2h10 to run!
 
 
 
-### *** 1.1.3.3. Conclusion ----
-### *** 1.1.3.4. Exploration ----
+### *** 1.1.4.3. Conclusion ----
 
 summary(ttCy_comglmm1) # AIC = 1626.7.
 # Init model!!!!!!!
@@ -307,55 +333,16 @@ summary(ttCy_comglmm1) # AIC = 1626.7.
 
 # IMPROVEMENTS: delete outliers (++) + use noise_iq (+) + delete RE (=) + other X + NU?
 
-ntits3 <- ntits2[-c(156,170,181,210,227,314,362,367),]
-
-ntits3 %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
-                                noise_m = noise_m/10, # Converting dB into B.
-                                cumdd_30 = cumdd_30/100) %>% # Converting degree-days into hundred of degree-days.
-  dplyr::mutate(logged_Fmetric = log10(F_metric_d2b0), # Predictors normalisation.
-                logged_Fmetric_d1 = log10(F_metric_d1b0),
-                logged_Fmetric_d3 = log10(F_metric_d3b0),
-                logged_Fmetric_d1b1 = log10(F_metric_d1b1),
-                logged_Fmetric_d2b1 = log10(F_metric_d2b1),
-                logged_woodyveg = log10(woodyveg_vw),
-                logged_woodyveg_sd = log10(woodyveg_sd),
-                logged_woody_area = log10(woody_area),
-                logged_herby_area = log10(herbaceous_area)) -> ntits3
-
-ttCy_comglmm1b <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric_d2b1 + species +
-                                    urban_intensity + manag_low + manag_high + light_pollution + noise_iq +
-                                    cumdd_30 + year + (1|site),
-                                  data = ntits3, family = glmmTMB::compois(link = "log"),
-                                  dispformula = ~cumdd_30+min_t_before) # Rather long to fit.
-ttCy_comglmm1c <- glmmTMB::glmmTMB(clutch_size ~ logged_woody_area + logged_Fmetric_d2b1 + species +
-                                    urban_intensity + manag_low + manag_high + light_pollution + noise_iq +
-                                    cumdd_30 + year + (1|site),
-                                  data = ntits3, family = glmmTMB::compois(link = "log"),
-                                  dispformula = ~cumdd_30+min_t_before) # Rather long to fit.
-summary(ttCy_comglmm1b)$AIC # AIC = 1389.2 (avec woody_area et F_d2b1) vs 1626.7 (for ttCy_comglmm1 = initial model).
-# AIC = 1391.3 with "site" and "F_d2b1"!
-# AIC = 1388.1 with "site" (RE) and "woody_area" + "F_d2b1" and "cumdd30" + "min_t_before" (NU)!
-
-simu.resid2 <- DHARMa::simulateResiduals(fittedModel = ttCy_comglmm1b, n = 1000, re.form = NULL) # The
-# 're.form' argument is to base simulations on the model unconditional of the random effects (and only works
-# for {lme4} formulations). It is useful for testing dispersion (see below) but can be omitted eventually.
-plot(simu.resid2) # Significant deviations and outliers detected!
-DHARMa::outliers(simu.resid2) # TWO potential outliers:
-ntits3[c(111,344),]
-
-## Autocorrelation and collinearity:
-DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid2,
-                                   x = ntits3$coord_x, y = ntits3$coord_y, plot = TRUE) # Nope!
-performance::check_autocorrelation(ttCy_comglmm1b) # Nope!
-performance::check_collinearity(ttCy_comglmm1b) # Ok-ish, but some > 3-4!
-stats::vcov(ttCy_comglmm1b) # Ok!
-
 par(.pardefault)
 colnames(ntits3)
 ppl.tits::uni.dotplots(ntits3[,15:ncol(ntits3)])
 ppl.tits::uni.dotplots(as.data.frame(cbind(ntits3$F_metric_d1b0, log10(ntits3$F_metric_d1b0),
                                            ntits3$woody_area, log10(ntits3$woody_area),
                                            ntits3$herbaceous_area, log10(ntits3$herbaceous_area))))
+
+
+
+
 
 ########################## ************************************************* ###############################
 # -------------------------------------- #
