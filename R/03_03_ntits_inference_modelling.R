@@ -69,11 +69,6 @@ summary(ttCy_comglmm1) # AIC = 1626.7.
 
 
 
-
-
-
-
-
 ### ** 1.1.2. Diagnostics and assumption checks ----
 # ________________________________________________
 
@@ -83,11 +78,11 @@ par(.pardefault)
 resid <- stats::resid(ttCy_comglmm1, type = 'response')
 plot(resid, id = 0.05, idLabels = ~.obs) # Ok-ish but there are a few low residuals.
 # performance::check_outliers(ttCy_comglmm1) # Does not work for this type of model.
-ntits2[which(resid < -2.1),] # Five potential outliers: nestboxes with very small clutch sizes.
+ntits2[which(resid < -4),] # Lowest residuals are nestboxes with very small clutch sizes.
 
 # To further investigate patterns, I can plot the residuals against some predictors:
-plot(x = ntits2$father_cond, y = resid) # There may be signs of heteroscedasticity for some predictors:
-# "F-metric", "noise_m", and "cumdd_30". Otherwise, seems ok (but, once again, simulated residuals will be
+plot(x = ntits2$year, y = resid) # Seems rather ok although we once again find patterns linked to the
+# sometimes odd distribution of some predictors. However, be reminded that simulated residuals will be
 # more useful).
 # plot(ttCy_comglmm1, id_nestbox~stats::resid(.)) # Does not work for this type of model.
 # plot(ttCy_comglmm1, site~stats::resid(.)) # Does not work for this type of model.
@@ -96,31 +91,30 @@ plot(x = ntits2$father_cond, y = resid) # There may be signs of heteroscedastici
 simu.resid <- DHARMa::simulateResiduals(fittedModel = ttCy_comglmm1, n = 1000, re.form = NULL) # The
 # 're.form' argument is to base simulations on the model unconditional of the random effects (and only works
 # for {lme4} formulations). It is useful for testing dispersion (see below) but can be omitted eventually.
-plot(simu.resid) # The outlier test is significant, but otherwise it is ok!
-DHARMa::outliers(simu.resid) # Three potential outliers.
-ntits2[c(198,233,236),] # They're from "chateau_de_pouilly", "seminaire" and "chateau_de_larrey" and indeed,
-# they have surprisingly low clutch sizes with regards to their locations and their adjacent observations.
-# They may well be true outliers (whose clutch sizes are function of other processes).
+plot(simu.resid) # Significant deviations and outliers detected!
+DHARMa::outliers(simu.resid) # Eight potential outliers.
+ntits2[c(156,170,181,210,227,314,362,367),] # They have surprisingly low clutch sizes with regards to their
+# locations and their adjacent observations. They may well be true outliers (whose clutch sizes are function
+# of other processes).
 
 ## Autocorrelation and collinearity:
 DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
                                    x = ntits2$coord_x, y = ntits2$coord_y, plot = TRUE) # Significant spatial
 # autocorrelation detected. Add a "site" RE?
 performance::check_autocorrelation(ttCy_comglmm1) # Ok.
-performance::check_collinearity(ttCy_comglmm1) # Ok-ish, but "urban_intensity" > 3!
+performance::check_collinearity(ttCy_comglmm1) # Ok-ish, but "urban_intensity" and "F" ~ 4!
 stats::vcov(ttCy_comglmm1) # But values of the covariance matrix seem ok.
 
 ## Heteroscedasticity and possible model misspecifications:
 par(.pardefault)
-DHARMa::plotResiduals(simu.resid, form = ntits2$logged_woodyveg)
-DHARMa::plotResiduals(simu.resid, form = ntits2$logged_Fmetric)
-DHARMa::plotResiduals(simu.resid, form = ntits2$urban_intensity)
-DHARMa::plotResiduals(simu.resid, form = ntits2$manag_intensity)
-DHARMa::plotResiduals(simu.resid, form = ntits2$light_pollution)
-DHARMa::plotResiduals(simu.resid, form = ntits2$noise_m)
-DHARMa::plotResiduals(simu.resid, form = ntits2$cumdd_30)
-DHARMa::plotResiduals(simu.resid, form = ntits2$father_cond)
-DHARMa::plotResiduals(simu.resid, form = ntits2$mother_cond)
+DHARMa::plotResiduals(simu.resid, form = ntits2$logged_woodyveg) # Outliers!
+DHARMa::plotResiduals(simu.resid, form = ntits2$logged_Fmetric) # Outliers!
+DHARMa::plotResiduals(simu.resid, form = ntits2$urban_intensity) # Outliers!
+DHARMa::plotResiduals(simu.resid, form = ntits2$manag_intensity) # Significant non-uniformity for mid_manag!
+DHARMa::plotResiduals(simu.resid, form = ntits2$light_pollution) # Outliers!
+DHARMa::plotResiduals(simu.resid, form = ntits2$noise_m) # Outliers!
+DHARMa::plotResiduals(simu.resid, form = ntits2$cumdd_30) # Outliers!
+DHARMa::plotResiduals(simu.resid, form = ntits2$species) # Slight heteroscedasticity detected!
 DHARMa::plotResiduals(simu.resid, form = ntits2$year)
 # All these plots are ok, the model seems to better model the dispersion.
 
@@ -128,111 +122,86 @@ DHARMa::plotResiduals(simu.resid, form = ntits2$year)
 
 ### *** 1.1.2.2. Distribution (family, ZI, dispersion) ----
 ## Assessing over or under-dispersion:
-aods3::gof(ttCy_comglmm1)
-# The sum of squared Pearson residuals is less than the residual degrees of freedom, it's a known
-# sign of underdispersion! We can confirm it by dividing the residual deviance by the number of degrees
-# of freedom: 65.7/245=0.27 (<< 1), so underdispersion!
-AER::dispersiontest(object = ttCy_glm0, alternative = c("less")) # Significant underdispersion!
+AER::dispersiontest(object = ttCy_glm1, alternative = c("less")) # Significant underdispersion!
 DHARMa::testDispersion(simu.resid, alternative = "less") # Ok, but could be better.
-# There still may be a lower dispersion than expected.
 
 ## Theoretical count distribution:
-theo_count <- COMPoissonReg::rcmp(n = nrow(pm), lambda = mean(pm$clutch_size), nu = 1.2) # The 'nu' parameter
-# should be chosen by trial-and-errors.
+theo_count <- COMPoissonReg::rcmp(n = nrow(ntits2), lambda = mean(ntits2$clutch_size), nu = 1.2) # The 'nu'
+# parameter should be chosen by trial-and-errors.
 tc_df <- data.frame(theo_count)
 
-ggplot2::ggplot(pm, ggplot2::aes(clutch_size)) +
+ggplot2::ggplot(ntits2, ggplot2::aes(clutch_size)) +
   ggplot2::geom_bar(fill = "#1E90FF") +
   ggplot2::geom_bar(data = tc_df, ggplot2::aes(theo_count, fill="#1E90FF", alpha=0.5)) +
   ggplot2::theme_classic() +
   ggplot2::theme(legend.position = "none") # Blue = observed counts; red = simulated.
-# This plot suggests that clutch_size coulb be following a COM-Poisson distribution of parameter nu~1.2,
-# especially if we consider that the lowest values are outliers!
+# This plot suggests that clutch_size could be following a COM-Poisson distribution of parameter nu~1.2,
+# especially if we consider that the lowest values are outliers (then nu could perhaps be higher)!
 
 ## Distribution of the predicted counts:
 pred_counts <- stats::predict(object = ttCy_comglmm1, type = "response") # Extract the predicted counts.
 par(mfrow= c(1,2))
-hist(pred_counts)
-hist(ntits2$clutch_size) # The model's predictions are quite good.
-
-## Zero-inflation:
-theo_count_zi <- COMPoissonReg::rzicmp(n = nrow(pm), lambda = mean(pm$clutch_size), nu = 1.2, p = 0.05)
-tczi_df <- data.frame(theo_count_zi)
-
-ggplot2::ggplot(pm, ggplot2::aes(clutch_size)) +
-  ggplot2::geom_bar(fill = "#33CCFF") +
-  ggplot2::geom_bar(data = tczi_df, ggplot2::aes(theo_count_zi, fill="#CC3333", alpha=0.5)) +
-  ggplot2::theme_classic() +
-  ggplot2::theme(legend.position = "none") # Blue = observed counts; red = simulated.
-# This plot suggests that Y is not following a zero-inflated Poisson distribution (with p=0.01). See also:
-DHARMa::testZeroInflation(simu.resid) # Nope. However, to get more conclusive results, I should try to
-# fit a zero-inflated (ZI) model and compare it:
-ttCy_zicomglmm1 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
-                                      manag_low + manag_high + light_pollution + noise_m +
-                                      cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
-                                    data = ntits2, family = glmmTMB::compois(link = "log"),
-                                    dispformula = ~1,
-                                    ziformula = ~1) # Specifies a null ZI model.
-summary(ttCy_zicomglmm1) # Results are rather similar but the RE variance is too low!
-simu.resid_zi <- DHARMa::simulateResiduals(fittedModel = ttCy_zicomglmm1, n = 1000)
-plot(simu.resid_zi) # Worse than before!
+hist(pred_counts, main = "Predicted counts", xlab = "Number of layed eggs")
+hist(ntits2$clutch_size, main = "Observed counts", xlab = "Number of layed eggs") # The model's predictions
+# are quite good.
 
 
 
 ### *** 1.1.2.3. Linearity ----
-
-# IMPORTANT NOTE: I already checked the linearity of log(Y)~Xs, so here I look at the predicted counts!
-ntits2 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_m, cumdd_30,
-                      father_cond, mother_cond) %>%
-  dplyr::mutate("Fmetric" = pmF_d60_beta0,
-                "Fmetric (sqrt)" = sqrt(pmF_d60_beta0),
-                "Fmetric (log)" = log10(pmF_d60_beta0),
+# For the sake of further exploration, I also plot variants of our predictors:
+ntits2 %>% dplyr::select(woodyveg_vw, woody_area, woodyveg_sd,
+                         F_metric_d2b0, F_metric_d1b0, F_metric_d3b0, F_metric_d1b1, F_metric_d2b1,
+                         urban_intensity, herbaceous_area, built_area, traffic,
+                         light_pollution, noise_m, noise_iq,
+                         cumdd_30, min_t_before) %>%
+  dplyr::mutate("Fmetric" = F_metric_d2b0,
+                "Fmetric (sqrt)" = sqrt(F_metric_d2b0),
+                "Fmetric (log)" = log10(F_metric_d2b0),
                 "woodyveg_vw" = woodyveg_vw,
                 "woodyveg_vw (sqrt)" = sqrt(woodyveg_vw),
                 "woodyveg_vw (log)" = log10(woodyveg_vw), .keep = "unused") -> mydata
 predictors <- colnames(mydata)
 # Bind log(Y) and tidying the data for plot (ggplot2, so long format):
 mydata <- mydata %>%
-  dplyr::mutate(Predicted_counts = pred_counts) %>%
-  tidyr::gather(key = "predictors", value = "predictor.value", -Predicted_counts)
+  dplyr::mutate(log_y = log(ntits2$clutch_size)) %>%
+  tidyr::gather(key = "predictors", value = "predictor.value", -log_y)
 # Create scatterplot
-ggplot2::ggplot(mydata, ggplot2::aes(y = Predicted_counts, x = predictor.value))+
+ggplot2::ggplot(mydata, ggplot2::aes(y = log_y, x = predictor.value))+
   ggplot2::geom_point(size = 0.5, alpha = 0.5) +
   ggplot2::geom_smooth(method = "loess") +
   ggplot2::theme_bw() +
-  ggplot2::facet_wrap(~predictors, scales = "free_x") # Linearity seems respected but the patterns are still
-# quite surprising. Using spline functions would probably give better results (e.g. GAMM).
+  ggplot2::facet_wrap(~predictors, scales = "free_x") # Linearity seems respected.
 
 
 
 ### *** 1.1.2.4. Model goodness-of-fit (GOF) and performances ----
 # GOF test of Pearson's Chi2 residuals:
 dat.resid <- sum(stats::resid(ttCy_comglmm1, type = "pearson")^2)
-1 - stats::pchisq(dat.resid, stats::df.residual(ttCy_comglmm1)) # p = 0.99, indicating that there is no
+1 - stats::pchisq(dat.resid, stats::df.residual(ttCy_comglmm1)) # p = 0.89, indicating that there is no
 # significant lack of fit. Keep in mind though that GOF measures for mixed models is an extremely complicated
 # topic and interpretations are not straightforward.
 
 # Computing a pseudo-R2:
-performance::r2_nakagawa(ttCy_comglmm1) # [Additive model]: Marg_R2_glmm = 0.06; Cond_R2_glmm = 0.03.
+performance::r2_nakagawa(ttCy_comglmm1) # [Additive model]: Marg_R2_glmm = 0.05; Cond_R2_glmm = 0.05.
 
 ## Likelihood-ration tests (LRT) of GOF:
-# For the random-effects (RE):
-ttCy_comglmm0 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + urban_intensity +
-                                    manag_low + manag_high + light_pollution + noise_m +
-                                    cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox) + (1|site),
+# For the "site" random-effects (RE):
+ttCy_comglmm2 <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric + species +
+                                    urban_intensity + manag_low + manag_high + light_pollution + noise_m +
+                                    cumdd_30 + year + (1|id_nestbox) + (1|site),
                                   data = ntits2, family = glmmTMB::compois(link = "log"),
-                                  dispformula = ~1)
-summary(ttCy_comglmm0) # The non-mixed model gives AIC = 976 so approximatively equal to the mixed-model
-# with "id_nestbox" as RE. The mixed model with "site" as a RE gives AIC = 975.3. The one with both RE gives
-# AIC = 976. So it seems like the use of mixed models is here not supported by the data!
+                                  dispformula = ~1) # Rather long to fit (~3-4 min)!
+summary(ttCy_comglmm2) # AIC = 1628.7.
+# The non-mixed model gives AIC = 1624 so approximatively equal to the mixed-model (AIC = 1626.7) with only
+# "id_nestbox" as RE. The mixed model with only "site" as a RE gives AIC = 1626.7. The one with both RE gives
+# AIC = 1628.7. So it seems like the use of mixed models is here not supported by the data!
 
 ## For the whole model:
-ttCy_comglmm0 <- glmmTMB::glmmTMB(clutch_size ~ 1,
+ttCy_comglmm0 <- glmmTMB::glmmTMB(clutch_size ~ 1 + (1|id_nestbox),
                                   data = ntits2, family = glmmTMB::compois(link = "log"),
                                   dispformula = ~1)
 res.LRT_null <- stats::anova(object = ttCy_comglmm0, ttCy_comglmm1, test = "LRT")
 # The test is significant, confirming that the model is useful to explain the data.
-
 
 
 
@@ -245,24 +214,24 @@ nsim1 <- colSums(sims == 1) # Number of ones (min obs value)
 par(las=1,bty="l")
 plot(pt <- prop.table(table(nsim1)),
      ylab="Probability", xlab="Number of ones")
-obs1 <- sum(ntits2$clutch_size == 1)
-points(obs1, 0.004, col="red", pch=16, cex=2) # See y values in obsprop
+(obs1 <- sum(ntits2$clutch_size == 1))
+points(obs1, 0.005, col="red", pch=16, cex=2) # See y values in obsprop
 
-nsim8 <- colSums(sims == 8) # Number of eights (modal obs value).
+nsim9 <- colSums(sims == 9) # Number of nines (modal obs value).
 par(las=1,bty="l")
-plot(pt <- prop.table(table(nsim8)),
-     ylab="Probability", xlab="Number of eights")
-obs8 <- sum(ntits2$clutch_size == 8)
-points(obs8, 0.26, col="red", pch=16, cex=2)
+plot(pt <- prop.table(table(nsim9)),
+     ylab="Probability", xlab="Number of nines")
+(obs9 <- sum(ntits2$clutch_size == 9))
+points(obs9, 0.21, col="red", pch=16, cex=2)
 
-nsim12 <- colSums(sims == 12) # Number of twelves (max obs value).
+nsim14 <- colSums(sims == 14) # Number of fourteens (max obs value).
 par(las=1,bty="l")
-plot(pt <- prop.table(table(nsim12)),
-     ylab="Probability", xlab="Number of twelves")
-(obs12 <- sum(ntits2$clutch_size == 12))
-points(obs12, 0.13, col="red", pch=16, cex=2)
+plot(pt <- prop.table(table(nsim14)),
+     ylab="Probability", xlab="Number of fourteens")
+(obs14 <- sum(ntits2$clutch_size == 14))
+points(obs14, 0.01, col="red", pch=16, cex=2)
 # These three examples confirm that the model still predicts values that are too dispersed compared to the
-# true observed values.
+# true observed values, but it's not that bad.
 
 
 
@@ -315,8 +284,19 @@ tictoc::toc() # DISCLAIMER: took ~2h10 to run!
 
 
 ### *** 1.1.3.3. Conclusion ----
+### *** 1.1.3.4. Exploration ----
 
-summary(ttCy_comglmm1)
+summary(ttCy_comglmm1) # AIC = 1626.7.
+# Init model!!!!!!!
+# Init model!!!!!!!
+# Init model!!!!!!!
+# OUTLIERS: They have surprisingly low clutch sizes with regards to their
+# locations and their adjacent observations. They may well be true outliers (whose clutch sizes are function
+# of other processes).
+# DISTRIBUTION: This plot suggests that clutch_size could be following a COM-Poisson distribution of parameter
+# nu~1.2, especially if we consider that the lowest values are outliers (then nu could perhaps be higher)!
+
+
 # Our diagnostics show that the use of a COM-Poisson regression strongly improves models predictive accuracy.
 # However, improvements are still likely possible as the models still tend to predict a wider count-range
 # than the observed one. Possible leads for improvement could be to remove the possible outliers, merge
@@ -325,9 +305,57 @@ summary(ttCy_comglmm1)
 # As they are, unfortunately, the models do not support our hypotheses and only four predictors turned out
 # significant: "manag_high", "cumdd_30", "mother_cond", and "year2021"; while the lowest value of AIC ~ 975.
 
+# IMPROVEMENTS: delete outliers (++) + use noise_iq (+) + delete RE (=) + other X + NU?
 
+ntits3 <- ntits2[-c(156,170,181,210,227,314,362,367),]
 
+ntits3 %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
+                                noise_m = noise_m/10, # Converting dB into B.
+                                cumdd_30 = cumdd_30/100) %>% # Converting degree-days into hundred of degree-days.
+  dplyr::mutate(logged_Fmetric = log10(F_metric_d2b0), # Predictors normalisation.
+                logged_Fmetric_d1 = log10(F_metric_d1b0),
+                logged_Fmetric_d3 = log10(F_metric_d3b0),
+                logged_Fmetric_d1b1 = log10(F_metric_d1b1),
+                logged_Fmetric_d2b1 = log10(F_metric_d2b1),
+                logged_woodyveg = log10(woodyveg_vw),
+                logged_woodyveg_sd = log10(woodyveg_sd),
+                logged_woody_area = log10(woody_area),
+                logged_herby_area = log10(herbaceous_area)) -> ntits3
 
+ttCy_comglmm1b <- glmmTMB::glmmTMB(clutch_size ~ logged_woodyveg + logged_Fmetric_d2b1 + species +
+                                    urban_intensity + manag_low + manag_high + light_pollution + noise_iq +
+                                    cumdd_30 + year + (1|site),
+                                  data = ntits3, family = glmmTMB::compois(link = "log"),
+                                  dispformula = ~cumdd_30+min_t_before) # Rather long to fit.
+ttCy_comglmm1c <- glmmTMB::glmmTMB(clutch_size ~ logged_woody_area + logged_Fmetric_d2b1 + species +
+                                    urban_intensity + manag_low + manag_high + light_pollution + noise_iq +
+                                    cumdd_30 + year + (1|site),
+                                  data = ntits3, family = glmmTMB::compois(link = "log"),
+                                  dispformula = ~cumdd_30+min_t_before) # Rather long to fit.
+summary(ttCy_comglmm1b)$AIC # AIC = 1389.2 (avec woody_area et F_d2b1) vs 1626.7 (for ttCy_comglmm1 = initial model).
+# AIC = 1391.3 with "site" and "F_d2b1"!
+# AIC = 1388.1 with "site" (RE) and "woody_area" + "F_d2b1" and "cumdd30" + "min_t_before" (NU)!
+
+simu.resid2 <- DHARMa::simulateResiduals(fittedModel = ttCy_comglmm1b, n = 1000, re.form = NULL) # The
+# 're.form' argument is to base simulations on the model unconditional of the random effects (and only works
+# for {lme4} formulations). It is useful for testing dispersion (see below) but can be omitted eventually.
+plot(simu.resid2) # Significant deviations and outliers detected!
+DHARMa::outliers(simu.resid2) # TWO potential outliers:
+ntits3[c(111,344),]
+
+## Autocorrelation and collinearity:
+DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid2,
+                                   x = ntits3$coord_x, y = ntits3$coord_y, plot = TRUE) # Nope!
+performance::check_autocorrelation(ttCy_comglmm1b) # Nope!
+performance::check_collinearity(ttCy_comglmm1b) # Ok-ish, but some > 3-4!
+stats::vcov(ttCy_comglmm1b) # Ok!
+
+par(.pardefault)
+colnames(ntits3)
+ppl.tits::uni.dotplots(ntits3[,15:ncol(ntits3)])
+ppl.tits::uni.dotplots(as.data.frame(cbind(ntits3$F_metric_d1b0, log10(ntits3$F_metric_d1b0),
+                                           ntits3$woody_area, log10(ntits3$woody_area),
+                                           ntits3$herbaceous_area, log10(ntits3$herbaceous_area))))
 
 ########################## ************************************************* ###############################
 # -------------------------------------- #
