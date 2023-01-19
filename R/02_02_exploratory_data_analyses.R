@@ -774,9 +774,14 @@ ntits_reduced %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 
                 logged_Fmetric_d1b1 = log10(F_metric_d1b1),
                 logged_Fmetric_d2b1 = log10(F_metric_d2b1),
                 logged_woodyveg = log10(woodyveg_vw),
+                logged_woodyvol = log10(woodyveg_volume),
                 logged_woody_area = log10(woody_area),
-                logged_herby_area = log10(herbaceous_area)) %>%
-  dplyr::mutate(year = stats::relevel(x = year, ref = 3)) %>% # Assign 2019 as the reference group.
+                logged_herby_area = log10(herbaceous_area),
+                logged_traffic = log10(traffic+1),
+                logged_built_area = log10(built_area+1),
+                logged_open_area = log10(open_area)) %>%
+  dplyr::mutate(year = stats::relevel(x = year, ref = 3), # Assign 2019 as the reference group.
+                species = stats::relevel(x = species, ref = 2)) %>% # Assign PM as the reference group.
   dplyr::mutate(manag_low = ifelse(manag_intensity == "0", "1", "0"),
                 manag_mid = ifelse(manag_intensity == "1", "1", "0"),
                 manag_high = ifelse(manag_intensity == "2", "1", "0")) %>%
