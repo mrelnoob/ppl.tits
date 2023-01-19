@@ -1411,130 +1411,196 @@ summary(ttFSy_ziglmm1f) # AIC = 1325.3 and Marg_R2_glmm = 0.15; Cond_R2_glmm = N
 ### ** 3.2.1. Initial model fit ----
 # __________________________________
 
-# Given the look of the response variable and my previous diagnostics, I chose to directly compare various
-# structural model types before even starting the dedicated diagnostics.
+# Given the previous diagnostics, I chose to directly use "woody_area" instead of "woodyveg_vw" and to
+# delete the observations for which brood_size = 0 since they likely are true outliers (see comments in
+# the previous sections):
+ntits2$brood_size <- as.integer(ntits2$brood_size)
+ntits3 <- ntits2[-c(which(ntits2$brood_size == 0)),]
+ntits3 <- ntits3[-c(44,105,249),] # I also delete the 3 outliers found by initial diagnostics.
+ntits3$id_obs <- as.factor(1:nrow(ntits3)) # To create an observation-level RE (OLRE) to account for
+# overdispersion.
 
 ## Fitting a regular Poisson GLM:
-ntitsFNy_glm1 <- stats::glm(fledgling_nb ~ logged_woodyveg + logged_Fmetric +
-                           urban_intensity + manag_low + manag_high + light_pollution + noise_iq +
-                           cumdd_30 + father_cond + mother_cond + year,
-                         data = ntits2, family = "poisson")
+ttFNy_glm1 <- stats::glm(fledgling_nb ~ logged_woody_area + logged_Fmetric +
+                           species +
+                           urban_intensity + manag_intensity + light_pollution + noise_iq +
+                           cumdd_30 + year,
+                         data = ntits3, family = "poisson")
 
 ## Fitting a regular Poisson GLMM:
-ntitsFNy_glmm1 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woodyveg + logged_Fmetric + urban_intensity +
-                                  manag_low + manag_high + light_pollution + noise_iq +
-                                  cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
-                                data = ntits2, family = "poisson")
+ttFNy_glmm1 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woody_area + logged_Fmetric +
+                                  species +
+                                  urban_intensity + manag_intensity + light_pollution + noise_iq +
+                                  cumdd_30 + year + (1|site),
+                                data = ntits3, family = "poisson")
 
-## Fitting a Zero-Inflated (ZI) Poisson GLMM:
-ntitsFNy_ziglmm1 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woodyveg + logged_Fmetric + urban_intensity +
-                                    manag_low + manag_high + light_pollution + noise_iq +
-                                    cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
-                                  data = ntits2, family = "poisson",
-                                  ziformula = ~1)
+## Fitting a COM-Poisson GLMM:
+ttFNy_comglmm1 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woody_area + logged_Fmetric +
+                                     species +
+                                     urban_intensity + manag_intensity + light_pollution + noise_iq +
+                                     cumdd_30 + year + (1|site),
+                                   data = ntits3, family = glmmTMB::compois(link = "log"),
+                                   dispformula = ~1) # Rather long to fit.
 
-## Fitting a Zero-Inflated (ZI) COM-Poisson GLMM:
-ntitsFNy_zicomglmm1 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woodyveg + logged_Fmetric + urban_intensity +
-                                       manag_low + manag_high + light_pollution + noise_iq +
-                                       cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
-                                     data = ntits2, family = glmmTMB::compois(link = "log"),
+## Fitting a ZICOM-Poisson GLMM:
+ttFNy_zicomglmm1 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woody_area + logged_Fmetric +
+                                     species +
+                                     urban_intensity + manag_intensity + light_pollution + noise_iq +
+                                     cumdd_30 + year + (1|site),
+                                   data = ntits3, family = glmmTMB::compois(link = "log"),
+                                   dispformula = ~1,
+                                   ziformula = ~1) # Rather long to fit.
+summary(ttFNy_glm1) # AIC = 1889.9
+summary(ttFNy_glmm1) # AIC = 1888.3
+summary(ttFNy_comglmm1) # AIC = 1840.9.
+summary(ttFNy_zicomglmm1) # AIC = 1634.6.
+
+## Fitting an interactive (mediated) COM-Poisson GLMM:
+ttFNy_zicomglmm2 <- glmmTMB::glmmTMB(fledgling_nb ~
+                                       scale(logged_woody_area, scale = F) * scale(logged_Fmetric, scale = F) +
+                                       species +
+                                       urban_intensity + manag_intensity + light_pollution + noise_iq +
+                                       cumdd_30 + year + (1|site),
+                                     data = ntits3, family = glmmTMB::compois(link = "log"),
                                      dispformula = ~1,
                                      ziformula = ~1) # Rather long to fit.
-
-summary(ntitsFNy_glm1) # AIC = 1430.8.
-summary(ntitsFNy_glmm1) # AIC = 1408.4.
-summary(ntitsFNy_ziglmm1) # AIC = 1182.4.
-summary(ntitsFNy_zicomglmm1) # AIC = 1151.9.
-# It seems that all sequential additional specifications improved the fit, albeit the inclusion of the
-# COM-Poisson distribution only produced a mild effect. I will still use that model for diagnostics and see
-# how it behaves.
-ntitsFNy_zicomglmm2 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woodyveg + logged_Fmetric + urban_intensity +
-                                       manag_low + manag_high + light_pollution + noise_iq +
-                                       cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
-                                     data = ntits2, family = glmmTMB::compois(link = "log"),
-                                     dispformula = ~logged_Fmetric,
-                                     ziformula = ~manag_low) # Rather long to fit.
-summary(ntitsFNy_zicomglmm2) # AIC = 1144.8 vs 1151.9.
-# NOTE: After a few attempts to tune the model, I found that this specification slightly improved the model.
-# But as it is a kind of data-dredging, I prefer carry on with my initially intended model. Still, I will
-# perform diagnostics on both models. This 2nd model will be sometimes called "exploratory improved model".
-
-# # The interactive (mediated) model:
-# ntitsFNy_zicomglmm3 <- glmmTMB::glmmTMB(fledgling_nb ~
-#                                        scale(logged_woodyveg, scale = F) * scale(logged_Fmetric,
-#                                                                                  scale = F) +
-#                                        urban_intensity + manag_low + manag_high + light_pollution + noise_iq +
-#                                        cumdd_30 + father_cond + mother_cond + year + (1|id_nestbox),
-#                                      data = ntits2, family = glmmTMB::compois(link = "log"),
-#                                      dispformula = ~1,
-#                                      ziformula = ~1) # Rather long to fit.
-# summary(ntitsFNy_zicomglmm3) # AIC = 1152, doesn't seem supported by the data.
+summary(ttFNy_zicomglmm2) # AIC = 1549.4 (almost significant)!
+# Overall, it seems that, if the inclusion of a random effect (RE) only mildly improved the fit, accounting
+# for the likely underdispersion and the ZI strongly improved the fit! I will thus carry on with the last two
+# models to the diagnostic part.
+# Note also that I initially tried to include "clutch_size" (CS) or "brood_size" (BS) as a covariate to focus
+# on the variation that is not due to variations in the number of eggs laid or hatched but, if that strongly
+# lowered the AIC, diagnostics were once again quite bad (e.g. strong deviations from uniformity). Therefore,
+# I chose to remove it which means that we are actually modelling a part of CS and BS variability as well.
+# Diagnostics also showed that the "site" RE was to be preferred to the "id_nestbox".
 
 
 
 
 
-### ** 3.2.2. Diagnostics and assumption checks ----
+### ** 3.2.2. Improved model (exploration) ----
+# _____________________________________________
+ntits3$hatching_rate <- ntits3$brood_size/ntits3$clutch_size
+
+
+ttFNy_zicomglmm1a <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woody_area + logged_Fmetric +
+                           hatching_rate +
+                                       urban_intensity + manag_intensity + light_pollution + noise_iq +
+                                       cumdd_30 + year + (1|site),
+                                     data = ntits3, family = glmmTMB::compois(link = "log"),
+                                     dispformula = ~hatching_rate+logged_Fmetric,
+                                     ziformula = ~1) # Rather long to fit.
+ttFNy_zicomglmm1b <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woody_area + logged_Fmetric_d2b1 +
+                           hatching_rate +
+                                       urban_intensity + manag_intensity + light_pollution + noise_iq +
+                                       cumdd_30 + year + (1|site),
+                                     data = ntits3, family = glmmTMB::compois(link = "log"),
+                                     dispformula = ~hatching_rate+logged_Fmetric_d2b1,
+                                     ziformula = ~1) # Rather long to fit.
+ttFNy_zicomglmm1c <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woody_area + logged_Fmetric +
+                           hatching_rate +
+                                       urban_intensity + manag_intensity + light_pollution + noise_iq +
+                                       cumdd_30 + year + (1|site),
+                                     data = ntits3, family = glmmTMB::compois(link = "log"),
+                                     dispformula = ~hatching_rate+logged_Fmetric_d2b1,
+                                     ziformula = ~1) # Rather long to fit.
+ttFNy_zicomglmm1d <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woody_area + logged_Fmetric +
+                           hatching_rate +
+                                       urban_intensity + manag_intensity + light_pollution + noise_iq +
+                                       cumdd_30 + year + (1|site),
+                                     data = ntits3, family = glmmTMB::compois(link = "log"),
+                                     dispformula = ~hatching_rate+logged_Fmetric,
+                                     ziformula = ~min_t_between+logged_Fmetric) # Rather long to fit.
+summary(ttFNy_zicomglmm1a) # AIC = 1601.2 vs 1634.6.
+summary(ttFNy_zicomglmm1b) # AIC = 1607.4.
+summary(ttFNy_zicomglmm1c) # AIC = 1604.2.
+summary(ttFNy_zicomglmm1d) # AIC = 1594.1.
+
+ttFNy_zicomglmm2a <- glmmTMB::glmmTMB(fledgling_nb ~
+                                       scale(logged_woody_area, scale = F) * scale(logged_Fmetric, scale = F) +
+                           hatching_rate +
+                                       urban_intensity + manag_intensity + light_pollution + noise_iq +
+                                       cumdd_30 + year + (1|site),
+                                     data = ntits3, family = glmmTMB::compois(link = "log"),
+                                     dispformula = ~hatching_rate+logged_Fmetric,
+                                     ziformula = ~1)
+ttFNy_zicomglmm2b <- glmmTMB::glmmTMB(fledgling_nb ~
+                                       scale(logged_woody_area, scale = F) * scale(logged_Fmetric, scale = F) +
+                           hatching_rate +
+                                       urban_intensity + manag_intensity + light_pollution + noise_iq +
+                                       cumdd_30 + year + (1|site),
+                                     data = ntits3, family = glmmTMB::compois(link = "log"),
+                                     dispformula = ~hatching_rate+logged_Fmetric,
+                                     ziformula = ~min_t_between+logged_Fmetric)
+summary(ttFNy_zicomglmm2a) # AIC = 1592.4 vs 1857.1.
+summary(ttFNy_zicomglmm2b) # AIC = 1585.3 vs 1857.1.
+
+
+
+
+
+### ** 3.2.3. Diagnostics and assumption checks ----
 # __________________________________________________
 
-# IMPORTANT NOTE: all diagnostics have been performed on both ZICOM_GLMMs (1 and 2)!
-
-### *** 3.2.2.1. Residuals extraction, autocorrelation and collinearity ----
+### *** 3.2.3.1. Residuals extraction, autocorrelation and collinearity ----
 ## Traditional residuals:
 par(.pardefault)
-resid <- stats::resid(ntitsFNy_zicomglmm1, type = 'response')
-plot(resid, id = 0.05, idLabels = ~.obs) # Ok-ish but there are a few potential outliers.
-# performance::check_outliers(ntitsFNy_zicomglmm1) # Does not work for this type of model.
-ntits2[which(resid < -4),] # As could have been guessed from the plot, the 2nd group (with the lowest
-# residuals) consist of all the observations where "fledgling_nb" ~ 0. It could be a sign that the zero-part
-# of the model should indeed be modelled with more relevant predictors. But even the "exploratory improved
-# model" does not erase this pattern.
+resid <- stats::resid(ttFNy_zicomglmm1, type = 'response')
+plot(resid, id = 0.05, idLabels = ~.obs) # Ok-ish but likely two groups.
+ntits3[which(resid < -2),] # As could have been guessed from the plot, the 2nd group (with the lowest
+# residuals) consist of all the observations where "fledgling_nb" ~ 0 or is low. It could be a sign that
+# the zero-part of the model should indeed be modelled with more relevant predictors.
 
 # To further investigate patterns, I can plot the residuals against some predictors:
-plot(x = ntits2$logged_Fmetric, y = resid) # There may be signs of heteroscedasticity for the "F-metric".
-# Otherwise, it seems ok (but, once again, simulated residuals will be more useful).
-# plot(ntitsFNy_zicomglmm1, id_nestbox~stats::resid(.)) # Does not work for this type of model.
-# plot(ntitsFNy_zicomglmm1, site~stats::resid(.)) # Does not work for this type of model.
+plot(x = ntits3$brood_size/ntits3$clutch_size, y = resid,
+     xlab = "Hatching rate", ylab = "Raw residuals") # There may be signs of heteroscedasticity for BS (or CS)!
 
 ## Simulation-based scaled residuals computation ({DHARMa} method):
-simu.resid <- DHARMa::simulateResiduals(fittedModel = ntitsFNy_zicomglmm1, n = 1000, re.form = NULL)
-simu.resid2 <- DHARMa::simulateResiduals(fittedModel = ntitsFNy_zicomglmm2, n = 1000, re.form = NULL)
+simu.resid <- DHARMa::simulateResiduals(fittedModel = ttFNy_zicomglmm1, n = 1000, re.form = NULL)
+simu.resid2 <- DHARMa::simulateResiduals(fittedModel = ttFNy_zicomglmm2, n = 1000, re.form = NULL)
+simu.residz <- DHARMa::simulateResiduals(fittedModel = zzz, n = 1000, re.form = NULL)
+simu.residz2 <- DHARMa::simulateResiduals(fittedModel = zzz2, n = 1000, re.form = NULL)
 # The 're.form' argument is to base simulations on the model unconditional of the random effects (and only
 # works for {lme4} formulations). It is useful for testing dispersion (see below) but can be omitted
 # eventually.
-plot(simu.resid) # Ok_ish (but very slight deviation?).
+plot(simu.residz2) # Significant deviations!
 DHARMa::outliers(simu.resid) # None.
 
 ## Autocorrelation and collinearity:
 DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
-                                   x = ntits2$coord_x, y = ntits2$coord_y, plot = TRUE) # Ok.
-performance::check_autocorrelation(ntitsFNy_zicomglmm1) # Ok.
-performance::check_collinearity(ntitsFNy_zicomglmm1) # Ok-ish, but "urban_intensity" > 4!
-stats::vcov(ntitsFNy_zicomglmm1) # Ok.
+                                   x = ntits3$coord_x, y = ntits3$coord_y, plot = TRUE) # Nope!
+performance::check_autocorrelation(ttFNy_zicomglmm1) # Nope!
+performance::check_collinearity(ttFNy_zicomglmm1) # Ok-ish, but some VIF > 4-5!
+stats::vcov(ttFNy_zicomglmm2) # Ok.
 
 ## Heteroscedasticity and possible model misspecifications:
 par(.pardefault)
-DHARMa::plotResiduals(simu.resid, form = ntits2$logged_woodyveg)
-DHARMa::plotResiduals(simu.resid, form = ntits2$logged_Fmetric)
-DHARMa::plotResiduals(simu.resid, form = ntits2$urban_intensity)
-DHARMa::plotResiduals(simu.resid, form = ntits2$manag_intensity)
-DHARMa::plotResiduals(simu.resid, form = ntits2$light_pollution)
-DHARMa::plotResiduals(simu.resid, form = ntits2$noise_iq) # Slight quantile deviation (also true for "model2")!
-DHARMa::plotResiduals(simu.resid, form = ntits2$cumdd_30)
-DHARMa::plotResiduals(simu.resid, form = ntits2$father_cond) # Slight quantile deviation!
-DHARMa::plotResiduals(simu.resid, form = ntits2$mother_cond)
-DHARMa::plotResiduals(simu.resid, form = ntits2$year)
+DHARMa::plotResiduals(simu.resid, form = ntits3$logged_woody_area)
+DHARMa::plotResiduals(simu.resid, form = ntits3$logged_Fmetric)
+DHARMa::plotResiduals(simu.resid, form = ntits3$urban_intensity)
+DHARMa::plotResiduals(simu.resid, form = ntits3$logged_herby_area)
+DHARMa::plotResiduals(simu.resid, form = ntits3$manag_intensity)
+DHARMa::plotResiduals(simu.resid, form = ntits3$light_pollution)
+DHARMa::plotResiduals(simu.resid, form = ntits3$noise_iq) # Slight quantile deviation!
+DHARMa::plotResiduals(simu.resid, form = ntits3$cumdd_30) # Slight quantile deviation!
+DHARMa::plotResiduals(simu.resid, form = ntits3$min_t_between)
+DHARMa::plotResiduals(simu.resid, form = ntits3$species) # Heteroscedasticity detected!
+DHARMa::plotResiduals(simu.resid, form = ntits3$year) # Heteroscedasticity detected!
+DHARMa::plotResiduals(simu.resid, form = ntits3$clutch_size) # Strong quantile deviation!
+DHARMa::plotResiduals(simu.resid, form = ntits3$brood_size) # Strong quantile deviation!
+DHARMa::plotResiduals(simu.resid, form = ntits3$hatching_rate) # Strong quantile deviation!
+# Clearly, there are heavy problems but model2 is slightly better!
 
 
 
-### *** 3.2.2.2. Distribution (family, ZI, dispersion) ----
+### *** 3.2.3.2. Distribution (family, ZI, dispersion) ----
 ## Assessing over or under-dispersion:
-aods3::gof(ntitsFNy_zicomglmm1) # Does not work for this type of model!
-AER::dispersiontest(object = ntitsFNy_zicomglmm1, alternative = c("less")) # Does not work for this model type!
+aods3::gof(ttFNy_zicomglmm1) # Does not work for this type of model!
+AER::dispersiontest(object = ttFNy_zicomglmm1, alternative = c("less")) # Does not work for this model type!
 DHARMa::testDispersion(simu.resid) # Ok.
 
 ## Theoretical count distribution:
-theo_count <- COMPoissonReg::rzicmp(n = nrow(ntits2), lambda = mean(ntits2$fledgling_nb),
+theo_count <- COMPoissonReg::rzicmp(n = nrow(ntits3), lambda = mean(ntits3$fledgling_nb),
                                     nu = 0.95,  # The 'nu' parameter should be chosen by trial-and-errors.
                                     p = 0.15) # And so does the probability of 0.
 tc_df <- data.frame(theo_count)
@@ -1551,7 +1617,7 @@ ggplot2::ggplot(pm, ggplot2::aes(fledgling_nb)) +
 pred_counts <- stats::predict(object = ntitsFNy_zicomglmm1, type = "response") # Extract the predicted counts.
 par(mfrow= c(1,2))
 hist(pred_counts)
-hist(ntits2$fledgling_nb) # The "ntitsFNy_zicomglmm2" model yields better predictions than the simpler model
+hist(ntits3$fledgling_nb) # The "ntitsFNy_zicomglmm2" model yields better predictions than the simpler model
 # but neither fit is truly satisfactory. Both models overestimate lower counts but fail to properly model
 # the ZI!
 
@@ -1563,9 +1629,9 @@ DHARMa::testZeroInflation(simu.resid_woZI) # Yes, so there truly is a ZI. Yet, t
 
 
 
-### *** 3.2.2.3. Linearity ----
+### *** 3.2.3.3. Linearity ----
 ## Plotting the response on the log scale against predictors:
-ntits2 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_iq, cumdd_30,
+ntits3 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_pollution, noise_iq, cumdd_30,
                       father_cond, mother_cond) %>%
   dplyr::mutate("Fmetric" = pmF_d60_beta0,
                 "Fmetric (sqrt)" = sqrt(pmF_d60_beta0),
@@ -1576,7 +1642,7 @@ ntits2 %>% dplyr::select(woodyveg_vw, pmF_d60_beta0, urban_intensity, light_poll
 predictors <- colnames(mydata)
 # Bind log(Y) and tidying the data for plot (ggplot2, so long format):
 mydata <- mydata %>%
-  dplyr::mutate(log_y = log(ntits2$fledgling_nb+1)) %>%
+  dplyr::mutate(log_y = log(ntits3$fledgling_nb+1)) %>%
   tidyr::gather(key = "predictors", value = "predictor.value", -log_y)
 # Create scatterplot
 ggplot2::ggplot(mydata, ggplot2::aes(y = log_y, x = predictor.value))+
@@ -1589,7 +1655,7 @@ ggplot2::ggplot(mydata, ggplot2::aes(y = log_y, x = predictor.value))+
 
 
 
-### *** 3.2.2.4. Model goodness-of-fit (GOF) and performances ----
+### *** 3.2.3.4. Model goodness-of-fit (GOF) and performances ----
 # GOF test of Pearson's Chi2 residuals:
 dat.resid <- sum(stats::resid(ntitsFNy_zicomglmm2, type = "pearson")^2)
 1 - stats::pchisq(dat.resid, stats::df.residual(ntitsFNy_zicomglmm2)) # p ~ 0.32 for both models, indicating
@@ -1605,7 +1671,7 @@ performance::r2(ntitsFNy_zicomglmm2) # Yields NA.
 ntitsFNy_zicomglm2 <- glmmTMB::glmmTMB(fledgling_nb ~ logged_woodyveg + logged_Fmetric + urban_intensity +
                                       manag_low + manag_high + light_pollution + noise_iq +
                                       cumdd_30 + father_cond + mother_cond + year,
-                                    data = ntits2, family = glmmTMB::compois(link = "log"),
+                                    data = ntits3, family = glmmTMB::compois(link = "log"),
                                     dispformula = ~logged_Fmetric,
                                     ziformula = ~manag_low) # Rather long to fit.
 summary(ntitsFNy_zicomglm2) # AIC = 1143 vs 1144.8, so the inclusion of the RE does not seem warranted by the
@@ -1613,7 +1679,7 @@ summary(ntitsFNy_zicomglm2) # AIC = 1143 vs 1144.8, so the inclusion of the RE d
 
 ## For the whole model:
 ntitsFNy_zicomglm0 <- glmmTMB::glmmTMB(fledgling_nb ~ 1,
-                                    data = ntits2, family = glmmTMB::compois(link = "log"),
+                                    data = ntits3, family = glmmTMB::compois(link = "log"),
                                     dispformula = ~logged_Fmetric,
                                     ziformula = ~manag_low)
 res.LRT_null <- stats::anova(object = ntitsFNy_zicomglm0, ntitsFNy_zicomglm2, test = "LRT")
@@ -1621,43 +1687,43 @@ res.LRT_null <- stats::anova(object = ntitsFNy_zicomglm0, ntitsFNy_zicomglm2, te
 
 
 
-### *** 3.2.2.5. Posterior predictive simulations ----
+### *** 3.2.3.5. Posterior predictive simulations ----
 # Predicted counts:
 par(.pardefault)
-obsprop <- prop.table(table(ntits2$fledgling_nb))
+obsprop <- prop.table(table(ntits3$fledgling_nb))
 sims <- stats::simulate(ntitsFNy_zicomglmm2, nsim = 1000)
 
 nsim0 <- colSums(sims == 0) # Number of zeros (min obs value)
 par(las=1,bty="l")
 plot(pt <- prop.table(table(nsim0)),
      ylab="Probability", xlab="Number of zeros")
-(obs0 <- sum(ntits2$fledgling_nb == 0))
+(obs0 <- sum(ntits3$fledgling_nb == 0))
 points(obs0, 0.16, col="red", pch=16, cex=2) # See the y (0.06) values in 'obsprop'!
 
 nsim5 <- colSums(sims == 5) # Number of fives (second modal obs value).
 par(las=1,bty="l")
 plot(pt <- prop.table(table(nsim5)),
      ylab="Probability", xlab="Number of fives")
-(obs5 <- sum(ntits2$fledgling_nb == 5))
+(obs5 <- sum(ntits3$fledgling_nb == 5))
 points(obs5, 0.11, col="red", pch=16, cex=2)
 
 nsim11 <- colSums(sims == 11) # Number of elevens (max obs value).
 par(las=1,bty="l")
 plot(pt <- prop.table(table(nsim11)),
      ylab="Probability", xlab="Number of elevens")
-(obs11 <- sum(ntits2$fledgling_nb == 11))
+(obs11 <- sum(ntits3$fledgling_nb == 11))
 points(obs11, 0.004, col="red", pch=16, cex=2)
 # These three examples confirm that the model still predicts values that are too wide and overestimated
 # compared to the true observed values. Small successes are not correctly predicted!
 
 
 
-### ** 3.2.3. Inference and predictions ----
+### ** 3.2.4. Inference and predictions ----
 # __________________________________________
 
 ##### TO BE RUN §§§ -----
 
-### *** 3.2.3.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
+### *** 3.2.4.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
 ## Parametric bootstrap to test the additive effect of the connectivity metric:
 ntitsFNy_zicomglmm0 <- stats::update(ntitsFNy_zicomglmm1, .~. -logged_Fmetric)
 
@@ -1686,7 +1752,7 @@ tictoc::toc() # DISCLAIMER: took ~??? to run!
 
 
 
-### *** 3.2.3.2. Bootstrapped confidence intervals for estimated parameters ----
+### *** 3.2.4.2. Bootstrapped confidence intervals for estimated parameters ----
 tictoc::tic("Bootstrap CI for the additive COM-Poisson GLMM parameters")
 res.ntitsFNy_addeff_CI_boot <- confint(ntitsFNy_zicomglmm1, method="boot")
 tt <- as.data.frame(res.ntitsFNy_addeff_CI_boot)
@@ -1697,7 +1763,7 @@ tictoc::toc() # DISCLAIMER: took ~??? to run!
 
 
 
-### *** 3.2.3.3. Conclusion ----
+### *** 3.2.4.3. Conclusion ----
 
 summary(ntitsFNy_zicomglmm1)
 summary(ntitsFNy_zicomglmm2) # Exploratory improved model!
