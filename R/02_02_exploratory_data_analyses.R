@@ -780,6 +780,8 @@ ntits_reduced %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 
                 logged_traffic = log10(traffic+1),
                 logged_built_area = log10(built_area+1),
                 logged_open_area = log10(open_area)) %>%
+  dplyr::mutate(brood_size = as.integer(brood_size),
+                hatching_rate = brood_size/clutch_size) %>%
   dplyr::mutate(year = stats::relevel(x = year, ref = 3), # Assign 2019 as the reference group.
                 species = stats::relevel(x = species, ref = 2)) %>% # Assign PM as the reference group.
   dplyr::mutate(manag_low = ifelse(manag_intensity == "0", "1", "0"),
