@@ -109,6 +109,12 @@ ttCy_comglmm1d <- glmmTMB::glmmTMB(clutch_size ~ logged_woody_area + logged_Fmet
 summary(ttCy_comglmm1b) # AIC = 1391.3.
 summary(ttCy_comglmm1c) # AIC = 1390.5.
 summary(ttCy_comglmm1d) # AIC = 1388.1.
+zzz <- glmmTMB::glmmTMB(clutch_size ~ logged_woody_area + logged_Fmetric + species +
+                                     urban_intensity + manag_low + manag_high + light_pollution + noise_iq +
+                                     cumdd_30 + year + (1|site),
+                                   data = ntits3, family = glmmTMB::compois(link = "log"),
+                                   dispformula = ~cumdd_30+min_t_before) # Rather long to fit.
+summary(zzz)
 
 
 
@@ -1807,7 +1813,7 @@ summary(ttFNy_zicomglmm2b) # AIC = 1585.3 and NA for R2.
 
 # Diagnostics for these models were mostly ok, there was no outliers or distributional problems, and only a
 # slight deviation for model 1D while 2B was fine. VIF values were ok for both models.
-# However, predictions were rather poor aven though they were slightly better than for the initial models.
+# However, predictions were rather poor even though they were slightly better than for the initial models.
 # All models over-predicted low counts and fail to properly model the ZI!
 # Once again, it may be a sign of the need to better model the ZI or to consider these values as outliers that
 # should be removed. That could perhaps explain why the F-metric had a NEGATIVE EFFECT of fledgling numbers!
@@ -2520,7 +2526,7 @@ summary(ttTLy_lmm2) # AIC = 635.5 and Marg_R2_lmm = 0.78; Cond_R2_lmm = 0.79.
 # - No true outliers but some with rather extreme values.
 # - No overly influential observations. Even with very conservative values for Cook's distance, only:
 #   DIJ-016_2021 and DIJ-147_2022.
-# Otherwise, LRT showed that the RE and the models are still more usefull than reduced models.
+# Otherwise, LRT showed that the RE and the models are still more useful than reduced models.
 ## Significant variables: speciesCC (---), clutch_size (-), year2022 (+).
 ## Almost significant variables: woody_area (+), noise_iq (-), manag_mid/high (-), urban_intensity (+).
 ## Hypothesis 1 is rejected (PB-based LRT; p = 0.69) and hypothesis 2 is rejected (p = 0.27)!
