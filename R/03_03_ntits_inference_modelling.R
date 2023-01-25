@@ -2778,6 +2778,7 @@ par(.pardefault)
 ############################################ TO DO LIST ####################################################
 # - Refaire tourner tous les modèles avec NTITS --> Utiliser clutch_size et brood_size comme prédicteur, ou
 #   la date de ponte??????? ASK JC??????????? Tester????
+# +++++ Voir pk EDA_report bug! + Voir si centrage change quelque chose (interprétation interaction)?????
 # - Explorer chaque modèle pour voir qu'est-ce qui marche le mieux et s'il y a une spécification unique qui
 #   va bien!!! ATTENTION à la gamme des variables explorées (transformations???????)!!!!
 # - Si rien de bien concluant, essayer en fusionnant les années pour supprimer les RE nichoirs.
