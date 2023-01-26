@@ -22,7 +22,7 @@
 ##### 0. Important R reminders #####
 # -------------------------------- #
 
-### * 0.1. NA handling ---------------------------------------------------------
+##### * 0.1. NA handling -------------------------------------------------------
 # ---------------------------------------------------------------------------- #
 
 # Although it may seem strange, R doesn't handles NA as we could expect it. The use of "is.na()" or
@@ -31,7 +31,7 @@
 
 
 
-### * 0.2. Factor and character variables --------------------------------------
+##### * 0.2. Factor and character variables ------------------------------------
 # ---------------------------------------------------------------------------- #
 
 # R is kind of a pain in the arse when it comes to dealing with categorical variables. Theoretically,
@@ -43,7 +43,7 @@
 
 
 
-### * 0.3. Package building, {targets} and RMarkdown ---------------------------
+##### * 0.3. Package building, {targets} and RMarkdown -------------------------
 # ---------------------------------------------------------------------------- #
 
 # Although I managed to create a full project associating Package building, {targets} and RMarkdown
@@ -55,11 +55,12 @@
 
 
 
+########################## ********************************************* ###############################
 # ------------------------- #
 ##### 1. Project set up #####
 # ------------------------- #
 
-### * 1.1. Package project creation --------------------------------------------
+##### * 1.1. Package project creation ------------------------------------------
 # ---------------------------------------------------------------------------- #
 
 # First, I created a package named "ppl.tits" (.Rproj) with the following command:
@@ -84,7 +85,7 @@ usethis::use_build_ignore("_devhistory.R")
 
 
 
-### * 1.2. Keeping track of changes (Git) --------------------------------------
+##### * 1.2. Keeping track of changes (Git) ------------------------------------
 # ---------------------------------------------------------------------------- #
 
 # To keep track of all future changes and have a backup, I need to initiate a Git
@@ -144,7 +145,7 @@ system2("git push -u origin master") # Same (CLI).
 
 
 
-### * 1.3. Further basic configurations ----------------------------------------
+##### * 1.3. Further basic configurations --------------------------------------
 # ---------------------------------------------------------------------------- #
 
 # Before I go any further, I will edit some information about my package using the DESCRIPTION file.
@@ -161,11 +162,12 @@ usethis::use_git(message = ":bulb: Update documentation")
 
 
 
+########################## ********************************************* ###############################
 # ----------------------------------- #
 ##### 2. Project structure set-up #####
 # ----------------------------------- #
 
-### * 2.1. Folders architecture ------------------------------------------------
+##### * 2.1. Folders architecture ----------------------------------------------
 # ---------------------------------------------------------------------------- #
 
 # Before writing my first functions to import and clean my data, I need to add the said data files
@@ -200,7 +202,7 @@ usethis::use_git_ignore("spatial_layers/") # To avoid saturating Git, I ignore t
 
 
 
-### * 2.2. Creating scripts for custom functions -------------------------------
+##### * 2.2. Creating scripts for custom functions -----------------------------
 # ---------------------------------------------------------------------------- #
 
 # To use pipes (i.e. %>%) everywhere in the package without explicitly loading the {magrittr}
@@ -222,7 +224,7 @@ usethis::use_r("03_03_ntits_inference_modelling")
 
 
 
-### * 2.3. Creating reports (RMarkdown) ----------------------------------------
+##### * 2.3. Creating reports (RMarkdown) --------------------------------------
 # ---------------------------------------------------------------------------- #
 
 file.create(... = "output/texts/ppl.tits.exploration_report.Rmd")
@@ -233,8 +235,8 @@ file.create(... = "output/texts/ppl.tits.intermediate_analyses_report.Rmd") # Us
 # section (chapter 3 below).
 
 
-
-# ** 2.3.1. To manage citations and bibliography ----
+### ** 2.3.1. To manage citations and bibliography ----
+# _____________________________________________________
 
 # To manage citations and get an automatic bibliography with RMarkdown, I have to follow these
 # steps:
@@ -259,11 +261,12 @@ usethis::use_build_ignore("ppl.tits_biblio.bib")
 
 
 
+########################## ********************************************* ###############################
 # --------------------------------------- #
 ##### 3. Package content and creation #####
 # --------------------------------------- #
 
-### * 3.1. Managing data in a R package ----------------------------------------
+##### * 3.1. Managing data in a R package --------------------------------------
 # ---------------------------------------------------------------------------- #
 
 # I'm used to creating custom folders to store my input and output data in my the R packages I build
@@ -274,7 +277,8 @@ usethis::use_build_ignore("ppl.tits_biblio.bib")
 # Cf. https://r-pkgs.org/data.html#data (the next sections are only a summary).
 
 
-# ** 3.1.1. To export R objects for end-users ----
+### ** 3.1.1. To export R objects for end-users ----
+# __________________________________________________
 
 # If you want to store R objects and make them available to the user, put them in `data/`. This is
 # the best place to put example datasets (keep in mind that it is for R objects only). See section
@@ -313,7 +317,8 @@ usethis::use_r("data") # To create R/data.R to document my dataset! See section 
 # Roxygen2, how to include non-ACSII characters, etc.).
 
 
-# ** 3.1.2. To store R objects for internal use ----
+### ** 3.1.2. To store R objects for internal use ----
+# ____________________________________________________
 
 # If you want to store R objects for your own use as a developer, put them in R/sysdata.rda. This is
 # the best place to put internal data that your functions need. See section Section 8.3. of
@@ -338,7 +343,8 @@ usethis::use_data(internal_this, internal_that, internal = TRUE) # The documenta
 # i.e. the need to specify the "LazyData" field is strictly about the exported data below data/.
 
 
-# ** 3.1.3. To store and export data in non-R format (e.g. HTML files, .csv) ----
+### ** 3.1.3. To store and export data in non-R format (e.g. HTML files, .csv) ----
+# _________________________________________________________________________________
 
 # If you want to store data in some raw, non-R-specific form and make it available to the user, put it
 # in inst/extdata/. See section Section 8.4. of https://r-pkgs.org/data.html#data for more details.
@@ -369,7 +375,7 @@ system.file("extdata", "clippy.xlsx", package = "readxl")
 
 
 
-### * 3.2. Writing functions for the package -----------------------------------
+##### * 3.2. Writing functions for the package ---------------------------------
 # ---------------------------------------------------------------------------- #
 
 # Now I can write my functions in the R files (= populating my R files) while keeping in mind
@@ -407,7 +413,7 @@ usethis::use_git(message = ":white_check_mark: Updated DESCRIPTION to add new pa
 
 
 
-### * 3.3. Load and check the package ------------------------------------------
+##### * 3.3. Load and check the package ----------------------------------------
 # ---------------------------------------------------------------------------- #
 
 # The following lines are run iteratively every time a new function is created within
@@ -415,7 +421,8 @@ usethis::use_git(message = ":white_check_mark: Updated DESCRIPTION to add new pa
 # inspects (i.e. run the R CMD check) and test my functions and my whole package!
 
 
-# ** 3.3.1. To load and document functions ----
+### ** 3.3.1. To load and document functions ----
+# _______________________________________________
 devtools::load_all() # Now, all functions in the R folder are available!
 # IMPORTANT NOTE: if you try to load (or check) your package while working on a new script to
 # create new functions (i.e. having unfinished functions in a R file), make sure to put your
@@ -427,7 +434,8 @@ usethis::use_git(message = ":pencil: Documented new function(s)")
 usethis::use_git(message = ":white_check_mark: Updated function(s)")
 
 
-# ** 3.3.2. To test functions ----
+### ** 3.3.2. To test functions ----
+# __________________________________
 # To test my functions, I could use the "testthat" package:
 #usethis::use_testthat()
 
@@ -437,7 +445,8 @@ usethis::use_git(message = ":white_check_mark: Updated function(s)")
 # NOTE: All tests files are stored in tests/testthat/ and their names must start with test-*
 
 
-#  ** 3.3.3. To check the package integrity ----
+###  ** 3.3.3. To check the package integrity ----
+# ________________________________________________
 devtools::check() # Ok!
 # IMPORTANT NOTE: I had a lot of PROBLEMS in my first attempts to create a loading function
 # because the dataset contained comments in French and English, with special characters and
@@ -446,22 +455,24 @@ devtools::check() # Ok!
 
 
 
-### * 3.4. To install and version the package ----------------------------------
+##### * 3.4. To install and version the package --------------------------------
 # ---------------------------------------------------------------------------- #
-
-# ** 3.4.1. Installing the package ----
+### ** 3.4.1. Installing the package ----
+# _______________________________________
 devtools::install()
 usethis::use_git(message = ":metal: Installed updated functions!")
 # My package is now installed on my R so I can use its functions whenever I want.
 
 
-# ** 3.4.2. Set package versions ----
+### ** 3.4.2. Set package versions ----
+# _____________________________________
 usethis::use_version(which = "minor") # Automatically updates my package version.
 usethis::use_news_md() # Creates a NEWS.md file, that I should maintain updated.
 usethis::use_git(message = ":package: Release v0.1.0")
 
 
-# ** 3.4.3. Add and update a README file ----
+### ** 3.4.3. Add and update a README file ----
+# _____________________________________________
 usethis::use_readme_rmd() # Creates a README.Rmd and adds it automatically to .Rbuildignore
 # (and opens it). After manually editing the file, I need to compile it into a .md document
 # (otherwise, GitHub and the CRAN won't be able to read and display it on their websites):
@@ -479,6 +490,7 @@ usethis::use_git(message = ":pencil: Edited README")
 
 
 
+########################## ********************************************* ###############################
 # ---------------------------------------------- #
 ##### 4. Pipeline programming with {targets} #####
 # ---------------------------------------------- #
@@ -512,7 +524,7 @@ usethis::use_git(message = ":pencil: Edited README")
 
 
 
-### * 4.1. Setting-up the {targets} subproject ---------------------------------
+##### * 4.1. Setting-up the {targets} subproject -------------------------------
 # ---------------------------------------------------------------------------- #
 
 # To create the {targets} master script file:
@@ -537,7 +549,7 @@ usethis::use_git_ignore("_targets/")
 
 
 
-### * 4.2. Main {targets} functions --------------------------------------------
+##### * 4.2. Main {targets} functions ------------------------------------------
 # ---------------------------------------------------------------------------- #
 
 # To create a target:
@@ -556,7 +568,7 @@ targets::tar_visnetwork(targets_only = FALSE) # This argument enables the displa
 
 
 
-### * 4.3. Literate programming with RMarkdown and {targets} -------------------
+##### * 4.3. Literate programming with RMarkdown and {targets} -----------------
 # ---------------------------------------------------------------------------- #
 
 # IMPORTANT NOTE: to ensure proper compatibility with {targets}, RMarkdown reports should be
@@ -587,8 +599,8 @@ targets::tar_visnetwork(targets_only = FALSE) # This argument enables the displa
 
 
 
-################### *----------------------------------------* #################
-########################## Main Git commits ####################################
+########### *-----------------------------------------------------* ############
+############################ Main Git commits ##################################
 # ---------------------------------------------------------------------------- #
 usethis::use_git(message = ":boom: First exported results!")
 usethis::use_git(message = ":metal: Created a new function")
@@ -601,4 +613,4 @@ usethis::use_git(message = ":x: Problem detected!")
 # Don't forget to push your commits once you're sure you made no mistakes.
 # ---------------------------------------------------------------------------- #
 # ------------------------------- THE END ------------------------------------ #
-################### *----------------------------------------* #################
+########### *-----------------------------------------------------* ############

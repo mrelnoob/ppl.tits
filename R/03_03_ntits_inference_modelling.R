@@ -386,7 +386,7 @@ summary(ttCy_comglmm1d) # AIC = 1388.1 and no R2 for dispersion models.
 ##### 2. Modelling hatching success #####
 # -------------------------------------- #
 
-##### * 2.1. Hatching success: Binomial GLMM ------------------------------------
+##### * 2.1. Hatching success: Binomial GLMM -----------------------------------
 # ---------------------------------------------------------------------------- #
 ### ** 2.1.1. Initial model fit ----
 # __________________________________
