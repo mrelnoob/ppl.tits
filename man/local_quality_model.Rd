@@ -6,7 +6,7 @@
 \usage{
 local_quality_model(
   my_tdata = here::here("data", "ntits_clean.rda"),
-  buffer_radius = 150
+  b_radius = 150
 )
 }
 \arguments{

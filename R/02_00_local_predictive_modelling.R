@@ -74,7 +74,7 @@
 #' ppl.tits::local_quality_model(my_tdata = ntits_clean_path)$var_importance.stab # To generate the
 #' # variable importance stability plot
 #' }
-local_quality_model <- function(my_tdata = here::here("data", "ntits_clean.rda"), buffer_radius = 150){
+local_quality_model <- function(my_tdata = here::here("data", "ntits_clean.rda"), b_radius = 150){
 
   ##### Data preparation
   # ____________________
@@ -82,13 +82,13 @@ local_quality_model <- function(my_tdata = here::here("data", "ntits_clean.rda")
   # Dataset import and reduction:
   tits <- ppl.tits::read_from_path(mypath = my_tdata)
 
-  if (buffer_radius == 50) {
+  if (b_radius == 50) {
     tits %>% dplyr::filter(dist == 50) -> tits
-  }else if (buffer_radius == 100){
+  }else if (b_radius == 100){
     tits %>% dplyr::filter(dist == 100) -> tits
-  }else if (buffer_radius == 150){
+  }else if (b_radius == 150){
     tits %>% dplyr::filter(dist == 150) -> tits
-  }else if (buffer_radius == 200){
+  }else if (b_radius == 200){
     tits %>% dplyr::filter(dist == 200) -> tits
     }
 
@@ -153,7 +153,7 @@ local_quality_model <- function(my_tdata = here::here("data", "ntits_clean.rda")
     ggplot2::coord_flip()
 
   # To dismiss notes regarding "visible binding for global variables" during the CMD Check:
-  clutch_size <- Importance <- Variable <- built_area <- coord_x <- coord_y <- noise_iq <-
+  dist <- clutch_size <- Importance <- Variable <- built_area <- coord_x <- coord_y <- noise_iq <-
     noise_m <- open_area <- r.squared <- soft_manag_area <- species <- woodyveg_sd <-
     woodyveg_volume <- NULL
 
