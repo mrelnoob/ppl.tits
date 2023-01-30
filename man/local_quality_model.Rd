@@ -4,7 +4,10 @@
 \alias{local_quality_model}
 \title{Build a predictive model of local habitat quality}
 \usage{
-local_quality_model(my_tdata = here::here("data", "ntits_clean.rda"))
+local_quality_model(
+  my_tdata = here::here("data", "ntits_clean.rda"),
+  buffer_radius = 150
+)
 }
 \arguments{
 \item{my_tdata}{The path to the dataset generated
@@ -15,6 +18,9 @@ have previously built the {targets} pipeline described in _targets.R (e.g. by us
 targets::tar_make())! If you DO NOT KNOW what I'm talking about, then you should
 read the README file (https://github.com/mrelnoob/ppl.tits) and PROBABLY NOT modify the
 function's arguments (see examples section).}
+
+\item{b_radius}{The radius (in metres) of the buffer used to extract the local environmental variables
+(either 50, 100, 150 or 200), i.e. the sub-dataset to be used to build the RF model (default is 150).}
 }
 \value{
 This functions returns three things: 1) The Random Forest object built to be used for
@@ -27,7 +33,7 @@ prediction using new data (e.g. using
 \description{
 The \code{local_quality_model} function builds a Random Forest (RF) regression model to
 predict the local habitat quality for Great tits (\emph{Parus major} only) approximated by the species
-clutch size. \cr
+clutch size, based on local environmental variables extracted from a buffer of size \code{b_radius}. \cr
 The RF model, fitted using the \code{\link[randomForest:randomForest]{randomForest}} package, is
 build without hyperparameter tuning even though predictor variables importance is also computed.
 Additionally, the \code{local_quality_model} function also assess the stability of the RF modelling
@@ -37,7 +43,7 @@ Squared Error).
 }
 \note{
 This function only produces outputs for the Great tits (\emph{Parus major}). Computations
-for Blue tits (\emph{Cyanistes caeruleus}) were too unstable to be exploited due to insufficient
+for Blue tits (\emph{Cyanistes caeruleus}) were too unstable to be exploited, likely due to insufficient
 sample size.
 }
 \examples{

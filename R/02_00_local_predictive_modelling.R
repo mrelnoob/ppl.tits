@@ -13,7 +13,7 @@
 #'
 #' @description The `local_quality_model` function builds a Random Forest (RF) regression model to
 #' predict the local habitat quality for Great tits (\emph{Parus major} only) approximated by the species
-#' clutch size. \cr
+#' clutch size, based on local environmental variables extracted from a buffer of size `b_radius`. \cr
 #' The RF model, fitted using the \code{\link[randomForest:randomForest]{randomForest}} package, is
 #' build without hyperparameter tuning even though predictor variables importance is also computed.
 #' Additionally, the `local_quality_model` function also assess the stability of the RF modelling
@@ -21,7 +21,7 @@
 #' well as permutation-based variable importance metrics (computed as averaged increase in Mean
 #' Squared Error).
 #' @note This function only produces outputs for the Great tits (\emph{Parus major}). Computations
-#' for Blue tits (\emph{Cyanistes caeruleus}) were too unstable to be exploited due to insufficient
+#' for Blue tits (\emph{Cyanistes caeruleus}) were too unstable to be exploited, likely due to insufficient
 #' sample size.
 #'
 #' @param my_tdata The path to the dataset generated
@@ -32,6 +32,8 @@
 #' targets::tar_make())! If you DO NOT KNOW what I'm talking about, then you should
 #' read the README file (https://github.com/mrelnoob/ppl.tits) and PROBABLY NOT modify the
 #' function's arguments (see examples section).
+#' @param b_radius The radius (in metres) of the buffer used to extract the local environmental variables
+#' (either 50, 100, 150 or 200), i.e. the sub-dataset to be used to build the RF model (default is 150).
 #'
 #' @return This functions returns three things: 1) The Random Forest object built to be used for
 #' prediction using new data (e.g. using
@@ -72,13 +74,23 @@
 #' ppl.tits::local_quality_model(my_tdata = ntits_clean_path)$var_importance.stab # To generate the
 #' # variable importance stability plot
 #' }
-local_quality_model <- function(my_tdata = here::here("data", "ntits_clean.rda")){
+local_quality_model <- function(my_tdata = here::here("data", "ntits_clean.rda"), buffer_radius = 150){
 
   ##### Data preparation
   # ____________________
 
   # Dataset import and reduction:
   tits <- ppl.tits::read_from_path(mypath = my_tdata)
+
+  if (buffer_radius == 50) {
+    tits %>% dplyr::filter(dist == 50) -> tits
+  }else if (buffer_radius == 100){
+    tits %>% dplyr::filter(dist == 100) -> tits
+  }else if (buffer_radius == 150){
+    tits %>% dplyr::filter(dist == 150) -> tits
+  }else if (buffer_radius == 200){
+    tits %>% dplyr::filter(dist == 200) -> tits
+    }
 
   tits %>% dplyr::select(clutch_size, species, coord_x, coord_y, noise_m, noise_iq,
                          built_area, open_area, soft_manag_area, woodyveg_volume,
