@@ -227,6 +227,8 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("input_raw_data", "paired
   # ______
   ### List of the variables that will be created___#
   cumdd_30d <- NULL
+  cumdd_60d <- NULL
+  cumdd_between <- NULL
   min_t_before <- NULL
   min_t_between <- NULL
   mean_winter_t <- NULL
@@ -247,12 +249,13 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("input_raw_data", "paired
 
     # ____________
     # ____________
-    date_i <- tits[i, 4]
-    fdate_i <- tits[i, 5]
+    date_i <- tits[i, 4] # Laying date.
+    fdate_i <- tits[i, 5] # Fledging date.
     year_i <- tits[i, 2]
-    station_i <- as.character(as.matrix(tits[i, 16])) # Bloody R doesn't
-    # want to extract the factor's value directly!
-    nn <- which(stringr::str_detect(string = station_name, pattern = station_i))
+    station_i <- as.character(as.matrix(tits[i, 16])) # Temperature station ID. Note: bloody R
+    # doesn't want to extract the factor's value directly!
+    nn <- which(stringr::str_detect(string = station_name, pattern = station_i)) # To extract
+    # the position (in the 'station_name' string) of the i-th temperature station.
 
 
     # ____________
@@ -269,60 +272,107 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("input_raw_data", "paired
       dplyr::filter(date > date_i-31) -> mw30_max
 
     # ____________
-    ### Sub-tables for MIN_T_BETWEEN
+    ### Sub-tables for CUMDD_60D
+    # Daily temperature minimal values for the 60 days preceding the i-th laying date:
+    daily_t_min %>%
+      dplyr::filter(date < date_i) %>%
+      dplyr::filter(date > date_i-61) -> mw60_min
+
+    # Daily temperature maximal values for the 60 days preceding the i-th laying date:
+    daily_t_max %>%
+      dplyr::filter(date < date_i) %>%
+      dplyr::filter(date > date_i-61) -> mw60_max
+
+    # ____________
+    ### Sub-tables for CUMDD_BETWEEN and MIN_T_BETWEEN (it's actually the same table)
     # Daily temperature minimal values between the i-th laying and flight dates:
     daily_t_min %>%
       dplyr::filter(date > date_i) %>%
       dplyr::filter(date < fdate_i) -> mwbetween_min
+
+    # Daily temperature maximal values between the i-th laying and flight dates:
+    daily_t_max %>%
+      dplyr::filter(date > date_i) %>%
+      dplyr::filter(date < fdate_i) -> mwbetween_max
 
 
     # ____________
     # ____________
     ### Extracting values from the right station
     ttt30 <- cbind(mw30_min[, nn], mw30_max[, nn])
-    tttbet <- mwbetween_min[, nn]
-    tttwinter <- mean_t_winter[, 2+nn]
+    ttt60 <- cbind(mw60_min[, nn], mw60_max[, nn])
+    tttbet <- cbind(mwbetween_min[, nn], mwbetween_max[, nn])
+    tttwinter <- mean_t_winter[, 2+nn] # "2+" because this table has 2 more front columns.
     colnames(ttt30) <- c("mw30_min_t", "mw30_max_t")
-    colnames(tttbet) <- "mwbet_min_t"
+    colnames(ttt60) <- c("mw60_min_t", "mw60_max_t")
+    colnames(tttbet) <- c("mwbet_min_t", "mwbet_max_t")
     colnames(tttwinter) <- "winter_mean_t"
 
     # _________
     # Computing CUMDD_30D and handling NAs:
-    if (sum(is.na(ttt30$mw30_min_t)) >= 29) {
+    if (sum(is.na(ttt30$mw30_min_t)) >= length(ttt30$mw30_min_t)*0.9) { # I consider "NA" if there
+      # are more than 90% of observations missing because imputing missing values would be too random
+      # otherwise.
       cumdd_30d[i] <- "NA"
-    } else if (sum(is.na(ttt30$mw30_max_t)) >= 29) {
-      cumdd_30d[i] <- "NA"
-    } else if (all(is.na(ttt30$mw30_min_t))) {
-      cumdd_30d[i] <- "NA"
-    } else if (all(is.na(ttt30$mw30_max_t))) {
+    } else if (sum(is.na(ttt30$mw30_max_t)) >= length(ttt30$mw30_max_t)*0.9) {
       cumdd_30d[i] <- "NA"
     } else {
       degday::dd_calc(daily_min = ttt30$mw30_min_t, daily_max = ttt30$mw30_max_t, thresh_low = 0,
                       thresh_up = 100, method = "sng_sine", cumulative = TRUE, no_neg = TRUE,
-                      interpolate_na = TRUE) -> cumdd # This function doesn't works if the
+                      interpolate_na = TRUE) -> cumdd # This function doesn't work if the
       # temperature vectors are all NA's or if there is only one value that is NOT NA (because it
       # cannot interpolate missing values in such a case).
       cumdd_30d[i] <- cumdd[30]
     }
 
     # _________
+    # Computing CUMDD_60D and handling NAs:
+    if (sum(is.na(ttt60$mw60_min_t)) >= length(ttt60$mw60_min_t)*0.9) {
+      cumdd_60d[i] <- "NA"
+    } else if (sum(is.na(ttt60$mw60_max_t)) >= length(ttt60$mw60_max_t)*0.9) {
+      cumdd_60d[i] <- "NA"
+    } else {
+      degday::dd_calc(daily_min = ttt60$mw60_min_t, daily_max = ttt60$mw60_max_t, thresh_low = 0,
+                      thresh_up = 100, method = "sng_sine", cumulative = TRUE, no_neg = TRUE,
+                      interpolate_na = TRUE) -> cumdd # This function doesn't work if the
+      # temperature vectors are all NA's or if there is only one value that is NOT NA (because it
+      # cannot interpolate missing values in such a case).
+      cumdd_60d[i] <- cumdd[60]
+    }
+
+    # _________
+    # Computing CUMDD_BETWEEN and handling NAs:
+    if (sum(is.na(tttbet$mwbet_min_t)) >= length(tttbet$mwbet_min_t)*0.9) {
+      cumdd_between[i] <- "NA"
+    } else if (sum(is.na(tttbet$mwbet_max_t)) >= length(tttbet$mwbet_max_t)*0.9) {
+      cumdd_between[i] <- "NA"
+    } else {
+      degday::dd_calc(daily_min = tttbet$mwbet_min_t, daily_max = tttbet$mwbet_max_t, thresh_low = 0,
+                      thresh_up = 100, method = "sng_sine", cumulative = TRUE, no_neg = TRUE,
+                      interpolate_na = TRUE) -> cumdd # This function doesn't work if the
+      # temperature vectors are all NA's or if there is only one value that is NOT NA (because it
+      # cannot interpolate missing values in such a case).
+      cumdd_between[i] <- cumdd[length(cumdd)]
+    }
+
+    # _________
     # Computing MIN_T_BEFORE, MIN_T_BETWEEN and handling NAs:
-    if (sum(is.na(ttt30$mw30_min_t)) >= 15) { # This time, I consider NA if half of the data are
-      # missing because missing data imputation would probably be more reliable that inferring min_t
-      # from just 1 or 2 values.
+    if (sum(is.na(ttt30$mw30_min_t)) >= length(ttt30$mw30_min_t)*0.67) { # This time, I consider NA
+      # if more than 2/3 of observations are missing because later missing data imputation would probably
+      # be more reliable if the proportion of missing "min_t" observations is not too high!
       min_t_before[i] <- "NA"
     } else if (all(is.na(ttt30$mw30_min_t))) {
       min_t_before[i] <- "NA"
     } else {
-      min_t_before[i] <- min(ttt30$mw30_min_t)
+      min_t_before[i] <- min(ttt30$mw30_min_t, na.rm = TRUE)
     }
 
-    if (sum(is.na(tttbet$mwbet_min_t)) >= 15) {
+    if (sum(is.na(tttbet$mwbet_min_t)) >= length(tttbet$mwbet_min_t)*0.67) {
       min_t_between[i] <- "NA"
     } else if (all(is.na(tttbet$mwbet_min_t))) {
       min_t_between[i] <- "NA"
     } else {
-      min_t_between[i] <- min(tttbet$mwbet_min_t)
+      min_t_between[i] <- min(tttbet$mwbet_min_t, na.rm = TRUE)
     }
 
     # _________
@@ -333,6 +383,8 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("input_raw_data", "paired
   }
 
   tits$cumdd_30 <- as.numeric(cumdd_30d)
+  tits$cumdd_60 <- as.numeric(cumdd_60d)
+  tits$cumdd_between <- as.numeric(cumdd_between)
   tits$min_t_before <- as.numeric(min_t_before)
   tits$min_t_between <- as.numeric(min_t_between)
   tits$mean_winter_t <- as.numeric(mean_winter_t)
