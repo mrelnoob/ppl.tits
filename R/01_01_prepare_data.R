@@ -21,10 +21,12 @@ utils::globalVariables("where") # This is necessary for now as tidyselect::where
 #' * Second, it reorganizes the date columns (deleting 2 and updating the others).
 #' * Third, it creates a new `factor` variable called "\emph{breeding window}" that indicates whether
 #' the reproduction event occurred at the beginning or at the end of the breeding season.
-#' * Fourth, it computes five \strong{temperature related} variables. These variables are
-#' \emph{cumdd_30} (the cumulative day-degrees for the 30 days prior to the laying date);
+#' * Fourth, it computes seven \strong{temperature related} variables. These variables are
+#' \emph{cumdd_30} (the cumulative day-degrees for the 30 days prior to the laying date); \emph{cumdd_60}
+#' (the cumulative day-degrees for the 60 days prior to the laying date); \emph{cumdd_between} (the
+#' cumulative day-degrees for the period between the laying and the flight dates);
 #' \emph{min_t_before} and \emph{min_t_between} (which are the minimum temperature recorded during the
-#' 30 days prior to the laying date and between the laying and the flight date, respectively);
+#' 30 days prior to the laying date and between the laying and the flight dates, respectively);
 #' \emph{mean_winter_t} and \emph{sd_winter_t}) (which are the mean recorded temperature during the
 #' four month of winter across 2019-2022 and its standard deviation, respectively).
 #'
