@@ -852,7 +852,9 @@ tdata_upD_final <- function(my_tdata = here::here("output", "tables", "ndata_par
     mother_id = gsub(x = mother_id, pattern = "NA", replacement = NA)) %>%
     dplyr::mutate(
       father_id = as.factor(father_id),
-      mother_id = as.factor(mother_id)) -> tits
+      mother_id = as.factor(mother_id)) -> tits # Actually, it now turns out that I don't need this
+  # code chunk as my NAs are not coded as "NA" anymore, but I keep this code chunk for posterity, in
+  # case of future need!
 
   # Delete invalid observations:
   tits %>% dplyr::filter((id_nestbox != "DIJ-244" | year != "2022")) %>% # Here, as my command is the
@@ -937,6 +939,8 @@ tdata_upD_final <- function(my_tdata = here::here("output", "tables", "ndata_par
     pm_new$father_cond <- pm_imp$father_cond
     pm_new$mother_cond <- pm_imp$mother_cond
     pm_new$cumdd_30 <- pm_imp$cumdd_30
+    pm_new$cumdd_60 <- pm_imp$cumdd_60
+    pm_new$cumdd_between <- pm_imp$cumdd_between
     pm_new$min_t_before <- pm_imp$min_t_before
     pm_new$min_t_between <- pm_imp$min_t_between
 
@@ -969,6 +973,8 @@ tdata_upD_final <- function(my_tdata = here::here("output", "tables", "ndata_par
     cc_new <- cc
     cc_new$brood_size <- cc_imp$brood_size
     cc_new$cumdd_30 <- cc_imp$cumdd_30
+    cc_new$cumdd_60 <- cc_imp$cumdd_60
+    cc_new$cumdd_between <- cc_imp$cumdd_between
     cc_new$min_t_before <- cc_imp$min_t_before
     cc_new$min_t_between <- cc_imp$min_t_between
 
