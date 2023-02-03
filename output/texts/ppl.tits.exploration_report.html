@@ -1454,17 +1454,17 @@ al.</em>, <em>in prep.</em>)</a></h2>
       <li><a href="#blue-tits-dataset" id="toc-blue-tits-dataset">2.2.
       Blue Tits dataset</a></li>
       </ul></li>
-      <li><a href="#data-exploration" id="toc-data-exploration">3. Data
-      exploration</a></li>
-      <li><a href="#xx.-references" id="toc-xx.-references">XX.
+      <li><a href="#exploratory-data-analyses" id="toc-exploratory-data-analyses">3. Exploratory data
+      analyses</a></li>
+      <li><a href="#references" id="toc-references">4.
       References</a></li>
       </ul>
     </div>
     <div id="postamble" data-toggle="wy-nav-shift" class="status">
                   <p class="author"><span class="glyphicon glyphicon-user"></span> François-Marie
 Martin</p>
-                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 17
-octobre, 2022</p>
+                        <p class="date"><span class="glyphicon glyphicon-calendar"></span> 03
+février, 2023</p>
           </div>
    </div>
      
@@ -1482,9 +1482,9 @@ octobre, 2022</p>
 a depiction of the system information used to prepare and analyse the
 data from the PubPrivLands tits reproduction study (Martin <em>et
 al.</em> , <em>in prep.</em>).</p>
-<pre><code>## R version 4.2.0 (2022-04-22 ucrt)
+<pre><code>## R version 4.2.2 (2022-10-31 ucrt)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 19043)
+## Running under: Windows 10 x64 (build 19045)
 ## 
 ## Matrix products: default
 ## 
@@ -1497,45 +1497,45 @@ al.</em> , <em>in prep.</em>).</p>
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] ppl.tits_1.0.0
+## [1] ppl.tits_1.2.0
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] fs_1.5.2             usethis_2.1.6        bit64_4.0.5         
-##   [4] doParallel_1.0.17    rprojroot_2.0.3      targets_0.13.5      
-##   [7] bslib_0.4.0          tools_4.2.0          backports_1.4.1     
-##  [10] doRNG_1.8.2          utf8_1.2.2           R6_2.5.1            
-##  [13] DT_0.25              DBI_1.1.3            colorspace_2.0-3    
-##  [16] withr_2.5.0          tidyselect_1.2.0     processx_3.7.0      
-##  [19] emmeans_1.8.1-1      bit_4.0.4            compiler_4.2.0      
-##  [22] cli_3.3.0            missMDA_1.18         flashClust_1.01-2   
-##  [25] mice_3.14.0          desc_1.4.2           sandwich_3.0-2      
-##  [28] degday_0.4.0.9000    labeling_0.4.2       sass_0.4.2          
-##  [31] bookdown_0.29        scales_1.2.1         mvtnorm_1.1-3       
-##  [34] readr_2.1.3          randomForest_4.7-1.1 callr_3.7.2         
-##  [37] multcompView_0.1-8   stringr_1.4.1        digest_0.6.29       
-##  [40] rmarkdown_2.17       pkgconfig_2.0.3      htmltools_0.5.3     
-##  [43] highr_0.9            fastmap_1.1.0        itertools_0.1-3     
-##  [46] FactoMineR_2.6       htmlwidgets_1.5.4    rlang_1.0.6         
-##  [49] rstudioapi_0.14      tarchetypes_0.7.1    farver_2.1.1        
-##  [52] jquerylib_0.1.4      generics_0.1.3       jsonlite_1.8.2      
-##  [55] zoo_1.8-11           vroom_1.6.0          dplyr_1.0.10        
-##  [58] magrittr_2.0.3       leaps_3.1            Matrix_1.5-1        
-##  [61] Rcpp_1.0.9           munsell_0.5.0        fansi_1.0.3         
-##  [64] lifecycle_1.0.3      scatterplot3d_0.3-42 stringi_1.7.8       
-##  [67] multcomp_1.4-20      yaml_2.3.5           MASS_7.3-56         
-##  [70] grid_4.2.0           parallel_4.2.0       ggrepel_0.9.1       
-##  [73] crayon_1.5.2         lattice_0.20-45      splines_4.2.0       
-##  [76] hms_1.1.2            knitr_1.40           ps_1.7.1            
-##  [79] pillar_1.8.1         igraph_1.3.5         estimability_1.4.1  
-##  [82] base64url_1.4        rngtools_1.5.2       codetools_0.2-18    
-##  [85] glue_1.6.2           evaluate_0.17        data.table_1.14.2   
-##  [88] vctrs_0.4.2          rmdformats_1.0.4     missForest_1.5      
-##  [91] tzdb_0.3.0           foreach_1.5.2        gtable_0.3.1        
-##  [94] purrr_0.3.5          tidyr_1.2.1          assertthat_0.2.1    
-##  [97] cachem_1.0.6         ggplot2_3.3.6        xfun_0.33           
-## [100] xtable_1.8-4         broom_1.0.1          survival_3.3-1      
-## [103] tibble_3.1.8         iterators_1.0.14     cluster_2.1.3       
-## [106] TH.data_1.1-1        ellipsis_0.3.2       here_1.0.1</code></pre>
+##   [1] fs_1.5.2             usethis_2.1.6        doParallel_1.0.17   
+##   [4] rprojroot_2.0.3      targets_0.14.1       bslib_0.4.2         
+##   [7] tools_4.2.2          backports_1.4.1      doRNG_1.8.6         
+##  [10] utf8_1.2.2           R6_2.5.1             DT_0.27             
+##  [13] DBI_1.1.3            colorspace_2.0-3     withr_2.5.0         
+##  [16] tidyselect_1.2.0     processx_3.8.0       emmeans_1.8.4-1     
+##  [19] compiler_4.2.2       cli_3.5.0            missMDA_1.18        
+##  [22] flashClust_1.01-2    mice_3.15.0          sandwich_3.0-2      
+##  [25] degday_0.4.0.9000    sass_0.4.5           bookdown_0.31       
+##  [28] scales_1.2.1         mvtnorm_1.1-3        readr_2.1.3         
+##  [31] randomForest_4.7-1.1 callr_3.7.3          multcompView_0.1-8  
+##  [34] stringr_1.5.0        digest_0.6.31        rmarkdown_2.20      
+##  [37] pkgconfig_2.0.3      htmltools_0.5.4      parallelly_1.33.0   
+##  [40] fastmap_1.1.0        itertools_0.1-3      FactoMineR_2.7      
+##  [43] htmlwidgets_1.6.1    rlang_1.0.6          rstudioapi_0.14     
+##  [46] tarchetypes_0.7.3    jquerylib_0.1.4      generics_0.1.3      
+##  [49] jsonlite_1.8.4       zoo_1.8-11           dplyr_1.0.10        
+##  [52] magrittr_2.0.3       leaps_3.1            Matrix_1.5-3        
+##  [55] Rcpp_1.0.9           munsell_0.5.0        fansi_1.0.3         
+##  [58] lifecycle_1.0.3      furrr_0.3.1          scatterplot3d_0.3-42
+##  [61] stringi_1.7.8        multcomp_1.4-20      yaml_2.3.6          
+##  [64] MASS_7.3-58.1        grid_4.2.2           parallel_4.2.2      
+##  [67] listenv_0.9.0        ggrepel_0.9.2        crayon_1.5.2        
+##  [70] lattice_0.20-45      splines_4.2.2        hms_1.1.2           
+##  [73] knitr_1.42           ps_1.7.2             pillar_1.8.1        
+##  [76] igraph_1.3.5         estimability_1.4.1   base64url_1.4       
+##  [79] rngtools_1.5.2       codetools_0.2-18     glue_1.6.2          
+##  [82] evaluate_0.20        data.table_1.14.6    vctrs_0.5.1         
+##  [85] rmdformats_1.0.4     missForest_1.5       tzdb_0.3.0          
+##  [88] foreach_1.5.2        gtable_0.3.1         purrr_1.0.0         
+##  [91] tidyr_1.2.1          future_1.30.0        assertthat_0.2.1    
+##  [94] cachem_1.0.6         ggplot2_3.4.0        xfun_0.36           
+##  [97] xtable_1.8-4         broom_1.0.3          survival_3.4-0      
+## [100] tibble_3.1.8         iterators_1.0.14     cluster_2.1.4       
+## [103] globals_0.16.2       TH.data_1.1-1        ellipsis_0.3.2      
+## [106] here_1.0.1</code></pre>
 <p>All codes used in this study can furthermore be found here: <a href="https://github.com/mrelnoob/ppl.tits" class="uri">https://github.com/mrelnoob/ppl.tits</a><br />
 <br />
 </p>
@@ -1606,19 +1606,22 @@ contained missing values. As most of them were MAR or MCAR (missing
 [completely] at random) and since deleting observations containing
 missing values can lead to biased coefficient estimates <span class="citation">(Harrell, 2015)</span>, we decided to impute the
 missing values in some of our <em>response variables</em> as well as in
-all <em>independent variables</em> containing missing values instead of
-deleting observations. For our morphometric <em>response variables</em>,
-however, missing values were not MAR as many were due to the fact that
-reproduction events failed. In such a case, it was impossible to measure
-morphometric variables as nestlings were either dead or missing. These
-<em>response variables</em> were thus excluded from the following
-imputation process.<br />
+all <em>independent variables</em> (IV) containing missing values
+instead of deleting observations. For our morphometric <em>response
+variables</em>, however, missing values were not MAR as many were due to
+the fact that reproduction events failed. In such a case, it was
+impossible to measure morphometric variables as nestlings were either
+dead or missing. These <em>response variables</em> were thus excluded
+from the following imputation process.<br />
 Now, since the proportion of missing values is clearly higher for our
 Blue Tits (<em>Cyanistes caeruleus</em>) observations than for our Great
 Tits (<em>Parus major</em>) data and as the former has a lower sample
 size, we chose to split our data into two subsets, one for each species.
 Consequently, the Blue Tits one contains less variables as some were
-discarded to prevent overoptimistic imputations.</p>
+discarded to prevent overoptimistic imputations. Furthermore, we
+actually performed 4 runs of imputation, one for each buffer size used
+to extract our IVs (i.e. one for each sub-dataset: 50, 100, 150 and 200
+metres-based datasets).</p>
 <p>To impute missing values, we used the <code>missForest()</code>
 function from the <code>{missForest}</code> package <span class="citation">(Stekhoven &amp; Bühlmann, 2011)</span>. This functions
 initially imputes all missing data using the mean/mode, then for each
@@ -1642,9 +1645,10 @@ accuracy.</p>
 <h2>2.1. Great Tits dataset</h2>
 <div id="dataset-prior-to-imputation" class="section level3">
 <h3>2.1.1. Dataset prior to imputation</h3>
-<p>Here is a summary of the Great Tits dataset prior to data imputation
-(for the meaning of the variables, readers are referred to <strong>Table
-S1</strong> - cf. Supplementary Materials):</p>
+<p>Here is a summary of the <em>Great Tits 150m-based dataset</em> prior
+to data imputation (for the meaning of the variables, readers are
+referred to <strong>Table S1</strong> - cf. Supplementary
+Materials):</p>
 <pre><code>##    id_nestbox               site        coord_x          coord_y       
 ##  DIJ-139:  4   parc_colombiere: 29   Min.   :849898   Min.   :6690155  
 ##  DIJ-163:  4   arquebuse      : 23   1st Qu.:853196   1st Qu.:6692273  
@@ -1653,93 +1657,109 @@ S1</strong> - cf. Supplementary Materials):</p>
 ##  DIJ-028:  3   allee_du_parc  : 13   3rd Qu.:855166   3rd Qu.:6693667  
 ##  DIJ-051:  3   ru_de_pouilly  : 12   Max.   :856770   Max.   :6696562  
 ##  (Other):248   (Other)        :156                                     
-##    year    species    breeding_window  laying_date          flight_date        
-##  2020:42   CC:  0   late_2022 :55     Min.   :2019-03-17   Min.   :2019-04-22  
-##  2021:72   PM:268   early_2022:44     1st Qu.:2020-03-26   1st Qu.:2020-04-28  
-##  2019:55            late_2021 :36     Median :2021-04-05   Median :2021-05-09  
-##  2022:99            early_2021:36     Mean   :2021-01-20   Mean   :2021-02-23  
-##                     early_2019:32     3rd Qu.:2022-03-31   3rd Qu.:2022-05-04  
-##                     late_2019 :23     Max.   :2022-04-20   Max.   :2022-05-23  
-##                     (Other)   :42                                              
-##   clutch_size       brood_size      fledgling_nb         mass       
-##  Min.   : 1.000   Min.   : 0.000   Min.   : 0.000   Min.   : 9.866  
-##  1st Qu.: 7.000   1st Qu.: 6.000   1st Qu.: 4.000   1st Qu.:13.429  
-##  Median : 8.000   Median : 8.000   Median : 6.000   Median :14.851  
-##  Mean   : 8.123   Mean   : 7.345   Mean   : 5.403   Mean   :14.775  
-##  3rd Qu.: 9.000   3rd Qu.: 9.000   3rd Qu.: 8.000   3rd Qu.:16.076  
-##  Max.   :12.000   Max.   :12.000   Max.   :11.000   Max.   :18.413  
-##                   NA&#39;s   :1                         NA&#39;s   :49      
-##  tarsus_length    wing_length      father_id    father_cond         mother_id  
-##  Min.   :15.68   Min.   :27.00   8382546:  2   Min.   :-3.61459   7556111:  2  
-##  1st Qu.:18.48   1st Qu.:38.95   8791992:  2   1st Qu.:-0.80096   7636392:  2  
-##  Median :19.06   Median :42.20   8876547:  2   Median : 0.14185   8381599:  2  
-##  Mean   :18.91   Mean   :41.45   8877009:  2   Mean   : 0.01227   8382542:  2  
-##  3rd Qu.:19.50   3rd Qu.:45.06   8877040:  2   3rd Qu.: 0.86365   8791030:  2  
-##  Max.   :20.55   Max.   :50.38   (Other): 92   Max.   : 3.03075   (Other): 86  
-##  NA&#39;s   :89      NA&#39;s   :123     NA&#39;s   :166   NA&#39;s   :166        NA&#39;s   :172  
-##   mother_cond          cumdd_30      min_t_before    min_t_between    
-##  Min.   :-3.00856   Min.   :189.3   Min.   :-3.360   Min.   :-3.0600  
-##  1st Qu.:-0.73603   1st Qu.:251.5   1st Qu.:-1.900   1st Qu.:-1.5225  
-##  Median : 0.05975   Median :267.0   Median :-1.010   Median :-0.3950  
-##  Mean   : 0.03430   Mean   :263.1   Mean   :-1.154   Mean   : 0.1884  
-##  3rd Qu.: 0.65760   3rd Qu.:278.7   3rd Qu.:-0.370   3rd Qu.: 1.0170  
-##  Max.   : 3.20848   Max.   :329.7   Max.   : 0.910   Max.   : 6.5300  
-##  NA&#39;s   :172        NA&#39;s   :26      NA&#39;s   :35       NA&#39;s   :34       
-##  mean_winter_t    sd_winter_t     lsource_0_m     lsource_0_iq   
-##  Min.   :5.069   Min.   :3.642   Min.   : 0.00   Min.   : 0.000  
-##  1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.00   1st Qu.: 4.000  
-##  Median :5.745   Median :3.777   Median : 4.00   Median : 7.000  
-##  Mean   :5.716   Mean   :3.791   Mean   : 4.33   Mean   : 6.998  
-##  3rd Qu.:5.877   3rd Qu.:3.832   3rd Qu.: 6.00   3rd Qu.: 9.500  
-##  Max.   :6.466   Max.   :4.279   Max.   :14.00   Max.   :21.000  
-##                                                                  
-##   lsource_10_m   lsource_10_iq      lflux_0_m         lflux_0_iq    
-##  Min.   : 0.00   Min.   : 0.000   Min.   :  0.000   Min.   :  0.00  
-##  1st Qu.:10.00   1st Qu.: 5.500   1st Qu.:  5.217   1st Qu.: 28.28  
-##  Median :18.00   Median : 8.125   Median : 36.198   Median : 94.13  
-##  Mean   :19.29   Mean   : 9.579   Mean   : 42.160   Mean   :100.64  
-##  3rd Qu.:28.25   3rd Qu.:12.000   3rd Qu.: 64.355   3rd Qu.:162.98  
-##  Max.   :52.00   Max.   :35.000   Max.   :231.522   Max.   :303.11  
-##                                                                     
+##    year         dist     species    breeding_window  laying_date        
+##  2020:42   Min.   :150   CC:  0   late_2022 :55     Min.   :2019-03-17  
+##  2021:72   1st Qu.:150   PM:268   early_2022:44     1st Qu.:2020-03-26  
+##  2019:55   Median :150            late_2021 :36     Median :2021-04-05  
+##  2022:99   Mean   :150            early_2021:36     Mean   :2021-01-20  
+##            3rd Qu.:150            early_2019:32     3rd Qu.:2022-03-31  
+##            Max.   :150            late_2019 :23     Max.   :2022-04-20  
+##                                   (Other)   :42                         
+##   flight_date          clutch_size       brood_size      fledgling_nb   
+##  Min.   :2019-04-22   Min.   : 1.000   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.:2020-04-28   1st Qu.: 7.000   1st Qu.: 6.000   1st Qu.: 4.000  
+##  Median :2021-05-09   Median : 8.000   Median : 8.000   Median : 6.000  
+##  Mean   :2021-02-23   Mean   : 8.123   Mean   : 7.345   Mean   : 5.403  
+##  3rd Qu.:2022-05-04   3rd Qu.: 9.000   3rd Qu.: 9.000   3rd Qu.: 8.000  
+##  Max.   :2022-05-23   Max.   :12.000   Max.   :12.000   Max.   :11.000  
+##                                        NA&#39;s   :1                        
+##       mass        tarsus_length    wing_length      father_id  
+##  Min.   : 9.866   Min.   :15.68   Min.   :27.00   8382546:  2  
+##  1st Qu.:13.429   1st Qu.:18.48   1st Qu.:38.95   8791992:  2  
+##  Median :14.851   Median :19.06   Median :42.20   8876547:  2  
+##  Mean   :14.775   Mean   :18.91   Mean   :41.45   8877009:  2  
+##  3rd Qu.:16.076   3rd Qu.:19.50   3rd Qu.:45.06   8877040:  2  
+##  Max.   :18.413   Max.   :20.55   Max.   :50.38   (Other): 92  
+##  NA&#39;s   :49       NA&#39;s   :89      NA&#39;s   :123     NA&#39;s   :166  
+##   father_cond         mother_id    mother_cond          cumdd_30    
+##  Min.   :-3.61459   7556111:  2   Min.   :-3.00856   Min.   :189.3  
+##  1st Qu.:-0.80096   7636392:  2   1st Qu.:-0.73603   1st Qu.:251.5  
+##  Median : 0.14185   8381599:  2   Median : 0.05975   Median :267.0  
+##  Mean   : 0.01227   8382542:  2   Mean   : 0.03430   Mean   :263.1  
+##  3rd Qu.: 0.86365   8791030:  2   3rd Qu.: 0.65760   3rd Qu.:278.7  
+##  Max.   : 3.03075   (Other): 86   Max.   : 3.20848   Max.   :329.7  
+##  NA&#39;s   :166        NA&#39;s   :172   NA&#39;s   :172        NA&#39;s   :26     
+##     cumdd_60     cumdd_between     min_t_before    min_t_between    
+##  Min.   :361.5   Min.   : 77.41   Min.   :-3.360   Min.   :-3.0600  
+##  1st Qu.:444.1   1st Qu.:356.15   1st Qu.:-1.870   1st Qu.:-1.5600  
+##  Median :464.1   Median :387.96   Median :-1.099   Median :-0.3950  
+##  Mean   :466.8   Mean   :388.60   Mean   :-1.157   Mean   : 0.1783  
+##  3rd Qu.:488.9   3rd Qu.:424.41   3rd Qu.:-0.370   3rd Qu.: 1.0170  
+##  Max.   :611.2   Max.   :546.69   Max.   : 0.910   Max.   : 6.5300  
+##  NA&#39;s   :12      NA&#39;s   :19       NA&#39;s   :26       NA&#39;s   :20       
+##  mean_winter_t    sd_winter_t     lsource_0_m      lsource_0_iq   
+##  Min.   :5.069   Min.   :3.642   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.000   1st Qu.: 4.000  
+##  Median :5.745   Median :3.777   Median : 4.000   Median : 7.000  
+##  Mean   :5.716   Mean   :3.791   Mean   : 4.319   Mean   : 6.988  
+##  3rd Qu.:5.877   3rd Qu.:3.832   3rd Qu.: 6.000   3rd Qu.: 9.312  
+##  Max.   :6.466   Max.   :4.279   Max.   :14.000   Max.   :21.000  
+##                                                                   
+##   lsource_10_m   lsource_10_iq      lflux_0_m        lflux_0_iq    
+##  Min.   : 0.00   Min.   : 0.000   Min.   :  0.00   Min.   :  0.00  
+##  1st Qu.:10.00   1st Qu.: 5.500   1st Qu.:  5.22   1st Qu.: 28.28  
+##  Median :18.00   Median : 8.000   Median : 36.20   Median : 94.54  
+##  Mean   :19.32   Mean   : 9.562   Mean   : 42.23   Mean   :100.65  
+##  3rd Qu.:28.62   3rd Qu.:12.000   3rd Qu.: 64.81   3rd Qu.:162.98  
+##  Max.   :52.00   Max.   :35.000   Max.   :231.52   Max.   :303.11  
+##                                                                    
 ##    lflux_10_m      lflux_10_iq     lsource_vs150_m lsource_vs150_iq
 ##  Min.   :  0.00   Min.   :  0.00   Min.   : 0.00   Min.   : 0.00   
-##  1st Qu.: 17.77   1st Qu.: 34.88   1st Qu.: 6.00   1st Qu.: 7.00   
-##  Median : 48.22   Median : 64.70   Median :11.00   Median :10.00   
-##  Mean   : 55.33   Mean   : 78.33   Mean   :11.28   Mean   :11.05   
-##  3rd Qu.: 87.04   3rd Qu.:115.11   3rd Qu.:15.00   3rd Qu.:14.00   
+##  1st Qu.: 17.77   1st Qu.: 35.04   1st Qu.: 6.00   1st Qu.: 7.00   
+##  Median : 48.71   Median : 64.11   Median :11.00   Median :10.00   
+##  Mean   : 55.29   Mean   : 77.97   Mean   :11.28   Mean   :11.05   
+##  3rd Qu.: 87.40   3rd Qu.:117.48   3rd Qu.:15.00   3rd Qu.:14.00   
 ##  Max.   :196.61   Max.   :266.11   Max.   :33.00   Max.   :31.00   
 ##                                                                    
-##     noise_m         noise_iq          trafic          built_area   
-##  Min.   :23.82   Min.   : 1.043   Min.   :      0   Min.   :    0  
-##  1st Qu.:51.87   1st Qu.: 6.328   1st Qu.: 428822   1st Qu.: 6695  
-##  Median :53.49   Median : 9.857   Median :2099467   Median :10750  
-##  Mean   :54.20   Mean   : 9.791   Mean   :2665281   Mean   :11192  
-##  3rd Qu.:57.92   3rd Qu.:12.869   3rd Qu.:4616539   3rd Qu.:15106  
-##  Max.   :65.12   Max.   :24.177   Max.   :9819101   Max.   :33597  
-##                                                                    
-##    open_area     vegetation_area herbaceous_area soft_manag_area
-##  Min.   :  125   Min.   : 7942   Min.   : 2121   Min.   :    0  
-##  1st Qu.:21562   1st Qu.:25132   1st Qu.: 8749   1st Qu.:    0  
-##  Median :27683   Median :30738   Median :11484   Median :    0  
-##  Mean   :25358   Mean   :33803   Mean   :12218   Mean   : 1528  
-##  3rd Qu.:32301   3rd Qu.:38222   3rd Qu.:14458   3rd Qu.: 1212  
-##  Max.   :41321   Max.   :70228   Max.   :29589   Max.   :18927  
-##                                                                 
-##    woody_area    woodyveg_volume    woodyveg_sd    age_class strata_div
-##  Min.   : 4205   Min.   :  19030   Min.   :1.624   0: 52     0: 3      
-##  1st Qu.:13402   1st Qu.:  86268   1st Qu.:4.447   1:100     1:17      
-##  Median :17774   Median : 169023   Median :5.462   2:116     2:99      
-##  Mean   :21585   Mean   : 288220   Mean   :5.587             3:85      
-##  3rd Qu.:24723   3rd Qu.: 249857   3rd Qu.:6.797             4:64      
-##  Max.   :63038   Max.   :1531037   Max.   :9.893                       
+##     noise_m         noise_iq          trafic        age_class strata_div
+##  Min.   :23.82   Min.   : 1.043   Min.   :      0   0: 52     0: 3      
+##  1st Qu.:51.87   1st Qu.: 6.328   1st Qu.: 428822   1:100     1:17      
+##  Median :53.49   Median : 9.857   Median :2099467   2:116     2:99      
+##  Mean   :54.20   Mean   : 9.791   Mean   :2665281             3:85      
+##  3rd Qu.:57.92   3rd Qu.:12.869   3rd Qu.:4616539             4:64      
+##  Max.   :65.12   Max.   :24.177   Max.   :9819101                       
+##                                                                         
+##  woodyveg_volume    woodyveg_sd      woody_area    vegetation_area
+##  Min.   :  19781   Min.   :1.654   Min.   : 5249   Min.   : 7250  
+##  1st Qu.:  83718   1st Qu.:4.571   1st Qu.:13279   1st Qu.:25362  
+##  Median : 157696   Median :5.513   Median :17273   Median :30532  
+##  Mean   : 274728   Mean   :5.653   Mean   :20742   Mean   :33884  
+##  3rd Qu.: 245294   3rd Qu.:6.710   3rd Qu.:23099   3rd Qu.:38153  
+##  Max.   :1461602   Max.   :9.873   Max.   :59093   Max.   :70202  
+##                                                                   
+##  herbaceous_area soft_manag_area   built_area     build_volume   
+##  Min.   : 2001   Min.   :    0   Min.   :    0   Min.   :     0  
+##  1st Qu.: 9593   1st Qu.:    0   1st Qu.: 6628   1st Qu.: 59340  
+##  Median :12380   Median :    0   Median :10702   Median : 93366  
+##  Mean   :13142   Mean   : 1528   Mean   :11155   Mean   :106955  
+##  3rd Qu.:15512   3rd Qu.: 1212   3rd Qu.:15121   3rd Qu.:134428  
+##  Max.   :32580   Max.   :18927   Max.   :33559   Max.   :488911  
+##                                                                  
+##     build_sd        open_area       water_area   
+##  Min.   : 0.000   Min.   :  448   Min.   :    0  
+##  1st Qu.: 3.201   1st Qu.:19813   1st Qu.:    0  
+##  Median : 4.581   Median :26104   Median :    0  
+##  Mean   : 4.662   Mean   :24141   Mean   : 1471  
+##  3rd Qu.: 6.016   3rd Qu.:30652   3rd Qu.:  341  
+##  Max.   :10.879   Max.   :39321   Max.   :19627  
 ## </code></pre>
 </div>
 <div id="dataset-after-imputation" class="section level3">
 <h3>2.1.2. Dataset after imputation</h3>
 <p>Below, you may find a summary table of the OOB error for all imputed
-variables, expressed in variables original scales (the blue variable is
-a future <em>response variable</em> while the green ones are meant to be
-<em>independent variables</em>):</p>
+variables and for each sub-dataset, expressed in variables original
+scales (the blue variable is a future <em>response variable</em> while
+the green ones are meant to be <em>independent variables</em>):</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1750,7 +1770,16 @@ Variable
 Nb_imputed_values
 </th>
 <th style="text-align:right;">
-Oob_RMSE
+Oob_RMSE_50m
+</th>
+<th style="text-align:right;">
+Oob_RMSE_100m
+</th>
+<th style="text-align:right;">
+Oob_RMSE_150m
+</th>
+<th style="text-align:right;">
+Oob_RMSE_200m
 </th>
 </tr>
 </thead>
@@ -1763,7 +1792,16 @@ Oob_RMSE
 1
 </td>
 <td style="text-align:right;">
-1.8683177
+1.7160618
+</td>
+<td style="text-align:right;">
+1.7298103
+</td>
+<td style="text-align:right;">
+1.7471081
+</td>
+<td style="text-align:right;">
+1.6673480
 </td>
 </tr>
 <tr>
@@ -1774,7 +1812,16 @@ Oob_RMSE
 166
 </td>
 <td style="text-align:right;">
-1.3084364
+1.3112172
+</td>
+<td style="text-align:right;">
+1.2773209
+</td>
+<td style="text-align:right;">
+1.3173799
+</td>
+<td style="text-align:right;">
+1.3176503
 </td>
 </tr>
 <tr>
@@ -1785,7 +1832,16 @@ Oob_RMSE
 172
 </td>
 <td style="text-align:right;">
-1.2634455
+1.3085917
+</td>
+<td style="text-align:right;">
+1.2967841
+</td>
+<td style="text-align:right;">
+1.2564373
+</td>
+<td style="text-align:right;">
+1.2554635
 </td>
 </tr>
 <tr>
@@ -1796,7 +1852,56 @@ Oob_RMSE
 26
 </td>
 <td style="text-align:right;">
-13.8843683
+11.2976144
+</td>
+<td style="text-align:right;">
+11.1032172
+</td>
+<td style="text-align:right;">
+10.6689068
+</td>
+<td style="text-align:right;">
+11.1256298
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">cumdd_60</span>
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+24.1987754
+</td>
+<td style="text-align:right;">
+23.9551949
+</td>
+<td style="text-align:right;">
+24.3766340
+</td>
+<td style="text-align:right;">
+24.2446349
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">cumdd_between</span>
+</td>
+<td style="text-align:right;">
+19
+</td>
+<td style="text-align:right;">
+48.5504368
+</td>
+<td style="text-align:right;">
+47.2098566
+</td>
+<td style="text-align:right;">
+47.7782244
+</td>
+<td style="text-align:right;">
+50.3658837
 </td>
 </tr>
 <tr>
@@ -1804,10 +1909,19 @@ Oob_RMSE
 <span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">min_t_before</span>
 </td>
 <td style="text-align:right;">
-35
+26
 </td>
 <td style="text-align:right;">
-0.4019811
+0.4380535
+</td>
+<td style="text-align:right;">
+0.4363144
+</td>
+<td style="text-align:right;">
+0.4265316
+</td>
+<td style="text-align:right;">
+0.4289026
 </td>
 </tr>
 <tr>
@@ -1815,10 +1929,19 @@ Oob_RMSE
 <span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">min_t_between</span>
 </td>
 <td style="text-align:right;">
-34
+20
 </td>
 <td style="text-align:right;">
-1.5003143
+1.3341640
+</td>
+<td style="text-align:right;">
+1.3096693
+</td>
+<td style="text-align:right;">
+1.3296874
+</td>
+<td style="text-align:right;">
+1.3171002
 </td>
 </tr>
 </tbody>
@@ -1826,7 +1949,8 @@ Oob_RMSE
 <p>You can see that imputation errors are, in this case, fairly
 negligible compared to variables’ ranges of variation. Consequently, we
 deemed these imputations acceptable and used them for the subsequent
-analyses. Here is a summary of the same data AFTER imputation:</p>
+analyses. Here is a summary of the <em>Great Tits 150m-based
+dataset</em> AFTER imputation:</p>
 <pre><code>##    id_nestbox               site        coord_x          coord_y       
 ##  DIJ-139:  4   parc_colombiere: 29   Min.   :849898   Min.   :6690155  
 ##  DIJ-163:  4   arquebuse      : 23   1st Qu.:853196   1st Qu.:6692273  
@@ -1835,85 +1959,101 @@ analyses. Here is a summary of the same data AFTER imputation:</p>
 ##  DIJ-028:  3   allee_du_parc  : 13   3rd Qu.:855166   3rd Qu.:6693667  
 ##  DIJ-051:  3   ru_de_pouilly  : 12   Max.   :856770   Max.   :6696562  
 ##  (Other):248   (Other)        :156                                     
-##    year    species    breeding_window  laying_date          flight_date        
-##  2020:42   CC:  0   late_2022 :55     Min.   :2019-03-17   Min.   :2019-04-22  
-##  2021:72   PM:268   early_2022:44     1st Qu.:2020-03-26   1st Qu.:2020-04-28  
-##  2019:55            late_2021 :36     Median :2021-04-05   Median :2021-05-09  
-##  2022:99            early_2021:36     Mean   :2021-01-20   Mean   :2021-02-23  
-##                     early_2019:32     3rd Qu.:2022-03-31   3rd Qu.:2022-05-04  
-##                     late_2019 :23     Max.   :2022-04-20   Max.   :2022-05-23  
-##                     (Other)   :42                                              
-##   clutch_size       brood_size      fledgling_nb         mass       
-##  Min.   : 1.000   Min.   : 0.000   Min.   : 0.000   Min.   : 9.866  
-##  1st Qu.: 7.000   1st Qu.: 6.000   1st Qu.: 4.000   1st Qu.:13.429  
-##  Median : 8.000   Median : 8.000   Median : 6.000   Median :14.851  
-##  Mean   : 8.123   Mean   : 7.345   Mean   : 5.403   Mean   :14.775  
-##  3rd Qu.: 9.000   3rd Qu.: 9.000   3rd Qu.: 8.000   3rd Qu.:16.076  
-##  Max.   :12.000   Max.   :12.000   Max.   :11.000   Max.   :18.413  
-##                                                     NA&#39;s   :49      
-##  tarsus_length    wing_length      father_id    father_cond         mother_id  
-##  Min.   :15.68   Min.   :27.00   8382546:  2   Min.   :-3.61459   7556111:  2  
-##  1st Qu.:18.48   1st Qu.:38.95   8791992:  2   1st Qu.:-0.41902   7636392:  2  
-##  Median :19.06   Median :42.20   8876547:  2   Median : 0.01738   8381599:  2  
-##  Mean   :18.91   Mean   :41.45   8877009:  2   Mean   :-0.04249   8382542:  2  
-##  3rd Qu.:19.50   3rd Qu.:45.06   8877040:  2   3rd Qu.: 0.31135   8791030:  2  
-##  Max.   :20.55   Max.   :50.38   (Other): 92   Max.   : 3.03075   (Other): 86  
-##  NA&#39;s   :89      NA&#39;s   :123     NA&#39;s   :166                      NA&#39;s   :172  
-##   mother_cond          cumdd_30      min_t_before     min_t_between    
-##  Min.   :-3.00856   Min.   :189.3   Min.   :-3.3600   Min.   :-3.0600  
-##  1st Qu.:-0.29586   1st Qu.:246.7   1st Qu.:-1.8475   1st Qu.:-1.5000  
-##  Median : 0.10614   Median :264.4   Median :-1.0643   Median :-0.4061  
-##  Mean   : 0.07254   Mean   :261.2   Mean   :-1.1504   Mean   : 0.1019  
-##  3rd Qu.: 0.42924   3rd Qu.:277.3   3rd Qu.:-0.4543   3rd Qu.: 0.8250  
-##  Max.   : 3.20848   Max.   :329.7   Max.   : 0.9100   Max.   : 6.5300  
-##                                                                        
-##  mean_winter_t    sd_winter_t     lsource_0_m     lsource_0_iq   
-##  Min.   :5.069   Min.   :3.642   Min.   : 0.00   Min.   : 0.000  
-##  1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.00   1st Qu.: 4.000  
-##  Median :5.745   Median :3.777   Median : 4.00   Median : 7.000  
-##  Mean   :5.716   Mean   :3.791   Mean   : 4.33   Mean   : 6.998  
-##  3rd Qu.:5.877   3rd Qu.:3.832   3rd Qu.: 6.00   3rd Qu.: 9.500  
-##  Max.   :6.466   Max.   :4.279   Max.   :14.00   Max.   :21.000  
-##                                                                  
-##   lsource_10_m   lsource_10_iq      lflux_0_m         lflux_0_iq    
-##  Min.   : 0.00   Min.   : 0.000   Min.   :  0.000   Min.   :  0.00  
-##  1st Qu.:10.00   1st Qu.: 5.500   1st Qu.:  5.217   1st Qu.: 28.28  
-##  Median :18.00   Median : 8.125   Median : 36.198   Median : 94.13  
-##  Mean   :19.29   Mean   : 9.579   Mean   : 42.160   Mean   :100.64  
-##  3rd Qu.:28.25   3rd Qu.:12.000   3rd Qu.: 64.355   3rd Qu.:162.98  
-##  Max.   :52.00   Max.   :35.000   Max.   :231.522   Max.   :303.11  
+##    year         dist     species    breeding_window  laying_date        
+##  2020:42   Min.   :150   CC:  0   late_2022 :55     Min.   :2019-03-17  
+##  2021:72   1st Qu.:150   PM:268   early_2022:44     1st Qu.:2020-03-26  
+##  2019:55   Median :150            late_2021 :36     Median :2021-04-05  
+##  2022:99   Mean   :150            early_2021:36     Mean   :2021-01-20  
+##            3rd Qu.:150            early_2019:32     3rd Qu.:2022-03-31  
+##            Max.   :150            late_2019 :23     Max.   :2022-04-20  
+##                                   (Other)   :42                         
+##   flight_date          clutch_size       brood_size      fledgling_nb   
+##  Min.   :2019-04-22   Min.   : 1.000   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.:2020-04-28   1st Qu.: 7.000   1st Qu.: 6.000   1st Qu.: 4.000  
+##  Median :2021-05-09   Median : 8.000   Median : 8.000   Median : 6.000  
+##  Mean   :2021-02-23   Mean   : 8.123   Mean   : 7.346   Mean   : 5.403  
+##  3rd Qu.:2022-05-04   3rd Qu.: 9.000   3rd Qu.: 9.000   3rd Qu.: 8.000  
+##  Max.   :2022-05-23   Max.   :12.000   Max.   :12.000   Max.   :11.000  
+##                                                                         
+##       mass        tarsus_length    wing_length      father_id  
+##  Min.   : 9.866   Min.   :15.68   Min.   :27.00   8382546:  2  
+##  1st Qu.:13.429   1st Qu.:18.48   1st Qu.:38.95   8791992:  2  
+##  Median :14.851   Median :19.06   Median :42.20   8876547:  2  
+##  Mean   :14.775   Mean   :18.91   Mean   :41.45   8877009:  2  
+##  3rd Qu.:16.076   3rd Qu.:19.50   3rd Qu.:45.06   8877040:  2  
+##  Max.   :18.413   Max.   :20.55   Max.   :50.38   (Other): 92  
+##  NA&#39;s   :49       NA&#39;s   :89      NA&#39;s   :123     NA&#39;s   :166  
+##   father_cond         mother_id    mother_cond          cumdd_30    
+##  Min.   :-3.61459   7556111:  2   Min.   :-3.00856   Min.   :189.3  
+##  1st Qu.:-0.37059   7636392:  2   1st Qu.:-0.29146   1st Qu.:251.4  
+##  Median : 0.02405   8381599:  2   Median : 0.08069   Median :264.4  
+##  Mean   :-0.03150   8382542:  2   Mean   : 0.04666   Mean   :262.3  
+##  3rd Qu.: 0.29586   8791030:  2   3rd Qu.: 0.36730   3rd Qu.:277.3  
+##  Max.   : 3.03075   (Other): 86   Max.   : 3.20848   Max.   :329.7  
+##                     NA&#39;s   :172                                     
+##     cumdd_60     cumdd_between     min_t_before    min_t_between    
+##  Min.   :361.5   Min.   : 77.41   Min.   :-3.360   Min.   :-3.0600  
+##  1st Qu.:444.2   1st Qu.:356.11   1st Qu.:-1.847   1st Qu.:-1.5000  
+##  Median :464.9   Median :382.59   Median :-1.155   Median :-0.2270  
+##  Mean   :466.7   Mean   :386.42   Mean   :-1.167   Mean   : 0.1828  
+##  3rd Qu.:487.4   3rd Qu.:420.55   3rd Qu.:-0.458   3rd Qu.: 1.0170  
+##  Max.   :611.2   Max.   :546.69   Max.   : 0.910   Max.   : 6.5300  
 ##                                                                     
+##  mean_winter_t    sd_winter_t     lsource_0_m      lsource_0_iq   
+##  Min.   :5.069   Min.   :3.642   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.000   1st Qu.: 4.000  
+##  Median :5.745   Median :3.777   Median : 4.000   Median : 7.000  
+##  Mean   :5.716   Mean   :3.791   Mean   : 4.319   Mean   : 6.988  
+##  3rd Qu.:5.877   3rd Qu.:3.832   3rd Qu.: 6.000   3rd Qu.: 9.312  
+##  Max.   :6.466   Max.   :4.279   Max.   :14.000   Max.   :21.000  
+##                                                                   
+##   lsource_10_m   lsource_10_iq      lflux_0_m        lflux_0_iq    
+##  Min.   : 0.00   Min.   : 0.000   Min.   :  0.00   Min.   :  0.00  
+##  1st Qu.:10.00   1st Qu.: 5.500   1st Qu.:  5.22   1st Qu.: 28.28  
+##  Median :18.00   Median : 8.000   Median : 36.20   Median : 94.54  
+##  Mean   :19.32   Mean   : 9.562   Mean   : 42.23   Mean   :100.65  
+##  3rd Qu.:28.62   3rd Qu.:12.000   3rd Qu.: 64.81   3rd Qu.:162.98  
+##  Max.   :52.00   Max.   :35.000   Max.   :231.52   Max.   :303.11  
+##                                                                    
 ##    lflux_10_m      lflux_10_iq     lsource_vs150_m lsource_vs150_iq
 ##  Min.   :  0.00   Min.   :  0.00   Min.   : 0.00   Min.   : 0.00   
-##  1st Qu.: 17.77   1st Qu.: 34.88   1st Qu.: 6.00   1st Qu.: 7.00   
-##  Median : 48.22   Median : 64.70   Median :11.00   Median :10.00   
-##  Mean   : 55.33   Mean   : 78.33   Mean   :11.28   Mean   :11.05   
-##  3rd Qu.: 87.04   3rd Qu.:115.11   3rd Qu.:15.00   3rd Qu.:14.00   
+##  1st Qu.: 17.77   1st Qu.: 35.04   1st Qu.: 6.00   1st Qu.: 7.00   
+##  Median : 48.71   Median : 64.11   Median :11.00   Median :10.00   
+##  Mean   : 55.29   Mean   : 77.97   Mean   :11.28   Mean   :11.05   
+##  3rd Qu.: 87.40   3rd Qu.:117.48   3rd Qu.:15.00   3rd Qu.:14.00   
 ##  Max.   :196.61   Max.   :266.11   Max.   :33.00   Max.   :31.00   
 ##                                                                    
-##     noise_m         noise_iq          trafic          built_area   
-##  Min.   :23.82   Min.   : 1.043   Min.   :      0   Min.   :    0  
-##  1st Qu.:51.87   1st Qu.: 6.328   1st Qu.: 428822   1st Qu.: 6695  
-##  Median :53.49   Median : 9.857   Median :2099467   Median :10750  
-##  Mean   :54.20   Mean   : 9.791   Mean   :2665281   Mean   :11192  
-##  3rd Qu.:57.92   3rd Qu.:12.869   3rd Qu.:4616539   3rd Qu.:15106  
-##  Max.   :65.12   Max.   :24.177   Max.   :9819101   Max.   :33597  
-##                                                                    
-##    open_area     vegetation_area herbaceous_area soft_manag_area
-##  Min.   :  125   Min.   : 7942   Min.   : 2121   Min.   :    0  
-##  1st Qu.:21562   1st Qu.:25132   1st Qu.: 8749   1st Qu.:    0  
-##  Median :27683   Median :30738   Median :11484   Median :    0  
-##  Mean   :25358   Mean   :33803   Mean   :12218   Mean   : 1528  
-##  3rd Qu.:32301   3rd Qu.:38222   3rd Qu.:14458   3rd Qu.: 1212  
-##  Max.   :41321   Max.   :70228   Max.   :29589   Max.   :18927  
-##                                                                 
-##    woody_area    woodyveg_volume    woodyveg_sd    age_class strata_div
-##  Min.   : 4205   Min.   :  19030   Min.   :1.624   0: 52     0: 3      
-##  1st Qu.:13402   1st Qu.:  86268   1st Qu.:4.447   1:100     1:17      
-##  Median :17774   Median : 169023   Median :5.462   2:116     2:99      
-##  Mean   :21585   Mean   : 288220   Mean   :5.587             3:85      
-##  3rd Qu.:24723   3rd Qu.: 249857   3rd Qu.:6.797             4:64      
-##  Max.   :63038   Max.   :1531037   Max.   :9.893                       
+##     noise_m         noise_iq          trafic        age_class strata_div
+##  Min.   :23.82   Min.   : 1.043   Min.   :      0   0: 52     0: 3      
+##  1st Qu.:51.87   1st Qu.: 6.328   1st Qu.: 428822   1:100     1:17      
+##  Median :53.49   Median : 9.857   Median :2099467   2:116     2:99      
+##  Mean   :54.20   Mean   : 9.791   Mean   :2665281             3:85      
+##  3rd Qu.:57.92   3rd Qu.:12.869   3rd Qu.:4616539             4:64      
+##  Max.   :65.12   Max.   :24.177   Max.   :9819101                       
+##                                                                         
+##  woodyveg_volume    woodyveg_sd      woody_area    vegetation_area
+##  Min.   :  19781   Min.   :1.654   Min.   : 5249   Min.   : 7250  
+##  1st Qu.:  83718   1st Qu.:4.571   1st Qu.:13279   1st Qu.:25362  
+##  Median : 157696   Median :5.513   Median :17273   Median :30532  
+##  Mean   : 274728   Mean   :5.653   Mean   :20742   Mean   :33884  
+##  3rd Qu.: 245294   3rd Qu.:6.710   3rd Qu.:23099   3rd Qu.:38153  
+##  Max.   :1461602   Max.   :9.873   Max.   :59093   Max.   :70202  
+##                                                                   
+##  herbaceous_area soft_manag_area   built_area     build_volume   
+##  Min.   : 2001   Min.   :    0   Min.   :    0   Min.   :     0  
+##  1st Qu.: 9593   1st Qu.:    0   1st Qu.: 6628   1st Qu.: 59340  
+##  Median :12380   Median :    0   Median :10702   Median : 93366  
+##  Mean   :13142   Mean   : 1528   Mean   :11155   Mean   :106955  
+##  3rd Qu.:15512   3rd Qu.: 1212   3rd Qu.:15121   3rd Qu.:134428  
+##  Max.   :32580   Max.   :18927   Max.   :33559   Max.   :488911  
+##                                                                  
+##     build_sd        open_area       water_area   
+##  Min.   : 0.000   Min.   :  448   Min.   :    0  
+##  1st Qu.: 3.201   1st Qu.:19813   1st Qu.:    0  
+##  Median : 4.581   Median :26104   Median :    0  
+##  Mean   : 4.662   Mean   :24141   Mean   : 1471  
+##  3rd Qu.: 6.016   3rd Qu.:30652   3rd Qu.:  341  
+##  Max.   :10.879   Max.   :39321   Max.   :19627  
 ## </code></pre>
 <p><br />
 <br />
@@ -1924,9 +2064,10 @@ analyses. Here is a summary of the same data AFTER imputation:</p>
 <h2>2.2. Blue Tits dataset</h2>
 <div id="dataset-prior-to-imputation-1" class="section level3">
 <h3>2.2.1. Dataset prior to imputation</h3>
-<p>Here is a summary of the Blue Tits dataset prior to data imputation
-(for the meaning of the variables, readers are referred to <strong>Table
-S1</strong> - cf. Supplementary Materials):</p>
+<p>Here is a summary of the <em>Blue Tits 150m-based dataset</em> prior
+to data imputation (for the meaning of the variables, readers are
+referred to <strong>Table S1</strong> - cf. Supplementary
+Materials):</p>
 <pre><code>##    id_nestbox                site       coord_x          coord_y       
 ##  DIJ-071:  4   parc_colombiere :16   Min.   :852173   Min.   :6688863  
 ##  DIJ-072:  3   arquebuse       :13   1st Qu.:853716   1st Qu.:6692339  
@@ -1935,93 +2076,109 @@ S1</strong> - cf. Supplementary Materials):</p>
 ##  DIJ-140:  3   bd_strasbourg   :10   3rd Qu.:855313   3rd Qu.:6693335  
 ##  DIJ-016:  2   parc_argentieres: 9   Max.   :859333   Max.   :6696495  
 ##  (Other):120   (Other)         :68                                     
-##    year    species    breeding_window  laying_date          flight_date        
-##  2020:26   CC:138   late_2022 :24     Min.   :2019-03-22   Min.   :2019-04-26  
-##  2021:45   PM:  0   late_2019 :24     1st Qu.:2020-03-23   1st Qu.:2020-04-29  
-##  2019:33            late_2021 :23     Median :2021-03-31   Median :2021-05-03  
-##  2022:34            early_2021:22     Mean   :2020-11-01   Mean   :2020-12-06  
-##                     late_2020 :13     3rd Qu.:2021-04-18   3rd Qu.:2021-05-21  
-##                     early_2020:13     Max.   :2022-04-13   Max.   :2022-05-18  
-##                     (Other)   :19                                              
-##   clutch_size      brood_size      fledgling_nb         mass       
-##  Min.   : 1.00   Min.   : 0.000   Min.   : 0.000   Min.   : 5.873  
-##  1st Qu.: 9.00   1st Qu.: 8.000   1st Qu.: 2.250   1st Qu.: 7.910  
-##  Median :11.00   Median :10.000   Median : 6.000   Median : 8.848  
-##  Mean   :10.33   Mean   : 9.102   Mean   : 5.428   Mean   : 8.935  
-##  3rd Qu.:12.00   3rd Qu.:11.000   3rd Qu.: 8.000   3rd Qu.: 9.998  
-##  Max.   :14.00   Max.   :14.000   Max.   :12.000   Max.   :12.990  
-##                  NA&#39;s   :1                         NA&#39;s   :40      
-##  tarsus_length    wing_length      father_id    father_cond    mother_id  
-##  Min.   :12.01   Min.   :17.50   8791247:  1   Min.   : NA   8790934:  1  
-##  1st Qu.:15.26   1st Qu.:30.04   8791404:  1   1st Qu.: NA   8791396:  1  
-##  Median :16.01   Median :33.27   0325BFC:  0   Median : NA   8791413:  1  
-##  Mean   :15.84   Mean   :32.84   0334BFC:  0   Mean   :NaN   8791432:  1  
-##  3rd Qu.:16.44   3rd Qu.:36.56   1299BFC:  0   3rd Qu.: NA   8791552:  1  
-##  Max.   :17.72   Max.   :40.14   (Other):  0   Max.   : NA   (Other):  3  
-##  NA&#39;s   :63      NA&#39;s   :84      NA&#39;s   :136   NA&#39;s   :138   NA&#39;s   :130  
-##   mother_cond     cumdd_30      min_t_before     min_t_between    
-##  Min.   : NA   Min.   :147.3   Min.   :-3.5400   Min.   :-3.3600  
-##  1st Qu.: NA   1st Qu.:247.9   1st Qu.:-1.7560   1st Qu.:-0.8350  
-##  Median : NA   Median :266.7   Median :-0.6760   Median : 0.0510  
-##  Mean   :NaN   Mean   :260.6   Mean   :-0.8896   Mean   : 0.3227  
-##  3rd Qu.: NA   3rd Qu.:276.2   3rd Qu.:-0.1200   3rd Qu.: 1.0170  
-##  Max.   : NA   Max.   :351.1   Max.   : 0.7970   Max.   : 5.5400  
-##  NA&#39;s   :138   NA&#39;s   :15      NA&#39;s   :25        NA&#39;s   :19       
-##  mean_winter_t    sd_winter_t     lsource_0_m      lsource_0_iq   
-##  Min.   :5.069   Min.   :3.642   Min.   : 0.000   Min.   : 0.000  
-##  1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.000   1st Qu.: 4.000  
-##  Median :5.745   Median :3.776   Median : 4.000   Median : 7.000  
-##  Mean   :5.744   Mean   :3.779   Mean   : 4.453   Mean   : 7.335  
-##  3rd Qu.:5.859   3rd Qu.:3.818   3rd Qu.: 6.375   3rd Qu.:10.000  
-##  Max.   :6.415   Max.   :4.011   Max.   :14.000   Max.   :21.000  
-##                                                                   
-##   lsource_10_m   lsource_10_iq      lflux_0_m         lflux_0_iq    
-##  Min.   : 0.00   Min.   : 0.000   Min.   :  0.000   Min.   :  0.00  
-##  1st Qu.: 9.00   1st Qu.: 5.750   1st Qu.:  5.584   1st Qu.: 30.07  
-##  Median :18.00   Median : 8.125   Median : 39.868   Median :110.79  
-##  Mean   :19.03   Mean   :10.080   Mean   : 48.709   Mean   :108.36  
-##  3rd Qu.:29.75   3rd Qu.:12.125   3rd Qu.: 76.809   3rd Qu.:165.91  
-##  Max.   :52.00   Max.   :35.000   Max.   :207.137   Max.   :303.11  
-##                                                                     
-##    lflux_10_m      lflux_10_iq     lsource_vs150_m lsource_vs150_iq
-##  Min.   :  0.00   Min.   :  0.00   Min.   : 0.00   Min.   : 0.00   
-##  1st Qu.: 19.25   1st Qu.: 36.73   1st Qu.: 6.00   1st Qu.: 7.00   
-##  Median : 56.65   Median : 68.52   Median :10.50   Median :10.00   
-##  Mean   : 60.27   Mean   : 83.41   Mean   :11.03   Mean   :11.72   
-##  3rd Qu.: 95.16   3rd Qu.:128.18   3rd Qu.:14.75   3rd Qu.:16.00   
-##  Max.   :160.03   Max.   :248.53   Max.   :33.00   Max.   :31.00   
+##    year         dist     species    breeding_window  laying_date        
+##  2020:26   Min.   :150   CC:138   late_2022 :24     Min.   :2019-03-22  
+##  2021:45   1st Qu.:150   PM:  0   late_2019 :24     1st Qu.:2020-03-23  
+##  2019:33   Median :150            late_2021 :23     Median :2021-03-31  
+##  2022:34   Mean   :150            early_2021:22     Mean   :2020-11-01  
+##            3rd Qu.:150            late_2020 :13     3rd Qu.:2021-04-18  
+##            Max.   :150            early_2020:13     Max.   :2022-04-13  
+##                                   (Other)   :19                         
+##   flight_date          clutch_size      brood_size      fledgling_nb   
+##  Min.   :2019-04-26   Min.   : 1.00   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.:2020-04-29   1st Qu.: 9.00   1st Qu.: 8.000   1st Qu.: 2.250  
+##  Median :2021-05-03   Median :11.00   Median :10.000   Median : 6.000  
+##  Mean   :2020-12-06   Mean   :10.33   Mean   : 9.102   Mean   : 5.428  
+##  3rd Qu.:2021-05-21   3rd Qu.:12.00   3rd Qu.:11.000   3rd Qu.: 8.000  
+##  Max.   :2022-05-18   Max.   :14.00   Max.   :14.000   Max.   :12.000  
+##                                       NA&#39;s   :1                        
+##       mass        tarsus_length    wing_length      father_id    father_cond 
+##  Min.   : 5.873   Min.   :12.01   Min.   :17.50   8791247:  1   Min.   : NA  
+##  1st Qu.: 7.910   1st Qu.:15.26   1st Qu.:30.04   8791404:  1   1st Qu.: NA  
+##  Median : 8.848   Median :16.01   Median :33.27   0325BFC:  0   Median : NA  
+##  Mean   : 8.935   Mean   :15.84   Mean   :32.84   0334BFC:  0   Mean   :NaN  
+##  3rd Qu.: 9.998   3rd Qu.:16.44   3rd Qu.:36.56   1299BFC:  0   3rd Qu.: NA  
+##  Max.   :12.990   Max.   :17.72   Max.   :40.14   (Other):  0   Max.   : NA  
+##  NA&#39;s   :40       NA&#39;s   :63      NA&#39;s   :84      NA&#39;s   :136   NA&#39;s   :138  
+##    mother_id    mother_cond     cumdd_30        cumdd_60     cumdd_between   
+##  8790934:  1   Min.   : NA   Min.   :147.3   Min.   :268.7   Min.   : 47.69  
+##  8791396:  1   1st Qu.: NA   1st Qu.:247.9   1st Qu.:450.3   1st Qu.:386.84  
+##  8791413:  1   Median : NA   Median :266.7   Median :470.1   Median :422.94  
+##  8791432:  1   Mean   :NaN   Mean   :260.6   Mean   :469.2   Mean   :416.38  
+##  8791552:  1   3rd Qu.: NA   3rd Qu.:276.2   3rd Qu.:494.7   3rd Qu.:473.87  
+##  (Other):  3   Max.   : NA   Max.   :351.1   Max.   :607.9   Max.   :778.23  
+##  NA&#39;s   :130   NA&#39;s   :138   NA&#39;s   :15      NA&#39;s   :12      NA&#39;s   :10      
+##   min_t_before     min_t_between     mean_winter_t    sd_winter_t   
+##  Min.   :-8.0300   Min.   :-3.3600   Min.   :5.069   Min.   :3.642  
+##  1st Qu.:-1.7700   1st Qu.:-0.6215   1st Qu.:5.528   1st Qu.:3.727  
+##  Median :-0.6760   Median : 0.0510   Median :5.745   Median :3.776  
+##  Mean   :-0.9773   Mean   : 0.3732   Mean   :5.744   Mean   :3.779  
+##  3rd Qu.:-0.1710   3rd Qu.: 1.1800   3rd Qu.:5.859   3rd Qu.:3.818  
+##  Max.   : 0.7970   Max.   : 5.5400   Max.   :6.415   Max.   :4.011  
+##  NA&#39;s   :15        NA&#39;s   :11                                       
+##   lsource_0_m      lsource_0_iq     lsource_10_m   lsource_10_iq   
+##  Min.   : 0.000   Min.   : 0.000   Min.   : 0.00   Min.   : 0.000  
+##  1st Qu.: 2.000   1st Qu.: 4.000   1st Qu.: 9.00   1st Qu.: 5.812  
+##  Median : 4.000   Median : 7.000   Median :18.00   Median : 8.125  
+##  Mean   : 4.489   Mean   : 7.351   Mean   :19.07   Mean   :10.089  
+##  3rd Qu.: 6.500   3rd Qu.:10.000   3rd Qu.:29.88   3rd Qu.:11.938  
+##  Max.   :14.000   Max.   :21.000   Max.   :52.00   Max.   :35.000  
 ##                                                                    
-##     noise_m         noise_iq          trafic          built_area   
-##  Min.   :44.10   Min.   : 1.000   Min.   :      0   Min.   :    0  
-##  1st Qu.:51.96   1st Qu.: 5.908   1st Qu.: 478466   1st Qu.: 7715  
-##  Median :53.78   Median :10.719   Median :2324325   Median :11505  
-##  Mean   :54.38   Mean   : 9.937   Mean   :2863606   Mean   :11521  
-##  3rd Qu.:57.87   3rd Qu.:13.278   3rd Qu.:5344278   3rd Qu.:15176  
-##  Max.   :64.44   Max.   :27.199   Max.   :8217731   Max.   :33182  
-##                                                                    
-##    open_area     vegetation_area herbaceous_area soft_manag_area  
-##  Min.   :  116   Min.   : 7942   Min.   : 2121   Min.   :    0.0  
-##  1st Qu.:20476   1st Qu.:25123   1st Qu.: 8452   1st Qu.:    0.0  
-##  Median :26045   Median :31865   Median :11016   Median :    0.0  
-##  Mean   :24515   Mean   :34317   Mean   :11322   Mean   :  625.5  
-##  3rd Qu.:31707   3rd Qu.:38540   3rd Qu.:13384   3rd Qu.:    0.0  
-##  Max.   :41321   Max.   :70237   Max.   :28970   Max.   :11594.9  
+##    lflux_0_m         lflux_0_iq       lflux_10_m      lflux_10_iq    
+##  Min.   :  0.000   Min.   :  0.00   Min.   :  0.00   Min.   :  0.00  
+##  1st Qu.:  5.584   1st Qu.: 29.46   1st Qu.: 19.36   1st Qu.: 36.73  
+##  Median : 39.868   Median :111.17   Median : 56.65   Median : 68.52  
+##  Mean   : 49.169   Mean   :108.25   Mean   : 60.27   Mean   : 83.66  
+##  3rd Qu.: 73.243   3rd Qu.:165.91   3rd Qu.: 96.34   3rd Qu.:128.25  
+##  Max.   :207.137   Max.   :303.11   Max.   :160.03   Max.   :248.53  
+##                                                                      
+##  lsource_vs150_m lsource_vs150_iq    noise_m         noise_iq     
+##  Min.   : 0.00   Min.   : 0.00    Min.   :44.10   Min.   : 1.000  
+##  1st Qu.: 6.00   1st Qu.: 7.00    1st Qu.:51.96   1st Qu.: 5.908  
+##  Median :10.50   Median :10.00    Median :53.78   Median :10.719  
+##  Mean   :11.03   Mean   :11.72    Mean   :54.38   Mean   : 9.937  
+##  3rd Qu.:14.75   3rd Qu.:16.00    3rd Qu.:57.87   3rd Qu.:13.278  
+##  Max.   :33.00   Max.   :31.00    Max.   :64.44   Max.   :27.199  
 ##                                                                   
-##    woody_area    woodyveg_volume    woodyveg_sd     age_class strata_div
-##  Min.   : 4205   Min.   :  31795   Min.   : 2.890   0:33      0: 1      
-##  1st Qu.:15050   1st Qu.: 111953   1st Qu.: 4.645   1:44      1: 9      
-##  Median :19808   Median : 173402   Median : 5.360   2:61      2:43      
-##  Mean   :22994   Mean   : 323346   Mean   : 5.727             3:55      
-##  3rd Qu.:25091   3rd Qu.: 305591   3rd Qu.: 6.826             4:30      
-##  Max.   :63749   Max.   :1577025   Max.   :10.021                       
+##      trafic        age_class strata_div woodyveg_volume    woodyveg_sd    
+##  Min.   :      0   0:33      0: 1       Min.   :  34983   Min.   : 2.999  
+##  1st Qu.: 478466   1:44      1: 9       1st Qu.:  98460   1st Qu.: 4.783  
+##  Median :2324325   2:61      2:43       Median : 168720   Median : 5.464  
+##  Mean   :2863606             3:55       Mean   : 308986   Mean   : 5.787  
+##  3rd Qu.:5344278             4:30       3rd Qu.: 296526   3rd Qu.: 6.515  
+##  Max.   :8217731                        Max.   :1505060   Max.   :10.069  
+##                                                                           
+##    woody_area    vegetation_area herbaceous_area soft_manag_area  
+##  Min.   : 5249   Min.   : 7250   Min.   : 2001   Min.   :    0.0  
+##  1st Qu.:13493   1st Qu.:25342   1st Qu.: 9642   1st Qu.:    0.0  
+##  Median :19676   Median :31756   Median :11666   Median :    0.0  
+##  Mean   :22149   Mean   :34454   Mean   :12305   Mean   :  625.5  
+##  3rd Qu.:23711   3rd Qu.:38510   3rd Qu.:14670   3rd Qu.:    0.0  
+##  Max.   :59726   Max.   :70227   Max.   :31776   Max.   :11594.9  
+##                                                                   
+##    built_area     build_volume       build_sd       open_area    
+##  Min.   :    0   Min.   :     0   Min.   :0.000   Min.   :  423  
+##  1st Qu.: 7726   1st Qu.: 65095   1st Qu.:3.712   1st Qu.:20280  
+##  Median :11451   Median : 97682   Median :4.765   Median :24815  
+##  Mean   :11423   Mean   :114284   Mean   :4.617   Mean   :23491  
+##  3rd Qu.:14817   3rd Qu.:140472   3rd Qu.:5.640   3rd Qu.:29734  
+##  Max.   :33144   Max.   :430615   Max.   :9.721   Max.   :39261  
+##                                                                  
+##    water_area   
+##  Min.   :    0  
+##  1st Qu.:    0  
+##  Median :    0  
+##  Mean   : 1282  
+##  3rd Qu.:    0  
+##  Max.   :19044  
 ## </code></pre>
 </div>
 <div id="dataset-after-imputation-1" class="section level3">
 <h3>2.2.2. Dataset after imputation</h3>
 <p>Below, you may find a summary table of the OOB error for all imputed
-variables, expressed in variables original scales (the blue variable is
-a future <em>response variable</em> while the green ones are meant to be
-<em>independent variables</em>):</p>
+variables and for each sub-dataset, expressed in variables original
+scales (the blue variable is a future <em>response variable</em> while
+the green ones are meant to be <em>independent variables</em>):</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -2032,7 +2189,16 @@ Variable
 Nb_imputed_values
 </th>
 <th style="text-align:right;">
-Oob_RMSE
+Oob_RMSE_50m
+</th>
+<th style="text-align:right;">
+Oob_RMSE_100m
+</th>
+<th style="text-align:right;">
+Oob_RMSE_150m
+</th>
+<th style="text-align:right;">
+Oob_RMSE_200m
 </th>
 </tr>
 </thead>
@@ -2045,7 +2211,16 @@ Oob_RMSE
 1
 </td>
 <td style="text-align:right;">
-2.7154787
+2.2433218
+</td>
+<td style="text-align:right;">
+2.2030689
+</td>
+<td style="text-align:right;">
+2.2018170
+</td>
+<td style="text-align:right;">
+2.1738824
 </td>
 </tr>
 <tr>
@@ -2056,7 +2231,56 @@ Oob_RMSE
 15
 </td>
 <td style="text-align:right;">
-18.0922023
+16.0456084
+</td>
+<td style="text-align:right;">
+15.7056594
+</td>
+<td style="text-align:right;">
+15.9456600
+</td>
+<td style="text-align:right;">
+15.8304023
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">cumdd_60</span>
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+31.8113275
+</td>
+<td style="text-align:right;">
+31.8091639
+</td>
+<td style="text-align:right;">
+31.2724052
+</td>
+<td style="text-align:right;">
+31.5868803
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+<span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">cumdd_between</span>
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+59.6617150
+</td>
+<td style="text-align:right;">
+61.4974981
+</td>
+<td style="text-align:right;">
+58.5878589
+</td>
+<td style="text-align:right;">
+60.5799514
 </td>
 </tr>
 <tr>
@@ -2064,10 +2288,19 @@ Oob_RMSE
 <span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">min_t_before</span>
 </td>
 <td style="text-align:right;">
-25
+15
 </td>
 <td style="text-align:right;">
-0.5422094
+0.7935456
+</td>
+<td style="text-align:right;">
+0.7987165
+</td>
+<td style="text-align:right;">
+0.8163021
+</td>
+<td style="text-align:right;">
+0.8110606
 </td>
 </tr>
 <tr>
@@ -2075,10 +2308,19 @@ Oob_RMSE
 <span style="     color: white !important;border-radius: 4px; padding-right: 4px; padding-left: 4px; background-color: mediumseagreen !important;">min_t_between</span>
 </td>
 <td style="text-align:right;">
-19
+11
 </td>
 <td style="text-align:right;">
-1.2844145
+1.3415790
+</td>
+<td style="text-align:right;">
+1.2726446
+</td>
+<td style="text-align:right;">
+1.2874616
+</td>
+<td style="text-align:right;">
+1.2930631
 </td>
 </tr>
 </tbody>
@@ -2086,7 +2328,7 @@ Oob_RMSE
 <p>Here again, you can see that imputation errors are, in this case,
 fairly negligible compared to variable variances. Consequently, these
 imputations were used for the subsequent analyses. Here is a summary of
-the same data AFTER imputation:</p>
+the <em>Blue Tits 150m-based dataset</em> AFTER imputation:</p>
 <pre><code>##    id_nestbox                site       coord_x          coord_y       
 ##  DIJ-071:  4   parc_colombiere :16   Min.   :852173   Min.   :6688863  
 ##  DIJ-072:  3   arquebuse       :13   1st Qu.:853716   1st Qu.:6692339  
@@ -2095,85 +2337,101 @@ the same data AFTER imputation:</p>
 ##  DIJ-140:  3   bd_strasbourg   :10   3rd Qu.:855313   3rd Qu.:6693335  
 ##  DIJ-016:  2   parc_argentieres: 9   Max.   :859333   Max.   :6696495  
 ##  (Other):120   (Other)         :68                                     
-##    year    species    breeding_window  laying_date          flight_date        
-##  2020:26   CC:138   late_2022 :24     Min.   :2019-03-22   Min.   :2019-04-26  
-##  2021:45   PM:  0   late_2019 :24     1st Qu.:2020-03-23   1st Qu.:2020-04-29  
-##  2019:33            late_2021 :23     Median :2021-03-31   Median :2021-05-03  
-##  2022:34            early_2021:22     Mean   :2020-11-01   Mean   :2020-12-06  
-##                     late_2020 :13     3rd Qu.:2021-04-18   3rd Qu.:2021-05-21  
-##                     early_2020:13     Max.   :2022-04-13   Max.   :2022-05-18  
-##                     (Other)   :19                                              
-##   clutch_size      brood_size      fledgling_nb         mass       
-##  Min.   : 1.00   Min.   : 0.000   Min.   : 0.000   Min.   : 5.873  
-##  1st Qu.: 9.00   1st Qu.: 8.000   1st Qu.: 2.250   1st Qu.: 7.910  
-##  Median :11.00   Median :10.000   Median : 6.000   Median : 8.848  
-##  Mean   :10.33   Mean   : 9.082   Mean   : 5.428   Mean   : 8.935  
-##  3rd Qu.:12.00   3rd Qu.:11.000   3rd Qu.: 8.000   3rd Qu.: 9.998  
-##  Max.   :14.00   Max.   :14.000   Max.   :12.000   Max.   :12.990  
-##                                                    NA&#39;s   :40      
-##  tarsus_length    wing_length      father_id    father_cond    mother_id  
-##  Min.   :12.01   Min.   :17.50   8791247:  1   Min.   : NA   8790934:  1  
-##  1st Qu.:15.26   1st Qu.:30.04   8791404:  1   1st Qu.: NA   8791396:  1  
-##  Median :16.01   Median :33.27   0325BFC:  0   Median : NA   8791413:  1  
-##  Mean   :15.84   Mean   :32.84   0334BFC:  0   Mean   :NaN   8791432:  1  
-##  3rd Qu.:16.44   3rd Qu.:36.56   1299BFC:  0   3rd Qu.: NA   8791552:  1  
-##  Max.   :17.72   Max.   :40.14   (Other):  0   Max.   : NA   (Other):  3  
-##  NA&#39;s   :63      NA&#39;s   :84      NA&#39;s   :136   NA&#39;s   :138   NA&#39;s   :130  
-##   mother_cond     cumdd_30      min_t_before     min_t_between     
-##  Min.   : NA   Min.   :147.3   Min.   :-3.5400   Min.   :-3.36000  
-##  1st Qu.: NA   1st Qu.:243.5   1st Qu.:-1.7560   1st Qu.:-0.97227  
-##  Median : NA   Median :263.4   Median :-0.8730   Median :-0.02941  
-##  Mean   :NaN   Mean   :258.8   Mean   :-0.9778   Mean   : 0.21481  
-##  3rd Qu.: NA   3rd Qu.:275.3   3rd Qu.:-0.2973   3rd Qu.: 0.88000  
-##  Max.   : NA   Max.   :351.1   Max.   : 0.7970   Max.   : 5.54000  
-##  NA&#39;s   :138                                                       
-##  mean_winter_t    sd_winter_t     lsource_0_m      lsource_0_iq   
-##  Min.   :5.069   Min.   :3.642   Min.   : 0.000   Min.   : 0.000  
-##  1st Qu.:5.528   1st Qu.:3.727   1st Qu.: 2.000   1st Qu.: 4.000  
-##  Median :5.745   Median :3.776   Median : 4.000   Median : 7.000  
-##  Mean   :5.744   Mean   :3.779   Mean   : 4.453   Mean   : 7.335  
-##  3rd Qu.:5.859   3rd Qu.:3.818   3rd Qu.: 6.375   3rd Qu.:10.000  
-##  Max.   :6.415   Max.   :4.011   Max.   :14.000   Max.   :21.000  
-##                                                                   
-##   lsource_10_m   lsource_10_iq      lflux_0_m         lflux_0_iq    
-##  Min.   : 0.00   Min.   : 0.000   Min.   :  0.000   Min.   :  0.00  
-##  1st Qu.: 9.00   1st Qu.: 5.750   1st Qu.:  5.584   1st Qu.: 30.07  
-##  Median :18.00   Median : 8.125   Median : 39.868   Median :110.79  
-##  Mean   :19.03   Mean   :10.080   Mean   : 48.709   Mean   :108.36  
-##  3rd Qu.:29.75   3rd Qu.:12.125   3rd Qu.: 76.809   3rd Qu.:165.91  
-##  Max.   :52.00   Max.   :35.000   Max.   :207.137   Max.   :303.11  
+##    year         dist     species    breeding_window  laying_date        
+##  2020:26   Min.   :150   CC:138   late_2022 :24     Min.   :2019-03-22  
+##  2021:45   1st Qu.:150   PM:  0   late_2019 :24     1st Qu.:2020-03-23  
+##  2019:33   Median :150            late_2021 :23     Median :2021-03-31  
+##  2022:34   Mean   :150            early_2021:22     Mean   :2020-11-01  
+##            3rd Qu.:150            late_2020 :13     3rd Qu.:2021-04-18  
+##            Max.   :150            early_2020:13     Max.   :2022-04-13  
+##                                   (Other)   :19                         
+##   flight_date          clutch_size      brood_size      fledgling_nb   
+##  Min.   :2019-04-26   Min.   : 1.00   Min.   : 0.000   Min.   : 0.000  
+##  1st Qu.:2020-04-29   1st Qu.: 9.00   1st Qu.: 8.000   1st Qu.: 2.250  
+##  Median :2021-05-03   Median :11.00   Median :10.000   Median : 6.000  
+##  Mean   :2020-12-06   Mean   :10.33   Mean   : 9.091   Mean   : 5.428  
+##  3rd Qu.:2021-05-21   3rd Qu.:12.00   3rd Qu.:11.000   3rd Qu.: 8.000  
+##  Max.   :2022-05-18   Max.   :14.00   Max.   :14.000   Max.   :12.000  
+##                                                                        
+##       mass        tarsus_length    wing_length      father_id    father_cond 
+##  Min.   : 5.873   Min.   :12.01   Min.   :17.50   8791247:  1   Min.   : NA  
+##  1st Qu.: 7.910   1st Qu.:15.26   1st Qu.:30.04   8791404:  1   1st Qu.: NA  
+##  Median : 8.848   Median :16.01   Median :33.27   0325BFC:  0   Median : NA  
+##  Mean   : 8.935   Mean   :15.84   Mean   :32.84   0334BFC:  0   Mean   :NaN  
+##  3rd Qu.: 9.998   3rd Qu.:16.44   3rd Qu.:36.56   1299BFC:  0   3rd Qu.: NA  
+##  Max.   :12.990   Max.   :17.72   Max.   :40.14   (Other):  0   Max.   : NA  
+##  NA&#39;s   :40       NA&#39;s   :63      NA&#39;s   :84      NA&#39;s   :136   NA&#39;s   :138  
+##    mother_id    mother_cond     cumdd_30        cumdd_60     cumdd_between   
+##  8790934:  1   Min.   : NA   Min.   :147.3   Min.   :268.7   Min.   : 47.69  
+##  8791396:  1   1st Qu.: NA   1st Qu.:245.2   1st Qu.:452.0   1st Qu.:382.24  
+##  8791413:  1   Median : NA   Median :264.1   Median :467.5   Median :419.88  
+##  8791432:  1   Mean   :NaN   Mean   :259.3   Mean   :468.2   Mean   :413.29  
+##  8791552:  1   3rd Qu.: NA   3rd Qu.:275.3   3rd Qu.:493.8   3rd Qu.:471.30  
+##  (Other):  3   Max.   : NA   Max.   :351.1   Max.   :607.9   Max.   :778.23  
+##  NA&#39;s   :130   NA&#39;s   :138                                                   
+##   min_t_before     min_t_between     mean_winter_t    sd_winter_t   
+##  Min.   :-8.0300   Min.   :-3.3600   Min.   :5.069   Min.   :3.642  
+##  1st Qu.:-1.8037   1st Qu.:-0.6508   1st Qu.:5.528   1st Qu.:3.727  
+##  Median :-0.8730   Median : 0.0510   Median :5.745   Median :3.776  
+##  Mean   :-1.0716   Mean   : 0.3453   Mean   :5.744   Mean   :3.779  
+##  3rd Qu.:-0.2807   3rd Qu.: 1.0625   3rd Qu.:5.859   3rd Qu.:3.818  
+##  Max.   : 0.7970   Max.   : 5.5400   Max.   :6.415   Max.   :4.011  
 ##                                                                     
-##    lflux_10_m      lflux_10_iq     lsource_vs150_m lsource_vs150_iq
-##  Min.   :  0.00   Min.   :  0.00   Min.   : 0.00   Min.   : 0.00   
-##  1st Qu.: 19.25   1st Qu.: 36.73   1st Qu.: 6.00   1st Qu.: 7.00   
-##  Median : 56.65   Median : 68.52   Median :10.50   Median :10.00   
-##  Mean   : 60.27   Mean   : 83.41   Mean   :11.03   Mean   :11.72   
-##  3rd Qu.: 95.16   3rd Qu.:128.18   3rd Qu.:14.75   3rd Qu.:16.00   
-##  Max.   :160.03   Max.   :248.53   Max.   :33.00   Max.   :31.00   
+##   lsource_0_m      lsource_0_iq     lsource_10_m   lsource_10_iq   
+##  Min.   : 0.000   Min.   : 0.000   Min.   : 0.00   Min.   : 0.000  
+##  1st Qu.: 2.000   1st Qu.: 4.000   1st Qu.: 9.00   1st Qu.: 5.812  
+##  Median : 4.000   Median : 7.000   Median :18.00   Median : 8.125  
+##  Mean   : 4.489   Mean   : 7.351   Mean   :19.07   Mean   :10.089  
+##  3rd Qu.: 6.500   3rd Qu.:10.000   3rd Qu.:29.88   3rd Qu.:11.938  
+##  Max.   :14.000   Max.   :21.000   Max.   :52.00   Max.   :35.000  
 ##                                                                    
-##     noise_m         noise_iq          trafic          built_area   
-##  Min.   :44.10   Min.   : 1.000   Min.   :      0   Min.   :    0  
-##  1st Qu.:51.96   1st Qu.: 5.908   1st Qu.: 478466   1st Qu.: 7715  
-##  Median :53.78   Median :10.719   Median :2324325   Median :11505  
-##  Mean   :54.38   Mean   : 9.937   Mean   :2863606   Mean   :11521  
-##  3rd Qu.:57.87   3rd Qu.:13.278   3rd Qu.:5344278   3rd Qu.:15176  
-##  Max.   :64.44   Max.   :27.199   Max.   :8217731   Max.   :33182  
-##                                                                    
-##    open_area     vegetation_area herbaceous_area soft_manag_area  
-##  Min.   :  116   Min.   : 7942   Min.   : 2121   Min.   :    0.0  
-##  1st Qu.:20476   1st Qu.:25123   1st Qu.: 8452   1st Qu.:    0.0  
-##  Median :26045   Median :31865   Median :11016   Median :    0.0  
-##  Mean   :24515   Mean   :34317   Mean   :11322   Mean   :  625.5  
-##  3rd Qu.:31707   3rd Qu.:38540   3rd Qu.:13384   3rd Qu.:    0.0  
-##  Max.   :41321   Max.   :70237   Max.   :28970   Max.   :11594.9  
+##    lflux_0_m         lflux_0_iq       lflux_10_m      lflux_10_iq    
+##  Min.   :  0.000   Min.   :  0.00   Min.   :  0.00   Min.   :  0.00  
+##  1st Qu.:  5.584   1st Qu.: 29.46   1st Qu.: 19.36   1st Qu.: 36.73  
+##  Median : 39.868   Median :111.17   Median : 56.65   Median : 68.52  
+##  Mean   : 49.169   Mean   :108.25   Mean   : 60.27   Mean   : 83.66  
+##  3rd Qu.: 73.243   3rd Qu.:165.91   3rd Qu.: 96.34   3rd Qu.:128.25  
+##  Max.   :207.137   Max.   :303.11   Max.   :160.03   Max.   :248.53  
+##                                                                      
+##  lsource_vs150_m lsource_vs150_iq    noise_m         noise_iq     
+##  Min.   : 0.00   Min.   : 0.00    Min.   :44.10   Min.   : 1.000  
+##  1st Qu.: 6.00   1st Qu.: 7.00    1st Qu.:51.96   1st Qu.: 5.908  
+##  Median :10.50   Median :10.00    Median :53.78   Median :10.719  
+##  Mean   :11.03   Mean   :11.72    Mean   :54.38   Mean   : 9.937  
+##  3rd Qu.:14.75   3rd Qu.:16.00    3rd Qu.:57.87   3rd Qu.:13.278  
+##  Max.   :33.00   Max.   :31.00    Max.   :64.44   Max.   :27.199  
 ##                                                                   
-##    woody_area    woodyveg_volume    woodyveg_sd     age_class strata_div
-##  Min.   : 4205   Min.   :  31795   Min.   : 2.890   0:33      0: 1      
-##  1st Qu.:15050   1st Qu.: 111953   1st Qu.: 4.645   1:44      1: 9      
-##  Median :19808   Median : 173402   Median : 5.360   2:61      2:43      
-##  Mean   :22994   Mean   : 323346   Mean   : 5.727             3:55      
-##  3rd Qu.:25091   3rd Qu.: 305591   3rd Qu.: 6.826             4:30      
-##  Max.   :63749   Max.   :1577025   Max.   :10.021                       
+##      trafic        age_class strata_div woodyveg_volume    woodyveg_sd    
+##  Min.   :      0   0:33      0: 1       Min.   :  34983   Min.   : 2.999  
+##  1st Qu.: 478466   1:44      1: 9       1st Qu.:  98460   1st Qu.: 4.783  
+##  Median :2324325   2:61      2:43       Median : 168720   Median : 5.464  
+##  Mean   :2863606             3:55       Mean   : 308986   Mean   : 5.787  
+##  3rd Qu.:5344278             4:30       3rd Qu.: 296526   3rd Qu.: 6.515  
+##  Max.   :8217731                        Max.   :1505060   Max.   :10.069  
+##                                                                           
+##    woody_area    vegetation_area herbaceous_area soft_manag_area  
+##  Min.   : 5249   Min.   : 7250   Min.   : 2001   Min.   :    0.0  
+##  1st Qu.:13493   1st Qu.:25342   1st Qu.: 9642   1st Qu.:    0.0  
+##  Median :19676   Median :31756   Median :11666   Median :    0.0  
+##  Mean   :22149   Mean   :34454   Mean   :12305   Mean   :  625.5  
+##  3rd Qu.:23711   3rd Qu.:38510   3rd Qu.:14670   3rd Qu.:    0.0  
+##  Max.   :59726   Max.   :70227   Max.   :31776   Max.   :11594.9  
+##                                                                   
+##    built_area     build_volume       build_sd       open_area    
+##  Min.   :    0   Min.   :     0   Min.   :0.000   Min.   :  423  
+##  1st Qu.: 7726   1st Qu.: 65095   1st Qu.:3.712   1st Qu.:20280  
+##  Median :11451   Median : 97682   Median :4.765   Median :24815  
+##  Mean   :11423   Mean   :114284   Mean   :4.617   Mean   :23491  
+##  3rd Qu.:14817   3rd Qu.:140472   3rd Qu.:5.640   3rd Qu.:29734  
+##  Max.   :33144   Max.   :430615   Max.   :9.721   Max.   :39261  
+##                                                                  
+##    water_area   
+##  Min.   :    0  
+##  1st Qu.:    0  
+##  Median :    0  
+##  Mean   : 1282  
+##  3rd Qu.:    0  
+##  Max.   :19044  
 ## </code></pre>
 <p><br />
 <br />
@@ -2182,30 +2440,28 @@ the same data AFTER imputation:</p>
 </div>
 </div>
 </div>
-<div id="data-exploration" class="section level1">
-<h1>3. Data exploration</h1>
-<p><strong>TO BE CONTINUED…!!!!</strong> Various aspects of our data
-(e.g. outliers, variables distribution, multicollinearity among
-predictors, homogeneity of variances, independence, potential
-interactions, multivariate relationships, linearity etc.) were explored
-and are presented in this document, mostly following <span class="citation">Bolker <em>et al.</em> (2009)</span>, <span class="citation">Zuur <em>et al.</em> (2010)</span>, and <span class="citation">Harrell (2015)</span>. However, as the response
-variables were of different nature (e.g. binary, continuous), they would
-be modelled using different types of models with varying
-assumptions:</p>
-<p>Naturally, most actual models assumptions were checked after model
-building and fitting. Our intention here was simply to improve our
-knowledge of the data and identify potentially problematic variables
-upstream. As our global dataset contained many potential predictors
-(<em>p</em> = XX), much effort was indeed directed toward reducing their
-number and keeping only the most reliable and important ones relative to
-our hypotheses. In other words, we tried to reduce the dimensionality of
-the data.<br />
+<div id="exploratory-data-analyses" class="section level1">
+<h1>3. Exploratory data analyses</h1>
+<p>Various univariate or multivariate aspects of our data
+(e.g. outliers, variables distribution, potential multicollinearity,
+homogeneity of variances, linearity, etc.) were explored and are
+presented in this section, mostly following <span class="citation">Bolker <em>et al.</em> (2009)</span>, <span class="citation">Zuur <em>et al.</em> (2010)</span>, and <span class="citation">Harrell (2015)</span>.<br />
+Naturally, most actual models assumptions were checked during or after
+model building. Our intention here was simply to improve our knowledge
+of the data and identify potential problems upstream. As our global
+dataset contained many potential predictor proxies (<em>p</em> ~ 40 -
+including interest variables, covariates and random factors), much
+effort was indeed directed toward reducing their number and keeping only
+the most reliable and important variables and proxies relative to our
+hypotheses. In other words, we tried to reduce the dimensionality of our
+data.</p>
+<p><br />
 <br />
 </p>
 <hr />
 </div>
-<div id="xx.-references" class="section level1 unnumbered">
-<h1 class="unnumbered">XX. References</h1>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">4. References</h1>
 <div id="refs" class="references csl-bib-body">
 <div id="ref-bolker2009" class="csl-entry">
 Bolker B.M., Brooks M.E., Clark C.J., <em>et al.</em> (2009)
