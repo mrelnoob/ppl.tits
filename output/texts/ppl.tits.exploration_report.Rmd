@@ -60,8 +60,8 @@ cc_imp_error <- targets::tar_read(imp_ooberror_cc)
 # As you can see, I import my data using 'targets'! If you are reading this report and don't know what it is or how I created and stored them, you should read the README or the _devhistory.R files available at https://github.com/mrelnoob/ppl.tits. 
 ```
 
-Similarly to many datasets in ecology, some of our variables contained missing values. As most of them were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in some of our *response variables* as well as in all *independent variables* containing missing values instead of deleting observations. For our morphometric *response variables*, however, missing values were not MAR as many were due to the fact that reproduction events failed. In such a case, it was impossible to measure morphometric variables as nestlings were either dead or missing. These *response variables* were thus excluded from the following imputation process.  
-Now, since the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) data and as the former has a lower sample size, we chose to split our data into two subsets, one for each species. Consequently, the Blue Tits one contains less variables as some were discarded to prevent overoptimistic imputations.
+Similarly to many datasets in ecology, some of our variables contained missing values. As most of them were MAR or MCAR (missing [completely] at random) and since deleting observations containing missing values can lead to biased coefficient estimates [@harrell2015], we decided to impute the missing values in some of our *response variables* as well as in all *independent variables* (IV) containing missing values instead of deleting observations. For our morphometric *response variables*, however, missing values were not MAR as many were due to the fact that reproduction events failed. In such a case, it was impossible to measure morphometric variables as nestlings were either dead or missing. These *response variables* were thus excluded from the following imputation process.  
+Now, since the proportion of missing values is clearly higher for our Blue Tits (*Cyanistes caeruleus*) observations than for our Great Tits (*Parus major*) data and as the former has a lower sample size, we chose to split our data into two subsets, one for each species. Consequently, the Blue Tits one contains less variables as some were discarded to prevent overoptimistic imputations. Furthermore, we actually performed 4 runs of imputation, one for each buffer size used to extract our IVs (i.e. one for each sub-dataset: 50, 100, 150 and 200 metres-based datasets).
 
 To impute missing values, we used the `missForest()` function from the `{missForest}` package [@stekhoven2011]. This functions initially imputes all missing data using the mean/mode, then for each variable with missing values, it fits a *Random Forest* on the observed part to predict the missing part. This process of training and predicting repeats iteratively until a stopping criterion is met or a maximum number of user-specified iterations is reached. This algorithm has been shown to have higher predictive performances than other widely used imputation methods, including MICE or KNNimpute [@stekhoven2011].  
 Another advantage is that this function can return an assessment of the imputation error based on the out-of-bag (OOB) samples, for each variable individually. For continuous predictors, the *Mean Squared Error* (MSE) of imputed values is computed while the *proportion of falsely classified* (PFC) is returned for categorical missing ones.  
@@ -72,21 +72,25 @@ To avoid overfitting, no hyperparameters tuning was performed but I applied a th
 ## 2.1. Great Tits dataset
 ### 2.1.1. Dataset prior to imputation
 
-Here is a summary of the Great Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to **Table S1** - cf. Supplementary Materials):
+Here is a summary of the *Great Tits 150m-based dataset* prior to data imputation (for the meaning of the variables, readers are referred to **Table S1** - cf. Supplementary Materials):
 
 ```{r pm before imputation, message=FALSE}
-tits_priorimp %>% dplyr::filter(species == "PM") -> pm_pimp
+tits_priorimp %>% dplyr::filter(dist == 150,
+                                species == "PM") -> pm_pimp
 summary(pm_pimp)
 ```
 
 ### 2.1.2. Dataset after imputation
 
-Below, you may find a summary table of the OOB error for all imputed variables, expressed in variables original scales (the blue variable is a future *response variable* while the green ones are meant to be *independent variables*): 
+Below, you may find a summary table of the OOB error for all imputed variables and for each sub-dataset, expressed in variables original scales (the blue variable is a future *response variable* while the green ones are meant to be *independent variables*): 
 
 ```{r pm imput error, message=FALSE}
 data.frame(Variable = rownames(pm_imp_error), 
            Nb_imputed_values = pm_imp_error$Nb_imputed_values, 
-           Oob_RMSE = pm_imp_error$Oob_RMSE) %>%
+           Oob_RMSE_50m = pm_imp_error$Oob_RMSE_50m,
+           Oob_RMSE_100m = pm_imp_error$Oob_RMSE_100m,
+           Oob_RMSE_150m = pm_imp_error$Oob_RMSE_150m,
+           Oob_RMSE_200m = pm_imp_error$Oob_RMSE_200m) %>%
   dplyr::mutate(Variable = kableExtra::cell_spec(
     Variable, color = "white", background = ifelse(
       Variable == "brood_size", "deepskyblue", "mediumseagreen"))) %>%
@@ -95,9 +99,10 @@ data.frame(Variable = rownames(pm_imp_error),
 ```
 
 You can see that imputation errors are, in this case, fairly negligible compared to variables' ranges of variation. Consequently, we deemed these imputations acceptable and used them for the subsequent analyses.
-Here is a summary of the same data AFTER imputation:
+Here is a summary of the *Great Tits 150m-based dataset* AFTER imputation:
 ```{r pm after imputation, message=FALSE}
-tits %>% dplyr::filter(species == "PM") -> pm
+tits %>% dplyr::filter(dist == 150,
+                       species == "PM") -> pm
 summary(pm)
 ```
 \
@@ -106,21 +111,25 @@ summary(pm)
 ## 2.2. Blue Tits dataset
 ### 2.2.1. Dataset prior to imputation
 
-Here is a summary of the Blue Tits dataset prior to data imputation (for the meaning of the variables, readers are referred to **Table S1** - cf. Supplementary Materials):
+Here is a summary of the *Blue Tits 150m-based dataset* prior to data imputation (for the meaning of the variables, readers are referred to **Table S1** - cf. Supplementary Materials):
 
 ```{r cc before imputation, message=FALSE}
-tits_priorimp %>% dplyr::filter(species == "CC") -> cc_pimp
+tits_priorimp %>% dplyr::filter(dist == 150,
+                                species == "CC") -> cc_pimp
 summary(cc_pimp)
 ```
 
 ### 2.2.2. Dataset after imputation
 
-Below, you may find a summary table of the OOB error for all imputed variables, expressed in variables original scales (the blue variable is a future *response variable* while the green ones are meant to be *independent variables*): 
+Below, you may find a summary table of the OOB error for all imputed variables and for each sub-dataset, expressed in variables original scales (the blue variable is a future *response variable* while the green ones are meant to be *independent variables*): 
 
 ```{r cc imput error, message=FALSE}
 data.frame(Variable = rownames(cc_imp_error), 
            Nb_imputed_values = cc_imp_error$Nb_imputed_values, 
-           Oob_RMSE = cc_imp_error$Oob_RMSE) %>%
+           Oob_RMSE_50m = cc_imp_error$Oob_RMSE_50m,
+           Oob_RMSE_100m = cc_imp_error$Oob_RMSE_100m,
+           Oob_RMSE_150m = cc_imp_error$Oob_RMSE_150m,
+           Oob_RMSE_200m = cc_imp_error$Oob_RMSE_200m) %>%
   dplyr::mutate(Variable = kableExtra::cell_spec(
     Variable, color = "white", background = ifelse(
       Variable == "brood_size", "deepskyblue", "mediumseagreen"))) %>%
@@ -129,9 +138,10 @@ data.frame(Variable = rownames(cc_imp_error),
 ```
 
 Here again, you can see that imputation errors are, in this case, fairly negligible compared to variable variances. Consequently, these imputations were used for the subsequent analyses.
-Here is a summary of the same data AFTER imputation:
+Here is a summary of the *Blue Tits 150m-based dataset* AFTER imputation:
 ```{r cc after imputation, message=FALSE}
-tits %>% dplyr::filter(species == "CC") -> cc
+tits %>% dplyr::filter(dist == 150,
+                       species == "CC") -> cc
 summary(cc)
 ```
 \
@@ -142,7 +152,7 @@ summary(cc)
 # 3. Exploratory data analyses
 
 Various univariate or multivariate aspects of our data (e.g. outliers, variables distribution, potential multicollinearity, homogeneity of variances, linearity, etc.) were explored and are presented in this section, mostly following @bolker2009, @zuur2010, and @harrell2015.  
-Naturally, most actual models assumptions were checked during or after model building. Our intention here was simply to improve our knowledge of the data and identify potential problems upstream. As our global dataset contained many potential predictors (*p* ~ 40 - including interest variables, covariates and random factors), much effort was indeed directed toward reducing their number and keeping only the most reliable and important variables and proxies relative to our hypotheses. In other words, we tried to reduce the dimensionality of our data. 
+Naturally, most actual models assumptions were checked during or after model building. Our intention here was simply to improve our knowledge of the data and identify potential problems upstream. As our global dataset contained many potential predictor proxies (*p* ~ 40 - including interest variables, covariates and random factors), much effort was indeed directed toward reducing their number and keeping only the most reliable and important variables and proxies relative to our hypotheses. In other words, we tried to reduce the dimensionality of our data. 
 
 ```{r BLABLA}
 .pardefault <- par() # To save the default graphical parameters (in case I want to restore them: e.g. with
