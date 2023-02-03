@@ -107,6 +107,10 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("input_raw_data", "paired
     dplyr::mutate(laying_date = as.Date(x = laying_date, optional = TRUE),
                   flight_date = as.Date(x = flight_date, optional = TRUE)) -> tits
 
+  # Correcting wrong dates:
+  tits[which(tits$id_nestbox == "DIJ-102" & tits$year == "2021"), "laying_date"] <- as.Date("2021-04-04")
+  tits[which(tits$id_nestbox == "DIJ-200" & tits$year == "2022"), "laying_date"] <- as.Date("2022-04-04")
+
 
 
   ### Creation of the "breeding_window" random factor___________________________#

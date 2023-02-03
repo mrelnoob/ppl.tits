@@ -338,7 +338,8 @@ uni.boxplots <- function(dataset, MAR=c(0.5,4.1,1.1,1.5), CEX.LAB=1, FONT.LAB=2,
 #   strata_div == "4" ~ 0.9)) %>%
 #   dplyr::mutate(woodyveg_vw = woodyveg_volume*strata_w) %>%
 #   dplyr::select(-strata_div, -strata_num, -strata_w) %>%
-#   dplyr::relocate(woodyveg_vw, .after = woodyveg_sd) -> ntits
+#   dplyr::relocate(woodyveg_vw, .after = woodyveg_sd) %>%
+#   dplyr::rename(patch_perim = perim) -> ntits
 #
 #
 #
@@ -424,12 +425,11 @@ uni.boxplots <- function(dataset, MAR=c(0.5,4.1,1.1,1.5), CEX.LAB=1, FONT.LAB=2,
 #                 clutch_size, brood_size, fledgling_nb, mass, tarsus_length, wing_length,
 #                 F_metric_d1b0, F_metric_d2b0, F_metric_d3b0, F_metric_d1b1, F_metric_d2b1, F_metric_d3b1,
 #                 Rr_metric_d1c1, Rr_metric_d2c1, Rr_metric_d3c1, Dr_metric_c1, Dr_metric_c2,
-#                 woodyveg_volume, woodyveg_vw, woodyveg_sd, woody_area, patch_area, perim,
+#                 woodyveg_volume, woodyveg_vw, woodyveg_sd, woody_area, patch_area, patch_perim,
 #                 herbaceous_area, manag_intensity,
 #                 light_pollution, noise_m, noise_iq,
 #                 traffic, built_area, build_volume, build_sd, open_area, water_area, urban_intensity,
-#                 cumdd_30, cumdd_60, cumdd_between, min_t_before, min_t_between) %>%
-#   dplyr::rename(patch_perim = perim)-> ntits_reduced
+#                 cumdd_30, cumdd_60, cumdd_between, min_t_before, min_t_between) -> ntits_reduced
 # rm(res.pca, xxx, zzz)
 #
 #
@@ -439,54 +439,29 @@ uni.boxplots <- function(dataset, MAR=c(0.5,4.1,1.1,1.5), CEX.LAB=1, FONT.LAB=2,
 # ########################## ************************************************* ###############################
 # ##### UNIVARIATE OUTLIERS #####
 # ##### Looking for outliers
-# # ________________________
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# ### For PM______________________________________________________________________#
-#
-# uni.boxplots(pm[,15:ncol(pm)]) # I CANNOT export them as object (-> NULL), I don't know why. The problem is
-# # not that it's a custom function (it doesn't work for airpoumpoum::superplot() either)! Nor that it's not
-# # a list! Then why (linked to par())??? Ask SO?
-# ppl.tits::uni.dotplots(pm[,15:ncol(pm)])
-# # We can see that:
-# # - There are extreme values for all F-metrics, especially the "beta1" (but we already knew that).
-# # - There are extreme values for the "woodyveg_volume" variables, yet the weighting by "strata_div" slightly
-# #   alleviate the problem, and the "woodyveg_sd" variable has a rather nice distribution. Besides, "woody_area" also
-# #   has a nicer distribution than the volume ones.
-# # - The "pollution" variables are very slightly skewed, and so do "herbaceous_area". Interestingly, "traffic" has a
-# #   very large range and zero values!
-# # - Otherwise, the IVs are quite well sampled.
-#
-#
-#
-# ### For CC______________________________________________________________________#
-#
-# uni.boxplots(cc[,15:ncol(cc)]) # Only for IVs, not Ys.
-# ppl.tits::uni.dotplots(cc[,15:ncol(cc)])
-# # We can see that:
-# # - There are extreme values for all F-metrics, especially the "beta1".
-# # - There are extreme values for the "woodyveg_volume" variables. Here, the weighting does not change things much.
-# # - Same as for PM.
-#
-#
-#
 # ### For NTITS___________________________________________________________________#
 #
-# uni.boxplots(ntits_reduced[,15:ncol(ntits_reduced)]) # Only for IVs, not Ys.
-# ppl.tits::uni.dotplots(ntits_reduced[,15:ncol(ntits_reduced)])
+# ppl.tits::uni.boxplots(ntits_reduced[,16:ncol(ntits_reduced)]) # Only for IVs, not Ys.
+# ppl.tits::uni.dotplots(ntits_reduced[,16:ncol(ntits_reduced)])
 # # We can see that:
-# # - There are extreme values for all F-metrics, especially the "beta1", but it seems that pooling together PM and CC
-# #   helps to have smoother distributions.
-# # - The "woodyveg" variables also seem to have nicer distributions.
-# # - The "noise_m" variable still is quite strongly left-skewed, and so does "open_area".
+# # - There are extreme values for many variables.
+# # - The "noise_m" variable is quite strongly left-skewed, and so does "open_area".
+# # - As expected, "water_area" has a very strange distribution.
+# # - The "cumdd_between" has a curiously non-normal distribution as well as a potential outlier (DIJ-200 in
+# #   2022, which should have a value closer to its neighbours. It surely is an artefact of imputations and
+# #   will be corrected).
 # # - Otherwise, the IVs look relatively nice.
+#
+#
+#
+#
+# # Mauvaise date pour DIJ-200_2022 (avril???) --> idem pour DIJ-102_2021 (avril aussi)!!!
+# # ntits[which(ntits$cumdd_between == max(ntits$cumdd_between)), "cumdd_between"] <- 580
+#
+#
+#
+#
+#
 #
 #
 #
