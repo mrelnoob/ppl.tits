@@ -592,19 +592,19 @@ ntits_reduced %>% dplyr::mutate(Dr_metric_c1 = Dr_metric_c1/1000, # Converting m
                                 built_volume = build_volume/1000, # Converting m3 into dm3.
                                 open_area = open_area/1000) %>%
   dplyr::mutate(brood_size = round(brood_size, digits = 0), # There was a decimal count.
-                "F_metric_d1b0_(log)" = log10(F_metric_d1b0), # Predictors rescaling or normalisation.
-                "F_metric_d2b0_(log)" = log10(F_metric_d2b0),
-                "F_metric_d3b0_(log)" = log10(F_metric_d3b0),
-                "F_metric_d1b1_(log)" = log10(F_metric_d1b1),
-                "F_metric_d2b1_(log)" = log10(F_metric_d2b1),
-                "F_metric_d3b1_(log)" = log10(F_metric_d3b1),
-                "woody_vol_(log)" = log10(woodyveg_volume),
-                "woody_vw_(log)" = log10(woodyveg_vw),
-                "woody_area_(log)" = log10(woody_area),
-                "patch_area_(log)" = log10(patch_area),
-                "patch_perim_(log)" = log10(patch_perim),
-                "herb_area_(log)" = log10(herbaceous_area),
-                "built_vol_(sqrt)" = sqrt(built_volume)) %>%
+                log_F_metric_d1b0 = log10(F_metric_d1b0), # Predictors rescaling or normalisation.
+                log_F_metric_d2b0 = log10(F_metric_d2b0),
+                log_F_metric_d3b0 = log10(F_metric_d3b0),
+                log_F_metric_d1b1 = log10(F_metric_d1b1),
+                log_F_metric_d2b1 = log10(F_metric_d2b1),
+                log_F_metric_d3b1 = log10(F_metric_d3b1),
+                log_woody_vol = log10(woodyveg_volume),
+                log_woody_vw = log10(woodyveg_vw),
+                log_woody_area = log10(woody_area),
+                log_patch_area = log10(patch_area),
+                log_patch_perim = log10(patch_perim),
+                log_herb_area = log10(herbaceous_area),
+                sqrt_built_vol = sqrt(built_volume)) %>%
   dplyr::mutate(brood_size = as.integer(brood_size),
                 hatching_rate = brood_size/clutch_size) %>%
   dplyr::mutate(year = stats::relevel(x = year, ref = 3), # Assign 2019 as the reference group.
@@ -617,4 +617,5 @@ ntits_reduced %>% dplyr::mutate(Dr_metric_c1 = Dr_metric_c1/1000, # Converting m
   dplyr::mutate(coord_y = jitter(x = coord_y, factor = 1.2)) %>%
   dplyr::mutate(coord_x = jitter(x = coord_x, factor = 1.2)) -> ntits2
 
+colnames(ntits2)
 # ppl.tits::uni.dotplots(ntits2[,35:ncol(ntits2)]) # If needed.
