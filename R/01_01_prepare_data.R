@@ -107,7 +107,7 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("input_raw_data", "paired
     dplyr::mutate(laying_date = as.Date(x = laying_date, optional = TRUE),
                   flight_date = as.Date(x = flight_date, optional = TRUE)) -> tits
 
-  # Correcting wrong dates:
+  # Correcting wrong dates (including :
   tits[which(tits$id_nestbox == "DIJ-102" & tits$year == "2021"), "laying_date"] <- as.Date("2021-04-04")
   tits[which(tits$id_nestbox == "DIJ-200" & tits$year == "2022"), "laying_date"] <- as.Date("2022-04-04")
 
@@ -122,7 +122,8 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("input_raw_data", "paired
   # check that my code works as expected! Because of this error, I call these objects
   # (median_laydate and mrd) not in non-chronological order in the next code lines!
 
-  # Imputation of the laying_date missing values (n=9)
+  # Imputation of the laying_date missing values (n=9) ann correcting wrong "flight_date" for clutches
+  # that failed:
   tits %>% dplyr::group_by(year) %>%
     dplyr::summarise(mean_repro_duration = mean(
       flight_date, na.rm = TRUE) - mean(laying_date, na.rm = TRUE)) -> mrd
@@ -136,6 +137,11 @@ tdata_upD_temp <- function(myboxtemp_data = here::here("input_raw_data", "paired
     year == "2021" & is.na(laying_date) == FALSE ~ laying_date,
     year == "2022" & is.na(laying_date) == TRUE ~ as.Date(flight_date - mrd$mean_repro_duration[4]),
     year == "2022" & is.na(laying_date) == FALSE ~ laying_date)) -> tits
+
+  tits %>% dplyr::mutate(
+    flight_date = dplyr::case_when(
+      brood_size != 0 ~ as.Date(flight_date),
+      brood_size == 0 ~ as.Date(laying_date + 30))) -> tits
 
   # Random factor generation
   tits %>% dplyr::mutate(breeding_window = dplyr::case_when(

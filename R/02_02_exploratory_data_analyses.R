@@ -353,8 +353,8 @@ ntits %>% dplyr::mutate(strata_w = dplyr::case_when(
 # Does not yield meaningful results.
 
 ### For variables related to landscape composition______________________________#
-ntits %>% dplyr::select(id_nestbox, site, traffic, built_area, build_volume,
-                        build_sd, open_area) -> xxx
+ntits %>% dplyr::select(id_nestbox, site, built_area, build_volume,
+                        build_sd, open_area) -> xxx # In the end, I decided to remove traffic!
 
 # Normed-PCA:
 res.pca <- FactoMineR::PCA(X = xxx[, 3:ncol(xxx)], scale.unit = TRUE, graph = FALSE)
@@ -364,11 +364,11 @@ landscape.varplot <- factoextra::fviz_pca_var(res.pca, col.var = "contrib",
 landscape.indplot <- plot(res.pca, choix = "ind", autoLab = "yes")
 #gridExtra::grid.arrange(landscape.varplot, landscape.indplot, ncol = 2)
 
-# As the first axis (PC) of my PCA satisfactorily synthesizes a large amount of the variance (59%)
-# of my three variables, we can use the coordinates of observations on this axis as a synthetic variable:
+# As the first axis (PC) of my PCA satisfactorily synthesizes a large amount of the variance (70%)
+# of my four variables, we can use the coordinates of observations on this axis as a synthetic variable:
 zzz <- res.pca$ind$coord[,1]
-ntits$urban_intensity <- zzz # This variable opposes nestboxes located in very dense urban areas with a
-# lot of traffic to those located in greener contexts.
+ntits$urban_intensity <- zzz # This variable opposes nestboxes located in very dense urban areas with
+# less densely urbanised (or even not-urbanised) areas.
 
 
 
@@ -397,6 +397,7 @@ ntits$light_pollution <- zzz # This variable opposes nestboxes located in areas 
 ##### DATASETS FORMATTING #####
 ##### For all tit nestlings (ntits)
 # _________________________________
+ntits[which(ntits$noise_m == min(ntits$noise_m)), "noise_m"] <- 31
 ntits %>% dplyr::mutate(
   F_metric_d1b0 = dplyr::case_when(
     species == "PM" ~ pmF_d1_beta0, species == "CC" ~ ccF_d1_beta0),
@@ -447,28 +448,7 @@ ppl.tits::uni.dotplots(ntits_reduced[,16:ncol(ntits_reduced)])
 # - There are extreme values for many variables.
 # - The "noise_m" variable is quite strongly left-skewed, and so does "open_area".
 # - As expected, "water_area" has a very strange distribution.
-# - The "cumdd_between" has a curiously non-normal distribution as well as a potential outlier (DIJ-200 in
-#   2022, which should have a value closer to its neighbours. It surely is an artefact of imputations and
-#   will be corrected).
 # - Otherwise, the IVs look relatively nice.
-
-
-
-
-
-
-
-
-
-# Mauvaise date pour DIJ-200_2022 (avril???) --> idem pour DIJ-102_2021 (avril aussi)!!!
-# ntits[which(ntits$cumdd_between == max(ntits$cumdd_between)), "cumdd_between"] <- 580
-
-# ntits[which(ntits$cumdd_between < 200),] ------> les échecs brouillent les dates et donc les imputations pour les
-# autres variables (dont dates manquantes etc.)!!! A supprimer avant
-# (ou faire IF brood==0, flight date == laying_date+30...)??????? Ou OSEF?????
-
-
-
 
 
 
@@ -478,44 +458,20 @@ ppl.tits::uni.dotplots(ntits_reduced[,16:ncol(ntits_reduced)])
 ##### Examining normality, skewness and kurtosis
 # ______________________________________________
 
-### For PM______________________________________________________________________#
-
-ppl.tits::uni.histograms(pm[,15:ncol(pm)])
-
-pm.x <- pm[,15:ncol(pm)]
-pm.xnum <- pm.x[, sapply(pm.x, is.numeric)]
-tab <- data.frame(moments::skewness(x = pm.xnum), moments::kurtosis(x = pm.xnum)-3)
-pmx_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
-# We can see that, as expected:
-# - Some variables have quite excessive skewness: e.g. "pmF_d3_beta1"!
-# - Some variables have quite excessive kurtosis: e.g. "pmF_d1_beta0", "pmF_d1_beta1", "woodyveg_volume",
-#   "woodyveg_vw", "noise_m" and "mother_cond"!
-
-
-
-### For CC______________________________________________________________________#
-
-ppl.tits::uni.histograms(cc[,15:ncol(cc)])
-
-cc.x <- cc[,15:ncol(cc)]
-cc.xnum <- cc.x[, sapply(cc.x, is.numeric)]
-tab <- data.frame(moments::skewness(x = cc.xnum), moments::kurtosis(x = cc.xnum)-3)
-ccx_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
-# Interestingly, most values are not that high but still, quite excessive for the beta1 "F-metrics", the "woodyveg"
-# variables and "cumdd_30."
-
-
-
 ### For NTITS___________________________________________________________________#
 
-ppl.tits::uni.histograms(ntits_reduced[,15:ncol(ntits_reduced)])
+ppl.tits::uni.histograms(ntits_reduced[,16:ncol(ntits_reduced)])
 
-ntits.x <- ntits_reduced[,15:ncol(ntits_reduced)]
+ntits.x <- ntits_reduced[,16:ncol(ntits_reduced)]
 ntits.xnum <- ntits.x[, sapply(ntits.x, is.numeric)]
 tab <- data.frame(moments::skewness(x = ntits.xnum), moments::kurtosis(x = ntits.xnum)-3)
 ntitsx_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
-# If skewness values are fairly acceptable (except for "F_metric_d3b1"), several variables present very excessive
-# kurtosis: "F_metric_d1b0", all beta1 F-metrics, "woodyveg_volume", "woodyveg_vw", and "noise_m"!
+# If skewness values are fairly acceptable for most variables (although F_metric_d3b1 and water_area > 3),
+# several variables present (sometimes very) excessive kurtosis:
+# - K > 3: F_metric_d1b0, F_metric_d2b1, Dr_metric_c1, patch_area, build_volume.
+# - K > 4: F_metric_d1b1, woodyveg_volume, noise_m.
+# - K > 5: woodyveg_vw, woodyveg_volume, water_area.
+# - K > 10: F_metric_d3b1 !
 rm(tab)
 
 
@@ -526,72 +482,9 @@ rm(tab)
 ##### Bivariate correlations and outliers
 # _______________________________________
 
-### For PM______________________________________________________________________#
-pm.xnum %>%
-  dplyr::select(-pmF_d3_beta0, -pmF_d2_beta1, -pmF_d3_beta1, -woodyveg_volume, -open_area,
-                -father_cond, -mother_cond) -> pm.xnum # For the sake of readability, I delete some
-# variables.
-
-# To compute the correlation matrix:
-res.cor.pmx <- round(stats::cor(pm.xnum, use = "complete.obs", method = "spearman"), 2)
-# To compute a matrix of correlation p-values:
-res.pcor.pmx <- ggcorrplot::cor_pmat(x = pm.xnum, method = "spearman")
-
-pmx.corplot <- ggcorrplot::ggcorrplot(res.cor.pmx, type = "upper",
-                       outline.col = "white",
-                       ggtheme = ggplot2::theme_gray,
-                       colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.pmx, insig = "blank")
-# We can see that:
-# - All F-metrics and woodyveg variables are quite strongly positively correlated, but negatively with
-#   urban intensity, management intensity and the pollution variables. That's quite unsurprising, the more
-#   woody vegetation in the landscape, the more connectivity, and the less room for urban features such as
-#   buildings, roads, pollution emissions, etc.
-# - Quite logically, the pollution variables are positively correlated with urban intensity.
-# - We see that "cumdd_30" is not correlated with any variable, except father_cond.
-# - Father_cond and mother_cond present reversed correlation patterns (I should verify the meaning of their
-#   values): fathers seem positively correlated with woody vegetation and connectivity proxies while mothers,
-#   are negatively correlated or, not correlated at all.
-
-pmx.pairplot <- GGally::ggpairs(pm.xnum)
-# We find again the same patterns. Yet, we can see that:
-# - Some relationships are actually not linear but curvilinear (e.g. between woodyveg/connectivity
-#   variables and "urban intensity" or "light pollution").
-# - We don't see very clear multivariate outliers, except perhaps between the woodyveg-connectivity variables
-#   (or may be the sign of interactions).
-
-
-
-### For CC______________________________________________________________________#
-cc.xnum %>%
-  dplyr::select(-ccF_d130_beta0, -ccF_d30_beta1, -ccF_d130_beta1, -woodyveg_volume, -open_area) -> cc.xnum # Same.
-# To compute the correlation matrix:
-res.cor.ccx <- round(stats::cor(cc.xnum, use = "complete.obs", method = "spearman"), 2)
-# To compute a matrix of correlation p-values:
-res.pcor.ccx <- ggcorrplot::cor_pmat(x = cc.xnum, method = "spearman")
-
-ccx.corplot <- ggcorrplot::ggcorrplot(res.cor.ccx, type = "upper",
-                       outline.col = "white",
-                       ggtheme = ggplot2::theme_gray,
-                       colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.ccx, insig = "blank")
-# We can see that:
-# - All F-metrics and woodyveg variables are quite strongly positively correlated, but negatively with
-#   urban intensity, management intensity and the pollution variables. That's quite unsurprising, the more
-#   woody vegetation in the landscape, the more connectivity, and the less room for urban features such as
-#   buildings, roads, pollution emissions, etc.
-# - Quite logically, the pollution variables are positively correlated with urban intensity.
-# - We see that "cumdd_30" is not correlated with any variable.
-
-ccx.pairplot <- GGally::ggpairs(cc.xnum)
-# We find again the same patterns. Yet, we can see that:
-# - Some relationships are actually not linear but curvilinear (e.g. between woodyveg/connectivity
-#   variables and "urban intensity" or "light pollution").
-# - There may be problematic outliers.
-
-
-
 ### For NTITS___________________________________________________________________#
 ntits.xnum %>%
-  dplyr::select(-F_metric_d3b0, -F_metric_d3b1, -urban_intensity, -woodyveg_volume, -open_area) -> ntits.xnum # Same.
+  dplyr::select(-F_metric_d3b0, -F_metric_d3b1, -Rr_metric_d1c1, -woodyveg_volume) -> ntits.xnum
 # To compute the correlation matrix:
 res.cor.ntitsx <- round(stats::cor(ntits.xnum, use = "complete.obs", method = "spearman"), 2)
 # To compute a matrix of correlation p-values:
@@ -603,13 +496,14 @@ ntitsx.corplot <- ggcorrplot::ggcorrplot(res.cor.ntitsx, type = "upper",
                                       colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.ntitsx,
                                       insig = "blank")
 # We can see that:
-# - All F-metrics and woodyveg variables are quite strongly positively correlated, but negatively with the
-#   urban intensity and pollution variables. That's quite unsurprising, the more woody vegetation in the
+# - All connectivity metrics and woodyveg variables are quite strongly positively correlated, but negatively
+#   with the urban intensity and pollution variables. That's quite unsurprising, the more woody vegetation in the
 #   landscape, the more connectivity, and the less room for urban features such as buildings, roads, pollution
 #   emissions, etc.
 # - Herbaceous areas are less strongly correlated that woody areas.
+# - Patch area and perimeters are very strongly correlated!
 # - Quite logically, the pollution variables are positively correlated with other urban related ones.
-# - We see that "cumdd_30" is not correlated with any variable except "min_t_between".
+# - We see that temperature variables are not much correlated with any variable.
 # - Interestingly, "min_t_before" is slightly correlated with most variables when "min_t_between" is not! It also
 #   shows that the minimal temperature before laying tends to be higher when there is not much vegetation (i.e.
 #   when the stations are located in densely urbanised areas).
@@ -617,7 +511,7 @@ ntitsx.corplot <- ggcorrplot::ggcorrplot(res.cor.ntitsx, type = "upper",
 ntitsx.pairplot <- GGally::ggpairs(ntits.xnum)
 # We find again the same patterns. Yet, we can see that:
 # - Some relationships are actually not linear but curvilinear.
-# - There may be problematic outliers.
+# - There may be problematic outliers, particularly for noise_m.
 
 
 
@@ -627,38 +521,11 @@ ntitsx.pairplot <- GGally::ggpairs(ntits.xnum)
 ##### Outliers and distribution
 # _____________________________
 
-pm.y <- pm[,9:14]
-cc.y <- cc[,9:14]
-ntits.y <- ntits_reduced[,9:14]
-
-### For PM______________________________________________________________________#
-
-uni.boxplots(pm.y)
-ppl.tits::uni.dotplots(pm.y)
-# we can say that the 6 DV (dependant variables) have relatively nice distributions although we could have
-# a probable zero-inflation for brood_size and fledgling_nb, as well as a slight left-skewness for the
-# morphometric variables.
-tab <- data.frame(moments::skewness(x = stats::na.omit(pm.y)),
-                  moments::kurtosis(x = stats::na.omit(pm.y))-3)
-pmy_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
-# But skewness and kurtosis values are quite satisfactory.
-
-
-### For CC______________________________________________________________________#
-
-uni.boxplots(cc.y)
-ppl.tits::uni.dotplots(cc.y)
-# Overall, the same patterns as for PM can be seen but the distributions of "clutch_size" and especially
-# "brood_size" might reveal problematic.
-tab <- data.frame(moments::skewness(x = stats::na.omit(cc.y)),
-                  moments::kurtosis(x = stats::na.omit(cc.y))-3)
-ccy_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", "Excess kurtosis"))
-# As expected, "clutch_size" present a slight excess in kurtosis.
-
+ntits.y <- ntits_reduced[,10:15]
 
 ### For NTITS___________________________________________________________________#
 
-uni.boxplots(ntits.y)
+ppl.tits::uni.boxplots(ntits.y)
 ppl.tits::uni.dotplots(ntits.y)
 # we can say that the 6 DV (dependant variables) have relatively nice distributions although we seem to have
 # a zero-inflation for "brood_size" and "fledgling_nb", as well as a slight left-skewness for the morphometric
@@ -671,63 +538,6 @@ pmy_skewkurtable <- knitr::kable(x = tab, digits = 3, col.names = c("Skewness", 
 
 ##### Multivariate relationships
 # ______________________________
-
-### For PM______________________________________________________________________#
-
-# To compute the correlation matrix:
-res.cor.pmy <- round(stats::cor(pm.y, use = "complete.obs", method = "spearman"), 2)
-# To compute a matrix of correlation p-values:
-res.pcor.pmy <- ggcorrplot::cor_pmat(x = pm.y, method = "spearman")
-
-pmy.corplot <- ggcorrplot::ggcorrplot(res.cor.pmy, type = "upper",
-                       outline.col = "white",
-                       ggtheme = ggplot2::theme_gray,
-                       colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.pmy, insig = "blank")
-# We can see that:
-# - The 3 reproductive variables are strongly positively correlated.
-# - Mass is slightly negatively correlated with "cluch" and "brood_size" while "fledgling_nb" is weakly
-#   negatively correlated with "wing_length".
-# - The 3 morphometric variables seem to covary in the same direction as well!
-
-pmy.pairplot <- GGally::ggpairs(pm.y)
-# We can see that:
-# - The positive relationship among the morphometric variables is undeniable.
-# - Among the reproductive variables, positive trends are also quite clear although slightly muddied by the
-#   presence of zero-inflation and increasing variation with "time" (as in subsequent variable: egg > chick
-#   > fledgling).
-# - The negative correlation between "mass" and "clutch_size" and "brood_size" is not so clear here, and
-#   reproductive DV seem rather unrelated to morphometric ones.
-
-
-### For CC______________________________________________________________________#
-
-# To compute the correlation matrix:
-res.cor.ccy <- round(stats::cor(cc.y, use = "complete.obs", method = "spearman"), 2)
-# To compute a matrix of correlation p-values:
-res.pcor.ccy <- ggcorrplot::cor_pmat(x = cc.y, method = "spearman")
-
-ccy.corplot <- ggcorrplot::ggcorrplot(res.cor.ccy, type = "upper",
-                       outline.col = "white",
-                       ggtheme = ggplot2::theme_gray,
-                       colors = c("#6D9EC1", "white", "#E46726"), p.mat = res.pcor.ccy, insig = "blank")
-# We can see that:
-# - If "clutch" and "brood_sizes" are strongly positively correlated, surprisingly, "fledgling_nb" appears
-#   uncorrelated to "clutch_size" (and "brood_size"?). Either this reflects a very non-linear relationship
-#   between these variables or that would imply that, for CC, the number of juvenile that take-off is
-#   globally unrelated to the number of eggs layed or the number of chicks in the brood, which seems
-#   IMPOSSIBLE! Perhaps a textbook example of the limits of biv <- riate correlations???
-# - On the other hand, "fledgling_nb" is positively correlated to all 3 morphometric DV!
-# - The 3 morphometric variables seem to covary in the same direction!
-
-ccy.pairplot <- GGally::ggpairs(cc.y)
-# We can see that:
-# - The positive relationship among the morphometric variables is undeniable.
-# - The positive relationship between "fledgling_nb" and the morphometric DV seems also quite strong!
-# - Increasing variability in "fledgling_nb" with increasing values of the other 2 reproductive DV seem
-#   to explain the lack of positive rank-based correlations (note that here, correlations are significant),
-#   but relationships do exist!
-# - Negative correlation between clutch" and "brood_sizes" and several morphometric DV might exist as well!
-
 
 ### For NTITS___________________________________________________________________#
 
@@ -757,8 +567,6 @@ ntitsy.pairplot <- GGally::ggpairs(ntits.y)
 #   but tends to be more productive (see below).
 
 # Disclaimer, remind that:
-summary(pm.y)
-summary(cc.y)
 # - PM: CS ranges 2-12 (mode 8); BS 0-12 (8); FN 0-11 (0 or 6);
 #       MA 9.9-18.4 (mean 14.8); TL 15.7-20.6 (18.9); WL 27-50.4 (41.5).
 # - CC: CS ranges 2-14 (mode 11); BS 0-14 (10); FN 0-12 (0 or 8);
@@ -771,31 +579,7 @@ summary(cc.y)
 ########################## ************************************************* ###############################
 ##### DATA PREP. FOR MODELLING #####
 
-rm(cc.x, cc.y, cc.xnum, pm.x, pm.y, pm.xnum, tab, ntits.x, ntits.y, ntits.xnum,
-   res.cor.ccx, res.cor.ccy, res.cor.pmx, res.cor.pmy, res.pcor.ccx, res.pcor.ccy, res.pcor.pmx, res.pcor.pmy)
-
-### For PM and CC_______________________________________________________________#
-pm %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
-                     noise_m = noise_m/10, # Converting dB into B.
-                     cumdd_30 = cumdd_30/100) %>% # Converting degree-days into hundred of degree-days.
-  dplyr::mutate(brood_size = round(brood_size, digits = 0), # There was a decimal count.
-                logged_Fmetric = log10(pmF_d2_beta0), # Predictors normalisation.
-                logged_woodyveg = log10(woodyveg_vw)) %>%
-  dplyr::mutate(year = stats::relevel(x = year, ref = 3)) %>% # Assign 2019 as the reference group.
-  dplyr::mutate(manag_low = ifelse(manag_intensity == "0", "1", "0"),
-                manag_mid = ifelse(manag_intensity == "1", "1", "0"),
-                manag_high = ifelse(manag_intensity == "2", "1", "0")) %>%
-  dplyr::mutate(dplyr::across(where(is.matrix), as.numeric),
-                dplyr::across(where(is.character), as.factor)) %>%
-  dplyr::mutate(coord_y = jitter(x = coord_y, factor = 1.2)) %>%
-  dplyr::mutate(coord_x = jitter(x = coord_x, factor = 1.2)) -> pm2 # Added a very small amount of
-# noise to coordinates to avoid groups with exactly similar coordinates (related to low Lat/Long
-# resolution) which prevent the proper use of the DHARMa package autocorrelation test!
-# I could also try median-centering + IQR.
-
-# If I need to generate a dataset for CC (that is, if I intend to analyse the CC data alone), then I could copy-paste
-# the code for PM and simply remove the "parental condition" variables.
-
+rm(tab, ntits.x, ntits.y, ntits.xnum, res.cor.ntitsx, res.pcor.ntitsx)
 
 ### For all tit nestlings (NTITS)_______________________________________________#
 ntits_reduced %>% dplyr::mutate(woodyveg_vw = woodyveg_vw/1000, # Converting m3 into dm3.
