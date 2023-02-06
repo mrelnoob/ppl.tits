@@ -2778,6 +2778,7 @@
 # ############################################ MAJJJJJJJ§§§§§§§§ todolist ####################################################
 # # - Tester avec ou sans outliers (noise_m, connectivity???); si ça change beaucoup les résultats, rapporter
 # #   les deux??? Tester aussi patch_perim + traffic + choisir RE définitifs??? (e.g. id_patch + site???)
+# #   + model laying date??????????????
 # # - Refaire tourner tous les modèles avec NTITS --> Utiliser clutch_size et brood_size comme prédicteur, ou
 # #   la date de ponte??????? ASK JC??????????? Tester????
 # # +++++ Voir pk EDA_report bug! + Voir si centrage change quelque chose (interprétation interaction)?????
