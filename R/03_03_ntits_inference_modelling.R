@@ -48,13 +48,13 @@ ttCy_comglm1 <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b
                                    cumdd_30 + year,
                                  data = ntits3, family = glmmTMB::compois(link = "log"),
                                  dispformula = ~1) # Intercept only 'nu' (default).
-# OR:
-ttCy_comglm1b <- COMPoissonReg::glm.cmp(formula.lambda =
-                                          clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
-                                          urban_intensity + manag_intensity +
-                                          light_pollution + noise_m + traffic +
-                                          cumdd_30 + year,
-                                     data = ntits3, formula.nu = ~1) # Intercept only 'nu' (default).
+# # OR:
+# ttCy_comglm1b <- COMPoissonReg::glm.cmp(formula.lambda =
+#                                           clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
+#                                           urban_intensity + manag_intensity +
+#                                           light_pollution + noise_m + traffic +
+#                                           cumdd_30 + year,
+#                                      data = ntits3, formula.nu = ~1) # Intercept only 'nu' (default).
 
 ## Fitting a regular Conway-Maxwell (COM) Poisson mixed model (GLMM):
 ttCy_comglmm1 <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
@@ -102,7 +102,9 @@ summary(ttCy_comglmm2) # AIC = 1410.1, so the interaction worsen the fit (vs 167
 ### ** 1.1.2. Improved model (exploration) ----
 # _____________________________________________
 
-# TEST: DELETE patch_area (pour voir LRT)! + Nu parameter!!!!
+##### A FINIR ET NETTOYER§§§ ----
+##### A FINIR ET NETTOYER§§§ ----
+##### A FINIR ET NETTOYER§§§ ----
 
 ## Adding "site" as RE:
 ttCy_comglmm1b <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
@@ -174,30 +176,6 @@ zzz <- glmmTMB::glmmTMB(clutch_size ~ log_F_metric_d2b1 + species +
                                    dispformula = ~1)
 summary(zzz) # AIC = 1410.2 with "patch_perim"; 1409.7 with "patch_area/perim"!
 # And removing "patch_area" worsen AIC (=1412.7) suggesting that it is indeed useful to model CS!
-
-
-
-##### TO BE TESTED AND CLEANED§§§§ -----
-##### TO BE TESTED AND CLEANED§§§§ -----
-##### TO BE TESTED AND CLEANED§§§§ -----
-# Tester encore une fois la standardisation ou le centrage et/ou faire une vraie interprétation des paramètres!
-ntits3 %>% dplyr::select(clutch_size, id_patch, site,
-                         patch_area, log_patch_area, F_metric_d2b1, log_F_metric_d2b1, Rr_metric_d2c1,
-                         species, urban_intensity, manag_low, manag_high, light_pollution, noise_m, traffic,
-                         cumdd_30, year) %>%
-  dplyr::mutate(std_patch_area = scale(patch_area),
-                std_log_patch_area = scale(log_patch_area),
-                std_F = scale(F_metric_d2b1),
-                std_log_F = scale(log_F_metric_d2b1),
-                std_R = scale(Rr_metric_d2c1),
-                std_noise = scale(noise_m),
-                std_traffic = scale(traffic),
-                std_cumdd30 = scale(cumdd_30)) %>%
-  ppl.tits::uni.dotplots() # A FINIR§§§§§ init.mod!!
-
-
-
-
 
 
 
