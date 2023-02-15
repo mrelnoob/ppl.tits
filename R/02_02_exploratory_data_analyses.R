@@ -582,8 +582,8 @@ ntitsy.pairplot <- GGally::ggpairs(ntits.y)
 rm(tab, ntits.x, ntits.y, ntits.xnum, res.cor.ntitsx, res.pcor.ntitsx)
 
 ### For all tit nestlings (NTITS)_______________________________________________#
-ntits_reduced %>% dplyr::mutate(Dr_metric_c1 = Dr_metric_c1/1000, # Converting m2 into km2.
-                                Dr_metric_c2 = Dr_metric_c2/1000, # Converting m2 into km2.
+ntits_reduced %>% dplyr::mutate(Dr_metric_c1 = Dr_metric_c1/1000, # Changing scale of the cost-distance.
+                                Dr_metric_c2 = Dr_metric_c2/1000, # Changing scale of the cost-distance.
                                 noise_m = noise_m/10, # Converting dB into B.
                                 cumdd_30 = cumdd_30/100, # Converting degree-days into hundred of degree-days.
                                 cumdd_between = cumdd_between/100,
