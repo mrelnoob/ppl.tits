@@ -27,6 +27,16 @@
 ## To remove probable outliers (see initial 'ttCy_comglmm1' diagnostics below):
 ntits3 <- ntits2[-c(111,156,170,181,210,227,326,362,374,379),]
 
+##### TEST F+§§§ ----
+# ntits3 %>% dplyr::mutate(Fplus = patch_area+F_metric_d2b1) %>%
+#   dplyr::mutate(log_Fplus = log10(Fplus)) %>%
+#   dplyr::select(woody_area, log_woody_area, patch_area, log_patch_area,
+#                 F_metric_d2b1, log_F_metric_d2b1, Fplus, log_Fplus) %>%
+#   ppl.tits::uni.histograms() # Pour voir la gueule que ça a!
+# ntits3 %>% dplyr::mutate(Fplus = patch_area+F_metric_d2b1) %>%
+#   dplyr::mutate(log_Fplus = log10(Fplus)) -> ntits4
+##### FIN TEST F+§§§ ----
+
 ## Fitting a regular Poisson regression:
 ttCy_glm1 <- stats::glm(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                           urban_intensity + manag_intensity +
@@ -38,8 +48,9 @@ ttCy_glm1 <- stats::glm(clutch_size ~ log_patch_area + log_F_metric_d2b1 + speci
 ttCy_glmm1 <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                  urban_intensity + manag_intensity +
                                  light_pollution + noise_m + traffic +
-                                 cumdd_30 + year + (1|id_patch),
+                                 cumdd_30 + year + (1|id_nestbox),
                                    data = ntits3, family = "poisson")
+
 
 ## Fitting a regular Conway-Maxwell (COM) Poisson regression (GLM):
 ttCy_comglm1 <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
@@ -60,25 +71,26 @@ ttCy_comglm1 <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b
 ttCy_comglmm1 <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                     urban_intensity + manag_intensity +
                                     light_pollution + noise_m + traffic +
-                                    cumdd_30 + year + (1|id_patch),
+                                    cumdd_30 + year + (1|id_nestbox),
                                  data = ntits3, family = glmmTMB::compois(link = "log"),
                                  dispformula = ~1) # Rather long to fit.
+
 ## Fitting the interaction model (COM-Poisson GLMM):
 ttCy_comglmm2 <- glmmTMB::glmmTMB(clutch_size ~
                                     scale(log_patch_area, scale = F) * scale(log_F_metric_d2b1, scale = F) +
                                     species +
                                     urban_intensity + manag_intensity +
                                     light_pollution + noise_m + traffic +
-                                    cumdd_30 + year + (1|id_patch),
+                                    cumdd_30 + year + (1|id_nestbox),
                                   data = ntits3, family = glmmTMB::compois(link = "log"),
                                   dispformula = ~1) # Rather long to fit.
 summary(ttCy_glm1) # AIC = 1711.2 (vs 1811.4 with the outliers).
 summary(ttCy_glmm1) # AIC = 1713.2 (vs 1813.4 with the outliers).
 summary(ttCy_comglm1) # AIC = 1408.6 (vs 1669.5 with the outliers).
-summary(ttCy_comglm1b) # AIC = 1411.8 (so it's not exactly the same?! REML?).
-summary(ttCy_comglmm1) # AIC = 1408.3 (vs 1626.7 with the outliers).
-summary(ttCy_comglmm2) # AIC = 1410.1, so the interaction worsen the fit (vs 1673.5 with the outliers)! Using
-# the "Rr_metric_d2c1" proxy instead of the F one is even worse!
+# summary(ttCy_comglm1b) # AIC = 1411.8 (so it's not exactly the same?! REML?).
+summary(ttCy_comglmm1) # AIC = 1407.1 (vs 1626.7 with the outliers).
+summary(ttCy_comglmm2) # AIC = 1409 (vs 1673.5 with the outliers), so the interaction worsen the fit ! And
+# note that using the "Rr_metric" is even worse!
 # It seems that, if the inclusion of a random effect (RE) did not improve the fit but accounting for
 # the likely underdispersion quite strongly improved the fit! I will thus carry on with 'ttCy_comglmm1'
 # to the diagnostic part and assess whether the use of the RE is truly justified or not and if the
@@ -90,10 +102,7 @@ summary(ttCy_comglmm2) # AIC = 1410.1, so the interaction worsen the fit (vs 167
 # explored a few reasonable variations of the same model by trying different proxies of the same variable
 # (e.g. different connectivity metrics, "woody_area" instead of "patch_area"), adding or using "site" as RE,
 # and slightly tuning the (nu) dispersion model (see below).
-
-# Below, code and comments may show the diagnostics of one or several of these exploratory models, but you
-# can re-run previous diagnostics by replacing the model name in the code chunks or by changing ntits3 by
-# ntits2 (i.e. the dataset with the deleted outliers).
+# However, explorations were not very conclusive.
 
 
 
@@ -102,19 +111,11 @@ summary(ttCy_comglmm2) # AIC = 1410.1, so the interaction worsen the fit (vs 167
 ### ** 1.1.2. Exploratory modelling ----
 # ______________________________________
 
-##### A FINIR ET NETTOYER§§§ ----
-##### A FINIR ET NETTOYER§§§ ----
-# A FINIR ET NETTOYER§§§ ---- Mais aussi conclusion! Overall, initial model is best (more or less). But notice
-# that the effect size for PATCHE_AREA is very weak! So no effect really: same for URBAN_INTENSITY actually.
-# Verify interpretation (exp)???????
-# Verify interpretation (exp)???????
-# Verify interpretation (exp)???????
-
-## Adding "site" as RE:
+## Using "id_patch" as RE:
 ttCy_comglmm1b <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                      urban_intensity + manag_intensity +
                                      light_pollution + noise_m + traffic +
-                                     cumdd_30 + year + (1|id_patch) + (1|site),
+                                     cumdd_30 + year + (1|id_patch),
                                    data = ntits3, family = glmmTMB::compois(link = "log"),
                                    dispformula = ~1)
 ## Only using "site" as RE:
@@ -124,62 +125,104 @@ ttCy_comglmm1c <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d
                                      cumdd_30 + year + (1|site),
                                    data = ntits3, family = glmmTMB::compois(link = "log"),
                                    dispformula = ~1)
+## Using two RE:
+ttCy_comglmm1ac <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
+                                     urban_intensity + manag_intensity +
+                                     light_pollution + noise_m + traffic +
+                                     cumdd_30 + year + (1|id_nestbox) + (1|site),
+                                   data = ntits3, family = glmmTMB::compois(link = "log"),
+                                   dispformula = ~1)
+ttCy_comglmm1bc <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
+                                     urban_intensity + manag_intensity +
+                                     light_pollution + noise_m + traffic +
+                                     cumdd_30 + year + (1|id_patch) + (1|site),
+                                   data = ntits3, family = glmmTMB::compois(link = "log"),
+                                   dispformula = ~1)
+summary(ttCy_comglmm1b) # AIC = 1408.3 vs 1407.1.
+summary(ttCy_comglmm1c) # AIC = 1406.9.
+summary(ttCy_comglmm1ac) # AIC = 1407.6.
+summary(ttCy_comglmm1bc) # AIC = 1408.8.
+# So switching the random effects or using two of them does not seem to change things much.
+
+
 ## Tuning the NU parameter (dispersion model):
 ttCy_comglmm1d <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                      urban_intensity + manag_intensity +
                                      light_pollution + noise_m + traffic +
-                                     cumdd_30 + year + (1|id_patch),
+                                     cumdd_30 + year + (1|id_nestbox),
                                    data = ntits3, family = glmmTMB::compois(link = "log"),
-                                   dispformula = ~log_patch_area+log_F_metric_d2b1+cumdd_30+min_t_before)
+                                   dispformula = ~log_patch_area+log_F_metric_d2b1+cumdd_30+year)
 ttCy_comglmm1e <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                      urban_intensity + manag_intensity +
                                      light_pollution + noise_m + traffic +
-                                     cumdd_30 + year + (1|id_patch),
+                                     cumdd_30 + year + (1|id_nestbox),
                                    data = ntits3, family = glmmTMB::compois(link = "log"),
-                                   dispformula = ~log_F_metric_d2b1+cumdd_30+min_t_before)
+                                   dispformula = ~log_patch_area+log_F_metric_d2b1+min_t_before+year)
 ttCy_comglmm1f <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                      urban_intensity + manag_intensity +
                                      light_pollution + noise_m + traffic +
-                                     cumdd_30 + year + (1|id_patch),
+                                     cumdd_30 + year + (1|id_nestbox),
                                    data = ntits3, family = glmmTMB::compois(link = "log"),
-                                   dispformula = ~log_F_metric_d2b1+cumdd_30)
+                                   dispformula = ~log_F_metric_d2b1+urban_intensity+cumdd_30+year)
 ttCy_comglmm1g <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                      urban_intensity + manag_intensity +
                                      light_pollution + noise_m + traffic +
-                                     cumdd_30 + year + (1|id_patch),
+                                     cumdd_30 + year + (1|id_nestbox),
                                    data = ntits3, family = glmmTMB::compois(link = "log"),
-                                   dispformula = ~Rr_metric_d2c1)
+                                   dispformula = ~log_F_metric_d2b1+cumdd_30+year)
 ttCy_comglmm1h <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                      urban_intensity + manag_intensity +
                                      light_pollution + noise_m + traffic +
-                                     cumdd_30 + year + (1|id_patch),
+                                     cumdd_30 + year + (1|id_nestbox),
                                    data = ntits3, family = glmmTMB::compois(link = "log"),
-                                   dispformula = ~cumdd_30+Rr_metric_d2c1)
+                                   dispformula = ~cumdd_30+year)
 ttCy_comglmm1i <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                      urban_intensity + manag_intensity +
                                      light_pollution + noise_m + traffic +
-                                     cumdd_30 + year + (1|id_patch),
+                                     cumdd_30 + year + (1|id_nestbox),
                                    data = ntits3, family = glmmTMB::compois(link = "log"),
-                                   dispformula = ~cumdd_30+log_herb_area)
-summary(ttCy_comglmm1b) # AIC = 1408.8 vs 1408.3.
-summary(ttCy_comglmm1c) # AIC = 1406.9 (while no RE at all gives 1408.6)!
-summary(ttCy_comglmm1d) # AIC = 1413.
-summary(ttCy_comglmm1e) # AIC = 1411.
-summary(ttCy_comglmm1f) # AIC = 1409.2.
-summary(ttCy_comglmm1g) # AIC = 1408.3 with only "cumdd_30"; 1409.3 with only "Rr_metric_d2c1";
-summary(ttCy_comglmm1h) # AIC = 1409.1 with "cumdd_30"+"species"; 1409.5 same but "Rr_metric_d2c1";
-summary(ttCy_comglmm1i) # AIC = 1409.4 (with "urban_intensity"); 1410.2 with "min_t_before"; 1414 with "year";
-# 1409.6 with "log_herb_area"!
+                                   dispformula = ~log_F_metric_d2b1+year)
+ttCy_comglmm1j <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
+                                     urban_intensity + manag_intensity +
+                                     light_pollution + noise_m + traffic +
+                                     cumdd_30 + year + (1|id_nestbox),
+                                   data = ntits3, family = glmmTMB::compois(link = "log"),
+                                   dispformula = ~log_F_metric_d2b1+cumdd_30)
+ttCy_comglmm1k <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
+                                     urban_intensity + manag_intensity +
+                                     light_pollution + noise_m + traffic +
+                                     cumdd_30 + year + (1|id_nestbox),
+                                   data = ntits3, family = glmmTMB::compois(link = "log"),
+                                   dispformula = ~min_t_before+cumdd_30)
+summary(ttCy_comglmm1d) # AIC = 1416.3 vs 1407.1.
+summary(ttCy_comglmm1e) # AIC = 1416.3.
+summary(ttCy_comglmm1f) # AIC = 1416.3.
+summary(ttCy_comglmm1g) # AIC = 1414.4.
+summary(ttCy_comglmm1h) # AIC = 1413.2.
+summary(ttCy_comglmm1i) # AIC = 1412.7.
+summary(ttCy_comglmm1j) # AIC = 1408.7.
+summary(ttCy_comglmm1k) # AIC = 1409.5.
 
-# Only adding "patch_perim":
-zzz <- glmmTMB::glmmTMB(clutch_size ~ log_F_metric_d2b1 + species +
-                          urban_intensity + manag_intensity +
-                          light_pollution + noise_m + traffic +
-                          cumdd_30 + year + (1|id_patch),
-                                   data = ntits3, family = glmmTMB::compois(link = "log"),
+## Test of the effect of patch_edge:patch_area:
+ntits3 %>% dplyr::mutate(edgarea_ratio = patch_perim/patch_area) -> xx
+hist(xx$edgarea_ratio)
+hist(log10(xx$edgarea_ratio))
+summary(xx$edgarea_ratio)
+
+zzz <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2b1 + species + edgarea_ratio +
+                                     urban_intensity + manag_intensity +
+                                     light_pollution + noise_m + traffic +
+                                     cumdd_30 + year + (1|id_nestbox),
+                                   data = xx, family = glmmTMB::compois(link = "log"),
                                    dispformula = ~1)
-summary(zzz) # AIC = 1410.2 with "patch_perim"; 1409.7 with "patch_area/perim"!
-# And removing "patch_area" worsen AIC (=1412.7) suggesting that it is indeed useful to model CS!
+zzz2 <- glmmTMB::glmmTMB(clutch_size ~ edgarea_ratio + log_F_metric_d2b1 + species +
+                                     urban_intensity + manag_intensity +
+                                     light_pollution + noise_m + traffic +
+                                     cumdd_30 + year + (1|id_nestbox),
+                                   data = xx, family = glmmTMB::compois(link = "log"),
+                                   dispformula = ~1)
+summary(zzz) # AIC = 1409 vs 1407.1 (but neither "patch_area" nor "edarea_ratio" significant).
+summary(zzz2) # AIC = 1408.3 (with a significant "edarea_ratio" effect (+)).
 
 
 
@@ -465,7 +508,7 @@ ttHSy_glm1 <- stats::glm(brood_size/clutch_size ~ log_patch_area + log_F_metric_
 ttHSy_glmm1 <- glmmTMB::glmmTMB(brood_size/clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                   urban_intensity + manag_intensity +
                                   light_pollution + noise_m + traffic +
-                                  cumdd_30 + year + (1|id_patch),
+                                  cumdd_30 + year + (1|id_nestbox),
                            weights = clutch_size, data = ntits3, family = "binomial")
 
 ## Fitting an interactive binomial GLMM:
@@ -474,32 +517,24 @@ ttHSy_glmm2 <- glmmTMB::glmmTMB(brood_size/clutch_size ~
                                   species +
                                   urban_intensity + manag_intensity +
                                   light_pollution + noise_m + traffic +
-                                  cumdd_30 + year + (1|id_patch),
+                                  cumdd_30 + year + (1|id_nestbox),
                                 weights = clutch_size, data = ntits3, family = "binomial")
 summary(ttHSy_glm1) # AIC = 775.7.
-summary(ttHSy_glmm1) # AIC = 739.5.
-summary(ttHSy_glmm2) # AIC = 741, so the interaction does not seem supported by the data!
+summary(ttHSy_glmm1) # AIC = 734.
+summary(ttHSy_glmm2) # AIC = 736, so the interaction does not seem supported by the data!
 # It seems that, if the inclusion of a random effect (RE) improves the fit! I will thus carry on with the
 # last model to the diagnostic part and assess whether the use of the RE is truly justified or not and if
 # the model behaves as expected.
-
-
-##### A FINIR ET NETTOYER§§§ ----
-##### A FINIR ET NETTOYER§§§ ----
-##### A FINIR ET NETTOYER§§§ ----
-# UPDATE: diagnostics ran for 'ttHSy_ziglmm1' and 'ttHSy_glmm1' (the initial models) indicated that the
-# models fit the data relatively well although some modelling assumptions were not fully met and the models
-# under-predicted. Overall, diagnostics suggested that observations with brood sizes of 0 were likely
-# outliers generated by another process than the one driving hatching rate. Incidentally, they were mostly
-# the same as the outliers of clutch_size!
-# Consequently, in a second step, we removed them and explored a few reasonable variations of the same
-# model by trying different proxies of the same variable (see below).
-# To test our 2nd hypothesis, I also fitted an interaction model in which the interaction effect turned
-# out significant, it will thus be diagnose as well.
-
-# Below, code and comments will show the diagnostics of several of these exploratory models (D, E, F), but
-# you can re-run the diagnostics for the initial models by replacing the model name in the code chunks and
-# to change ntits3 by ntits2.
+# UPDATE: diagnostics ran for 'ttHSy_glmm1' (the initial models) indicated that the models fit the data
+# relatively well although some modelling assumptions were not fully met and the models under-predicted.
+# Overall, diagnostics suggested that observations with brood sizes of 0 were likely outliers generated
+# by another process than the one driving hatching rate. Incidentally, they were mostly the same as the
+# outliers of clutch_size!
+# Therefore, in a second step, I removed them and re-run diagnostics (which yielded green lights). Then
+# I also explored a few reasonable variations of the same model by trying different proxies of the same
+# variable (e.g. different connectivity metrics, "woody_area" instead of "patch_area"), adding or using
+# "site" as RE.
+# However, explorations were not very conclusive.
 
 
 
@@ -508,87 +543,53 @@ summary(ttHSy_glmm2) # AIC = 741, so the interaction does not seem supported by 
 ### ** 2.1.2. Exploratory modelling ----
 # ______________________________________
 
-# Test: other RE (and combinations)! Other proxies!
-
 ## Using "site" as RE:
 ttHSy_glmm1a <- glmmTMB::glmmTMB(brood_size/clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                    urban_intensity + manag_intensity +
                                    light_pollution + noise_m + traffic +
                                    cumdd_30 + year + (1|site),
                                  weights = clutch_size, data = ntits3, family = "binomial")
-model0 <- lme4::glmer(brood_size/clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
-                        urban_intensity + manag_intensity +
-                        light_pollution + noise_m + traffic +
-                        cumdd_30 + year + (1|site),
-                      weights = clutch_size, data = ntits3, family = "binomial")
 
-## Using "id_nestbox" as RE:
+## Using "id_patch" as RE:
 ttHSy_glmm1b <- glmmTMB::glmmTMB(brood_size/clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                    urban_intensity + manag_intensity +
                                    light_pollution + noise_m + traffic +
-                                   cumdd_30 + year + (1|id_nestbox) + (1|site),
+                                   cumdd_30 + year + (1|id_patch),
                                  weights = clutch_size, data = ntits3, family = "binomial")
-model1 <- lme4::glmer(brood_size/clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
-                        urban_intensity + manag_intensity +
-                        light_pollution + noise_m + traffic +
-                        cumdd_30 + year + (1|id_nestbox) + (1|site),
-                      weights = clutch_size, data = ntits3, family = "binomial")
-summary(ttHSy_glmm1a) # AIC = 773.5 vs 739.5 (but "patch_area" is significant (+))!
-summary(model0) # AIC = 773.5 vs 739.5 (but "patch_area" is significant (+))!
-summary(ttHSy_glmm1b) # AIC = 734 (but PATCH_AREA not significant, even with SITE)!
-summary(model1) # AIC = 734 (but PATCH_AREA not significant, even with SITE)!
-### SITE va plutôt dans le sens qu'on veut, mais ça nique l'AIC! Pk?????? Incompréhensible tout ça. Try PB-based
-# LRT pour voir si ID_NESTBOX améliore vraiment le modèle:
-tictoc::tic("Parametric bootstrap LRT for RE inclusion")
-res.LRT_inteff <- DHARMa::simulateLRT(m0 = model0, m1 = model1, n = 500, seed = 65)
-tt <- as.data.frame(cbind(res.LRT_inteff$method,
-                          res.LRT_inteff$data.name,
-                          res.LRT_inteff$statistic,
-                          res.LRT_inteff$p.value))
-rownames(tt) <- NULL
-tt %>% dplyr::rename("Method" = V1,
-                     "Models" = V2,
-                     "Log Likelihood (M1/M0)" = V3,
-                     "p-value" = V4) -> tt
-readr::write_csv2(x = tt, file = here::here("output", "tables", "res.ttHSy_LRT_RE.site_nest.csv"))
-tictoc::toc() # DISCLAIMER: took ~??? to run!
+summary(ttHSy_glmm1a) # AIC = 773.5 vs 734 (but "patch_area" is significant (+))!
+summary(ttHSy_glmm1b) # AIC = 739.5.
+# So the use of these RE does not seem warranted by the data.
 
 
-
+## Deleting "traffic":
 ttHSy_glmm1c <- glmmTMB::glmmTMB(brood_size/clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                    urban_intensity + manag_intensity +
                                    light_pollution + noise_m +
-                                   cumdd_30 + year + (1|site),
+                                   cumdd_30 + year + (1|id_nestbox),
                                  weights = clutch_size, data = ntits3, family = "binomial")
-ttHSy_glmm1d <- glmmTMB::glmmTMB(brood_size/clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
-                                   urban_intensity + log_herb_area + manag_intensity +
+## Changing the connectivity metric:
+ttHSy_glmm1d <- glmmTMB::glmmTMB(brood_size/clutch_size ~ log_patch_area + Rr_metric_d2c1 + species +
+                                   urban_intensity + manag_intensity +
                                    light_pollution + noise_m + traffic +
-                                   cumdd_30 + year + (1|site),
+                                   cumdd_30 + year + (1|id_nestbox),
                                  weights = clutch_size, data = ntits3, family = "binomial")
+## Using "cumdd_60":
 ttHSy_glmm1e <- glmmTMB::glmmTMB(brood_size/clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
                                    urban_intensity + manag_intensity +
                                    light_pollution + noise_m + traffic +
-                                   cumdd_60 + year + (1|site),
+                                   cumdd_60 + year + (1|id_nestbox),
                                  weights = clutch_size, data = ntits3, family = "binomial")
-summary(ttHSy_glmm1c) # AIC = 727.8 avec WOODY_AREA (et "id_nestbox" en RE); 730.4 idem (mais "id_patch") -->
-# mais plus de significativité (mais --- pour WOODY_AREA)!
+## Adding "min_t_before":
+ttHSy_glmm1f <- glmmTMB::glmmTMB(brood_size/clutch_size ~ log_patch_area + log_F_metric_d2b1 + species +
+                                   urban_intensity + manag_intensity +
+                                   light_pollution + noise_m + traffic +
+                                   cumdd_30 + min_t_before + year + (1|id_nestbox),
+                                 weights = clutch_size, data = ntits3, family = "binomial")
+summary(ttHSy_glmm1c) # AIC = 732.5 vs 734.
 summary(ttHSy_glmm1d) # AIC = 734.1.
-summary(ttHSy_glmm1e) # AIC = 732.5.
-
-
-# Donc:
-# - Supprimer TRAFFIC ne change rien.
-# - Utiliser d'autres métriques de connectivité ne change pas grand chose. La connectivité ne répond que si on
-#   utilise WOODY_AREA (ou quelque chose de proche), impliquant qu'en effet, c'était peut-être une mauvaise
-#   idée à la base (car effet négatif --> la connectivité représentait en bonne partie la quantité d'habitat)?
-# - Utiliser SITE affaiblit l'AIC mais rend significatif l'effet de PATCH_AREA! Encore plus si REML=TRUE!
-# - Utiliser WOODY_AREA baisse l'AIC et donne des trucs significatifs mais durs à expliquer (WOODY---).
-# - Quand on utilise WOODY_AREA, il semble vraiment falloir associer SITE et l'un des ID. Cela suggère donc un
-#   fort effet de site affectant WOODY_AREA.
-
-
-
-
+summary(ttHSy_glmm1e) # AIC = 733.3.
+summary(ttHSy_glmm1f) # AIC = 735.
+# Not very conclusive.
 
 
 
@@ -989,8 +990,10 @@ summary(ttFS_zibbin_glm2) # AIC = 1375.2 and significant interaction  (estimates
 # but it is not clear which one is best. Differences will have to be assessed through diagnoses. I will thus
 # diagnose them all but, for the sake of brevity, I will not always show the code and comments for all.
 
-# UPDATE: As before, we explored a few reasonable variations of the same model by trying different proxies
-# of the same variable or by tuning the ZI component of the model.
+# UPDATE: Diagnostics showed that using a beta-binomial distribution was the correct way to go and not using
+# an OLRE. Since, as before, we explored a few reasonable variations of the same model by trying different
+# proxies of the same variable or by tuning the ZI component of the model, we only try it for the beta-
+# binomial specifications of the model, and mostly without RE to avoid convergence issues.
 # Below, code and comments may be related to these exploratory models (models H), but you can re-run the
 # diagnostics for the initial models by replacing the model name in the code chunks.
 
@@ -1141,8 +1144,8 @@ ttFS_zibbin_glm2i <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~
                                      family = glmmTMB::betabinomial(link = "logit"),
                                      ziformula = ~min_t_between+log_F_metric_d2b1+year)
 summary(ttFS_zibbin_glm2h) # AIC = 1362.7 vs 1375.2.
-summary(ttFS_zibbin_glmm2h) # AIC = 1364.7 vs 1375.2.
-summary(ttFS_zibbin_glm2i) # AIC = 1366.4 vs 1375.2.
+summary(ttFS_zibbin_glmm2h) # AIC = 1364.7.
+summary(ttFS_zibbin_glm2i) # AIC = 1366.4.
 
 
 
@@ -1390,7 +1393,7 @@ tictoc::toc() # DISCLAIMER: took ~1h45 to run!
 summary(ttFS_zibbin_glmm1) # AIC = 1380.2 and both R2_glmm = 0.8!
 summary(ttFS_zibbin_glm1) # AIC = 1378.2 and NA for R2 (performance thinks it's a mixed model) but as the model
 # is basically similar to the GLMM, we can consider its R2 as well.
-summary(ttFS_zibbin_glmm2) # AIC = 1337.2 and both R2_glmm = 0.81!
+summary(ttFS_zibbin_glmm2) # AIC = 1377.2 and both R2_glmm = 0.81!
 # Diagnostics ran for these initial models indicated that the model fit the data relatively well although
 # prediction ranges are too narrow and the models fail to predict total failures and successes! Interestingly,
 # and inexplicably, some of the models without ZI (especially the binomial GLMM with OLRE) predicted the
@@ -1403,7 +1406,7 @@ summary(ttFS_zibbin_glmm2) # AIC = 1337.2 and both R2_glmm = 0.81!
 # the models as it is collinear with "clutch_size". We thus chose to keep "clutch_size" as it is a more
 # interesting predictor, yielded better diagnostics and results, and as no "species" effect was detected.
 # However, the null model 'ttFS_zibbin_glmm1' failed to converge so I consider using the non-mixed models
-# ZIBBIN_GLM instead as the RE turned out to be not required.
+# ZIBBIN_GLM instead as the RE turned out to be unnecessary.
 ## Significant variables: F-metric (++), clutch_size (-), manag_high (--), cumdd_between (--), year2020 (++),
 # and year2022 (+++).
 ## For the inteactive (moderated) model, the INTERACTION TERM was also significant (--), but the F-metric and
