@@ -64,6 +64,12 @@ ttCy_comglmm1 <- glmmTMB::glmmTMB(clutch_size ~ log_patch_area + log_F_metric_d2
                                     cumdd_30 + year + (1|id_nestbox),
                                  data = ntits3, family = glmmTMB::compois(link = "log"),
                                  dispformula = ~1) # Rather long to fit.
+ttCy_comglmm1_cent <- glmmTMB::glmmTMB(clutch_size ~ c.log_patch_area + c.log_F_metric_d2b1 + species +
+                                         urban_intensity + manag_low + manag_high +
+                                         light_pollution + c.noise_m + c.traffic +
+                                         c.cumdd_30 + year + (1|id_nestbox),
+                                 data = ntits3, family = glmmTMB::compois(link = "log"),
+                                 dispformula = ~1) # Rather long to fit.
 
 ## Fitting the interaction model (COM-Poisson GLMM):
 ttCy_comglmm2 <- glmmTMB::glmmTMB(clutch_size ~
@@ -74,13 +80,21 @@ ttCy_comglmm2 <- glmmTMB::glmmTMB(clutch_size ~
                                     cumdd_30 + year + (1|id_nestbox),
                                   data = ntits3, family = glmmTMB::compois(link = "log"),
                                   dispformula = ~1) # Rather long to fit.
+ttCy_comglmm2_cent <- glmmTMB::glmmTMB(clutch_size ~ c.log_patch_area * c.log_F_metric_d2b1 + species +
+                                         urban_intensity + manag_low + manag_high +
+                                         light_pollution + c.noise_m + c.traffic +
+                                         c.cumdd_30 + year + (1|id_nestbox),
+                                  data = ntits3, family = glmmTMB::compois(link = "log"),
+                                  dispformula = ~1) # Rather long to fit.
 summary(ttCy_glm1) # AIC = 1711.2 (vs 1811.4 with the outliers).
 summary(ttCy_glmm1) # AIC = 1713.2 (vs 1813.4 with the outliers).
 summary(ttCy_comglm1) # AIC = 1408.6 (vs 1669.5 with the outliers).
 # summary(ttCy_comglm1b) # AIC = 1411.8 (so it's not exactly the same?! REML?).
 summary(ttCy_comglmm1) # AIC = 1407.1 (vs 1626.7 with the outliers).
+summary(ttCy_comglmm1_cent) # AIC = 1407.1.
 summary(ttCy_comglmm2) # AIC = 1409 (vs 1673.5 with the outliers), so the interaction worsen the fit ! And
 # note that using the "Rr_metric" is even worse!
+summary(ttCy_comglmm2_cent) # AIC = 1409.
 # It seems that, if the inclusion of a random effect (RE) did not improve the fit but accounting for
 # the likely underdispersion quite strongly improved the fit! I will thus carry on with 'ttCy_comglmm1'
 # to the diagnostic part and assess whether the use of the RE is truly justified or not and if the
@@ -908,6 +922,14 @@ ttFS_zibbin_glmm1 <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ log_patch_area +
                                   weights = brood_size, data = ntits3,
                                   family = glmmTMB::betabinomial(link = "logit"),
                                   ziformula = ~1) # Intercept only.
+ttFS_zibbin_glmm1_cent <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ c.log_patch_area + c.log_F_metric_d2b1 +
+                                             c.clutch_size +
+                                             urban_intensity + manag_low + manag_high +
+                                             light_pollution + c.noise_m + c.traffic +
+                                             c.cumdd_between + year + (1|id_nestbox),
+                                  weights = brood_size, data = ntits3,
+                                  family = glmmTMB::betabinomial(link = "logit"),
+                                  ziformula = ~1) # Intercept only.
 ## Fitting a zero-inflated (ZI) beta-binomial GLM:
 ttFS_zibbin_glm1 <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ log_patch_area + log_F_metric_d2b1 +
                                     clutch_size +
@@ -961,6 +983,15 @@ ttFS_zibbin_glm2 <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~
                                   weights = brood_size, data = ntits3,
                                   family = glmmTMB::betabinomial(link = "logit"),
                                   ziformula = ~1)
+ntits3 %>% dplyr::mutate(c.clutch_size = clutch_size-stats::median(clutch_size)) -> ntits3
+ttFS_zibbin_glm2_cent <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ c.log_patch_area * c.log_F_metric_d2b1 +
+                                            c.clutch_size +
+                                            urban_intensity + manag_low + manag_high +
+                                            light_pollution + c.noise_m + c.traffic +
+                                            c.cumdd_between + year,
+                                  weights = brood_size, data = ntits3,
+                                  family = glmmTMB::betabinomial(link = "logit"),
+                                  ziformula = ~1)
 summary(ttFS_bin_glm1) # AIC = 2105.7.
 summary(ttFS_bbin_glm1) # AIC = NA (why?).
 summary(ttFS_bin_glmm1) # AIC = 1680.1.
@@ -969,11 +1000,13 @@ summary(ttFS_bbin_glmm1) # AIC = 1474.9.
 summary(ttFS_zibin_glmm1) # AIC = 1412.1.
 summary(ttFS_zibin_glmm1_olre) # AIC = 1381.6.
 summary(ttFS_zibbin_glmm1) # AIC = 1380.2.
+summary(ttFS_zibbin_glmm1_cent) # AIC = 1380.2.
 summary(ttFS_zibbin_glm1) # AIC = 1378.2 (estimates are similar to the GLMM = same models).
 summary(ttFS_zibin_glmm2) # AIC = 1407.9 and significant interaction!
 summary(ttFS_zibin_glmm2_olre) # AIC = 1379.5 and significant interaction!
 summary(ttFS_zibbin_glmm2) # AIC = 1377.2 and significant interaction!
 summary(ttFS_zibbin_glm2) # AIC = 1375.2 and significant interaction  (estimates are similar to the GLMM too)!
+summary(ttFS_zibbin_glm2_cent)
 # It seems that, if the inclusion of a random effect (RE) strongly improved the fit when the ZI and
 # overdispersion were not accounted for, but not when they were. Accounting for the ZI and for overdispersion
 # in the response, whether by using an OLRE or using a beta-binomial distribution, further improved the fit
@@ -1403,6 +1436,117 @@ summary(ttFS_zibbin_glmm2) # AIC = 1377.2 and both R2_glmm = 0.81!
 # cumdd_between had p-values < 0.1 (trends), which could be a sign of a cross-over interaction.
 ## Hypothesis 1 and 2 possibly validated (AIC = 1381.3 vs 1378.2)!
 
+### Manual prediction attempt:
+summary(ttFS_zibbin_glm2)
+
+intercept <- 3.808979
+coef_logPA <- -0.066579
+coef_logF <- 0.369460
+coef_interact <- -0.367882
+
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+# Y = B0 + B1*X1 + B2*X2 + B3*X1*X2
+
+## When both are fixed and rather low:
+# For a log_patch_area and a log_F of both -2:
+logPA <- -2
+logF <- -2
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+
+exp(eq)/(1+exp(eq)) # prop = 0.8496283 (that is the BASELINE)!
+
+## When only F increases:
+# For a log_patch_area of -2 and a log_F of -1.5:
+logF <- -1.5
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+
+exp(eq)/(1+exp(eq)) # prop = 0.9075685
+# For a log_patch_area of -2 and a log_F of -1:
+logF <- -1
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+
+exp(eq)/(1+exp(eq)) # prop = 0.9446382
+# For a log_patch_area of -2 and a log_F of -0.5:
+logF <- -0.5
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+
+exp(eq)/(1+exp(eq)) # prop = 0.9673756
+# Ok, for a fixed PATCH_AREA, an increase of F increases fledging success!
+
+## When patch_area increases:
+# For a log_patch_area of -1.5 and a log_F of -2:
+logPA <- -1.5
+logF <- -2
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+
+exp(eq)/(1+exp(eq)) # prop = 0.8875825
+# For a log_patch_area of -1 and a log_F of -2:
+logPA <- -1
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+
+exp(eq)/(1+exp(eq)) # prop = 0.9168939
+# For a log_patch_area of -0.5 and a log_F of -2:
+logPA <- -0.5
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+
+exp(eq)/(1+exp(eq)) # prop = 0.9390873
+# PROBLEM: for a fixed F, an increase of PATCH_AREA also increases fledging success!
+
+## When both increase:
+# For a log_patch_area and a log_F of both -1.5:
+logPA = logF = -1.5
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+
+exp(eq)/(1+exp(eq)) # prop = 0.9260078
+# For a log_patch_area and a log_F of both -1:
+logPA = logF = -1
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+
+exp(eq)/(1+exp(eq)) # prop = 0.9584419
+# For a log_patch_area and a log_F of both -0.5:
+logPA = logF = -0.5
+eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+
+exp(eq)/(1+exp(eq)) # prop = 0.9724969
+# Same here.
+# Donc, soit je me suis planté dans mes calculs, soit c'est toute mon interprétation des coefs bruts qui
+# est fausse. Donc, 3D plot + predictions (avec R)!
+
+
+### Attempt at 3D plot:
+
+ttFS_zibbin_glm2_cent
+summary(ntits3$brood_size)
+
+x_tilde <- expand.grid(c.log_patch_area = seq(-2.2,1.1, length.out=10),
+                       c.log_F_metric_d2b1 = seq(-1.8,1.1, length.out=10),
+                       c.clutch_size = 0,
+                       urban_intensity = 0,
+                       manag_low = 0,
+                       manag_high = 0,
+                       light_pollution = 0,
+                       c.noise_m = 0,
+                       c.traffic = 0,
+                       c.cumdd_between = 0,
+                       year = "2021",
+                       brood_size = 8)
+x_tilde$fledging_rate <- predict(ttFS_zibbin_glm2_cent, x_tilde, type="response")
+
+
+lattice::trellis.par.set("axis.line", list(col=NA,lty=1,lwd=1))
+lattice::wireframe(fledging_rate ~ c.log_patch_area + c.log_F_metric_d2b1, data=x_tilde,
+          xlab = "c.log_patch_area",
+          ylab = "c.log_F_metric_d2b1",
+          main = "Fledging success predictions",
+          drape = TRUE,
+          colorkey = TRUE,
+          scales = list(arrows=FALSE,cex=1, tick.number = 10, z = list(arrows=F), distance = c(1.5, 1.5, 1.5)),
+          light.source = c(10,0,10),
+          col.regions = rainbow(100, s = 1, v = 1, start = 0, end = max(1,100 - 1)/100, alpha = .8),
+          screen = list(z = -60, x = -60))
+
+
+
 
 
 # For the exploratory models:
@@ -1696,7 +1840,14 @@ par(.pardefault)
 # - Tester avec ou sans outliers (noise_m, connectivity???); si ça change beaucoup les résultats, rapporter
 #   les deux??? Tester aussi patch_perim + traffic + choisir RE définitifs??? (e.g. id_patch + site???)
 #   + tester id_nestbox (3 REs????)???
-#   + model laying date??????????????
+#   + model laying date???????????????????????????????????????????????????????????????????????
+#   + model laying date???????????????????????????????????????????????????????????????????????
+#   + model laying date???????????????????????????????????????????????????????????????????????
+#   + model laying date???????????????????????????????????????????????????????????????????????
+#   + model laying date???????????????????????????????????????????????????????????????????????
+#   + model laying date???????????????????????????????????????????????????????????????????????
+#   + model laying date???????????????????????????????????????????????????????????????????????
+#   + model laying date???????????????????????????????????????????????????????????????????????
 # - Refaire tourner tous les modèles avec NTITS --> Utiliser clutch_size et brood_size comme prédicteur, ou
 #   la date de ponte??????? ASK JC??????????? Tester????
 # +++++ Voir pk EDA_report bug! + Voir si centrage change quelque chose (interprétation interaction)?????

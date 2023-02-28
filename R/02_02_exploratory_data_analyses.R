@@ -617,5 +617,22 @@ ntits_reduced %>% dplyr::mutate(Dr_metric_c1 = Dr_metric_c1/1000, # Changing sca
   dplyr::mutate(coord_y = jitter(x = coord_y, factor = 1.2)) %>%
   dplyr::mutate(coord_x = jitter(x = coord_x, factor = 1.2)) -> ntits2
 
+ntits2 %>% dplyr::mutate(c.log_patch_area = log_patch_area-stats::median(log_patch_area),
+                         c.log_woody_vol = log_woody_vol-stats::median(log_woody_vol),
+                         c.log_woody_area = log_woody_area-stats::median(log_woody_area),
+                         c.log_F_metric_d2b1 = log_F_metric_d2b1-stats::median(log_F_metric_d2b1),
+                         c.log_F_metric_d2b0 = log_F_metric_d2b0-stats::median(log_F_metric_d2b0),
+                         c.sqrt_built_vol = sqrt_built_vol-stats::median(sqrt_built_vol),
+                         c.built_area = built_area-stats::median(built_area),
+                         c.open_area = open_area-stats::median(open_area),
+                         c.log_herb_area = log_herb_area-stats::median(log_herb_area),
+                         c.noise_m = noise_m-stats::median(noise_m),
+                         c.traffic = traffic-stats::median(traffic),
+                         c.cumdd_30 = cumdd_30-stats::median(cumdd_30),
+                         c.cumdd_between = cumdd_between-stats::median(cumdd_between)) -> ntits2
+
+
+# summary(ntits2[,35:ncol(ntits2)])
+# ppl.tits::uni.dotplots(ntits2[,45:ncol(ntits2)]) # If needed.
 colnames(ntits2)
-# ppl.tits::uni.dotplots(ntits2[,35:ncol(ntits2)]) # If needed.
+
