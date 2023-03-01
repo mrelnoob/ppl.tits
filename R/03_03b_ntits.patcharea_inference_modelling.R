@@ -922,6 +922,7 @@ ttFS_zibbin_glmm1 <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ log_patch_area +
                                   weights = brood_size, data = ntits3,
                                   family = glmmTMB::betabinomial(link = "logit"),
                                   ziformula = ~1) # Intercept only.
+ntits3 %>% dplyr::mutate(c.clutch_size = clutch_size-stats::median(clutch_size)) -> ntits3
 ttFS_zibbin_glmm1_cent <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ c.log_patch_area + c.log_F_metric_d2b1 +
                                              c.clutch_size +
                                              urban_intensity + manag_low + manag_high +
@@ -983,7 +984,6 @@ ttFS_zibbin_glm2 <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~
                                   weights = brood_size, data = ntits3,
                                   family = glmmTMB::betabinomial(link = "logit"),
                                   ziformula = ~1)
-ntits3 %>% dplyr::mutate(c.clutch_size = clutch_size-stats::median(clutch_size)) -> ntits3
 ttFS_zibbin_glm2_cent <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ c.log_patch_area * c.log_F_metric_d2b1 +
                                             c.clutch_size +
                                             urban_intensity + manag_low + manag_high +
@@ -1436,118 +1436,6 @@ summary(ttFS_zibbin_glmm2) # AIC = 1377.2 and both R2_glmm = 0.81!
 # cumdd_between had p-values < 0.1 (trends), which could be a sign of a cross-over interaction.
 ## Hypothesis 1 and 2 possibly validated (AIC = 1381.3 vs 1378.2)!
 
-### Manual prediction attempt:
-summary(ttFS_zibbin_glm2)
-
-intercept <- 3.808979
-coef_logPA <- -0.066579
-coef_logF <- 0.369460
-coef_interact <- -0.367882
-
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-# Y = B0 + B1*X1 + B2*X2 + B3*X1*X2
-
-## When both are fixed and rather low:
-# For a log_patch_area and a log_F of both -2:
-logPA <- -2
-logF <- -2
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-
-exp(eq)/(1+exp(eq)) # prop = 0.8496283 (that is the BASELINE)!
-
-## When only F increases:
-# For a log_patch_area of -2 and a log_F of -1.5:
-logF <- -1.5
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-
-exp(eq)/(1+exp(eq)) # prop = 0.9075685
-# For a log_patch_area of -2 and a log_F of -1:
-logF <- -1
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-
-exp(eq)/(1+exp(eq)) # prop = 0.9446382
-# For a log_patch_area of -2 and a log_F of -0.5:
-logF <- -0.5
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-
-exp(eq)/(1+exp(eq)) # prop = 0.9673756
-# Ok, for a fixed PATCH_AREA, an increase of F increases fledging success!
-
-## When patch_area increases:
-# For a log_patch_area of -1.5 and a log_F of -2:
-logPA <- -1.5
-logF <- -2
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-
-exp(eq)/(1+exp(eq)) # prop = 0.8875825
-# For a log_patch_area of -1 and a log_F of -2:
-logPA <- -1
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-
-exp(eq)/(1+exp(eq)) # prop = 0.9168939
-# For a log_patch_area of -0.5 and a log_F of -2:
-logPA <- -0.5
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-
-exp(eq)/(1+exp(eq)) # prop = 0.9390873
-# PROBLEM: for a fixed F, an increase of PATCH_AREA also increases fledging success!
-
-## When both increase:
-# For a log_patch_area and a log_F of both -1.5:
-logPA = logF = -1.5
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-
-exp(eq)/(1+exp(eq)) # prop = 0.9260078
-# For a log_patch_area and a log_F of both -1:
-logPA = logF = -1
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-
-exp(eq)/(1+exp(eq)) # prop = 0.9584419
-# For a log_patch_area and a log_F of both -0.5:
-logPA = logF = -0.5
-eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-
-exp(eq)/(1+exp(eq)) # prop = 0.9724969
-# Same here.
-# Donc, soit je me suis planté dans mes calculs, soit c'est toute mon interprétation des coefs bruts qui
-# est fausse. Donc, 3D plot + predictions (avec R)!
-
-
-### Attempt at 3D plot:
-
-ttFS_zibbin_glm2_cent
-summary(ntits3$brood_size)
-
-x_tilde <- expand.grid(c.log_patch_area = seq(-2.2,1.1, length.out=10),
-                       c.log_F_metric_d2b1 = seq(-1.8,1.1, length.out=10),
-                       c.clutch_size = 0,
-                       urban_intensity = 0,
-                       manag_low = 0,
-                       manag_high = 0,
-                       light_pollution = 0,
-                       c.noise_m = 0,
-                       c.traffic = 0,
-                       c.cumdd_between = 0,
-                       year = "2021",
-                       brood_size = 8)
-x_tilde$fledging_rate <- predict(ttFS_zibbin_glm2_cent, x_tilde, type="response")
-
-
-lattice::trellis.par.set("axis.line", list(col=NA,lty=1,lwd=1))
-lattice::wireframe(fledging_rate ~ c.log_patch_area + c.log_F_metric_d2b1, data=x_tilde,
-          xlab = "c.log_patch_area",
-          ylab = "c.log_F_metric_d2b1",
-          main = "Fledging success predictions",
-          drape = TRUE,
-          colorkey = TRUE,
-          scales = list(arrows=FALSE,cex=1, tick.number = 10, z = list(arrows=F), distance = c(1.5, 1.5, 1.5)),
-          light.source = c(10,0,10),
-          col.regions = rainbow(100, s = 1, v = 1, start = 0, end = max(1,100 - 1)/100, alpha = .8),
-          screen = list(z = -60, x = -60))
-
-
-
-
 
 # For the exploratory models:
 summary(ttFS_zibbin_glmm1h) # AIC = 1367.4 and both R2_glmm = 0.8.
@@ -1574,6 +1462,111 @@ summary(ttFS_zibbin_glmm2h) # AIC = 1364.7 and both R2_glmm = 0.81.
 # is actually a surrogate effect from "urban_intensity".
 # Similarly, the surprising effects of the temperature proxies might actually be linked to humidity, a
 # variable we could not measure.
+
+
+
+
+
+##### XXX Interaction model exploration ----
+##### XXX Interaction model exploration ----
+##### XXX Interaction model exploration ----
+##### XXX Interaction model exploration ----
+
+# Voir avec emmeans???
+# tester d'autres fonctions pour plotter les interactions?
+# le faire aussi pour les autres Y
+# MAJ todolist
+# préparer résultats finaux
+# préparer réunion
+# préparer plan!!!
+
+ntits3 %>% dplyr::select(c.log_patch_area, c.log_F_metric_d2b1, c.clutch_size, urban_intensity,
+                         light_pollution, c.noise_m, c.traffic, c.cumdd_between) %>%
+  ppl.tits::uni.dotplots()
+summary(ttFS_zibbin_glm2_cent)
+
+### Creating a 3D plot of the modelled interaction effect:
+x_tilde <- expand.grid(c.log_patch_area = seq(-2.2,1.1, length.out=15),
+                       c.log_F_metric_d2b1 = seq(-1.8,1.1, length.out=15), # Computes every combination for the
+                       # input variables (here a sequence of 15 values roughly ranging the actual values of
+                       # the two predictors involved in the modelled interaction).
+                       c.clutch_size = 0,
+                       urban_intensity = 0,
+                       manag_low = 0,
+                       manag_high = 0,
+                       light_pollution = 0,
+                       c.noise_m = 0,
+                       c.traffic = 0,
+                       c.cumdd_between = 0,
+                       year = "2019",
+                       brood_size = 8)
+x_tilde$fledging_rate <- predict(ttFS_zibbin_glm2_cent, x_tilde, type="response")
+
+lattice::trellis.par.set("axis.line", list(col=NA,lty=1,lwd=1))
+lattice::wireframe(fledging_rate ~ c.log_patch_area + c.log_F_metric_d2b1, data=x_tilde,
+                   xlab = "c.log_patch_area",
+                   ylab = "c.log_F_metric_d2b1",
+                   main = "Fledging success predictions",
+                   drape = TRUE,
+                   colorkey = TRUE,
+                   scales = list(arrows=FALSE,cex=1, tick.number = 10, z = list(arrows=F), distance = c(1.5, 1.5, 1.5)),
+                   light.source = c(10,0,10),
+                   col.regions = rainbow(100, s = 1, v = 1, start = 0, end = max(1,100 - 1)/100, alpha = .8),
+                   screen = list(z = -60, x = -60))
+
+### Manual algebraic solution:
+summary(ttFS_zibbin_glm2_cent)
+intercept <- 0.96796
+coef_logPA <- -0.07141
+coef_logF <- 0.33985
+coef_interact <- -0.36788
+
+my_pred <- expand.grid(c.log_patch_area = seq(-2.2,1.1, length.out=15),
+                       c.log_F_metric_d2b1 = seq(-1.8,1.1, length.out=15),
+                       c.clutch_size = 0,
+                       urban_intensity = 0,
+                       manag_low = 0,
+                       manag_high = 0,
+                       light_pollution = 0,
+                       c.noise_m = 0,
+                       c.traffic = 0,
+                       c.cumdd_between = 0,
+                       year = "2019",
+                       brood_size = 8)
+
+# Recreating a custom prediction function:
+superpred <- function(logPA, logF){
+  # My model's estimated coefficients:
+  intercept <- 0.96796
+  coef_logPA <- -0.07141
+  coef_logF <- 0.33985
+  coef_interact <- -0.36788
+  # The simplified model's equation (i.e. y_tilde = B0 + B1*X1 + B2*X2 + B3*X1*X2):
+  pred_eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
+  # The inverse function of a logit (which is the link function used in a beta-binomial model):
+  exp(pred_eq)/(1+exp(pred_eq))
+}
+
+# Making predictions (using sapply() rather than a for loop):
+my_pred$prediction <- sapply(1:nrow(my_pred), function(i) superpred(logPA = my_pred[i,1],
+                                                                    logF = my_pred[i,2]))
+# my_pred$prediction <- mapply(superpred, my_pred$c.log_patch_area, my_pred$c.log_F_metric_d2b1) # Somehow
+# simpler solution but I think the `sapply()` version is more intuitively understandable.
+
+# Plotting the results:
+lattice::trellis.par.set("axis.line", list(col=NA,lty=1,lwd=1))
+lattice::wireframe(prediction ~ c.log_patch_area + c.log_F_metric_d2b1, data=my_pred,
+                   xlab = "c.log_patch_area",
+                   ylab = "c.log_F_metric_d2b1",
+                   main = "Fledging success predictions (manual algebraic solution)",
+                   drape = TRUE,
+                   colorkey = TRUE,
+                   scales = list(arrows=FALSE,cex=1, tick.number = 10, z = list(arrows=F), distance = c(1.5, 1.5, 1.5)),
+                   light.source = c(10,0,10),
+                   col.regions = rainbow(100, s = 1, v = 1, start = 0, end = max(1,100 - 1)/100, alpha = .8),
+                   screen = list(z = -60, x = -60))
+# We can breath, this solution is extremely close to the one computed by R predict function (but still less
+# accurate, I did that only for educational purposes)!
 
 
 
