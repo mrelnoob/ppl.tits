@@ -80,8 +80,14 @@ ttCy_comglmm2 <- glmmTMB::glmmTMB(clutch_size ~
                                     cumdd_30 + year + (1|id_nestbox),
                                   data = ntits3, family = glmmTMB::compois(link = "log"),
                                   dispformula = ~1) # Rather long to fit.
-ttCy_comglmm2_cent <- glmmTMB::glmmTMB(clutch_size ~ c.log_patch_area * c.log_F_metric_d2b1 + species +
+ttCy_comglmm2_cent <- glmmTMB::glmmTMB(clutch_size ~ c.log_patch_area + c.log_F_metric_d2b1 + species +
                                          urban_intensity + manag_low + manag_high +
+                                         light_pollution + c.noise_m + c.traffic +
+                                         c.cumdd_30 + year + (1|id_nestbox),
+                                  data = ntits3, family = glmmTMB::compois(link = "log"),
+                                  dispformula = ~1) # Rather long to fit.
+zzz <- glmmTMB::glmmTMB(clutch_size ~ c.log_patch_area * urban_intensity * species +
+                          c.log_F_metric_d2b1 + manag_low + manag_high +
                                          light_pollution + c.noise_m + c.traffic +
                                          c.cumdd_30 + year + (1|id_nestbox),
                                   data = ntits3, family = glmmTMB::compois(link = "log"),
@@ -95,6 +101,7 @@ summary(ttCy_comglmm1_cent) # AIC = 1407.1.
 summary(ttCy_comglmm2) # AIC = 1409 (vs 1673.5 with the outliers), so the interaction worsen the fit ! And
 # note that using the "Rr_metric" is even worse!
 summary(ttCy_comglmm2_cent) # AIC = 1409.
+summary(zzz) # AIC = ???
 # It seems that, if the inclusion of a random effect (RE) did not improve the fit but accounting for
 # the likely underdispersion quite strongly improved the fit! I will thus carry on with 'ttCy_comglmm1'
 # to the diagnostic part and assess whether the use of the RE is truly justified or not and if the
@@ -479,6 +486,80 @@ summary(ttCy_comglmm1d) # AIC = 1388.1 and no R2 for dispersion models.
 # though the covariance values were ok.
 # It also appears that the data could be following a COM-Poisson distribution with a nu ~ 1.1.
 # Predictions are fairly ok but still too narrow (and extremely similar between B, C, D)!
+
+stats::cor.test(x = lubridate::yday(ntits3$laying_date), y = ntits3$clutch_size)
+# There is a significant negative correlation between laying date and clutch size, which may be an explanation
+# for the observed negative influence of "cummdd_30" on clutch size: couples that reproduce later may be
+# able to better evaluate the availability of quality preys to rear their chicks and thus, tend to lay smaller
+# clutches than early breeding tits that get "fooled" by the amount of anthropogenic food in the city?
+
+
+
+##### XXX Interaction model exploration ----
+##### XXX Interaction model exploration ----
+
+summary(ttCy_comglmm2_cent)
+
+sjPlot::plot_model(ttCy_comglmm2_cent, type = "pred",
+                   terms = c("c.log_patch_area [all]",
+                             "c.log_F_metric_d2b1 [-1.82, -0.3, 0, 0.32, 1.12]"),
+                   mdrt.values = "quart", # Only useful if `type = "int"` is used (i.e. automatic plotting
+                   # of interaction effects). If used, only plots the 3 quartile values for the moderator.
+                   title = "Predicted clutch sizes",
+                   axis.title = c("Patch area",
+                                  "Clutch size"),
+                   legend.title = "F-metric",
+                   colors = c("darkred", "white", "darkorange", "darkolivegreen3", "chartreuse4"), # For
+                   # a reason I don't understand, the 2nd color in the vector is not taken into account!
+                   show.data = TRUE, # Not available, I don't know why.
+                   line.size = 1)
+
+
+# le faire aussi pour les autres Y
+# MAJ todolist
+# préparer résultats finaux
+# préparer réunion
+# préparer plan!!!
+
+ntits3 %>% dplyr::select(c.log_patch_area, c.log_F_metric_d2b1, c.clutch_size, urban_intensity,
+                         light_pollution, c.noise_m, c.traffic, c.cumdd_between) %>%
+  ppl.tits::uni.dotplots()
+summary(ttCy_comglmm2_cent)
+
+### Creating a 3D plot of the modelled interaction effect:
+x_tilde <- expand.grid(c.log_patch_area = seq(-2.2,1.1, length.out=15),
+                       c.log_F_metric_d2b1 = seq(-1.8,1.1, length.out=15), # Computes every combination for the
+                       # input variables (here a sequence of 15 values roughly ranging the actual values of
+                       # the two predictors involved in the modelled interaction).
+                       c.clutch_size = 0,
+                       urban_intensity = 0,
+                       manag_low = 0,
+                       manag_high = 0,
+                       light_pollution = 0,
+                       c.noise_m = 0,
+                       c.traffic = 0,
+                       c.cumdd_30 = 0,
+                       year = "2019",
+                       species = "PM",
+                       id_nestbox = "DIJ-004")
+x_tilde$clutch_size <- predict(ttCy_comglmm2_cent, x_tilde, type="response")
+
+lattice::trellis.par.set("axis.line", list(col=NA,lty=1,lwd=1))
+lattice::wireframe(clutch_size ~ c.log_patch_area + c.log_F_metric_d2b1, data=x_tilde,
+                   main = "Predicted clutch size",
+                   drape = TRUE,
+                   colorkey = TRUE,
+                   zlab = list("Clutch size", cex=1.3, rot=90),
+                   xlab = list("Patch area", cex=1.3, rot=-40),
+                   ylab = list("F-metric", cex=1.3, rot=17),
+                   scales = list(arrows=FALSE, cex=1, tick.number = 10,
+                                 z = list(arrows=F),
+                                 distance = c(1, 1, 1)), # Control the distance of axis labels.
+                   light.source = c(10,0,10),
+                   col.regions = rainbow(120, s = 1, v = 1, start = 0, end = max(1,100 - 1)/100,
+                                         alpha = .5), # Controls the transparency.
+                   screen = list(z = -60, x = -75))
+
 
 
 
@@ -1472,9 +1553,26 @@ summary(ttFS_zibbin_glmm2h) # AIC = 1364.7 and both R2_glmm = 0.81.
 ##### XXX Interaction model exploration ----
 ##### XXX Interaction model exploration ----
 
-# Voir avec emmeans???
+
 # tester d'autres fonctions pour plotter les interactions?
-# le faire aussi pour les autres Y
+# tester d'autres fonctions pour plotter les interactions?
+
+sjPlot::plot_model(ttFS_zibbin_glm2_cent, type = "pred",
+                   terms = c("c.log_patch_area [all]",
+                             "c.log_F_metric_d2b1 [-1.82, -0.3, 0, 0.32, 1.12]"),
+                   mdrt.values = "quart", # Only useful if `type = "int"` is used (i.e. automatic plotting
+                   # of interaction effects). If used, only plots the 3 quartile values for the moderator.
+                   title = "Predicted probabilities of fledging success",
+                   axis.title = c("Patch area",
+                                  "Fledging rate"),
+                   legend.title = "F-metric",
+                   colors = c("darkred", "white", "darkorange", "darkolivegreen3", "chartreuse4"), # For
+                   # a reason I don't understand, the 2nd color in the vector is not taken into account!
+                   show.data = TRUE, # Not available, I don't know why.
+                   line.size = 1)
+
+
+  # le faire aussi pour les autres Y
 # MAJ todolist
 # préparer résultats finaux
 # préparer réunion
@@ -1504,15 +1602,20 @@ x_tilde$fledging_rate <- predict(ttFS_zibbin_glm2_cent, x_tilde, type="response"
 
 lattice::trellis.par.set("axis.line", list(col=NA,lty=1,lwd=1))
 lattice::wireframe(fledging_rate ~ c.log_patch_area + c.log_F_metric_d2b1, data=x_tilde,
-                   xlab = "c.log_patch_area",
-                   ylab = "c.log_F_metric_d2b1",
-                   main = "Fledging success predictions",
+                   main = "Predicted fledging rate",
                    drape = TRUE,
                    colorkey = TRUE,
-                   scales = list(arrows=FALSE,cex=1, tick.number = 10, z = list(arrows=F), distance = c(1.5, 1.5, 1.5)),
+                   zlab = list("Fledging rate", cex=1.3, rot=90),
+                   xlab = list("Patch area", cex=1.3, rot=-40),
+                   ylab = list("F-metric", cex=1.3, rot=17),
+                   scales = list(arrows=FALSE, cex=1, tick.number = 10,
+                                 z = list(arrows=F),
+                                 distance = c(1, 1, 1)), # Control the distance of axis labels.
                    light.source = c(10,0,10),
-                   col.regions = rainbow(100, s = 1, v = 1, start = 0, end = max(1,100 - 1)/100, alpha = .8),
-                   screen = list(z = -60, x = -60))
+                   col.regions = rainbow(100, s = 1, v = 1, start = 0, end = max(1,100 - 1)/100,
+                                         alpha = .5), # Controls the transparency.
+                   screen = list(z = -60, x = -75))
+
 
 ### Manual algebraic solution:
 summary(ttFS_zibbin_glm2_cent)
