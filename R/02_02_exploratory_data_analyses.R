@@ -606,7 +606,8 @@ ntits_reduced %>% dplyr::mutate(Dr_metric_c1 = Dr_metric_c1/1000, # Changing sca
                 log_herb_area = log10(herbaceous_area),
                 sqrt_built_vol = sqrt(built_volume)) %>%
   dplyr::mutate(brood_size = as.integer(brood_size),
-                hatching_rate = brood_size/clutch_size) %>%
+                hatching_rate = brood_size/clutch_size,
+                laying_day = lubridate::yday(laying_date)/10) %>% # Computing and rescaling laying day!
   dplyr::mutate(year = stats::relevel(x = year, ref = 3), # Assign 2019 as the reference group.
                 species = stats::relevel(x = species, ref = 2)) %>% # Assign PM as the reference group.
   dplyr::mutate(manag_low = ifelse(manag_intensity == "0", "1", "0"),
@@ -617,11 +618,13 @@ ntits_reduced %>% dplyr::mutate(Dr_metric_c1 = Dr_metric_c1/1000, # Changing sca
   dplyr::mutate(coord_y = jitter(x = coord_y, factor = 1.2)) %>%
   dplyr::mutate(coord_x = jitter(x = coord_x, factor = 1.2)) -> ntits2
 
+# To enable exploring some interaction models, I further median-centre some of the variables:
 ntits2 %>% dplyr::mutate(c.log_patch_area = log_patch_area-stats::median(log_patch_area),
                          c.log_woody_vol = log_woody_vol-stats::median(log_woody_vol),
                          c.log_woody_area = log_woody_area-stats::median(log_woody_area),
                          c.log_F_metric_d2b1 = log_F_metric_d2b1-stats::median(log_F_metric_d2b1),
                          c.log_F_metric_d2b0 = log_F_metric_d2b0-stats::median(log_F_metric_d2b0),
+                         c.laying_day = laying_day-stats::median(laying_day),
                          c.sqrt_built_vol = sqrt_built_vol-stats::median(sqrt_built_vol),
                          c.built_area = built_area-stats::median(built_area),
                          c.open_area = open_area-stats::median(open_area),
