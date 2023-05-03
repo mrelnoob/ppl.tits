@@ -915,11 +915,11 @@ ttFS_zibbin_glm2 <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~
                                   weights = brood_size, data = ntits3,
                                   family = glmmTMB::betabinomial(link = "logit"),
                                   ziformula = ~1)
-# ttFS_zibbin_glm2_cent <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ c.log_patch_area * c.log_F_metric_d2b1 +
+# ttFS_zibbin_glmm2_cent <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ c.log_patch_area * c.log_F_metric_d2b1 +
 #                                             c.clutch_size +
 #                                             urban_intensity + manag_low + manag_high +
 #                                             light_pollution + c.noise_m + c.traffic +
-#                                             c.min_t_between + year,
+#                                             c.min_t_between + year + (1|id_nestbox),
 #                                   weights = brood_size, data = ntits3,
 #                                   family = glmmTMB::betabinomial(link = "logit"),
 #                                   ziformula = ~1)
@@ -932,7 +932,7 @@ summary(ttFS_bbin_glmm1) # AIC = 1475.9.
 summary(ttFS_zibin_glmm1) # AIC = 1415.1.
 summary(ttFS_zibin_glmm1_olre) # AIC = 1382.3.
 summary(ttFS_zibbin_glmm1) # AIC = 1379.5.
-# summary(ttFS_zibbin_glmm1_cent) # AIC = 1380.2.
+# summary(ttFS_zibbin_glmm1_cent)
 summary(ttFS_zibbin_glm1) # AIC = 1377.5.
 
 summary(ttFS_zibin_glmm2) # AIC = 1409.5 and significant interaction!
@@ -950,8 +950,8 @@ summary(ttFS_zibbin_glm2) # AIC = 1374.5 and significant interaction (and simila
 # an OLRE. Since, as before, we explored a few reasonable variations of the same model by trying different
 # proxies of the same variable or by tuning the ZI component of the model, we only try it for the beta-
 # binomial specifications of the model, and mostly without RE to avoid convergence issues.
-# Below, code and comments may be related to these exploratory models (models H), but you can re-run the
-# diagnostics for the initial models by replacing the model name in the code chunks.
+# Below, code and comments may be related to these exploratory models, but you can re-run the diagnostics for
+# any models by replacing the model name in the code chunks.
 
 
 
@@ -997,6 +997,15 @@ ttFS_zibbin_glm1h <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ log_patch_area +
                                       family = glmmTMB::betabinomial(link = "logit"),
                                       ziformula = ~min_t_between+urban_intensity+year) # Intercept only.
 
+ttFS_zibbin_glmm1h <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ log_patch_area + log_F_metric_d2b1 +
+                                        clutch_size +
+                                        urban_intensity + manag_intensity +
+                                        light_pollution + noise_m + traffic +
+                                        min_t_between + laying_day + year + (1|id_nestbox),
+                                      weights = brood_size, data = ntits3,
+                                      family = glmmTMB::betabinomial(link = "logit"),
+                                      ziformula = ~min_t_between+urban_intensity+year) # Intercept only.
+
 ttFS_zibbin_glm1i <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ log_patch_area + log_F_metric_d2b1 +
                                         clutch_size +
                                         urban_intensity + manag_intensity +
@@ -1009,6 +1018,7 @@ summary(ttFS_zibbin_glm1e) # AIC = 1374.5 vs 1377.5.
 summary(ttFS_zibbin_glm1f) # AIC = 1375.2.
 summary(ttFS_zibbin_glm1g) # AIC = 1376.8.
 summary(ttFS_zibbin_glm1h) # AIC = 1364.7.
+summary(ttFS_zibbin_glmm1h) # AIC = 1366.7 (mind the RE's uselessness).
 summary(ttFS_zibbin_glm1i) # AIC = 1367.
 # I also tried removing "traffic" and it doesn't change things much. When we use the "F-metric" along with
 # "urban_intensity" to model the ZI-part of the model, the effect of the "F-metric" utterly disappear
@@ -1035,12 +1045,20 @@ ttFS_zibbin_glmm2h <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ c.log_patch_are
                                      ziformula = ~min_t_between+urban_intensity+year)
 summary(ttFS_zibbin_glm2h) # AIC = 1361.8 vs 1374.5.
 summary(ttFS_zibbin_glmm2h) # AIC = 1363.8 vs 1376.5.
+# Note also that replacing "cumdd_before" by "min_t_before" does not change things much!
 
-##### AFINIR§§§§§ (no_temp + cumdd_between&paslayingday) ----
-##### AFINIR§§§§§ (no_temp + cumdd_between&paslayingday) ----
-##### AFINIR§§§§§ (no_temp + cumdd_between&paslayingday) ----
-##### AFINIR§§§§§ (no_temp + cumdd_between&paslayingday) ----
-##### AFINIR§§§§§ (no_temp + cumdd_between&paslayingday) ---- + DIAGNOSTICS & CONCLUSION & MASS§§§§§
+
+## Fitting a model without both CIMMDD_BETWEEN, MIN_T_BETWEEN and LAYING_DAY (just in case):
+ttFS_zibbin_glm1_notemp <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~ log_patch_area + log_F_metric_d2b1 +
+                                               clutch_size +
+                                               urban_intensity + manag_intensity +
+                                               light_pollution + noise_m + traffic +
+                                               year,
+                                             weights = brood_size, data = ntits3,
+                                             family = glmmTMB::betabinomial(link = "logit"),
+                                             ziformula = ~1) # Intercept only.
+summary(ttFS_zibbin_glm1_notemp) # AIC = 1381.2 vs 1377.5, so it worsen the fit (but makes "urban_intensity"
+# significant)!
 
 
 
@@ -1052,7 +1070,7 @@ summary(ttFS_zibbin_glmm2h) # AIC = 1363.8 vs 1376.5.
 ### *** 3.1.3.1. Residuals extraction, autocorrelation and collinearity ----
 ## Traditional residuals:
 par(.pardefault)
-resid <- stats::resid(ttFS_zibbin_glmm1h, type = 'response')
+resid <- stats::resid(ttFS_zibbin_glmm1, type = 'response')
 plot(resid, id = 0.05, idLabels = ~.obs) # Strange distribution of residuals with 2 groups.
 # performance::check_outliers(ttFS_zibbin_glmm1) # Does not work for this type of model.
 ntits3[which(resid < -0.4),] # Nestboxes with the lowest residuals = ~0% fledging success!
@@ -1065,8 +1083,10 @@ plot(x = ntits3$noise_m, y = resid) # Seems rather ok although we once again fin
 # plot(ttHSy_ziglmm1, site~stats::resid(.)) # Does not work for this type of model.
 
 ## Simulation-based scaled residuals computation ({DHARMa} method):
-simu.resid <- DHARMa::simulateResiduals(fittedModel = ttFS_zibbin_glmm1h, n = 1000, re.form = NULL)
-simu.resid2 <- DHARMa::simulateResiduals(fittedModel = ttFS_zibbin_glmm2h, n = 1000, re.form = NULL)
+simu.resid <- DHARMa::simulateResiduals(fittedModel = ttFS_zibbin_glmm1, n = 1000, re.form = NULL)
+simu.residh <- DHARMa::simulateResiduals(fittedModel = ttFS_zibbin_glmm1h, n = 1000, re.form = NULL)
+simu.resid2 <- DHARMa::simulateResiduals(fittedModel = ttFS_zibbin_glmm2, n = 1000, re.form = NULL)
+simu.resid2h <- DHARMa::simulateResiduals(fittedModel = ttFS_zibbin_glmm2h, n = 1000, re.form = NULL)
 simu.resido <- DHARMa::simulateResiduals(fittedModel = ttFS_zibin_glmm1_olre,
                                              n = 1000, re.form = NULL)
 simu.resido2 <- DHARMa::simulateResiduals(fittedModel = ttFS_zibin_glmm2_olre,
@@ -1074,64 +1094,70 @@ simu.resido2 <- DHARMa::simulateResiduals(fittedModel = ttFS_zibin_glmm2_olre,
 # simulations on the model unconditional of the random effects (and only works for {lme4} formulations). It
 # is useful for testing dispersion (see below) but can be omitted eventually.
 plot(simu.resid) # Ok.
+plot(simu.residh) # Ok.
 plot(simu.resid2) # Ok.
+plot(simu.resid2h) # Ok.
+plot(simu.resido) # Ok.
+plot(simu.resido2) # Ok.
 DHARMa::outliers(simu.resid) # Ok.
+DHARMa::outliers(simu.residh) # Ok.
+DHARMa::outliers(simu.resid2) # Ok.
+DHARMa::outliers(simu.resid2h) # Ok.
 DHARMa::outliers(simu.resido) # Ok.
+DHARMa::outliers(simu.resido2) # Ok.
 
 ## Autocorrelation and collinearity:
-DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid2,
+DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
                                    x = ntits3$coord_x, y = ntits3$coord_y, plot = TRUE) # Spatial auto-
-# correlation detected for the OLRE models and for the exploratory models as well.
-performance::check_autocorrelation(ttFS_zibbin_glmm2h) # Ok-ish.
-performance::check_collinearity(ttFS_zibbin_glmm2h) # Ok for the beta-binomial models (highest VIF value for
-# the first ZIBBIN = 3.56 for the F-metric while it was 4.02 for the second model). For the OLRE models,
-# however, alarming multicollinearity issues have been detected with a moderate correlation linked to
-# "clutch_size" being present, several VIF values > 4 and even 8.5 for the "F-metric" (even though things
-# were a bit better for the interactive model).
+# correlation detected only for the OLRE models!
+performance::check_autocorrelation(ttFS_zibbin_glmm1) # Ok.
+performance::check_collinearity(ttFS_zibbin_glmm1h) # Ok for the beta-binomial models (highest VIF value for
+# the first ZIBBIN = 3.44 for the F-metric while it was 4.03 for the second model), even the exploratory ones.
+# For the OLRE models however, alarming multicollinearity issues have been detected with a moderate correlation
+# linked to "clutch_size" being present, several VIF values > 4 and even 8.5 for the "F-metric" (even though
+# things were a bit better for the interactive model).
 # Interestingly, no multicollinearity was detected for the BBIN or the BIN_OLRE models either.
-stats::vcov(ttFS_zibbin_glmm1h) # But values of the covariance matrix seem ok.
+stats::vcov(ttFS_zibbin_glmm1) # But values of the covariance matrix seem ok.
 
 ## Heteroscedasticity and possible model misspecifications:
 par(.pardefault)
-DHARMa::plotResiduals(simu.resid, form = ntits3$log_patch_area)
-DHARMa::plotResiduals(simu.resid, form = ntits3$log_patch_perim)
-DHARMa::plotResiduals(simu.resid, form = ntits3$log_woody_area) # Deviation detected (w/o OLRE)!
-DHARMa::plotResiduals(simu.resid, form = ntits3$log_woody_vw)
-DHARMa::plotResiduals(simu.resid, form = ntits3$log_F_metric_d2b1)
-DHARMa::plotResiduals(simu.resid, form = ntits3$Rr_metric_d2c1)
-DHARMa::plotResiduals(simu.resid, form = ntits3$species)
-DHARMa::plotResiduals(simu.resid, form = ntits3$clutch_size)
-DHARMa::plotResiduals(simu.resid, form = ntits3$urban_intensity) # Deviation detected (for model1)!
-DHARMa::plotResiduals(simu.resid, form = ntits3$manag_intensity)
-DHARMa::plotResiduals(simu.resid, form = ntits3$log_herb_area)
-DHARMa::plotResiduals(simu.resid, form = ntits3$sqrt_built_vol) # Deviation detected (for model1)!
-DHARMa::plotResiduals(simu.resid, form = ntits3$light_pollution)
-DHARMa::plotResiduals(simu.resid, form = ntits3$noise_m)
-DHARMa::plotResiduals(simu.resid, form = ntits3$traffic)
-DHARMa::plotResiduals(simu.resid, form = ntits3$cumdd_30) # Deviation, but likely normal as this predictor
-# should be correlated with "cumdd_between"!
-DHARMa::plotResiduals(simu.resid, form = ntits3$cumdd_between)
-DHARMa::plotResiduals(simu.resid, form = ntits3$min_t_between)
-DHARMa::plotResiduals(simu.resid, form = ntits3$year)
-# For the ZIBBIN models ('ttFS_zibbin_glmm1' and 'ttFS_zibbin_glmm2'), no deviations were detected except
-# for "cumdd_30" which is not included in the models. For the models with OLRE, worrying deviations have been
-# found for "urban_intensity" (linked to the built volume) as well as for "cumdd_30", but only for the
-# additive model ('ttFS_zibin_glmm1_olre').
+DHARMa::plotResiduals(simu.resido2, form = ntits3$log_patch_area)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$log_patch_perim)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$log_woody_area)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$log_woody_vw)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$log_F_metric_d2b1)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$Rr_metric_d2c1)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$species)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$clutch_size)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$urban_intensity) # Deviation detected (for OLRE model1)!
+DHARMa::plotResiduals(simu.resido2, form = ntits3$manag_intensity)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$log_herb_area)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$sqrt_built_vol) # Deviation detected (for OLRE model1)!
+DHARMa::plotResiduals(simu.resido2, form = ntits3$light_pollution)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$noise_m)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$traffic)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$cumdd_30)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$cumdd_between)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$min_t_between)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$laying_day)
+DHARMa::plotResiduals(simu.resido2, form = ntits3$year)
+# For the ZIBBIN models, no deviations were detected. For the models with OLRE, worrying deviations have been
+# found for "urban_intensity" (likely linked to the "built volume").
 # For the exploratory models, everything seems fine.
 
 
 
 ### *** 3.1.3.2. Distribution and dispersion ----
 ## Assessing over or under-dispersion:
-DHARMa::testDispersion(simu.resid) # Ok.
-performance::check_overdispersion(x = ttFS_zibbin_glmm1h) # Overdispersion detected! However, note that this test
+DHARMa::testDispersion(simu.resid) # Ok for all models.
+performance::check_overdispersion(x = ttFS_zibbin_glmm1) # Overdispersion detected! However, note that this test
 # is known to be inaccurate for ZI-models (see the function's help page). If I run it on the non-ZI model
 # (i.e. 'ttFS_bbin_glmm1'), the dispersion ratio is much lower, yet we may still need to account for that.
 # ATTENTION: Classical overdispersion tests cannot be used to detect overdispersion when OLRE is used to
 # account for it, and the same is likely true for beta-binomial models. So I'll ignore it now.
 
 ## Distribution of the predicted probabilities:
-probabilities <- stats::predict(object = ttFS_zibbin_glmm1h, type = "response") # Extract the predicted
+probabilities <- stats::predict(object = ttFS_zibbin_glmm2h, type = "response") # Extract the predicted
 # probabilities.
 par(mfrow= c(1,2))
 hist(probabilities, main = "Predicted proportions", xlab = "Fledging success")
@@ -1170,7 +1196,7 @@ ntits3 %>% dplyr::select(log_patch_area, log_patch_perim, log_woody_vw, log_wood
                          clutch_size,
                          urban_intensity, log_herb_area, built_area, sqrt_built_vol, traffic,
                          light_pollution, noise_m,
-                         cumdd_between, min_t_between) -> mydata
+                         cumdd_between, min_t_between, laying_day) -> mydata
 predictors <- colnames(mydata)
 probabilities <- stats::predict(object = ttFS_zibbin_glmm1, type = "response") # Extract probabilities!
 # Bind the logit and tidying the data for plot (ggplot2, so long format):
@@ -1183,7 +1209,7 @@ ggplot2::ggplot(mydata, ggplot2::aes(y = logit, x = predictor.value))+
   ggplot2::geom_smooth(method = "loess") +
   ggplot2::theme_bw() +
   ggplot2::facet_wrap(~predictors, scales = "free_x") # Linearity is globally respected except for
-# "min_t_between" which is U-shaped (but is currently not in the models).
+# "min_t_between" which is U-shaped (a transformation could perhaps be used).
 
 
 
@@ -1193,14 +1219,20 @@ dat.resid <- sum(stats::resid(ttFS_zibbin_glmm1, type = "pearson")^2)
 1 - stats::pchisq(dat.resid, stats::df.residual(ttFS_zibbin_glmm1)) # p = 0 (mistake?).
 
 ## Computing a pseudo-R2:
-performance::r2_nakagawa(ttFS_zibbin_glmm1h, tolerance = 0.00000001)
+performance::r2_nakagawa(ttFS_zibbin_glmm1, tolerance = 0.00000001)
 # [Additive model]: Marg_R2_glmm = 0.8; Cond_R2_glmm = 0.8 (but may be unreliable due to difficulties to
 # compute RE variances)!
-performance::r2_nakagawa(ttFS_zibin_glmm1_olre, tolerance = 0.00000001)
-# [Additive model]: Marg_R2_glmm = 0.17; Cond_R2_glmm = 0.17 (but may be unreliable due to difficulties to
+performance::r2_nakagawa(ttFS_zibbin_glmm1h, tolerance = 0.00000001)
+# [Additive model]: Marg_R2_glmm = 0.79; Cond_R2_glmm = NA (but may be unreliable due to difficulties to
+# compute RE variances)!
+performance::r2_nakagawa(ttFS_zibbin_glmm2, tolerance = 0.00000001)
+# [Interactive model]: Marg_R2_glmm = 0.8; Cond_R2_glmm = 0.8 (but may be unreliable due to difficulties to
 # compute RE variances)!
 performance::r2_nakagawa(ttFS_zibbin_glmm2h, tolerance = 0.00000001)
-# [Interactive model]: Marg_R2_glmm = 0.81; Cond_R2_glmm = 0.81 (but may be unreliable due to difficulties to
+# [Interactive model]: Marg_R2_glmm = 0.8; Cond_R2_glmm = 0.8 (but may be unreliable due to difficulties to
+# compute RE variances)!
+performance::r2_nakagawa(ttFS_zibin_glmm1_olre, tolerance = 0.00000001)
+# [Additive model]: Marg_R2_glmm = 0.17; Cond_R2_glmm = NA (but may be unreliable due to difficulties to
 # compute RE variances)!
 performance::r2_nakagawa(ttFS_zibin_glmm2_olre, tolerance = 0.00000001)
 # [Interactive model]: Marg_R2_glmm = 0.16; Cond_R2_glmm = 0.16 (but may be unreliable due to difficulties to
@@ -1255,8 +1287,8 @@ summary(ttFS_zibin_glmm0_olre) # AIC = 1473.5 vs 1381.6, so the full model is cl
 
 ### *** 3.1.4.1. Hypotheses testing: LRT for the additive and interactive effect of the F-metric ----
 ## For the additive effect of the connectivity metric:
-ttFS_zibbin_glm0 <- stats::update(ttFS_zibbin_glm1, .~. -log_F_metric_d2b1) # The GLMM fails to converge!
-summary(ttFS_zibbin_glm0) # AIC = 1381.3 vs 1378.2 (hypothesis 1 likely validated)!
+ttFS_zibbin_glmm0 <- stats::update(ttFS_zibbin_glmm1, .~. -log_F_metric_d2b1)
+summary(ttFS_zibbin_glmm0) # AIC = 1383.3 vs 1379.5 (hypothesis 1 likely validated)!
 # I do not run PB-based LRT for now as they take too long to run.
 
 # res.LRT_addeff <- pbkrtest::PBmodcomp(ttFS_ziglmm1,
@@ -1285,70 +1317,57 @@ tictoc::toc() # DISCLAIMER: took ~1h45 to run!
 
 ### *** 3.1.4.3. Conclusion ----
 # For the initial model:
-summary(ttFS_zibbin_glmm1) # AIC = 1380.2 and both R2_glmm = 0.8!
-summary(ttFS_zibbin_glm1) # AIC = 1378.2 and NA for R2 (performance thinks it's a mixed model) but as the model
-# is basically similar to the GLMM, we can consider its R2 as well.
-summary(ttFS_zibbin_glmm2) # AIC = 1377.2 and both R2_glmm = 0.81!
+summary(ttFS_zibbin_glmm1) # AIC = 1379.5 and both R2_glmm = 0.8!
+summary(ttFS_zibbin_glmm2) # AIC = 1376.5 and both R2_glmm = 0.8!
 # Diagnostics ran for these initial models indicated that the model fit the data relatively well although
-# prediction ranges are too narrow and the models fail to predict total failures and successes! Interestingly,
-# and inexplicably, some of the models without ZI (especially the binomial GLMM with OLRE) predicted the
-# observed data far better but yielded worrying diagnostics and had lower AIC values than the retained models.
-# Remember that the retained models use a beta-binomial family as the response displayed overdispersion.
-# Models that did not account for this overdispersion also raised other red flags. As recommended by
-# Harrison (2014), we compared the beta-binomial models with models including OLRE but the latter models also
-# displayed some problematic issues such as concerning multicollinearity, autocorrelation and quantile
-# deviations. Diagnostics from the beta-binomial models were all satisfactory if we excluded "species" from
-# the models as it is collinear with "clutch_size". We thus chose to keep "clutch_size" as it is a more
-# interesting predictor, yielded better diagnostics and results, and as no "species" effect was detected.
-# However, the null model 'ttFS_zibbin_glmm1' failed to converge so I consider using the non-mixed models
-# ZIBBIN_GLM instead as the RE turned out to be unnecessary.
-## Significant variables: F-metric (++), clutch_size (-), manag_high (--), cumdd_between (--), year2020 (++),
-# and year2022 (+++).
-## For the inteactive (moderated) model, the INTERACTION TERM was also significant (--), but the F-metric and
-# cumdd_between had p-values < 0.1 (trends), which could be a sign of a cross-over interaction.
-## Hypothesis 1 and 2 possibly validated (AIC = 1381.3 vs 1378.2)!
+# prediction ranges are too narrow and the models fail to predict total failures and successes! It is
+# possible that the ZI forces the models to predict medium values.
+# Interestingly and inexplicably, some of the models without ZI (especially the binomial GLMM with OLRE)
+# predicted the observed data far better but yielded worrying diagnostics and had lower AIC values than the
+# retained models.Remember that the retained models use a beta-binomial family as the response displayed
+# overdispersion without it. Models that did not account for this overdispersion also raised other red flags.
+# As recommended by Harrison (2014), we compared the beta-binomial models with models including OLRE but the
+# latter models also displayed some problematic issues such as concerning multicollinearity, autocorrelation
+# and quantile deviations. Diagnostics from the beta-binomial models were all satisfactory if we excluded
+# "species" from the models as it is collinear with "clutch_size". We thus chose to keep "clutch_size" as
+# it is a more interesting predictor, yielded better diagnostics and results, and as no "species" effect was
+# detected.
+# It also appears that, for this response variable, the use of mixed models was not necessary.
+## Significant variables: F-metric (++), clutch_size (-), manag_high (--), laying_day (--), and year2022 (+++).
+## For the interactive (moderated) model, the INTERACTION TERM was also significant (--) but the F-metric was
+# not anymore, which could be a sign of a cross-over interaction. Furthermore, light_pollution (-) also
+# turned out significant in the interactive model (with only a trend in the additive one)!
+## Hypothesis 1 and 2 possibly validated (AIC = 1383.3 vs 1379.5)!
 
 
 # For the exploratory models:
-summary(ttFS_zibbin_glmm1h) # AIC = 1367.4 and both R2_glmm = 0.8.
-## Significant variables: F-metric (++), clutch_size (-), manag_high (--), cumdd_between (--), year2020 (++),
-# and year2022 (+++); and also [urban_intensity (+), year2021 and year2022 (---) for the ZI component]!
+summary(ttFS_zibbin_glmm1h) # AIC = 1366.7 and both R2_glmm = 0.79.
+## Significant variables: F-metric (++), clutch_size (-), manag_high (--), laying_day (--), and year2022 (+++),
+# and also [urban_intensity (+), year2021 and year2022 (---) for the ZI component]!
 ## Almost significant variables: [min_t_between (+) for the ZI component]!
-## Hypothesis 1 possibly validated (AIC = 1369.9 vs 1367.4 for the GLMM version (sith "site" as RE), and
-# AIC = 1368.6 vs 1365.5 for the GLM version)!
-summary(ttFS_zibbin_glmm2h) # AIC = 1364.7 and both R2_glmm = 0.81.
-## Significant variables: clutch_size (-), manag_high (--), year2020 and 2022 (+++), and the INTERACTION
-# EFFECT (--); and also [urban_intensity (+), year2021 and year2022 (---) for the ZI component]!
-## Almost significant variables: the F-metric (+), light_pollution (-), cumdd_between (-) and also
-# [min_t_between (+) for the ZI component]!
+summary(ttFS_zibbin_glmm2h) # AIC = 1363.8 and both R2_glmm = 0.8.
+## Significant variables: clutch_size (-), manag_high (--), light_pollution (-), laying_day (--) and
+# year2022 (+++), and the INTERACTION EFFECT (--); and also [urban_intensity (+), year2021 and year2022 (---)
+# for the ZI component]!
+## Almost significant variables: the F-metric (+) and also [min_t_between (+) for the ZI component]!
 ## Hypothesis 2 likely validated with a possible cross-over interaction!
-
 # Diagnostics for these models were mostly ok, there was no outliers, deviations, dispersion or
-# distributional problems, even though there was some residual autocorrelation.
-# Predictions are fairly ok but the models still make too narrow predictions and fail to predict correctly
-# the total success and failures.
+# distributional problems.
+# Predictions were fairly ok but the models still made too narrow predictions and failed to correctly
+# predict total successes and failures.
 
-# I also tried removing "traffic" and it doesn't change things much. When we use the "F-metric" along with
-# "urban_intensity" to model the ZI-part of the model, the effect of the "F-metric" utterly disappear
-# suggesting that connectivity does not influence total fledging failures and its effect in "I models"
-# is actually a surrogate effect from "urban_intensity".
-# Similarly, the surprising effects of the temperature proxies might actually be linked to humidity, a
-# variable we could not measure.
+# I also tried removing "traffic" and it didn't change things much. When we used the "F-metric" along with
+# "urban_intensity" to model the ZI-part of the model, the effect of the "F-metric" utterly disappeared
+# suggesting that connectivity does not influence total fledging failures and its effect in "F models" was
+# actually a surrogate effect from "urban_intensity".
 
-
+## Since the interaction effects turned out significant, we have to explore them graphically to interpret them!
 
 
 
-##### XXX Interaction model exploration ----
-##### XXX Interaction model exploration ----
-##### XXX Interaction model exploration ----
-##### XXX Interaction model exploration ----
-
-
-# tester d'autres fonctions pour plotter les interactions?
-# tester d'autres fonctions pour plotter les interactions?
-
-sjPlot::plot_model(ttFS_zibbin_glm2_cent, type = "pred",
+### *** 3.1.4.4. Interaction model exploration ----
+## Creating a 2D interaction plot:
+sjPlot::plot_model(ttFS_zibbin_glmm2, type = "pred",
                    terms = c("c.log_patch_area [all]",
                              "c.log_F_metric_d2b1 [-1.82, -0.3, 0, 0.32, 1.12]"),
                    mdrt.values = "quart", # Only useful if `type = "int"` is used (i.e. automatic plotting
@@ -1361,35 +1380,28 @@ sjPlot::plot_model(ttFS_zibbin_glm2_cent, type = "pred",
                    # a reason I don't understand, the 2nd color in the vector is not taken into account!
                    show.data = TRUE, # Not available, I don't know why.
                    line.size = 1)
+summary(ttFS_zibbin_glmm2)
+summary(ntits3)
 
 
-  # le faire aussi pour les autres Y
-# MAJ todolist
-# préparer résultats finaux
-# préparer réunion
-# préparer plan!!!
-
-ntits3 %>% dplyr::select(c.log_patch_area, c.log_F_metric_d2b1, c.clutch_size, urban_intensity,
-                         light_pollution, c.noise_m, c.traffic, c.cumdd_between) %>%
-  ppl.tits::uni.dotplots()
-summary(ttFS_zibbin_glm2_cent)
-
-### Creating a 3D plot of the modelled interaction effect:
-x_tilde <- expand.grid(c.log_patch_area = seq(-2.2,1.1, length.out=15),
-                       c.log_F_metric_d2b1 = seq(-1.8,1.1, length.out=15), # Computes every combination for the
-                       # input variables (here a sequence of 15 values roughly ranging the actual values of
-                       # the two predictors involved in the modelled interaction).
-                       c.clutch_size = 0,
+## Creating a 3D interaction plot:
+x_tilde <- expand.grid(c.log_patch_area = seq(-2.26,1.184, length.out=15),
+                       c.log_F_metric_d2b1 = seq(-1.822,1.125, length.out=15), # Computes every combination
+                       # for the input variables (here a sequence of 15 values roughly ranging the actual
+                       # values of the two predictors involved in the modelled interaction).
+                       clutch_size = 9,
                        urban_intensity = 0,
-                       manag_low = 0,
-                       manag_high = 0,
+                       manag_intensity = "0",
                        light_pollution = 0,
-                       c.noise_m = 0,
-                       c.traffic = 0,
-                       c.cumdd_between = 0,
+                       noise_m = 5.3,
+                       traffic = 2.1,
+                       min_t_between = 0,
+                       laying_day = 9.3,
                        year = "2019",
-                       brood_size = 8)
-x_tilde$fledging_rate <- predict(ttFS_zibbin_glm2_cent, x_tilde, type="response")
+                       brood_size = 8,
+                       id_nestbox = "DIJ-071") # Here, I used approximately median values for all the other predictors
+# or for selected factors (e.g. DIJ-071 is for a nestbox in the old city).
+x_tilde$fledging_rate <- predict(ttFS_zibbin_glmm2, x_tilde, type="response")
 
 lattice::trellis.par.set("axis.line", list(col=NA,lty=1,lwd=1))
 lattice::wireframe(fledging_rate ~ c.log_patch_area + c.log_F_metric_d2b1, data=x_tilde,
@@ -1405,69 +1417,14 @@ lattice::wireframe(fledging_rate ~ c.log_patch_area + c.log_F_metric_d2b1, data=
                    light.source = c(10,0,10),
                    col.regions = rainbow(100, s = 1, v = 1, start = 0, end = max(1,100 - 1)/100,
                                          alpha = .5), # Controls the transparency.
-                   screen = list(z = -60, x = -75))
+                   screen = list(z = -60, x = -75)) # Z controls the rotation.
 
-
-### Manual algebraic solution:
-summary(ttFS_zibbin_glm2_cent)
-intercept <- 0.96796
-coef_logPA <- -0.07141
-coef_logF <- 0.33985
-coef_interact <- -0.36788
-
-my_pred <- expand.grid(c.log_patch_area = seq(-2.2,1.1, length.out=15),
-                       c.log_F_metric_d2b1 = seq(-1.8,1.1, length.out=15),
-                       c.clutch_size = 0,
-                       urban_intensity = 0,
-                       manag_low = 0,
-                       manag_high = 0,
-                       light_pollution = 0,
-                       c.noise_m = 0,
-                       c.traffic = 0,
-                       c.cumdd_between = 0,
-                       year = "2019",
-                       brood_size = 8)
-
-# Recreating a custom prediction function:
-superpred <- function(logPA, logF){
-  # My model's estimated coefficients:
-  intercept <- 0.96796
-  coef_logPA <- -0.07141
-  coef_logF <- 0.33985
-  coef_interact <- -0.36788
-  # The simplified model's equation (i.e. y_tilde = B0 + B1*X1 + B2*X2 + B3*X1*X2):
-  pred_eq <- intercept + (coef_logPA * logPA) + (coef_logF * logF) + (coef_interact * logPA * logF)
-  # The inverse function of a logit (which is the link function used in a beta-binomial model):
-  exp(pred_eq)/(1+exp(pred_eq))
-}
-
-# Making predictions (using sapply() rather than a for loop):
-my_pred$prediction <- sapply(1:nrow(my_pred), function(i) superpred(logPA = my_pred[i,1],
-                                                                    logF = my_pred[i,2]))
-# my_pred$prediction <- mapply(superpred, my_pred$c.log_patch_area, my_pred$c.log_F_metric_d2b1) # Somehow
-# simpler solution but I think the `sapply()` version is more intuitively understandable.
-
-# Plotting the results:
-lattice::trellis.par.set("axis.line", list(col=NA,lty=1,lwd=1))
-lattice::wireframe(prediction ~ c.log_patch_area + c.log_F_metric_d2b1, data=my_pred,
-                   xlab = "c.log_patch_area",
-                   ylab = "c.log_F_metric_d2b1",
-                   main = "Fledging success predictions (manual algebraic solution)",
-                   drape = TRUE,
-                   colorkey = TRUE,
-                   scales = list(arrows=FALSE,cex=1, tick.number = 10, z = list(arrows=F), distance = c(1.5, 1.5, 1.5)),
-                   light.source = c(10,0,10),
-                   col.regions = rainbow(100, s = 1, v = 1, start = 0, end = max(1,100 - 1)/100, alpha = .8),
-                   screen = list(z = -60, x = -60))
-# We can breath, this solution is extremely close to the one computed by R predict function (but still less
-# accurate, I did that only for educational purposes)!
 
 
 
 
 
 ########################## ************************************************* ###############################
-
 # ----------------------------------------------- #
 ##### 4. Modelling the morphometric variables #####
 # ----------------------------------------------- #
@@ -1480,55 +1437,45 @@ lattice::wireframe(prediction ~ c.log_patch_area + c.log_F_metric_d2b1, data=my_
 ntits2 %>% dplyr::filter(is.na(mass) == FALSE) -> ntits3 # Only 317 observations left.
 
 ## Fitting a regular linear model:
-ttMA_lm1 <- stats::lm(mass ~ log_patch_area + log_F_metric_d2b1 + species + clutch_size + laying_day +
-                         urban_intensity + manag_intensity +
-                         light_pollution + noise_m + traffic +
-                         cumdd_between + year,
-                       data = ntits3)
+ttMA_lm1 <- glmmTMB::glmmTMB(mass ~ log_patch_area + log_F_metric_d2b1 + species + clutch_size +
+                                urban_intensity + manag_intensity +
+                                light_pollution + noise_m + traffic +
+                                min_t_between + laying_day + year,
+                              data = ntits3, family = "gaussian")
 
 ## Fitting an additive LMM:
-ttMA_lmm1 <- glmmTMB::glmmTMB(mass ~ log_patch_area + log_F_metric_d2b1 + species + clutch_size + laying_day +
-                                 urban_intensity + manag_intensity +
-                                 light_pollution + noise_m + traffic +
-                                 cumdd_between + year + (1|id_nestbox),
+ttMA_lmm1 <- glmmTMB::glmmTMB(mass ~ log_patch_area + log_F_metric_d2b1 + species + clutch_size +
+                                urban_intensity + manag_intensity +
+                                light_pollution + noise_m + traffic +
+                                min_t_between + laying_day + year + (1|id_nestbox),
                                 data = ntits3, family = "gaussian")
-ttMA_lmm1b <- lme4::lmer(mass ~ log_patch_area + log_F_metric_d2b1 + species + clutch_size + laying_day +
-                            urban_intensity + manag_intensity +
-                            light_pollution + noise_m + traffic +
-                            cumdd_between + year + (1|id_nestbox), data = ntits3,
+ttMA_lmm1b <- lme4::lmer(mass ~ log_patch_area + log_F_metric_d2b1 + species + clutch_size +
+                           urban_intensity + manag_intensity +
+                           light_pollution + noise_m + traffic +
+                           min_t_between + laying_day + year + (1|id_nestbox), data = ntits3,
                             control=lme4::lmerControl(optimizer="bobyqa",
                                                       optCtrl=list(maxfun=2e5))) # Same model but fitted
 # with {lme4} for comparison sake! Note however, that it is fitted by REML and, if not, it is singular!
 
 ## Fitting interactive (mediated) LMMs:
-ttMA_lmm2 <- glmmTMB::glmmTMB(mass ~
-                           scale(log_patch_area, scale = F) * scale(log_F_metric_d2b1, scale = F) +
-                             species + clutch_size + laying_day +
-                             urban_intensity + manag_intensity +
-                             light_pollution + noise_m + traffic +
-                             cumdd_between + year + (1|id_nestbox),
+ttMA_lmm2 <- glmmTMB::glmmTMB(mass ~ c.log_patch_area * c.log_F_metric_d2b1 + species + clutch_size +
+                                urban_intensity + manag_intensity +
+                                light_pollution + noise_m + traffic +
+                                min_t_between + laying_day + year + (1|id_nestbox),
                            data = ntits3, family = "gaussian")
-ttMA_lmm2b <- lme4::lmer(mass ~
-                            scale(log_patch_area, scale = F) * scale(log_F_metric_d2b1, scale = F) +
-                           species + clutch_size + laying_day +
+ttMA_lmm2b <- lme4::lmer(mass ~ c.log_patch_area * c.log_F_metric_d2b1 + species + clutch_size +
                            urban_intensity + manag_intensity +
                            light_pollution + noise_m + traffic +
-                           cumdd_between + year + (1|id_nestbox), data = ntits3,
-                          control=lme4::lmerControl(optimizer="bobyqa",
-                                                    optCtrl=list(maxfun=2e5)))
-AIC(ttMA_lm1) # AIC = 1159.2.
-summary(ttMA_lmm1) # AIC = 1161.2.
-summary(ttMA_lmm1b) # REML = 1160.4 (not a true AIC).
-summary(ttMA_lmm2) # AIC = 1162.8, does not seem supported by the data!
-summary(ttMA_lmm2b) # AIC = 1161.4, does not seem supported by the data!
+                           min_t_between + laying_day + year + (1|id_nestbox), data = ntits3,
+                         control=lme4::lmerControl(optimizer="bobyqa",
+                                                   optCtrl=list(maxfun=2e5)))
+AIC(ttMA_lm1) # AIC = 1141.1.
+summary(ttMA_lmm1) # AIC = 1143.1.
+summary(ttMA_lmm1b) # REML = 1146 (not a true AIC).
+summary(ttMA_lmm2) # AIC = 1144.5, does not seem supported by the data!
+summary(ttMA_lmm2b) # REML = 1146.8, does not seem supported by the data!
 # Note that for both LMM, RE variance is extremely low (nearly singular fit) which, with the AIC, suggests
 # that the use of a mixed-model is not warranted by the data.
-# OR hatching_rate/BS????????
-# OR hatching_rate/BS????????
-# OR hatching_rate/BS????????
-# OR hatching_rate/BS????????
-# OR hatching_rate/BS????????
-# + remove outliers??????????????
 
 
 
@@ -1550,15 +1497,16 @@ xxx <- cbind(ntits3, raw_cond, pearson_mar, std_cond)
 
 ## Simulation-based scaled residuals computation (DHARMa method):
 simu.resid <- DHARMa::simulateResiduals(fittedModel = ttMA_lmm1b, n = 1000, plot = FALSE)
-plot(simu.resid) # Some outliers detected!
-DHARMa::outliers(simu.resid) # Individuals 173 (CC), 192, 248 (PM).
+plot(simu.resid) # One outlier detected!
+DHARMa::outliers(simu.resid) # Obs. number 192.
 
 ## Autocorrelation and collinearity:
 DHARMa::testSpatialAutocorrelation(simulationOutput = simu.resid,
                                    x = ntits3$coord_x, y = ntits3$coord_y, plot = TRUE) # Ok.
 performance::check_autocorrelation(ttMA_lmm1b) # Ok.
 performance::check_collinearity(ttMA_lmm1b) # Ok-ish but some VIF > 4-5 and moderate correlation for "species"
-# in the interaction model.
+# in the interaction model (possibly linked to clutch size?), but as the latter seems invalidated by the data,
+# it can be disregarded.
 stats::vcov(ttMA_lmm1b) # Ok.
 
 
@@ -1566,19 +1514,19 @@ stats::vcov(ttMA_lmm1b) # Ok.
 ### *** 4.1.2.2. Distribution and homoscedasticity ----
 ## Assessing the normality of the residuals:
 stats::shapiro.test(xxx$raw_cond) # Ok. But plotting would be better:
-redres::plot_resqq(ttMA_lmm1b) # As expected, the plot shows a substantial departure from Normality at the
+redres::plot_resqq(ttMA_lmm1b) # As expected, the plot shows a substantial departure from normality at the
 # extreme ends of the quantiles, that is at the border of the parameters space. Overall, as almost all
 # points stay within the 95% CI, we can say it is ok-ish.
 # Plotting them against each numeric predictor:
 xxx %>%
   tidyr::gather(key = "type", value = "residual",
                 c(log_patch_area, log_F_metric_d2b1, clutch_size, urban_intensity,
-                  light_pollution, noise_m, traffic, cumdd_between)) %>%
+                  light_pollution, noise_m, traffic, min_t_between, laying_day)) %>%
   ggplot2::ggplot(ggplot2::aes(x = residual)) +
   ggplot2::geom_histogram(bins = 20) +
   ggplot2::facet_grid(. ~ type, scales = "free") +
   ggplot2::theme_bw() # Residuals vs predictor plots look rather ok, even though some strange patterns can
-# be seen. I would not be too worried about them but they would require some further thinking.
+# be seen apparently linked to the distribution of the predictors.
 
 ## Assessing the normality in the random effect:
 redres::plot_ranef(ttMA_lmm1b) # Ok-ish, but quite a strong departure from normality for the last residual.
@@ -1586,11 +1534,11 @@ redres::plot_ranef(ttMA_lmm1b) # Ok-ish, but quite a strong departure from norma
 ## Assessing homogeneity of variance and influential observations:
 plot(ttMA_lmm1b, type=c("p","smooth"), col.line = 2, id = 0.05, idLabels = ~.obs,
      ylab = "Pearson's residuals", xlab = "Fitted values") # It's ok but there are a few possible outliers:
-ntits3[c(248,11,213,32,177,102,104,155),] # High residuals ~= heavy juveniles. Ok, but it's true that the
-# brood number 248 is heavy for CC, perhaps a misidentification?
-ntits3[c(26,42,198,170,264,236,173,192),] # Low residuals ~= light juveniles. RAS.
+ntits3[c(112,102,32,194,155),] # High residuals ~= heavy PM fledglings. Ok.
+ntits3[c(173,26,264,296,198,152,170,192),] # Low residuals ~= light PM fledglings. Ok.
 
 # Residuals vs leverage:
+par(.pardefault)
 plot(ttMA_lmm1b, stats::rstudent(.) ~ stats::hatvalues(.))
 cd <- stats::cooks.distance(ttMA_lmm1b)
 plot(cd, ylab = "Cook's distance")
@@ -1598,7 +1546,7 @@ ntits3[which(cd>0.4),] # Ok, all observations are < 0.5, so no overly influentia
 ntits3[which(cd>0.1),] # Even with very conservative values, it's ok!
 
 ## Residuals vs predictors:
-redres::plot_redres(ttMA_lmm1b, xvar = "cumdd_between") +
+redres::plot_redres(ttMA_lmm1b, xvar = "min_t_between") +
   ggplot2::geom_smooth(method = "loess") +
   ggplot2::theme_classic() +
   ggplot2::labs(title = "Residual vs predictor") # Ok-ish.
@@ -1643,13 +1591,13 @@ ggplot2::ggplot(mydata, ggplot2::aes(y = mass, x = predictor.value))+
 
 ### *** 4.1.2.4. Goodness-of-fit (GOF) and performances ----
 ## Computing a pseudo-R2:
-performance::r2_nakagawa(ttMA_lmm1b) # [Additive model]: Marg_R2_lmm = 0.79; Cond_R2_lmm = 0.79.
-performance::r2_nakagawa(ttMA_lmm2b) # [Interact. model]: Marg_R2_lmm = 0.79; Cond_R2_lmm = 0.79.
+performance::r2_nakagawa(ttMA_lmm1) # [Additive model]: Marg_R2_lmm = 0.81; Cond_R2_lmm = NA.
+performance::r2_nakagawa(ttMA_lmm2) # [Interact. model]: Marg_R2_lmm = 0.81; Cond_R2_lmm = NA.
 
 ## Likelihood-based evaluation of effects inclusion:
 # Importance of the "id_nestbox" random-effect (RE):
 tictoc::tic("Parametric bootstrap LRT for RE inclusion")
-res.LRT_re <- DHARMa::simulateLRT(m0 = ttMA_lm1, m1 = ttMA_lmm1b, n = 1000, seed = 682)
+res.LRT_re <- DHARMa::simulateLRT(m0 = ttMA_lm1, m1 = ttMA_lmm1b, n = 1000, seed = 547)
 tictoc::toc() # Took ~24s to run.
 # The LRT is highly significant, suggesting that M1 better describes the data than M0, supporting the
 # importance of the random effect!
@@ -1671,7 +1619,7 @@ res.LRT_null <- stats::anova(object = ttMA_lm0, ttMA_lm1, test = "LRT")
 ttMA_lmm0b <- stats::update(ttMA_lmm1b, .~. -log_F_metric_d2b1)
 
 res.LRT_addeff <- pbkrtest::PBmodcomp(ttMA_lmm1b,
-                                      ttMA_lmm0b, nsim = 1000, seed = 854) # Took ~41s to run!
+                                      ttMA_lmm0b, nsim = 1000, seed = 182) # Took ~41s to run!
 readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
                                                              "res.ttMA_LRT_addeff.csv"))
 # The LRT is significant, indicating that our connectivity metric does improve the description of the data.
@@ -1679,7 +1627,7 @@ readr::write_csv2(x = res.LRT_addeff$test, file = here::here("output", "tables",
 
 ## For the interaction effect:
 res.LRT_inteff <- pbkrtest::PBmodcomp(ttMA_lmm2b,
-                                      ttMA_lmm1b, nsim = 1000, seed = 118) # Took ~46s to run!
+                                      ttMA_lmm1b, nsim = 1000, seed = 279) # Took ~46s to run!
 readr::write_csv2(x = res.LRT_inteff$test, file = here::here("output", "tables",
                                                              "res.ttMA_LRT_inteff.csv"))
 # The LRT is NOT significant, indicating that our hypothesis of an interaction effect is not supported
@@ -1700,67 +1648,21 @@ tictoc::toc() # DISCLAIMER: took ~11s to run!
 
 ### *** 4.1.3.3. Conclusion ----
 # For the initial model:
-summary(ttMA_lmm1b) # AIC = 1160.4 and both R2_lmm = 0.79.
-summary(ttMA_lmm2b) # AIC = 1161.4 and both R2_lmm = 0.79.
+summary(ttMA_lmm1b) # AIC = 1146 and Marginal R2_lmm = 0.8 (conditional R2 does not work here)!
+summary(ttMA_lmm2b) # AIC = 1146.8 and Marginal R2_lmm = 0.8 (conditional R2 does not work here)!
 # Diagnostics ran for 'ttMA_lmm1b' and 'ttMA_lmm2b' (initial models) indicated that the models do fit the
 # data relatively well and that there are no major cause for concern:
 # - All sorts of residuals are globally fine. Even though some patterns exist that are linked to the
 #   imperfect sampling of the predictor space. There's not much we could do about it except, perhaps, try
 #   some more advanced variable transformations.
 # - Assumptions all seem validated, although there is a mild multicollinearity with some VIF > 4-5 and
-#   moderate correlation for "species".
-# - No overly influential observations although some potential outliers may exist: individuals 173 (CC),
-#   and 192 and 248 (PM). Number 173 might be a misidentified brood.
-## Significant variables: F-metric (++), speciesCC (---), clutch_size (-), year2020 and 2022 (+).
-## Almost significant variables: light_pollution (-) and manag_high (-).
-## Hypothesis 1 is validated (PB-based LRT; p = 0.03) but hypothesis 2 is rejected (p = 0.55)!
+#   moderate correlation for "species" in the interactive model. However, as this model quite largly rejects
+#   our working hypothesis, we will reject the model altogether.
+# - No overly influential observations although some potential outliers may exist: brood 192.
+## Significant variables: F-metric (++), speciesCC (---), clutch_size (-), high_manag (-), laying_day (-),
+#  year2020 (++) and 2022 (++).
+## Hypothesis 1 is validated (PB-based LRT = 5.873, df=1, p = 0.033) but hypothesis 2 is rejected (PB-based
+#  LRT = 0.647, df=1, p = 0.44)!
 
-# I did not run exploratory models yet, but improvements are likely possible.
+# I did not run exploratory models for this response variable.
 
-
-
-
-
-########################## ************************************************* ###############################
-par(.pardefault)
-############################################ MAJJJJJJJ§§§§§§§§ todolist ####################################
-# - Tester avec ou sans outliers (noise_m, connectivity???); si ça change beaucoup les résultats, rapporter
-#   les deux??? Tester aussi patch_perim + traffic + choisir RE définitifs??? (e.g. id_patch + site???)
-#   + tester id_nestbox (3 REs????)???
-#   + model laying date???????????????????????????????????????????????????????????????????????
-#   + model laying date???????????????????????????????????????????????????????????????????????
-#   + model laying date???????????????????????????????????????????????????????????????????????
-#   + model laying date???????????????????????????????????????????????????????????????????????
-#   + model laying date???????????????????????????????????????????????????????????????????????
-#   + model laying date???????????????????????????????????????????????????????????????????????
-#   + model laying date???????????????????????????????????????????????????????????????????????
-#   + model laying date???????????????????????????????????????????????????????????????????????
-# - Refaire tourner tous les modèles avec NTITS --> Utiliser clutch_size et brood_size comme prédicteur, ou
-#   la date de ponte??????? ASK JC??????????? Tester????
-# +++++ Voir pk EDA_report bug! + Voir si centrage change quelque chose (interprétation interaction)?????
-# - Explorer chaque modèle pour voir qu'est-ce qui marche le mieux et s'il y a une spécification unique qui
-#   va bien!!! ATTENTION à la gamme des variables explorées (transformations???????)!!!!
-# - Si rien de bien concluant, essayer en fusionnant les années pour supprimer les RE nichoirs.
-
-# 3) Re-diagsnose models with inputs from the DHARMa vignette (including conditional simu)!!! Then:
-# 4) Improve sub-conclusions! Saying that quasi is not a good option??? Or try anyway with a package that
-#    does it OR BETA-BINOMIAL? --> But too many parameters (ZI+OI)!!! I should wait for the MERGE!
-#    Or simply try modelling the counts with ZI+Comreg avec RE??? And/or PM+CC and/or MERGING years and
-#    nestboxes and hope that it alleviates these problems?????
-# 5) Move on to another Y: i) LMM_morpho; ii) LMM_mass, wing...; iii) COM-Poisson pour clutch_size; iv) ZI!
-# 6) Try the Conway-Maxwell Poisson (Shmueli et al, 2005*) avec {COMPoissonReg} (Sellers & Lotze, 2015*),
-#    but search first if that exist in Mixed Model! (Same for Zero-Inflated models)! Or quasi-likelihood,
-#    or generalised-Poisson (but {VGAM} does not do it anymore). I could also try it without REs...
-#    The problem with all that is that quasi-MLE, GP or COM-Poisson prevent mixed-models and possibly
-#    LR-tests, right? At least the quasi-MLE does. Is bird breeding a Poisson process???
-
-# 7) Reunite PM & CC while keeping other predictors (for exploratory research)! But beware of coding,
-#    what does the intercept mean? Which reference group?
-
-# 1) Consider removing overly influential observations?
-# 2) Consider merging years and averaging nestboxes??? Some of the GLMs gave interesting results, sometimes
-#    even more when "year" was removed.
-# 8) Compare all methods of estimation and inference (cf. inference bolker example) for the **same
-#    model** to see if any is making a difference?
-# 9) Explore other predictors (and different scales)! E.g. AICc-based model selection?
-########################## ************************************************* ###############################

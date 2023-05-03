@@ -624,6 +624,7 @@ ntits2 %>% dplyr::mutate(c.log_patch_area = log_patch_area-stats::median(log_pat
                          c.log_woody_area = log_woody_area-stats::median(log_woody_area),
                          c.log_F_metric_d2b1 = log_F_metric_d2b1-stats::median(log_F_metric_d2b1),
                          c.log_F_metric_d2b0 = log_F_metric_d2b0-stats::median(log_F_metric_d2b0),
+                         c.clutch_size = clutch_size-stats::median(clutch_size),
                          c.laying_day = laying_day-stats::median(laying_day),
                          c.sqrt_built_vol = sqrt_built_vol-stats::median(sqrt_built_vol),
                          c.built_area = built_area-stats::median(built_area),
@@ -632,8 +633,9 @@ ntits2 %>% dplyr::mutate(c.log_patch_area = log_patch_area-stats::median(log_pat
                          c.noise_m = noise_m-stats::median(noise_m),
                          c.traffic = traffic-stats::median(traffic),
                          c.cumdd_30 = cumdd_30-stats::median(cumdd_30),
-                         c.cumdd_between = cumdd_between-stats::median(cumdd_between)) -> ntits2
-
+                         c.cumdd_between = cumdd_between-stats::median(cumdd_between),
+                         c.min_t_between = min_t_between-stats::median(min_t_between)) -> ntits2
+ntits2[ntits2$id_nestbox == "DIJ-205" & ntits2$year == "2019", "species"] <- "PM" # Misidentified observation.
 
 # summary(ntits2[,35:ncol(ntits2)])
 # ppl.tits::uni.dotplots(ntits2[,45:ncol(ntits2)]) # If needed.
