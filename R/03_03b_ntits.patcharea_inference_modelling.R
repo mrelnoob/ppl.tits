@@ -898,7 +898,7 @@ ttFS_zibin_glmm2_olre <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~
 ## Fitting an interactive (mediated) ZI-beta-binomial GLMM:
 ttFS_zibbin_glmm2 <- glmmTMB::glmmTMB(fledgling_nb/brood_size ~
                                         c.log_patch_area * c.log_F_metric_d2b1 +
-                                        clutch_size +
+                                        species +
                                         urban_intensity + manag_intensity +
                                         light_pollution + noise_m + traffic +
                                         min_t_between + laying_day + year + (1|id_nestbox),
@@ -1330,9 +1330,14 @@ summary(ttFS_zibbin_glmm2) # AIC = 1376.5 and both R2_glmm = 0.8!
 # latter models also displayed some problematic issues such as concerning multicollinearity, autocorrelation
 # and quantile deviations. Diagnostics from the beta-binomial models were all satisfactory if we excluded
 # "species" from the models as it is collinear with "clutch_size". We thus chose to keep "clutch_size" as
-# it is a more interesting predictor, yielded better diagnostics and results, and as no "species" effect was
-# detected.
-# It also appears that, for this response variable, the use of mixed models was not necessary.
+# it is a more informative predictor and yielded better diagnostics. However, it should be noted that there
+# was a species effect as blue tits tended to have a lower fledging success than Parus major:
+ntits3 %>% dplyr::mutate(fledging_success = fledgling_nb/clutch_size) %>%
+  dplyr::group_by(species) %>%
+  dplyr::summarise(mean_fs = mean(fledging_success)) # Note that this mean fledging success does not account
+# for the effect of the covariates unlike a coefficient estimate (you could alternatively fit a model
+# replacing "clutch_size" by "species" or using both, to estimate a more accurate effect).
+# Finally, it also appears that for this response variable the use of mixed models was not necessary.
 ## Significant variables: F-metric (++), clutch_size (-), manag_high (--), laying_day (--), and year2022 (+++).
 ## For the interactive (moderated) model, the INTERACTION TERM was also significant (--) but the F-metric was
 # not anymore, which could be a sign of a cross-over interaction. Furthermore, light_pollution (-) also
@@ -1665,4 +1670,17 @@ summary(ttMA_lmm2b) # AIC = 1146.8 and Marginal R2_lmm = 0.8 (conditional R2 doe
 #  LRT = 0.647, df=1, p = 0.44)!
 
 # I did not run exploratory models for this response variable.
+
+
+
+
+##### EXPORT ntits3 ----
+##### EXPORT ntits3 ----
+##### EXPORT ntits3 ----
+##### EXPORT ntits3 ----
+ntits3 %>% dplyr::mutate(fledging_success = fledgling_nb/clutch_size) %>%
+  dplyr::select(id_nestbox, year, species,
+                laying_day, clutch_size, brood_size, fledgling_nb, fledging_success, mass,
+                log_patch_area, log_F_metric_d2b1) -> xxx
+readr::write_csv2(x = xxx, file = here::here("output", "tables", "ntits_final.csv"))
 
