@@ -232,7 +232,7 @@ file.create(... = "output/texts/ppl.tits.intermediate_analyses_report.Rmd") # Us
 # a .Rmd file will be created but will lack the YAML header skeleton that should thus be manually
 # placed at the top of the document.
 # NOTE: for guidance to use .Rmd documents with {targets}, please refer to the {targets} related
-# section (chapter 3 below).
+# section (chapter 4 below).
 
 
 ### ** 2.3.1. To manage citations and bibliography ----
