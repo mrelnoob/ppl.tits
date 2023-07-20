@@ -1377,12 +1377,12 @@ sjPlot::plot_model(ttFS_zibbin_glmm2, type = "pred",
                              "c.log_F_metric_d2b1 [-1.82, -0.3, 0, 0.32, 1.12]"),
                    mdrt.values = "quart", # Only useful if `type = "int"` is used (i.e. automatic plotting
                    # of interaction effects). If used, only plots the 3 quartile values for the moderator.
-                   title = "Predicted probabilities of fledging success",
-                   axis.title = c("Patch area",
-                                  "Fledging rate"),
-                   legend.title = "F-metric",
+                   title = "", # If I don't let it blank (and delete it), it sets a title by default.
+                   axis.title = c("Habitat patch area",
+                                  "Predicted fledging success"),
+                   legend.title = "Flux metric",
                    colors = c("darkred", "white", "darkorange", "darkolivegreen3", "chartreuse4"), # For
-                   # a reason I don't understand, the 2nd color in the vector is not taken into account!
+                   # a reason I don't understand, the 2nd colour in the vector is not taken into account!
                    show.data = TRUE, # Not available, I don't know why.
                    line.size = 1)
 summary(ttFS_zibbin_glmm2)
@@ -1649,6 +1649,14 @@ readr::write_csv2(x = tt,
                   file = here::here("output", "tables", "res.ttMA_bootCI_addeff.csv"))
 tictoc::toc() # DISCLAIMER: took ~11s to run!
 
+tictoc::tic("Bootstrap CI for mediated LMM parameters")
+res.ttMA_medeff_CI_boot <- confint(ttMA_lmm2b, method="boot")
+tt <- as.data.frame(res.ttMA_medeff_CI_boot)
+tt$parameters <- rownames(tt)
+readr::write_csv2(x = tt,
+                  file = here::here("output", "tables", "res.ttMA_bootCI_medeff.csv"))
+tictoc::toc() # DISCLAIMER: took ~11s to run!
+
 
 
 ### *** 4.1.3.3. Conclusion ----
@@ -1671,6 +1679,36 @@ summary(ttMA_lmm2b) # AIC = 1146.8 and Marginal R2_lmm = 0.8 (conditional R2 doe
 
 # I did not run exploratory models for this response variable.
 
+
+
+### *** 4.1.3.4. Figures and data export ----
+summary(ttMA_lmm2b)
+tt <- tt[-c(1:2),]
+
+mydata <- data.frame(x = c("Intercept", "Patch area", "Flux metric", "Interaction term", "Species (CC)",
+                           "Clutch size", "Urban intensity", "Management intensity (moderate)",
+                           "Management intensity (intensive)", "Light pollution", "Noise pollution", "Traffic",
+                           "Minimum temperature", "Laying day", "Year (2020)", "Year (2021)", "Year (2022)"),
+                     y = c(ttMA_lmm2b@beta[1]/10, ttMA_lmm2b@beta[2], ttMA_lmm2b@beta[3], ttMA_lmm2b@beta[17],
+                           ttMA_lmm2b@beta[4:16]), # To have the interaction term in fourth position.
+                     ylo = c(tt[1,1]/10, tt[2,1], tt[3,1], tt[17,1], tt[4:16,1]),
+                     yhi = c(tt[1,2]/10, tt[2,2], tt[3,2], tt[17,2], tt[4:16,2]))
+
+credplot.gg <- function(mydata){
+  # mydata is a data frame with 4 columns
+  # mydata$x gives variable names
+  # mydata$y gives center point
+  # mydata$ylo gives lower limits
+  # mydata$yhi gives upper limits
+  require(ggplot2)
+  p <- ggplot(mydata, aes(x=x, y=y, ymin=ylo, ymax=yhi))+
+    geom_pointrange()+
+    geom_hline(yintercept = 0, linetype=2)+
+    coord_flip()+
+    xlab('Variable')
+  return(p)
+}
+credplot.gg(mydata = mydata)
 
 
 
